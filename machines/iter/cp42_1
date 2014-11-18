@@ -1,0 +1,4 @@
+cp for042 ../temp_co1
+
+cp na_ramp ../temp_co1/names
+cp separ_coor ../temp_co1

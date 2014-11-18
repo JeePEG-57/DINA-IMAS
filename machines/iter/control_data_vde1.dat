@@ -1,0 +1,122 @@
+ n_pasc     ng_lim     switch_delay   refval_ramptime     tt_eob     tt_rd    v_coef    coef_lim   amp_noise
+    6         3            0.              3.               410.      457.      1.        1.        0.078
+ Vvs1_sat       Vvs3_sat    Vcs_sat  Vpf_sat
+  6e3             0.        2.1e3    3.15e3
+ c_a_tpl1  c_a_tpl1_eob  c_a_tpl2       c_a_tpl_min      y0     c1_y0    c2_y0
+   1.          1.           1.            0.168          1.     1.8e3   7.25e3
+ time_res   res_CS1
+   13.       0.12
+ c_cur_max   curr_max_t(1:11)(kA)
+  0.98        37.  37.  37.  37.  37.   48.  55.  55.  55.  52.  52.
+ n_t_vde  time_vde(s)    ck_zupdown
+   4        12.               1.
+ t_vde(1:n_t_vde)(s)
+  25.3e3    50e3    275e3  530e3
+ zvde_max(1:n_t_vde) (m)
+  0.036    0.025   0.031   0.036
+ z_switch_vs1(1:n_t_vde) (m)
+  0.02     0.012   0.015    0.02
+
+15MA Sc.,inner, start, 50s ramp-up, 500s EOB, 4MW, no VDE (y0=0.5 old), maxIcs=37kA
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ n_pasc     ng_lim     switch_delay   refval_ramptime     tt_eob     tt_rd    v_coef    coef_lim   amp_noise
+    6         3            0.              3.               500.      547.      1.        1.        0.078
+ Vvs1_sat       Vvs3_sat    Vcs_sat  Vpf_sat
+  6e3             0.        2.1e3    3.15e3
+ c_a_tpl1  c_a_tpl1_eob  c_a_tpl2       c_a_tpl_min      y0     c1_y0    c2_y0
+   1.          1.           1.            0.168          1.     1.8e3   7.25e3
+ time_res   res_CS1
+   13.       0.12
+ c_cur_max   curr_max_t(1:11)(kA)
+  0.98        45.  45.  45.  45.  45.   48.  55.  55.  55.  52.  52.
+ n_t_vde  time_vde(s)    ck_zupdown
+   4        12.               1.
+ t_vde(1:n_t_vde)(s)
+  25.3e3    50e3    275e3  530e3
+ zvde_max(1:n_t_vde) (m)
+  0.036    0.025   0.031   0.036
+ z_switch_vs1(1:n_t_vde) (m)
+  0.02     0.012   0.015    0.02
+
+15MA Sc.,inner, start, 50s ramp-up, 500s EOB, 4MW, no VDE (y0=0.5 old)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ n_pasc     ng_lim     switch_delay   refval_ramptime     tt_eob     tt_rd    v_coef    coef_lim   amp_noise
+    6         3            0.              3.               50.3      97.      1.        1.        0.078
+ Vvs1_sat       Vvs3_sat    Vcs_sat  Vpf_sat
+  6e3             0.        2.1e3    3.15e3
+ c_a_tpl1  c_a_tpl1_eob  c_a_tpl2       c_a_tpl_min      y0     c1_y0    c2_y0
+   1.          1.           1.            0.168          1.     1.8e3   7.25e3
+ time_res   res_CS1
+   13.       0.12
+ c_cur_max   curr_max_t(1:11)(kA)
+  0.98        45.  45.  45.  45.  45.   48.  55.  55.  55.  52.  52.
+ n_t_vde  time_vde(s)    ck_zupdown
+   4        12.               1.
+ t_vde(1:n_t_vde)(s)
+  25.3e3    50e3    275e3  530e3
+ zvde_max(1:n_t_vde) (m)
+  0.036    0.025   0.031   0.036
+ z_switch_vs1(1:n_t_vde) (m)
+  0.02     0.012   0.015    0.02
+
+15MA Sc.,inner, start, 50s ramp-up, 50s SOF term3., 4MW, no VDEs, res_sof1_6,7
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ n_pasc     ng_lim     switch_delay   refval_ramptime     tt_eob     tt_rd    v_coef    coef_lim   amp_noise
+    6         3            0.              3.               500.      525.      1.        1.        0.078
+ Vvs1_sat       Vvs3_sat    Vcs_sat  Vpf_sat
+  6e3             0.        2.1e3    3.15e3
+ c_a_tpl1  c_a_tpl1_eob  c_a_tpl2       c_a_tpl_min      y0     c1_y0    c2_y0
+   1.          1.           1.            0.168          1.    4.89e3   7.25e3
+ time_res   res_CS1
+   13.       0.12
+ c_cur_max   curr_max_t(1:11)(kA)
+  0.98        45.  45.  45.  45.  45.   48.  55.  55.  55.  52.  52.
+ n_t_vde  time_vde(s)    ck_zupdown
+   4        12.               1.
+ t_vde(1:n_t_vde)(s)
+  25.3      50.    275.    530.
+ zvde_max(1:n_t_vde) (m)
+  0.036    0.025   0.036   0.036
+ z_switch_vs1(1:n_t_vde) (m)
+  0.02     0.012   0.02    0.02
+
+15MA Sc.,inner, start, 50s ramp-up, 500s HL, 4MW, 4 VDEs v3, y0=1
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ n_pasc     ng_lim     switch_delay   refval_ramptime     tt_eob     tt_rd    v_coef    coef_lim   amp_noise
+    6         3            0.              3.               500.      525.      1.        1.        0.078
+ Vvs1_sat       Vvs3_sat    Vcs_sat  Vpf_sat
+  6e3             0.        2.1e3    3.15e3
+ c_a_tpl1  c_a_tpl1_eob  c_a_tpl2       c_a_tpl_min      y0     c1_y0    c2_y0
+   1.          1.           1.            0.168          1.    4.89e3   7.25e3
+ time_res   res_CS1
+   13.       0.12
+ c_cur_max   curr_max_t(1:11)(kA)
+  0.98        45.  45.  45.  45.  45.   48.  55.  55.  55.  52.  52.
+ n_t_vde  time_vde(s)    ck_zupdown
+   4        12.               1.
+ t_vde(1:n_t_vde)(s)
+  25.3      50.    275.    530.
+ zvde_max(1:n_t_vde) (m)
+  0.03     0.025   0.03    0.03
+ z_switch_vs1(1:n_t_vde) (m)
+  0.017    0.012   0.017   0.017
+
+15MA Sc.,inner, start, 50s ramp-up, 500s HL, 4MW, 4 VDEs v3, y0=1
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ n_pasc     ng_lim     switch_delay   refval_ramptime     tt_eob     tt_rd    v_coef    coef_lim   amp_noise
+    6         3            0.              3.               500.      525.      1.        1.        0.078
+ Vvs1_sat       Vvs3_sat    Vcs_sat  Vpf_sat
+  6e3             0.        2.1e3    3.15e3
+ c_a_tpl1  c_a_tpl1_eob  c_a_tpl2       c_a_tpl_min      y0     c1_y0    c2_y0
+   1.          1.           1.            0.168         0.392   4.89e3   7.25e3
+ time_res   res_CS1
+   13.       0.12
+ c_cur_max   curr_max_t(1:11)(kA)
+  0.98        45.  45.  45.  45.  45.   48.  55.  55.  55.  52.  52.
+ n_t_vde  time_vde(s)   zvde_max(m)  z_switch_vs1(m)    ck_zupdown
+   4        15.           0.025          0.012               1.
+ t_vde(1:n_t_vde)(s)
+  25.3  50.  275.  530.
+
+15MA Sc.,inner, start, 50s ramp-up, 500s HL, 4MW, 4 VDEs v2
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -1,0 +1,6 @@
+cp ../new_gaps/g1_new.dat g1.dat
+cp ../new_gaps/g2_new.dat g2.dat
+cp ../new_gaps/g3_new.dat g3.dat
+cp ../new_gaps/g4_new.dat g4.dat
+cp ../new_gaps/g5_new.dat g5.dat
+cp ../new_gaps/g6_new.dat g6.dat

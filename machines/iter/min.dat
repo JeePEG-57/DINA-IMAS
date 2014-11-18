@@ -1,0 +1,114 @@
+
+From mineevab@niiefa.spb.su Thu Jun  3 18:23:46 1999
+Date: Thu, 3 Jun 1999 14:18:45 +0400 (MSD)
+From: "Anatoly B. Mineev" <mineevab@niiefa.spb.su>
+To: Rustam Khayrutdinov <khayr@fly.triniti.troitsk.ru>
+Subject: KTM, new option
+
+
+Dear Roustam,
+
+  After some break (I put my wife into hospital)
+I try to continue calculations for KTM and it is 
+VERY desirable your help.
+  There are some changes in parameters and 
+redistribution the work between NIIEFA and LSZ.
+
+  Firstly, windows for I.A.Kovan antennaes lead
+to decreasing the number of toroidal coils: 24 --> 16.
+In the result for the same level of TF ripples at the
+plasma end (0.5%) it is necessary to increase the
+radius of external toroidal leg up to 1.7 m (at the 
+middle part of toroidal coil). So, part of poloidal coils 
+are also moved to higher radiuses. The minimum 
+changes in the PF coils position can be the following:
+
+                 R, cm          Z, cm
+PF1             44              155
+PF2             64              155
+PF3             123             155
+PF4             175             100
+PF5             175             50
+PF6             175            -50
+PF7             175            -100
+PF8             123            -155
+PF9             64             -155
+PF10            44             -150
+PF11            22.5          +-150
+
+By another words R position of PF5-PF8 is slightly
+shifted.
+
+  Secondly, there are some changes to the plasma 
+scenario dIp/dt = 3 MA/s...
+
+  Some data of this scenario can be the following:
+
+time,s      .01  .06  .11  .16  .21  .26  .31  .35  10
+ne20        .15  .20  .25 .35 .50 .50  .50 .50  .50
+a,m         .18  .28   .40 .40 .40 .40  .40 .40  .40
+R,m        1.02 .92   .90 .85 .80 .80  .80 .80  .80
+k              1    1.05  1.2  1.3 1.4  1.5   1.7  1.7  1.7
+delta          0    0      0  .05 .1    .15   .2    .2   .2
+gamOx,%   1     1      1     1    1     1     1      1     1      
+Paux,MW   0    0     0     0   0    0     0     5    5
+
+Here gamOx - impurity (Oxygen) content.
+Data in the Table are linearly interpolated between
+time points.
+
+For this initial data OD scenario was calculated.
+Its preliminary data were:
+<T> = 1.03 (To = 2.2) keV; tayE = 0.02 s; for CS flux
+total change 2 V.s the discharge duration is about 2 s
+(from the breakdown to end of plasma current plateau).
+Start - from inboard. Plasma voltage during auxiliary
+heating is about 0.5 V. Safety factor q95 is about 4 
+during the all scenario. beta N is up to 2.1 . Bootstrap
+current fraction is about .25-.3 .
+
+It is very desirable to formulate any comments to this
+plasma scenario and, may be change it.
+
+>From my mind - what is necessary to do firstly and
+quickly:
+
+1). Scenario of PF currents in characteristical points of
+scenario - it is VERY necessary for NIIEFA designers.
+(The PF currents at the time point of plasma breakdown
+are also necessary; at this time moment the level of
+stray field must be about 5 - 10 Gauss in the region
+with radiuses R = 1.0 m , a = 0.2 m, Z = 0 .
+
+I don't have ANY PF coils scenario for KTM.
+
+2). Special question is related to the divertor configuration
+creation at the plasma current. It is necessary to say
+that the position of vacuum chamber in radial direction now 
+is from R = 0.38 m up to R = 1.24 m . It is very 
+important to answer the question: is the DIVERTOR 
+configuration created for given geometry (not only limiter 
+configuration)? If it will be any problems - please let me know. 
+Estimations of SOL thickness for KTM conditions leads to 
+values 2-3 cm. If will be large difficulties it may be 
+necessary to input the special short solenoid  for the 
+plasma form creation at the inboard.
+
+3). Now the struggle between designers about plasma centre
+position (Zaxis coordinate) take place. For the divertor 
+program it is desirable to have Zaxiz about 20 cm ) so
+the plasma axis is 20 cm shifted to the upper parts of the 
+vacuum chamber and there is more place for divertor 
+placing. For antennas may be better Zaxis = 0,
+the same may be from the point of PF currents minimisation. 
+Who will be the wimmer in this struggle is not known now.
+But it will be very desirable after points (punkts) 1). and 2). to
+calculate the PF scenario also for Zaxis = 20 cm at the plasma 
+current plateau ( for this scenario plasma is started from the 
+symmetrical position with Zaxis = 0).
+
+Best regards, Anatoly
+
+
+
+

@@ -1,0 +1,140 @@
+! main test
+! test the DINA_IMAS
+! Jo Lister, August 2013
+
+use ids_schemas
+use ids_routines
+implicit none
+
+interface 
+! Declaration of the dina_imas subroutine
+    subroutine dina_imas ( em_coupling0_in, equilibrium0_in,  &
+ & pf_active0_in, pf_passive0_in,  equilibrium_in, &
+ & magnetics_in, pf_active_in, pf_passive_in, core_profiles_in, &
+ & arr_in1,arr_out1)
+ 
+     use ids_schemas
+! note that IDS0 are all prescribed, the others are dynamic
+      type (ids_dina) :: dina0_in, dina_in
+      type (ids_em_coupling) :: em_coupling0_in
+      type (ids_equilibrium) :: equilibrium0_in, equilibrium_in
+      type (ids_magnetics) :: magnetics_in
+      type (ids_pf_active) :: pf_active0_in, pf_active_in
+      type (ids_pf_passive) :: pf_passive0_in, pf_passive_in
+      type (ids_core_profiles)   :: core_profiles_in
+
+    real (DP) :: arr_in1(31), arr_out1(31)
+
+    end subroutine
+end interface
+
+interface 
+! Declaration of the dina_imas subroutine
+    subroutine dina_contr (arr_in1,arr_out1)
+     use ids_schemas
+type (ids_dina) :: dina0, dina
+type (ids_em_coupling) :: em_coupling0
+type (ids_equilibrium) :: equilibrium0, equilibrium
+type (ids_magnetics) :: magnetics
+type (ids_pf_active) :: pf_active0, pf_active
+type (ids_pf_passive) :: pf_passive0, pf_passive
+    real (DP) :: arr_in1(31), arr_out1(31)
+    end subroutine
+    
+end interface
+
+
+type (ids_dina) :: dina0, dina
+type (ids_em_coupling) :: em_coupling0
+type (ids_equilibrium) :: equilibrium0, equilibrium
+type (ids_magnetics) :: magnetics
+type (ids_pf_active) :: pf_active0, pf_active
+type (ids_pf_passive) :: pf_passive0, pf_passive
+type (ids_core_profiles)   :: core_profiles
+
+real (DP) :: arr_in1(51), arr_out1(51)
+
+! define the pulse and run numbers for testing, will be done later outside
+integer :: pulse=109, run=1, prescribedpulse=150, prescribedrun=1
+
+! define local variables
+integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
+real (DP) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
+integer :: idx, idx0
+integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
+
+! for timing tests
+INTEGER :: clock_start,clock_end,clock_rate
+
+write(*,*) 'Reading the prescribed IDS'
+call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
+
+call ids_get(idx0,"em_coupling",em_coupling0)
+call ids_get(idx0,"equilibrium",equilibrium0)
+call ids_get(idx0,"pf_active",pf_active0)
+call ids_get(idx0,"pf_passive",pf_passive0)
+
+write(*,*) 'Finished reading the prescribed IDS'
+
+write(*,*) 'Open new pulse file !'
+call imas_create('ids',pulse,run,1,1,idx)
+write(*,*) 'Created pulse file, idx = ', idx
+
+call ids_get(idx,"pf_active",pf_active)
+call ids_get(idx,"pf_passive",pf_passive)
+
+
+!! DINA LOOP CALLS
+
+arr_in1(1:31)=1
+arr_out1(1:31)=0
+
+do iloop=1,20
+
+write(*,*) 'call DINA_IMAS i =',iloop
+
+call dina_imas( em_coupling0, equilibrium0,   &
+ & pf_active0,  pf_passive0,  equilibrium, &
+ & magnetics, pf_active, pf_passive, core_profiles, &
+ & arr_in1,arr_out1)
+
+write(*,*) "Controller work"
+
+call dina_contr(arr_out1,arr_in1)
+
+write(*,*)  'Put slices'
+
+!magnetics%time(1) = 123
+!call ids_put_slice(idx,"magnetics",magnetics)
+
+write(*,*)  'Put pf_active'
+
+call ids_put_slice(idx,"pf_active",pf_active)
+
+write(*,*)  'Put pf_passive'
+call ids_put_slice(idx,"pf_passive",pf_passive)
+
+write(*,*)  'Slices put'
+
+end do
+!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+write(*,*) 'DINA_IMAS loop finished, clean up'
+
+write(*,*) 'Deallocate static IDS'
+call ids_deallocate(em_coupling0)
+call ids_deallocate(equilibrium0)
+call ids_deallocate(pf_active0)
+call ids_deallocate(pf_passive0)
+
+write(*,*) 'Read back full dynamic IDS as a test'
+!call ids_get(idx,"magnetics",magnetics)
+call ids_get(idx,"pf_active",pf_active)
+call ids_get(idx,"pf_passive",pf_passive)
+
+write(*,*) "coil 1 current",pf_active%coil(1)%current%data
+!write(*,*) "shape1",dina%output_group_7%shape%data(1,:)
+
+call imas_close(idx)
+write(*,*) 'DINA_IMAS Exiting cleanly'
+
+end 

@@ -1,0 +1,183 @@
+function [a]= ViewCoreTransport(shot, run)
+% Check arguments
+if (nargin ~=2)
+    error('Bad number of input arguments. (Must be 2: numShot, run)');
+end
+addpath /work/imas/projects/ual/2.0/matlabinterface;
+
+expIdx = imas_open('ids', shot, run);
+a=ids_get(expIdx, 'core_transport');
+imas_close(expIdx,'ids',shot,run);
+%
+disp('get_core_transport results:');
+disp('ids_properties:');
+disp(a.ids_properties);
+
+
+a.vacuum_toroidal_field.r0
+dim1 = length(a.vacuum_toroidal_field.b0);
+disp(['vacuum_toroidal_field.b0 size = ' num2str(dim1)]);
+a.vacuum_toroidal_field.b0
+
+
+[dim1,dim2] = size(a.psi);
+disp(['psi size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.t_e);
+disp(['t_e size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.t_i_average);
+disp(['t_i_average size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.n_e);
+disp(['n_e size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.n_e_fast);
+disp(['n_e_fast size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+%-------------------------------------------------
+dim1 = length(a.ions);
+disp(['ions size = ' num2str(dim1)']);
+for i=1:dim1
+    a.ions{i}.a
+    a.ions{i}.z_ion
+    a.ions{i}.z_n
+    a.ions{i}.label
+    
+    a.ions{i}.multiple_charge_state_flag
+    
+    [dim2,dim3] = size(a.ions{i}.n_i);
+    disp(['ions(' num2str(i) ').n_i size = ' num2str(dim2)' 'x' num2str(dim3)]); 
+    
+    [dim2,dim3] = size(a.ions{i}.n_i_fast);
+    disp(['ions(' num2str(i) ').n_i_fast size = ' num2str(dim2)' 'x' num2str(dim3)]);
+    
+    [dim2,dim3] = size(a.ions{i}.t_i);
+    disp(['ions(' num2str(i) ').t_i size = ' num2str(dim2)' 'x' num2str(dim3)]); 
+    
+    [dim2,dim3] = size(a.ions{i}.p_i);
+    disp(['ions(' num2str(i) ').p_i size = ' num2str(dim2)' 'x' num2str(dim3)]); 
+    
+    [dim2,dim3] = size(a.ions{i}.v_tor_i);
+    disp(['ions(' num2str(i) ').v_tor_i size = ' num2str(dim2)' 'x' num2str(dim3)]); 
+    
+    [dim2,dim3] = size(a.ions{i}.v_pol_i);
+    disp(['ions(' num2str(i) ').v_pol_i size = ' num2str(dim2)' 'x' num2str(dim3)]); 
+    
+    
+    dim2 = length(a.ions{i}.charge_states);
+    disp(['ions(' num2str(i) ').charge_states size = ' num2str(dim2)']);
+    for j=1:dim2
+        a.ions{i}.charge_states{j}.z_min
+        a.ions{i}.charge_states{j}.z_max
+        a.ions{i}.charge_states{j}.label
+        
+        [dim3,dim4] = size(a.ions{i}.charge_states{j}.n_z);
+        disp(['ions(' num2str(i) ').charge_states(' num2str(j) ').n_z size = ' num2str(dim3)' 'x' num2str(dim4)]);
+        
+        [dim3,dim4] = size(a.ions{i}.charge_states{j}.n_z_fast);
+        disp(['ions(' num2str(i) ').charge_states(' num2str(j) ').n_z_fast size = ' num2str(dim3)' 'x' num2str(dim4)]);
+        
+        [dim3,dim4] = size(a.ions{i}.charge_states{j}.t_z);
+        disp(['ions(' num2str(i) ').charge_states(' num2str(j) ').t_z size = ' num2str(dim3)' 'x' num2str(dim4)]);
+        
+        [dim3,dim4] = size(a.ions{i}.charge_states{j}.v_tor_z);
+        disp(['ions(' num2str(i) ').charge_states(' num2str(j) ').v_tor_z size = ' num2str(dim3)' 'x' num2str(dim4)]);
+        
+        [dim3,dim4] = size(a.ions{i}.charge_states{j}.v_pol_z);
+        disp(['ions(' num2str(i) ').charge_states(' num2str(j) ').v_pol_z size = ' num2str(dim3)' 'x' num2str(dim4)]);
+    end
+    
+    
+    
+end
+%-------------------------------------
+
+[dim1,dim2] = size(a.n_i_total_over_n_e);
+disp(['n_i_total_over_n_e size = ' num2str(dim1)' 'x' num2str(dim2)]); 
+
+[dim1,dim2] = size(a.momentum_tor);
+disp(['momentum_tor size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.zeff);
+disp(['zeff size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.p_e);
+disp(['p_e size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.p_i_total);
+disp(['p_i_total size = ' num2str(dim1)' 'x' num2str(dim2)]); 
+
+[dim1,dim2] = size(a.pressure_thermal);
+disp(['pressure_thermal = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.pressure_perpendicular);
+disp(['pressure_perpendicular size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.pressure_parallel);
+disp(['pressure_parallel size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.j_total);
+disp(['j_total size = ' num2str(dim1)' 'x' num2str(dim2)]); 
+
+[dim1,dim2] = size(a.j_tor);
+disp(['j_tor size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.j_ohmic);
+disp(['j_ohmic size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.j_non_inductive);
+disp(['j_non_inductive size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.j_bootstrap);
+disp(['j_bootstrap size = ' num2str(dim1)' 'x' num2str(dim2)]); 
+
+[dim1,dim2] = size(a.conductivity_parallel);
+disp(['conductivity_parallel = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.e_field_parallel);
+disp(['e_field_parallel size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.q);
+disp(['q size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+[dim1,dim2] = size(a.magnetic_shear);
+disp(['magnetic_shear size = ' num2str(dim1)' 'x' num2str(dim2)]);
+
+
+%-------------------
+[dim1] = length(a.global_quantities.ip);
+disp(['global_quantities.ip size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.current_non_inductive);
+disp(['global_quantities.current_non_inductive size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.current_bootstrap);
+disp(['global_quantities.current_bootstrap size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.v_loop);
+disp(['global_quantities.v_loop size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.li_3);
+disp(['global_quantities.li_3 size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.beta_tor);
+disp(['global_quantities.beta_tor size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.beta_tor_norm);
+disp(['global_quantities.beta_tor_norm size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.beta_pol);
+disp(['global_quantities.beta_pol size = ' num2str(dim1)']);
+
+[dim1] = length(a.global_quantities.energy_diamagnetic);
+disp(['global_quantities.energy_diamagnetic size = ' num2str(dim1)']);
+
+%--------------------
+a.code
+
+
+dim1 = length(a.time);
+disp(['time size = ' num2str(dim1)]);
+a.time
+end

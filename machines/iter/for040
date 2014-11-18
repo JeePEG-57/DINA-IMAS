@@ -1,0 +1,16 @@
+nps - number of initial plasma boundary (7)
+7
+r coordinates [cm]; value #7 do not touch! 
+558.70    820.01   713.82  540.39  419.26    420.98     508.68  
+z coordinates [cm]; value #7 do not touch! 
+-447.71   49.85    308.59  402.81   89.66    -373.56   -336.37
+indpf
+ 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0
+seps1  seps2  seps3
+1.e-4  1.e-2  1.e-3
+i_svd  i_cal  kpf 
+1      1      1
+
+
+
+

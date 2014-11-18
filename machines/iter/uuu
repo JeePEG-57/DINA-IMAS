@@ -1,0 +1,20 @@
+  
+  kk pf 3 -1.3058
+  k  fcom  vpull vch  1 -6.0 .0 -155.024
+  
+  k  fcom  vpull vch  2 -4.0 .0 -288.332
+  
+  k  fcom  vpull vch  3 -2.0 .0 -384.109
+  
+  k  fcom  vpull vch  4 .0 .0 -441.058
+  
+  k  fcom  vpull vch  5 2.0 .0 -473.249
+  
+  k  fcom  vpull vch  6 4.0 .0 -507.21
+  
+  k  fcom  vpull vch  7 6.0 .0 -559.176
+  
+  k  fcom  vpull vch  8 8.0 .0 -620.053
+  
+  k  fcom  vpull vch  9 10.0 .0 -658.057
+  

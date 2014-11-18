@@ -1,0 +1,350 @@
+XLIB= /usr/X11R6/lib
+
+#f2c= g77 -ff2c -fno-automatic
+f2c= gfortran -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -fno-omit-frame-pointer
+
+
+S=./
+V=$(S)
+
+p_elm_new:	a_p_new.o \
+		bisplee.o \
+		bispl.o bispla.o bunema.o \
+		bound.o bp_gribov_1.o\
+		camloop.o camlxt.o sh_astra_dt_beam.o\
+		write_plasma_W.o\
+		ddunew0_test.o diter_1.o disr.o \
+		dop_jetto.o etspxhi2.o \
+		edf.o efi_fil.o efi_ves.o\
+		eni_BgB_CT.o fit.o flux_pl.o \
+		green_br_N.o write_eqdsk_scen_tok.o\
+		green_d.o gen.o inh.o \
+		move.o n_elm.o \
+		neq_1_ktm.o neq0_jetto.o neqm.o ndop_4_avr.o \
+		ndop1_new2_400_beam.o oosep_4.o obrm.o \
+		pfsvd11x.o pet.o\
+		pp0.o progonu.o pf_t.o pid.o sh.o \
+		read_por.o Bohm_gyroBohm_L.o\
+		svd0m.o svd2.o sh1_N2.o sh_d3d.o \
+		sh_br.o svd.o min_distance_1cm_1.o min_distance_pfw_1cm.o\
+		zu0.o zcam_d3d.o zcamit.o \
+		zca_tsp.o map.o forces_for_control.o bpol3.o\
+		gr_psi_d.o write_jetto.o\
+		uuu.o brz.o g_gaps_rus.o con_vs3_17_ch10.o con_fil.o\
+		chop.o victor_HL.o zyb0_0.o\
+		test_zakh.o zakh.o zrad.o atsv.o\
+		graf9603.o inkey.o out42.o
+	        gfortran -o p_elm_new a_p_new.o\
+		bisplee.o \
+		bispl.o bispla.o bunema.o \
+		bound.o bp_gribov_1.o\
+		camloop.o camlxt.o sh_astra_dt_beam.o\
+		write_plasma_W.o\
+		ddunew0_test.o diter_1.o disr.o \
+		dop_jetto.o etspxhi2.o \
+		edf.o efi_fil.o efi_ves.o\
+		eni_BgB_CT.o fit.o flux_pl.o \
+		green_d.o gen.o inh.o \
+		green_br_N.o write_eqdsk_scen_tok.o\
+		move.o n_elm.o \
+		neq_1_ktm.o neq0_jetto.o neqm.o ndop_4_avr.o \
+		ndop1_new2_400_beam.o oosep_4.o obrm.o \
+		pfsvd11x.o pet.o\
+		pp0.o progonu.o pf_t.o pid.o sh.o \
+		read_por.o Bohm_gyroBohm_L.o\
+		svd0m.o svd2.o sh1_N2.o sh_d3d.o \
+		sh_br.o svd.o min_distance_1cm_1.o min_distance_pfw_1cm.o\
+		uuu.o brz.o g_gaps_rus.o con_vs3_17_ch10.o con_fil.o\
+		chop.o victor_HL.o zyb0_0.o\
+		zu0.o zcam_d3d.o zcamit.o \
+		zca_tsp.o map.o forces_for_control.o bpol3.o\
+		gr_psi_d.o write_jetto.o\
+		test_zakh.o zakh.o zrad.o atsv.o\
+		graf9603.o inkey.o out42.o -lm -L$(XLIB) -lX11
+
+
+a_p_new.o:	$(S)a_p_new.f
+		$(f2c) -c   -w   $(S)a_p_new.f
+#		cc -c   -w   $(S)a_p_new.c
+bisplee.o:	$(S)bisplee.f
+		$(f2c) -c   -w    $(S)bisplee.f
+#		cc -c   -w    $(S)bisplee.c
+
+bispl.o:	$(S)bispl.f
+		$(f2c) -c   -w     $(S)bispl.f
+#		cc -c   -w     $(S)bispl.c
+
+bispla.o:	$(S)bispla.f
+		$(f2c) -c   -w    $(S)bispla.f
+#		cc -c   -w    $(S)bispla.c
+
+bound.o:	$(S)bound.f
+		$(f2c) -c   -w   $(S)bound.f
+#		cc -c   -w   $(S)bound.c
+
+bunema.o:	$(S)bunema.f
+		$(f2c) -c   -w    $(S)bunema.f
+#		cc -c   -w    $(S)bunema.c
+
+camloop.o:	$(S)camloop.f
+		$(f2c) -c  -w   $(S)camloop.f
+#		cc -c   -w   $(S)camloop.c
+
+camlxt.o:	$(S)camlxt.f
+		$(f2c) -c   -w    $(S)camlxt.f
+#		cc -c   -w    $(S)camlxt.c
+
+con_mike.o:	con_mike.f parf8
+		$(f2c) -c   -w    con_mike.f
+#		cc -c   -w    con_mike.c
+
+ddunew0_test.o:	$(S)ddunew0_test.f
+		$(f2c) -c  -w $(S)ddunew0_test.f
+#		cc -c   -w  $(S)ddunew0_test.c
+
+diter_1.o:	$(S)diter_1.f
+		$(f2c) -c   -w   $(S)diter_1.f
+#		cc -c   -w   $(S)diter_1.c
+
+disr.o:		disr.f
+		$(f2c) -c  -w  disr.f
+#		cc -c   -w     disr.c
+
+dop_jetto.o:	dop_jetto.f dop_vs_pfw_1.inc  new_com.inc
+		$(f2c) -c  -w  dop_jetto.f
+
+edf.o:		edf.f
+		$(f2c) -c   -w    edf.f
+#		cc -c   -w    edf.c
+
+etspxhi2.o:	$(S)etspxhi2.f
+		$(f2c) -c   -w  $(S)etspxhi2.f
+#		cc -c   -w  $(S)etspxhi2.c
+
+eni_BgB_CT.o:	$(S)eni_BgB_CT.f
+		$(f2c) -c   -w   $(S)eni_BgB_CT.f
+
+efi_fil.o:	$(S)efi_fil.f
+		$(f2c) -c   -w   $(S)efi_fil.f
+
+efi_ves.o:	$(S)efi_ves.f
+		$(f2c) -c   -w   $(S)efi_ves.f
+
+#		cc -c   -w   $(S)eni_st.c
+
+fit.o:		$(S)fit.f
+		$(f2c) -c   -w   $(S)fit.f
+#		cc -c   -w   $(S)fit.c
+
+flux_pl.o:	$(S)flux_pl.f
+		$(f2c) -c   -w  $(S)flux_pl.f
+#		cc -c   -w  $(S)flux_pl.c
+
+green_br_N.o:	green_br_N.f
+		$(f2c) -c  -w  green_br_N.f
+#		cc -c   -w    green_br_N.c
+
+green_d.o:	green_d.f
+		$(f2c) -c   -w    green_d.f
+#		cc -c   -w    green_d.c
+
+gen.o:		gen.f
+		$(f2c) -c  -w  gen.f
+#		cc -c   -w    gen.c
+
+inh.o:		$(S)inh.f
+		$(f2c) -c   -w   $(S)inh.f
+#		cc -c   -w   $(S)inh.c
+
+sh_astra_dt_beam.o:		$(S)sh_astra_dt_beam.f
+		$(f2c) -c   -w   $(S)sh_astra_dt_beam.f
+
+graf9410.o:	graf9410.f
+		$(f2c) -c   -w    graf9410.f
+#		cc -c   -w    graf9410.c
+
+move.o:		move.f
+		$(f2c) -c   -w    move.f
+#		cc -c   -w    move.c
+
+n_elm.o:	n_elm.f new_com.inc
+		$(f2c) -c  -w  n_elm.f
+
+neq_1_ktm.o:	$(S)neq_1_ktm.f
+		$(f2c) -c   -w    $(S)neq_1_ktm.f
+#		cc -c   -w    $(S)neq_1_ktm.c
+
+neq0_jetto.o:	neq0_jetto.f new_com.inc
+		$(f2c) -c  -w neq0_jetto.f
+
+neqm.o:		$(S)neqm.f
+		$(f2c) -c   -w    $(S)neqm.f
+#		cc -c   -w    $(S)neqm.c
+
+ndop_4_avr.o:	$(S)ndop_4_avr.f
+		$(f2c) -c  -w $(S)ndop_4_avr.f
+#		cc -c   -w     $(S)ndop_4_avr.c
+
+ndop1_new2_400_beam.o:	ndop1_new2_400_beam.f parf8
+		$(f2c) -c  -w ndop1_new2_400_beam.f
+
+oosep_4.o:	$(S)oosep_4.f
+		$(f2c) -c   -w    $(S)oosep_4.f
+#		cc -c   -w    $(S)oosep_4.c
+
+obrm.o:		$(S)obrm.f
+		$(f2c) -c   -w    $(S)obrm.f
+#		cc -c   -w    $(S)obrm.c
+
+pfsvd11x.o:	pfsvd11x.f
+		$(f2c) -c   -w    pfsvd11x.f
+#		cc -c   -w    pfsvd11x.c
+
+pet.o:		pet.f
+		$(f2c) -c   -w     pet.f
+
+
+pp0.o:		$(S)pp0.f
+		$(f2c) -c   -w    $(S)pp0.f
+#		cc -c   -w    $(S)pp0.c
+
+progonu.o:	$(S)progonu.f
+		$(f2c) -c   -w    $(S)progonu.f
+#		cc -c   -w    $(S)progonu.c
+
+pf_t.o:		pf_t.f
+		$(f2c) -c   -w     pf_t.f
+#		cc -c   -w     pf_t.c
+
+victor_HL.o:	victor_HL.f new_com.inc
+		$(f2c) -c  -w victor_HL.f
+
+pid.o:		pid.f new_com.inc
+		$(f2c) -c  -w  pid.f 
+#		cc -c   -w     pid.c 
+
+read_por.o:	read_por.f
+		$(f2c) -c   -w    read_por.f
+#		cc -c   -w    read_por.c
+
+sh.o:		sh.f
+		$(f2c) -c   -w   sh.f
+#		cc -c   -w   sh.c
+
+svd0m.o:	$(S)svd0m.f
+		$(f2c) -c   -w    $(S)svd0m.f
+#		cc -c   -w    $(S)svd0m.c
+
+svd2.o:		$(S)svd2.f
+		$(f2c) -c   -w    $(S)svd2.f
+#		cc -c   -w    $(S)svd2.c
+
+sh1_N2.o:		sh1_N2.f
+		$(f2c) -c  -w  sh1_N2.f
+#		cc -c   -w    sh1_N2.c
+
+sh_d3d.o:	sh_d3d.f
+		$(f2c) -c  -w sh_d3d.f
+#		cc -c   -w    sh_d3d.c
+
+sh_br.o:	sh_br.f
+		$(f2c) -c   -w    sh_br.f
+#		cc -c   -w    sh_br.c
+
+svd.o:		svd.f
+		$(f2c) -c   -w    svd.f
+
+zu0.o:		$(S)zu0.f
+		$(f2c) -c   -w    $(S)zu0.f
+#		cc -c   -w    $(S)zu0.c
+
+zyb0_0.o:		$(S)zyb0_0.f
+		$(f2c) -c   -w    $(S)zyb0_0.f
+#		cc -c   -w    $(S)zyb0_0.c
+
+zcam_d3d.o:	zcam_d3d.f
+		$(f2c) -c  -w zcam_d3d.f
+#		cc -c   -w     zcam_d3d.c
+
+zcamit.o:	zcamit.f
+		$(f2c) -c   -w     zcamit.f
+#		cc -c   -w     zcamit.c
+bp_gribov_1.o:	bp_gribov_1.f
+		$(f2c) -c   -w     bp_gribov_1.f
+
+zca_tsp.o:	zca_tsp.f new_com.inc  chop_chx.inc  
+		$(f2c) -c  -w zca_tsp.f
+#		cc -c   -w     zca_tsp.c
+
+uuu.o:		$(S)uuu.f
+		$(f2c) -c   -w      $(S)uuu.f
+#		cc -c   -w      $(S)uuu.c
+
+brz.o:		$(S)brz.f
+		$(f2c) -c  -w $(S)brz.f
+#		cc -c   -w      $(S)brz.c
+
+g_gaps_rus.o:	$(S)g_gaps_rus.f
+		$(f2c) -c  -w  $(S)g_gaps_rus.f
+#		cc -c   -w  $(S)g_gaps_rus.c
+
+con_vs3_17_ch10.o:	$(S)con_vs3_17_ch10.f
+		$(f2c) -c  -w $(S)con_vs3_17_ch10.f
+
+con_fil.o:	$(S)con_fil.f
+		$(f2c) -c  -w $(S)con_fil.f
+
+graf9603.o:	$(S)graf9603.f $(S)graf9603.inc
+		$(f2c)  -c   -w   $(S)graf9603.f
+#		cc  -c   -w   $(S)graf9603.c
+
+gr_psi_d.o:	$(V)gr_psi_d.f 
+		$(f2c)  -c   -w   $(V)gr_psi_d.f
+#		cc  -c   -w   gr_psi_d.c
+write_jetto.o:	$(V)write_jetto.f 
+		$(f2c) -c  -w $(V)write_jetto.f
+#		cc  -c  -w write_jetto.c
+chop.o:		chop.c
+		cc  -c   chop.c
+inkey.o:	$(S)inkey.c
+#		cc  -c   $(S)inkey.c
+out42.o:	$(S)out42.c
+		cc  -c   $(S)out42.c
+test_zakh.o:	test_zakh.f
+		$(f2c) -c   -w      test_zakh.f
+#		cc -c   -w      test_zakh.c
+zrad.o:		zrad.f
+		$(f2c) -c   -w      zrad.f
+atsv.o:		atsv.f
+		$(f2c) -c   -w      atsv.f
+map.o:		map.f
+		$(f2c) -c   -w      map.f
+write_plasma_W.o:	write_plasma_W.f
+		$(f2c) -c   -w      write_plasma_W.f
+write_eqdsk_scen_tok.o:		write_eqdsk_scen_tok.f
+		$(f2c) -c   -w      write_eqdsk_scen_tok.f
+Bohm_gyroBohm_L.o:		Bohm_gyroBohm_L.f
+				$(f2c) -c   -w      Bohm_gyroBohm_L.f
+min_distance_1cm_1.o:	min_distance_1cm_1.f
+		$(f2c) -c   -w      min_distance_1cm_1.f
+min_distance_pfw_1cm.o:	min_distance_pfw_1cm.f
+		$(f2c) -c   -w      min_distance_pfw_1cm.f
+bpol3.o:	bpol3.f
+		$(f2c) -c   -w      bpol3.f
+forces_for_control.o:		forces_for_control.f
+		$(f2c) -c   -w      forces_for_control.f
+zakh.o:		zakh.c
+		cc  -c   zakh.c
+
+
+
+
+
+
+
+
+
+
+
+
+

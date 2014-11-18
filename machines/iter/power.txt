@@ -1,0 +1,10 @@
+  D  	D2 	V	T2	HV1	HV2    T1    V1   D1 
+ 369.    465.    360.    398.    864.    825.  400.  360. 465.
+key_con(if 0- ext. voltages, 1- int.shape,2- Z-contr+ext.volt,3-Zcon)
+ 1 
+        DATA kvert
+  0, 1, 0, 0, 0, 1, 1, 0, 0,
+  0, 1, 0, 0, 0, 1, 1, 0, 0
+
+
+

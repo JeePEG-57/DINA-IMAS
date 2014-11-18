@@ -1,0 +1,3 @@
+	parameter ( k_fil=300, k_cur=50 )
+
+

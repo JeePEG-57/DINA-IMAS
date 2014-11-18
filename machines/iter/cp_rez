@@ -1,0 +1,11 @@
+cp for042   	REZ/f42_01
+cp for002 	REZ/f2_01
+cp rpp.dat 	REZ/r_01
+cp zpp.dat 	REZ/z_01
+cp dens.dat 	REZ/d_01
+cp g_dens.dat 	REZ/gd_01
+cp g_zeff.dat 	REZ/gz_01
+cp volt.dat 	REZ/v_01
+cp scr_data 	REZ/scr_01
+cp XPF_time_data REZ/XPF_01
+cp tay_simul.dat REZ/tay_01
