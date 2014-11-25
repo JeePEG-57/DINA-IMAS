@@ -15,8 +15,10 @@ LIB_SOURCE3 += dina_put_slice.o
 
 #SCHEMAS = /work/imas/projects/ual/2.0/fortraninterface/ids_schemas.f90
 
+DINADIR := ../../src/scenario
+
 all: $(TARGETS)
-	
+
 
 #--------------------- gfortran ------------------------
 test_dina: test_dina_imas.o dina_contr.o n_kav.o n_dina_imas3.o out42_for.o dina_imas.o 
@@ -37,7 +39,7 @@ out42_for.o: out42_for.f
 
 dina_imas.a: $(LIB_SOURCE1)
 	@echo "   * $^ -> $@"
-	@cp dina_99.a dina_imas.a
+	@cp $(DINADIR)/dina_99.a dina_imas.a
 	ar -rcs dina_imas.a n_dina_imas3.o dina_imas.o 
 
 dina_put_slice.a: $(LIB_SOURCE3)
@@ -46,10 +48,8 @@ dina_put_slice.a: $(LIB_SOURCE3)
 
 dina_contr.a: $(LIB_SOURCE2)
 	@echo "   * $^ -> $@"
-	@cp dina_kav.a dina_contr.a
+	@cp $(DINADIR)/dina_kav.a dina_contr.a
 	ar -rcs dina_contr.a dina_contr.o n_kav.o out42_for.o
- 
-
 
 clean:
 	rm *.o
