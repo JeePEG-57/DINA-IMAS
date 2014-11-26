@@ -36,8 +36,8 @@ dina_imas.a: $(LIB_SOURCE)
 #	@kepler.sh -runwf -nogui -nocache PCSSP_IMAS_S131.xml
 
 clean:
-	rm *.o
-	rm test_dina
-	rm dina_imas.a
+	rm -f *.o
+	rm -f test_dina
+	rm -f dina_imas.a
 #	rmactor dina_imas
 #	rmactor dinaimas
