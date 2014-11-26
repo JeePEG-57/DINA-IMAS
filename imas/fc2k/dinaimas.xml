@@ -3,7 +3,7 @@
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>/home/ITER/khayrur/ITERIS/DINA_IMAS/dina_imas_sources/source/dina_imas.a</fFile>
+  <fFile>../interface/dina_imas.a</fFile>
   <subrt>dina_imas</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
@@ -761,9 +761,9 @@
     </TupleP>
   </returnType>
   <semantic>ITER</semantic>
-  <keplerFolder>/home/ITER/khayrur/kepler</keplerFolder>
+  <keplerFolder>$HOME/kepler</keplerFolder>
   <ptFolder>empty</ptFolder>
-  <homeFolder>/home/ITER/khayrur</homeFolder>
+  <homeFolder>$HOME</homeFolder>
   <compiler>gfortran</compiler>
   <libraries/>
   <lang>fortran</lang>

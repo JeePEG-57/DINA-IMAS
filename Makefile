@@ -1,13 +1,17 @@
 # Top-level Makefile for DINA
 
 all:
-	cd src/scenario ; make
-	cd imas/interface ; make -f make_dina_lib
+	make -C src/scenario
+	make -C imas/interface -f make_dina_lib
+
+fc2k:
+	make -C imas/fc2k
+	make -C imas/fc2k fc2k
 
 clean:
-	cd src/scenario ; make clean
-	cd imas/interface ; make -f make_dina_lib clean
+	make -C src/scenario clean
+	make -C imas/interface -f make_dina_lib clean
 
 distclean:
-	cd src/scenario ; make distclean
-	cd imas/interface ; make -f make_dina_lib distclean
+	make -C src/scenario distclean
+	make -C imas/interface -f make_dina_lib distclean

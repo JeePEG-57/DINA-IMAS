@@ -3,7 +3,7 @@
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>/home/ITER/khayrur/public/source_new5/dina_contr.a</fFile>
+  <fFile>../interface/dina_contr.a</fFile>
   <subrt>dina_contr</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
@@ -626,9 +626,9 @@
     </TupleP>
   </returnType>
   <semantic>ITER</semantic>
-  <keplerFolder>/home/ITER/khayrur/kepler</keplerFolder>
+  <keplerFolder>$HOME/kepler</keplerFolder>
   <ptFolder>empty</ptFolder>
-  <homeFolder>/home/ITER/khayrur</homeFolder>
+  <homeFolder>$HOME</homeFolder>
   <compiler>gfortran</compiler>
   <libraries/>
   <lang>fortran</lang>

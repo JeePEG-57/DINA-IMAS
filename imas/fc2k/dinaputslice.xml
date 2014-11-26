@@ -3,7 +3,7 @@
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>/home/ITER/khayrur/public/source_kav3_coils/dina_put_slice.a</fFile>
+  <fFile>../interface/dina_put_slice.a</fFile>
   <subrt>dina_put_slice</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
@@ -680,9 +680,9 @@
     </TupleP>
   </returnType>
   <semantic>ITER</semantic>
-  <keplerFolder>/home/ITER/khayrur/kepler</keplerFolder>
+  <keplerFolder>$HOME/kepler</keplerFolder>
   <ptFolder>empty</ptFolder>
-  <homeFolder>/home/ITER/khayrur</homeFolder>
+  <homeFolder>$HOME</homeFolder>
   <compiler>gfortran</compiler>
   <libraries/>
   <lang>fortran</lang>
