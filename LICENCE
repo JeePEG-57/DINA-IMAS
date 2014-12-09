@@ -1,0 +1,300 @@
+			  LICENSE AGREEMENT
+		 BETWEEN THE PLASMA SIMULATION CENTER
+			AND ITER ORGANIZATION
+
+
+Plasma Simulation Center, having its seat at Lihachevskoe shosse 10
+building 2, Dolgoprudniy, Moscow region, Russia, (hereinafter referred
+to as "the Licensor"), which is a representative of Dr. Victor Lukash
+and Dr. Rustam Khayrutdinov (hereinafter referred to as "DINA-team")
+and is represented for the purpose of signing this Agreement by its
+duly authorised representative Mr. Sergey Konovalov, Director General;
+
+on the one part,
+
+The ITER International Fusion Energy Organization (hereinafter
+referred to as "the ITER Organization"), (hereinafter referred to as
+"the Licensee"), represented for the purposes of signing this
+Agreement by David Campbell, Director of Plasma Operation and Chair of
+the Intellectual Property Board, duly delegated by the Director
+General of the ITER Organization by delegation of authority;
+
+on the other part,
+
+Hereinafter referred to collectively as the "Parties" and individually
+as the "Party"
+
+			     HAVE AGREED
+
+
+		       ARTICLE 1 - DEFINITIONS
+
+"Computer" means an electronic device that accepts information in
+digital or similar form and manipulates it for specific results based
+on a sequence of instructions.
+
+"Software" means the DINA scenario code and any modification or
+updated versions thereof. The Software also means all the contents of
+the files (provided either by electronic download, on physical media
+or any other method of distribution), disk(s), CD-ROM(s) or other
+media being object of this Agreement.
+
+"Software Package" means the Software and support materials licensed
+by the Licensor and any developments thereof by the Licensor,
+including but not limited to manuals, flow charts and specifications
+relating to the Software.
+
+"Technical Support" means the services provided by the DINA-team for
+the configuration of the Software on the computers of the
+Licensee. Technical support may include enhancement or development
+services on the code under additional agreement.
+
+"Trade secret" means all confidential and sensitive information of the
+Licensor transmitted to the Licensee in any format and by any means in
+the course of this Agreement.
+
+"Source Code" means statements of sequence written in a computer
+programming language in human readable form which is used as an input
+to the process that produces a machine executable action or software
+product. In the context of this Agreement, Source Code refers to the
+source code of the Software. Source Code includes, without limitation:
+ a) source codes for the executable packages of a software product,
+    application or tool;
+ b) source codes for the modules forming part of the executable
+    package of a software product, application or tool;
+ c) definition files associated with the source code;
+ d) scripts used to compile the executable package; and
+ e) scripts used to install the executable package.
+
+"Derivative Work" means the incremental work constituting
+enhancements, improvements, and developments, together with interfaces
+and modifications to the Software itself or to the Source Code, in
+whole or in part, manuals, specifications, and related written
+material, as well as secondary works deriving directly from the
+modification of the Software.
+
+"Use" or "Used" in connection with the Software means storing any
+portion of the Source Code on a machine, and/or transmitting any
+portion of the Source Code to a machine for processing and/or
+compiling, executing or interpreting any instructions contained in the
+Source Code, and/or displaying any portion of the Source Code in
+connection with the processing of such instructions.
+
+"License" means the rights granted by the Licensor to the Licensee to
+Use the Software in accordance with the present Agreement.
+
+"Effective Date" means the date of signature of this Agreement by the
+last of the Parties.
+
+"ITER Member States" means the People's Republic of China, the
+European Atomic Energy Community, the Republic of India, Japan, the
+Republic of Korea, the Russian Federation and the United States of
+America.
+
+
+			  ARTICLE 2 - SCOPE
+
+1. The Licensor grants the Licensee a perpetual, irrevocable
+non-exclusive, non-transferable and royalty-free License to access the
+Source Code and to Use and modify the Software and the Software
+Package for non-commercial research purposes including without
+limitation, for the design, construction, operation, maintenance and
+repair of the ITER facilities.
+
+2. The Licensee shall have the right to grant sub-licenses to access
+the Source Code and to Use and modify the Software and the Software
+Package to third parties within the ITER Member States on the same
+terms as the terms of this License Agreement. Save as otherwise
+provided in this License Agreement, the Licensee may not rent, lease,
+sublicense, or trade the Software and the Software Package to any
+third party, or assign, transfer or grant any kind of rights regarding
+the Software and the Software Package or any portions thereof.
+
+3. Save as otherwise provided under this License Agreement, the
+Licensee may not disclose, make available, distribute, assign or
+transfer the Source Code, or any portions thereof, to any third party
+without prior express written authorisation of the Licensor.
+
+4.  The Licensee may modify and create Derivative Works based on the
+Source Code, Software and the Software Package, in whole or in part,
+and integrate the modified Source Code and Software within the
+platform of the Licensee for the research purposes.
+
+
+			ARTICLE 3 - OWNERSHIP
+
+1. The Source Code, the Software and the Software Package remain under
+the ownership of the Licensor, and the Licensor will continue to
+operate the Software independently. As such, the Licensee does not
+acquire any proprietary right, title or interest in the Source Code,
+the Software, the Software Package save as provided under this License
+Agreement.
+
+2. The Licensee must at all times acknowledge and duly reference the
+Software, mention that it has been developed by DINA-team.
+
+3. No right other than what is expressly granted herein may be deemed
+as granted by implication.
+
+4. Any Derivative Work developed by the Licensee shall be the
+exclusive property of the Licensee.
+
+
+			 ARTICLE 4 - DURATION
+
+1. This Agreement enters into force at the effective date, and shall
+stay valid for either the duration of copyright protection applicable
+to the subject matter hereof or the duration until the Licensee ceases
+its function or operations, whichever comes earlier.
+
+2. Any sub-licenses granted by the Licensee under this Agreement shall
+remain valid should the Licensee cease to exist as a legal entity.
+
+
+	 ARTICLE 5 - TECHNICAL SUPPORT AND FURTHER ASSURANCE
+
+1. The provision of any Technical Support by the Licensor will be
+agreed mutually on a case by case basis and in writing.
+
+2. The Parties shall execute such further documents and do such
+further things as may be necessary to implement and carry out the
+intent of this License Agreement or to establish, perfect, preserve or
+enforce rights granted under this License Agreement.
+
+
+	     ARTICLE 6 - INDEMNIFICATION AND LIABILITIES
+
+1. The Source Code, the Software and the Software Package are provided
+"as is" without warranty of any kind, either express or implied,
+including, but not limited to, any warranty against infringement of
+third parties' property rights, of merchantability and fitness for a
+particular purpose.
+
+2. The entire risk as to the Use, quality, and performance of the
+Source Code, the Software or the Software Package is with the
+Licensee. The Licensor will not be liable for any incidental,
+consequential, direct or indirect damages including but not limited to
+the loss of data, loss of profits, or any other financial loss arising
+from the Use, or inability to Use, of the Source Code or the Software.
+
+3. The Licensee shall defend at its own expense any claim, suit or
+proceeding brought by any third party, insofar as such claim, suit or
+proceedings arise from the Licensee?s Use of the Software or of any
+Derivative Works. The Licensor shall, at Licensee?s request, give
+the Licensee such assistance as it shall reasonably require in respect
+of the conduct of such defence.
+
+
+		     ARTICLE 7 - CONFIDENTIALITY
+
+1. Subject to the secrecy obligation are all materials, drawings,
+data, articles, items, or other technical information, which the
+Licensor has marked as "confidential" and has provided to the
+Licensee and have not already been made public by the Licensor. Verbal
+explanations regarding the Source Code also fall under this
+obligation.
+
+2. The Licensee shall keep all confidential material and information
+as confidential and may not disclose, make public, or pass on such
+material or information to third parties except as required by law
+and/ or regulatory bodies. The Licensee guarantees that all its
+employees, consultants and contractors are bound by a confidentiality
+agreement covering the above secrecy obligation.
+
+3. Upon termination of this Agreement, all confidential material
+provided to the Licensee shall be returned to the Licensor, and the
+Licensee agrees to continue to keep the information, know-how, and
+trade secrets contained therein confidential to the extent such
+information has not already been made public by the Licensor.
+
+4. The Licensor agrees to keep confidential all confidential
+information of the Licensee and to provide the necessary means to
+prevent unauthorised disclosure of such confidential information.
+
+
+	ARTICLE 8 - APPLICABLE LAW AND SETTLEMENT OF DISPUTES
+
+1. The ITER Organization is governed by an Agreement on Establishing
+of the ITER International Fusion Energy Organization for the Joint
+Implementation of the ITER Project and its annexes signed on 21
+November 2004 and the ITER Agreement on privileges and immunities
+signed on the same day. The applicable law for the License Agreements
+interpretation is French law.
+
+2. In the event of any disputes arising out of or in connection with
+the present Agreement, the Parties agree to submit the matter to
+settlement proceedings under the International Chamber of Commerce in
+Paris dispute settlement mediation ADR Rules. If the dispute has not
+been settled pursuant to the said Rules within 45 days following the
+filing of a Request for ADR or within such other period as the Parties
+may agree in writing, such dispute shall be finally settled under the
+Rules of Arbitration of the International Chamber of Commerce in Paris
+by one or more arbitrators appointed in accordance with the said Rules
+of Arbitration.
+
+3. The arbitration proceedings in English shall take place in Paris
+unless otherwise agreed by the Parties.
+
+
+		ARTICLE 9 - PRIVILEGES AND IMMUNITIES
+
+This Agreement shall not constitute a renunciation on the part of the
+Licensee to its privileges and immunities pursuant to the ITER
+Agreement on privileges and immunities of 21 November 2006.
+
+
+		ARTICLE 10 - ADMINISTRATIVE PROVISIONS
+
+Any communication and correspondence with reference to this Agreement
+shall be made in writing and addressed to the following addresses:
+
+For the Licensor:
+
+For administrative questions:
+
+Sergey Konovalov
+Director general
+Plasma Simulation Center
+For technical questions:
+
+Dr. Victor Lukash
+
+For the Licensee:
+
+Simon Pinches, Responsible Officer for ITER Integrated Modelling Programme
+ITER Organization,
+Route de Vinon-sur-Verdon
+CS 90 046
+13067 St Paul-lez-Durance Cedex
+France
+
+
+This License Agreement shall be executed in two originals in English. 
+
+
+SIGNATURES
+
+For Plasma Simulation Centre:
+
+[Mr. Sergey Konovalov, Director General ]
+
+
+
+signature[s]: _______________________
+
+
+For the ITER Organization:
+
+David Campbell, Director of Plasma Operation and Chair of the Intellectual Property Board
+
+
+
+signature:_____________________
+Done at [                            ]
+Date: Done at St. Paul Lez Durance
+Date:
+
+
+LGA-2014-L-22
+
+https://user.iter.org/?uid=QDJPTM
