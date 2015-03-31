@@ -78,6 +78,7 @@ c
         common /vic_imp/coef_imp,nz_imp
         dimension res(3),te_zrad(3)
 
+        real te_zrad,res
 
 c
 	dimension pbe(npo),pbi(npo),vol(npo),forme(npo),formi(npo)
@@ -586,6 +587,8 @@ c       if(noit.eq.0)
 
       CALL p_loss()
 
+ !     print *,' ntay next nz_imp=',ntay,next,nz_imp
+
 	do i=2,n
 c       if(te0(i).ge.20.)qu=7.3e5*dexp(-0.094*te0(i))/16.
 c       if(te0(i).lt.20.)qu=1.e2*dexp(0.35*te0(i))/16.
@@ -601,6 +604,7 @@ c       qe0(i)=qe0(i)-qpr(i)
 c*** q_imp calculation       
            te_zrad(1)=te0(i)*1.e-3
            call zrad(nz_imp,1,1,te_zrad,RES)
+!           call zrad1(nz_imp,1,1,te_zrad,RES)
 c*** [W/m3]*6.25/1e4 >>>>> [DINA units] 
 
            q_imp(i)=res(1)*pne(i)**2*coef_imp*1.e6*6.25e-4
@@ -1121,6 +1125,12 @@ c	     qpr(i)=1.-ai(i)**2
 	dimension t_t(ntime),pn_d_t(ntime)
 	character *12 apr
 
+
+!      n_t=6
+      
+      if(kpr.eq.1)print *,' ++ anom_e tt n_t===',anom_e,tt,n_t 
+
+
 	i_sh=i_sh+1
 
 	if(i_sh.eq.1)then
@@ -1151,13 +1161,29 @@ c-------
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
+
+      n_t=4
+
+      if(kpr.eq.1)print *,' ++ anom_e n_t===',n_t 
+
+      if(n_t.gt.10)stop
+
         do i=2,n_t
+
+      if(kpr.eq.1)print *,' ++ anom_e i n_t===',i,n_t 
+
            if((tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
 c==================
               t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
 
+      if(kpr.eq.1)print *,' ++ anom_e t_coef===',t_coef 
+
+
               anom_e=pn_d_t(i-1)+t_coef*
      *             (pn_d_t(i)-pn_d_t(i-1))
+
+      if(kpr.eq.1)print *,' ++ anom_e ===',anom_e
+
 c
 	 end if
 

@@ -602,6 +602,9 @@ c        real *8 a1_gen
       dimension fu(mu)
 
       character*70 apr
+	character *30 apr1
+
+	dimension a_print(200)
 
 c
 
@@ -675,7 +678,7 @@ c           tokc=tokc+tcam(i)
         if(kpr.eq.1)print *,' tokc,tok_c==',tokc,tok_c
 
 	do i=1,npf
-c!!!           pf(i)=t_gen(i+ncam)
+           pf(i)=t_gen(i+ncam)
 	end do
 
 	apr='tcam (GEN)'
@@ -684,12 +687,24 @@ c!!!           pf(i)=t_gen(i+ncam)
 	apr='pf (GEN)'
 	if(kpr.eq.1)print 71,apr,(t_gen(i+ncam),i=1,npf)
 
+      do i=1,npf
+	a_print(i)=pf(i)
+	end do
+	
+	n_pr=npf
+	apr1='pf'
+	num=20
+!	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr1)
+
+
 c        read (*,*)
 
 c===============================
 71	format(5x,a10/,(1X,6(1pe11.3)))
 	return
 	end
+
+
 
 	subroutine time_gen()
 	include 'double.inc'
@@ -1293,6 +1308,115 @@ c        stop
 	return
 	end
 
+
+	subroutine inv_gen_kav()
+c---------------------------------------
+        include 'double.inc'
+c	implicit real*8 (a-h,o-z)
+	include 'parf1'
+c
+	common
+     *  /ge2/NTAY,TAY,TT
+     *  /ge5/kpr
+	common
+     *  /ves2/ncam,rc(mu),zc(mu)
+     *  /ves3/b(mu,mu),pmj(mu,mu)
+     *  /ves4/rcam(mu)
+     *  /ves5/pfc(mu,kf)
+
+	common
+     *  /pf1/npf,pf(kf),pf0(kf)
+     *  /pf8/pfind(kf,kf),pfres(kf),a1(kf,kf),e1(kf),e2(kf)
+
+	common
+     *  /gen1/n_gen
+     *  /gen2/a1_gen(mu,mu)
+     *  /gen3/a_gen(mu,mu)
+     *  /gen6/d0(mu),d1(mu),d2(mu)
+
+        character *12 apr
+c
+	dimension a(mu,mu),d(mu,mu),ed(mu,mu),a_1(mu,mu)
+        
+        real *8 a,d,a_1
+
+c--------------------------------------
+	do i=1,ncam
+	do j=1,ncam
+	a(i,j)=pmj(i,j)
+	a_gen(i,j)=pmj(i,j)
+	end do
+	a(i,i)=a(i,i)+tay*rcam(i)*1.e5
+	end do
+
+c  here we add PF coils staff....
+
+	do i=1,ncam
+	do j=1,npf
+	a(i,ncam+j)=pfc(i,j)
+	a_gen(i,ncam+j)=pfc(i,j)
+	end do
+	end do
+c
+	do i=1,npf
+	do j=1,ncam
+	a(i+ncam,j)=pfc(j,i)
+	a_gen(i+ncam,j)=pfc(j,i)
+	end do
+	end do
+c
+	do i=1,npf
+	do j=1,npf
+	a(i+ncam,j+ncam)=pfind(i,j)
+	a_gen(i+ncam,j+ncam)=pfind(i,j)
+	end do
+!	a(i+ncam,i+ncam)=a(i+ncam,i+ncam)+tay*pfres(i)*1.e5
+	end do
+
+        n_gen=ncam+npf
+c
+c!!!	call obrm(a,a1_gen,d,mu,n_gen)
+	call obrm_8(a,a_1,d,mu,n_gen)
+
+	if(kpr.eq.1)print*,'o ++ kay GEN n_gen',n_gen
+
+ 	do i=1,n_gen
+	do j=1,n_gen
+	a1_gen(i,j)=a_1(i,j)
+	end do
+	end do
+c
+ 	do i=1,n_gen
+	do j=1,n_gen
+	ed(i,j)=0.
+	do k=1,n_gen
+	ed(i,j)=ed(i,j)+a(i,k)*a1_gen(k,j)
+	end do
+	end do
+	end do
+
+	apr='e{i} (GEN) [inv]'
+	if(kpr.eq.1)print 71,apr,(ed(i,i),i=1,n_gen)
+	apr='e{j} (GEN) [inv]'
+	do j=1,2
+	if(kpr.eq.1)print *,'j=',j
+	if(kpr.eq.1)print 71,apr,(ed(j,i),i=1,n_gen)
+	end do
+
+	do j=n_gen-1,n_gen
+	if(kpr.eq.1)print *,'j=',j
+	if(kpr.eq.1)print 71,apr,(ed(j,i),i=1,n_gen)
+	end do
+
+
+c        read (*,*)
+c        stop
+
+71	format(20x,a70/,(6(1x,1pe10.3)))
+	return
+	end
+
+
 c
 	subroutine v_test()
 
@@ -1305,3 +1429,99 @@ c
 
 	return
 	end
+
+	subroutine gen_corr_kav()
+c---------------------------------------
+        include 'double.inc'
+c	implicit real*8 (a-h,o-z)
+	include 'parf1'
+c
+	common
+     *  /ge2/NTAY,TAY,TT
+     *  /ge5/kpr
+	common
+     *  /ves2/ncam,rc(mu),zc(mu)
+     *  /ves3/b(mu,mu),pmj(mu,mu)
+     *  /ves4/rcam(mu)
+     *  /ves5/pfc(mu,kf)
+
+	common
+     *  /pf1/npf,pf(kf),pf0(kf)
+     *  /pf8/pfind(kf,kf),pfres(kf),a1(kf,kf),e1(kf),e2(kf)
+
+	common
+     *  /gen1/n_gen
+     *  /gen2/a1_gen(mu,mu)
+     *  /gen3/a_gen(mu,mu)
+     *  /gen6/d0(mu),d1(mu),d2(mu)
+      common
+     *  /cont1/vchopper(kf),veps
+
+      character*70 apr
+	character *30 apr1
+	dimension a_print(200)
+c
+	dimension pf_help(kf)
+
+c--------------------------------------
+c
+	do i=1,npf
+	pf_help(i)=( 0.*vchopper(i)*tay*100.d0+pfind(i,i)*pf0(i) )/
+     *  (pfind(i,i)+tay*pfres(i)*1.e5)
+       pf_help(i)=pf0(i)
+	end do
+
+      do i=1,npf
+	a_print(i)=pf(i)
+	end do
+	
+	n_pr=npf
+	apr1='pf'
+	num=20
+	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr1)
+
+      do i=1,npf
+	a_print(i)=pf_help(i)
+	end do
+	
+	n_pr=npf
+	apr1='pf_help'
+	num=20
+	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr1)
+
+      do i=1,npf
+	a_print(i)=vchopper(i)
+	end do
+	
+	n_pr=npf
+	apr1='V ch'
+	num=20
+	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr1)
+
+	do i=1,npf
+	vchopper(i)=vchopper(i)-pf_help(i)*pfres(i)*1.e3
+	end do
+
+      do i=1,npf
+	a_print(i)=pfres(i)*1.e3
+	end do
+	
+	n_pr=npf
+	apr1='V pfres'
+	num=20
+	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr1)
+
+      do i=1,npf
+	a_print(i)=vchopper(i)
+	end do
+	
+	n_pr=npf
+	apr1='V ch'
+	num=20
+	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr1)
+
+
+71	format(20x,a70/,(6(1x,1pe10.3)))
+	return
+	end
+

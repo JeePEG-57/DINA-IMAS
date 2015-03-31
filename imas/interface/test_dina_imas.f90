@@ -15,7 +15,7 @@ interface
  
      use ids_schemas
 ! note that IDS0 are all prescribed, the others are dynamic
-      type (ids_dina) :: dina0_in, dina_in
+!      type (ids_dina) :: dina0_in, dina_in
       type (ids_em_coupling) :: em_coupling0_in
       type (ids_equilibrium) :: equilibrium0_in, equilibrium_in
       type (ids_magnetics) :: magnetics_in
@@ -23,7 +23,7 @@ interface
       type (ids_pf_passive) :: pf_passive0_in, pf_passive_in
       type (ids_core_profiles)   :: core_profiles_in
 
-    real (DP) :: arr_in1(31), arr_out1(31)
+    real (DP) :: arr_in1(501), arr_out1(501)
 
     end subroutine
 end interface
@@ -32,19 +32,13 @@ interface
 ! Declaration of the dina_imas subroutine
     subroutine dina_contr (arr_in1,arr_out1)
      use ids_schemas
-type (ids_dina) :: dina0, dina
-type (ids_em_coupling) :: em_coupling0
-type (ids_equilibrium) :: equilibrium0, equilibrium
-type (ids_magnetics) :: magnetics
-type (ids_pf_active) :: pf_active0, pf_active
-type (ids_pf_passive) :: pf_passive0, pf_passive
-    real (DP) :: arr_in1(31), arr_out1(31)
+    real (DP) :: arr_in1(501), arr_out1(501)
     end subroutine
     
 end interface
 
 
-type (ids_dina) :: dina0, dina
+!type (ids_dina) :: dina0, dina
 type (ids_em_coupling) :: em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
@@ -52,7 +46,7 @@ type (ids_pf_active) :: pf_active0, pf_active
 type (ids_pf_passive) :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles
 
-real (DP) :: arr_in1(51), arr_out1(51)
+real (DP) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
 ! integer :: pulse=109, run=1, prescribedpulse=150, prescribedrun=1
@@ -69,12 +63,17 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 
 print *,' Enter pulse number'
-read (*,*)prescribedpulse
+!read (*,*)prescribedpulse
+prescribedpulse=160
 
+print *,' pulse number',prescribedpulse
 pulse=prescribedpulse
 
 print *,' Enter run number'
-read (*,*)prescribedrun
+!read (*,*)prescribedrun
+prescribedrun=1
+print *,' run number',prescribedrun
+
 
 
 write(*,*) 'Reading the prescribed IDS'
@@ -105,7 +104,8 @@ arr_out1(1:31)=0
 call imas_close(idx)
 
 !!!!!!!do iloop=1,20
-do iloop=1,500
+!do iloop=1,5000
+do iloop=1,999000
 
 write(*,*) 'call DINA_IMAS i =',iloop
 
@@ -178,6 +178,8 @@ call ids_deallocate(em_coupling0)
 call ids_deallocate(equilibrium0)
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
+
+stop
 
 write(*,*) 'Read back full dynamic IDS as a test'
 

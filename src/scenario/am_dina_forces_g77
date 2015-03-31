@@ -1,0 +1,29 @@
+XLIB= /usr/X11R6/lib
+
+#f2c= g77 -ff2c -fno-automatic
+f2c= g77 -w -ffixed-line-length-none -fno-automatic -fPIC -fno-omit-frame-pointer
+
+
+S=./
+V=$(S)
+
+libsub.so:	add_dll.o con_vs3vs1_hl_1.o field_dina.o
+
+	        g77 -o libsub.so  add_dll.o con_vs3vs1_hl_1.o\
+		field_dina.o -shared -fPIC
+
+add_dll.o:	$(S)add_dll.f
+		$(f2c) -c   -w   $(S)add_dll.f
+
+con_vs3vs1_hl_1.o:	$(S)con_vs3vs1_hl_1.f
+		$(f2c) -c  -w $(S)con_vs3vs1_hl_1.f
+
+field_dina.o:	$(S)field_dina.f
+		$(f2c) -c  -w $(S)field_dina.f
+
+
+
+
+
+
+

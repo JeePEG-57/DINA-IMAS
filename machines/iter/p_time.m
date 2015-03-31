@@ -28,7 +28,7 @@ fclose(fid);
 
 ng;
 
-!cp for042 for042.dat
+!copy for042 for042.dat
 
 fid=fopen('for042.dat','r');
 %fid=fopen('for042','r');
@@ -63,9 +63,6 @@ save f42 m
 time1=m(1:j-1,ntime);
 jj=size(time1)
 
-
-
-
 i1=1;
 i2=jj(1);
 
@@ -85,7 +82,7 @@ ntime
 time=m(i1:i2,ntime);
 yy=m(i1:i2,ntime-1);
 
-kmax=6
+kmax=14
 
 %keyboard;
 

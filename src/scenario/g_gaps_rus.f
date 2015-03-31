@@ -1001,7 +1001,7 @@ c        read (*,*)
 	gaps(n_ga+1)=d_min2
 
            apr='GAPS 22222'
-           print 71,apr,(gaps(i),i=1,n_ga+1)
+           if(kpr.eq.1)print 71,apr,(gaps(i),i=1,n_ga+1)
            
       return
       end if

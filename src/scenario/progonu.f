@@ -1,3 +1,51 @@
+	subroutine progb(y,a,b,c,f,alfa,beta,n,
+     *  i_b,x1,x2,x3)
+
+	implicit real * 8 (a-h,o-z)
+	dimension y(n),a(n),b(n),c(n),f(n),alfa(n),beta(n)
+
+
+c------------------------
+
+c	print *,' i_b=',i_b
+
+        if(i_b.eq.3)then
+	   x1=1.
+	   x2=-alfa(n-1)
+	   x3=beta(n-1)
+        end if
+
+	do i=2,n-1
+
+	d1=1./(b(i)+a(i)*alfa(i-1))
+
+	alfa(i)=-c(i)*d1
+
+	beta(i)=(f(i)-a(i)*beta(i-1))*d1
+
+	end do
+c
+
+        if(i_b.eq.3)then
+
+        det=(x1*alfa(n-1)+x2)
+
+        if(dabs(det).le.1.d-14)then
+           print *,' det le 1.e-14',det
+           stop
+        end if
+
+        y(n)=(x3-x1*beta(n-1))/det
+        
+        end if
+
+	do i=n-1,1,-1
+	y(i)=alfa(i)*y(i+1)+beta(i)
+	end do
+
+	return
+	end
+
       SUBROUTINE PROGP(N,A,B,C,TT1,ALF,U,B0,T,
      *Z,W,F,ZN,UN,EPS0,LL)
 c-------------------------------------------------

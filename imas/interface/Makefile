@@ -1,4 +1,4 @@
-F90_gfortran=gfortran44
+F90_gfortran=gfortran
 COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none -I$(UAL)/fortraninterface/amd64_gfortran -g  
 LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
 
@@ -36,8 +36,8 @@ dina_imas.a: $(LIB_SOURCE)
 #	@kepler.sh -runwf -nogui -nocache PCSSP_IMAS_S131.xml
 
 clean:
-	rm -f *.o
-	rm -f test_dina
-	rm -f dina_imas.a
+	rm *.o
+	rm test_dina
+	rm dina_imas.a
 #	rmactor dina_imas
 #	rmactor dinaimas

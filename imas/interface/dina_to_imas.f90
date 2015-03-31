@@ -65,7 +65,7 @@ real (DP),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
 
 ! DINA parameters
-    integer,parameter :: nr = 65, nz = 65, ngrid=nr*nz
+    integer,parameter :: nr = 65, nz = 129, ngrid=nr*nz
     
     real(DP) :: tpl=1000.0,uli=1000.0,v=1000.0,s_plasma=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
     ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0
@@ -131,6 +131,9 @@ flush(6)
         mu=npass
         nloop=nflux
         nprobe=nbpol
+        
+        write(*,*) 'nr nz nwnh = ', nr,nz,nwnh
+
         
 	    call flat_ext_read_c( &
      &  nwnh,nr,nz,npf,ncam, &

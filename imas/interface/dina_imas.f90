@@ -8,7 +8,7 @@ use ids_routines
 implicit none
 
 ! trees are static or dynamic; if not defined, they are static
-type (ids_dina) :: dina0, dina
+!type (ids_dina) :: dina0, dina
 type (ids_em_coupling)  :: em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
@@ -42,7 +42,7 @@ real (DP),save :: time_8,tt_8,tay_8
 
 integer ::  npo
 
-parameter ( npo=100)
+parameter ( npo=500)
 
 real (DP),save :: vec(npo) = (/ (0,i=1,npo) /)
 
@@ -58,7 +58,7 @@ real (DP),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
 
 ! DINA parameters
-    integer,parameter :: nr = 65, nz = 65, ngrid=nr*nz
+    integer,parameter :: nr = 65, nz = 129, ngrid=nr*nz
     
     real(DP) :: tpl=1000.0,uli=1000.0,v=1000.0,s_plasma=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
     ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0
@@ -72,7 +72,7 @@ real (DP),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
   integer :: TimeSteps, CurTimeStep
   
-  integer :: n1, n2, n 
+  integer :: n1, n2, n ,i_wr
 
 real (DP),save ::  gridrange(4)
 real(DP), dimension(:,:), ALLOCATABLE,save :: fluxarr,vesarr,pslgreen,bprgreen,pfind,pmj
@@ -89,6 +89,8 @@ call system("rm psi_data_imas")
 call system("rm psi_data_imas2")
 call system("rm p_data1")
 call system("rm for042")
+call system("rm plasma.dat")
+call system("rm plasma_start.dat")
 
 call system(" ls -ll for042 ")
 call system(" ls -ll psi_data ")
@@ -251,7 +253,8 @@ loop_count = loop_count + 1 ! number of times the iterative routine was entered
 write(*,*) 'dina_imas loop, first_call = ', first_call, loop_count
 
       n_input1=2
-      n_input2=15
+!      n_input2=15
+      n_input2=38
 
 do i=1,n_input1
 input_1(i)=arr_in1(i)
@@ -278,6 +281,7 @@ end do
      & x,y,psi,psi_bnd)
 
     dina_time=tt
+ 
     write(*,*) 'dina_outp call n tpl tt= ', n,tpl,tt
 
 
@@ -291,8 +295,9 @@ end do
 
       npf=15
       n_gaps=6
+      ncam=100
 
-      n_output2=npf+n_gaps+npf
+      n_output2=npf+n_gaps+ncam
 
       do i=1,n_output2
 	  arr_out1(n_output1+i)=output_2(i)
@@ -449,12 +454,17 @@ pf_passive%time(1) = dina_time
     enddo
     enddo
 
+    i_wr=0
+    if(i_wr.eq.1)then
+
+
     call write_graf_imas(nr,nz,ke, &
      &	0.01d0,0.01d0,tt,&
      &  psi1,x,y,xu,yu,&
      &  psi_ax,psi_bnd,psi_bnd,0.d0,0.d0) 
 
-
+    end if
+    
 
     equilibrium%coordinate_system%r(1:ke,1,CurTimeStep) = xu(1:ke)
     equilibrium%coordinate_system%z(1:ke,1,CurTimeStep) = yu(1:ke)

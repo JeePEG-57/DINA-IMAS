@@ -18,7 +18,7 @@ all: $(TARGETS)
 
 #--------------------- gfortran ------------------------
 
-test_dina: test_dina_imas.o dina_contr.o n_kav.o n_dina_imas3.o dina_imas.o dina_put_slice.o dina_99.a libsub.so 		
+test_dina: test_dina_imas.o dina_contr.o n_kav.o n_dina_imas3.o dina_imas.o dina_put_slice.o dina_99.a dina_kav.a		
 
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)

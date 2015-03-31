@@ -336,8 +336,8 @@ c     *  form='unformatted')
 
         call write_prof0_c(n,
      *  ai,eu,tt,
-!     *  tok1,aj0,sigma_dina,p,q,pne,tq0,te0)
-     *  tok1,aj0,sigma_dina,p,q,pne,ajb,te0)
+     *  tok1,pd0,ajb,p,q,pne,tq0,te0)
+!     *  tok1,aj0,sigma_dina,p,q,pne,ajb,te0)
 
 
         return

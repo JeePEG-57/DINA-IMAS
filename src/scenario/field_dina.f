@@ -4,7 +4,7 @@
 !------------------------------------outputs
      *  c_output1,c_output2)
 
-!cDEC$ ATTRIBUTES DLLEXPORT::  kav_contr
+cDEC$ ATTRIBUTES DLLEXPORT::  kav_contr
 
       include 'double.inc'
 	include 'new_com2.inc'                                                  
@@ -163,12 +163,12 @@ ccc	if(ntay.gt.next.and.tt.gt.tt_h_to_l)key_h_to_l=1
 	if(kpr.eq.1)print*,'!!!tt tt_h_to_l key_h_to_l',tt,tt_h_to_l,key_h_to_l
 
         apr='-vchopper' 
-        if(kpr.eq.-1)print 71,apr,(vchopper(k),k=1,npf) 
+        if(kpr.eq.1)print 71,apr,(vchopper(k),k=1,npf) 
 
         if(ntay.gt.next)call SCEN_CONTROL(key_h_to_l)
 
         apr='+vchopper' 
-        if(kpr.eq.-1)print 71,apr,(vchopper(k),k=1,npf) 
+        if(kpr.eq.1)print 71,apr,(vchopper(k),k=1,npf) 
 
         call time_step_dll()
 

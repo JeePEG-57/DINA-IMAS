@@ -55,7 +55,7 @@ integer,save :: i1=11, i2=8, ke=57
 INTEGER :: clock_start,clock_end,clock_rate
 
 
-print *,' Enter pulse number'
+print *,' Enter shot number'
 read (*,*)prescribedpulse
 
 print *,' Enter run number'

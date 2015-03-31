@@ -174,7 +174,7 @@ c        if(tt.ge.t_li)then
      *  del_r,ntay,tay,tt)
 
 	include 'double.inc'
-c	if(kpr.eq.1)print *,' tt tay del_r----',tt,tay,del_r
+c	print *,' tt tay del_r----',tt,tay,del_r
 
 	if(time.lt.tt-0.5*tay)then
 c  saving for the next time_step...
@@ -204,8 +204,8 @@ c    ;  /* 1/taup = 1/1. = 1. */
 
 	f9af =(qqp * (f9a + e1) - (qqp - 1.0) * v1) / (qqp + 1.0)
 
-c	if(kpr.eq.1)print *,' qqp e1 v1 ----',qqp,e1,v1
-c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
+c	print *,' qqp e1 v1 ----',qqp,e1,v1
+c	print *,'   f9a f9af----',f9a,f9af
 
 	del_r=f9af
 
@@ -231,7 +231,7 @@ c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
 	character *12 apr
 
 
-	if(kpr.eq.1)print *,' tpl tpl_exp from tem_feed',tpl,tpl_exp
+	print *,' tpl tpl_exp from tem_feed',tpl,tpl_exp
 
 	al1=tpl_exp/tpl
 
@@ -240,7 +240,7 @@ c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
 	te_b=te_b*al1
 	te_a0=te_a
 
-	if(kpr.eq.1)print *,' te_a te_b al1 =',te_a,te_b,al1
+	print *,' te_a te_b al1 =',te_a,te_b,al1
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 
@@ -285,7 +285,7 @@ c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
 	end do
 
 	apr='-pd0-'
-	if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n)
+	print 71,apr,(pd0(i),i=1,n)
 
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
@@ -330,7 +330,7 @@ c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
 	end do
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
@@ -384,11 +384,11 @@ c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
 	end do
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-pd0-'
-	if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n)
+	print 71,apr,(pd0(i),i=1,n)
 	apr='-pne-'
-	if(kpr.eq.1)print 71,apr,(pne(i),i=1,n)
+	print 71,apr,(pne(i),i=1,n)
 
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
@@ -438,16 +438,16 @@ c--------------------------------------------------------
 c-------------------------------------------
 c!!!	kaxis=0
 	if(ntay.eq.ndisrup)then
-	if(kpr.eq.1)print *,' ntay delta -- disruption--',ntay,delta
+	print *,' ntay delta -- disruption--',ntay,delta
 	tay=tay_th
-	if(kpr.eq.1)print *,' **  tay=TAY_th ',tay
-        if(kpr.eq.1)print*,'ntay=',ntay
+	print *,' **  tay=TAY_th ',tay
+        print*,'ntay=',ntay
 	call cam_t()
 	call inv()
 	end if
 c---------------------
 
-	if(kpr.eq.1)print *,' tt time_disr t_disr-',tt,time_disr,t_disr
+	print *,' tt time_disr t_disr-',tt,time_disr,t_disr
 
 	if(tt.gt.time_disr+t_disr)i_dis=i_dis+1
 
@@ -458,7 +458,7 @@ c---------------------
 	fmax_in=dfmax(n)
 	eu_in=eu
 	el_in=elong
-	if(kpr.eq.1)print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
+	print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
 	end if
 
 c--------------------------------------
@@ -474,13 +474,13 @@ c     *  fmax_in)**(1.+tpl/tpl_in) )
 
 ccc!!!	del_r1=c_h*(sqrt(el_in)*eu_in-sqrt(elong)*eu_m)
 
- 	if(kpr.eq.1)print *,' eu_in eu_u eu_m',eu_in,eu_u,eu_m
- 	if(kpr.eq.1)print *,' el_in elong del_r1',el_in,elong,del_r1
+ 	print *,' eu_in eu_u eu_m',eu_in,eu_u,eu_m
+ 	print *,' el_in elong del_r1',el_in,elong,del_r1
 
 	if(del_r1.lt.0.)del_r1=0.
 
         pshalo=del_r*dr_h
-        if(kpr.eq.1)print *,' PSHALO PSHALO0',pshalo,pshalo0
+        print *,' PSHALO PSHALO0',pshalo,pshalo0
 
 ccc!!!        if(pshalo.ge.pshalo0)del_r1=0.
 
@@ -488,11 +488,11 @@ ccc!!!        if(pshalo.ge.pshalo0)del_r1=0.
 
 	if(del_r.gt.d_halo)del_r=d_halo
 
- 	if(kpr.eq.1)print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
- 	if(kpr.eq.1)print *,'d_halo tpl_in',d_halo,tpl_in
- 	if(kpr.eq.1)print *,'ntay del_r1 del_r',ntay,del_r1,del_r
+ 	print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
+ 	print *,'d_halo tpl_in',d_halo,tpl_in
+ 	print *,'ntay del_r1 del_r',ntay,del_r1,del_r
 	if(del_r.lt.0.)del_r=0.
- 	if(kpr.eq.1)print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
+ 	print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
 
 
 c--------------------------
@@ -507,7 +507,7 @@ c----------------------------
 	end if
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
@@ -559,16 +559,16 @@ c-------------------------------------------
 	if(ntay.eq.ndisrup)then
 	te_b=te_h
 	delta=(te_a-te_b)/t_disr
-	if(kpr.eq.1)print *,' ntay delta -- disruption--',ntay,delta
+	print *,' ntay delta -- disruption--',ntay,delta
 
 	tay=tay_th
-	if(kpr.eq.1)print *,' **  tay=TAY_th ',tay
-        if(kpr.eq.1)print*,'ntay=',ntay
+	print *,' **  tay=TAY_th ',tay
+        print*,'ntay=',ntay
 	call cam_t()
 	call inv()
 	end if
 c---------------------
-	if(kpr.eq.1)print *,' k_feed== -- disruption--',k_feed
+	print *,' k_feed== -- disruption--',k_feed
 
 c!!!	if(k_feed.gt.0)call tem_feed()
 
@@ -587,11 +587,11 @@ c-------------
 	fmax_in=dfmax(n)
 	eu_in=eu
 	el_in=elong
-	if(kpr.eq.1)print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
+	print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
 	end if
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 
 	al1=te_b/te0(n)
 
@@ -602,22 +602,22 @@ c-------------
 
 	al1=(te_a-te_b)/(te0(1)-te_b)
 
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' te_a te_b --',te_a,te_b
 
 	do i=1,n
            te0(i)=(te0(i)-te_b)*al1+te_b
            tq0(i)=te0(i)
 	end do
 
-	if(kpr.eq.1)print *,' al1  delta k_d--',
+	print *,' al1  delta k_d--',
      *  al1,delta,k_d
 
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' te_a te_b --',te_a,te_b
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-c!!!	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+c!!!	print 71,apr,(tq0(i),i=1,n)
 c--------------------------------------
 	if(k_d.gt.0)then
 	fmax_avr=dfmax(n)
@@ -633,13 +633,13 @@ c!!!        del_r1=c_h*tay
 
 	del_r1=c_h*tay*(sqrt(el_in)*eu_in-sqrt(elong)*eu_m)
 
- 	if(kpr.eq.1)print *,' eu_in eu_u eu_m',eu_in,eu_u,eu_m
- 	if(kpr.eq.1)print *,' el_in elong del_r1',el_in,elong,del_r1
+ 	print *,' eu_in eu_u eu_m',eu_in,eu_u,eu_m
+ 	print *,' el_in elong del_r1',el_in,elong,del_r1
 
 	if(del_r1.lt.0.)del_r1=0.
 
         pshalo=del_r*dr_h
-        if(kpr.eq.1)print *,' PSHALO PSHALO0',pshalo,pshalo0
+        print *,' PSHALO PSHALO0',pshalo,pshalo0
 
 ccc!!!        if(pshalo.ge.pshalo0)del_r1=0.
 
@@ -649,11 +649,11 @@ ccc!!!        if(pshalo.ge.pshalo0)del_r1=0.
 
 	if(del_r.gt.d_halo)del_r=d_halo
 
- 	if(kpr.eq.1)print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
- 	if(kpr.eq.1)print *,'d_halo tpl_in',d_halo,tpl_in
- 	if(kpr.eq.1)print *,'ntay del_r1 del_r',ntay,del_r1,del_r
+ 	print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
+ 	print *,'d_halo tpl_in',d_halo,tpl_in
+ 	print *,'ntay del_r1 del_r',ntay,del_r1,del_r
 	if(del_r.lt.0.)del_r=0.
- 	if(kpr.eq.1)print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
+ 	print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
 
 
 c--------------------------
@@ -716,7 +716,7 @@ c-------------------------------------------
 	if(ntay.eq.ndisrup)then
 	te_b=te_h
 	delta=(te_a-te_b)/t_disr
-	if(kpr.eq.1)print *,' ntay delta -- disruption--',ntay,delta
+	print *,' ntay delta -- disruption--',ntay,delta
 	end if
 c---------------------
 	if(ntay.gt.0)then
@@ -730,7 +730,7 @@ c	te_a=1.1*te_b
 	k_d=1
 	tpl_in=tpl
 	fmax_in=dfmax(n)
-	if(kpr.eq.1)print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
+	print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
 	end if
 
 	al1_a=te_a/te0(1)
@@ -742,11 +742,11 @@ c	te_a=1.1*te_b
 
 
 	apr='-tq0-'
-c	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+c	print 71,apr,(tq0(i),i=1,n)
 
-	if(kpr.eq.1)print *,' al1_a al1_b  delta k_d--',
+	print *,' al1_a al1_b  delta k_d--',
      *  al1_a,al1_b,delta,k_d
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' te_a te_b --',te_a,te_b
 
 	do i=1,n
            te0(i)=te0(i)*al1(i)
@@ -754,9 +754,9 @@ c	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
 	end do
       end if
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 c--------------------------------------
 	if(k_d.gt.0)then
 	fmax_avr=dfmax(n)
@@ -769,16 +769,16 @@ cccccc        del_r1=c_h
 	if(del_r1.lt.0.)del_r1=0.
 
         pshalo=del_r*dr_h
-        if(kpr.eq.1)print *,' PSHALO PSHALO0',pshalo,pshalo0
+        print *,' PSHALO PSHALO0',pshalo,pshalo0
         if(pshalo.ge.pshalo0)del_r1=0.
 
 	del_r=del_r+del_r1
 
- 	if(kpr.eq.1)print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
- 	if(kpr.eq.1)print *,'d_halo tpl_in',d_halo,tpl_in
- 	if(kpr.eq.1)print *,'ntay del_r1 del_r',ntay,del_r1,del_r
+ 	print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
+ 	print *,'d_halo tpl_in',d_halo,tpl_in
+ 	print *,'ntay del_r1 del_r',ntay,del_r1,del_r
 	if(del_r.lt.0.)del_r=0.
- 	if(kpr.eq.1)print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
+ 	print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
 
 
 c--------------------------
@@ -793,14 +793,14 @@ c----------------------------
 	end if
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 
 	if(n_li.eq.1)then
            tpl_p=tpl_p+d_tpl*tay
            next=9999
            if(tpl_p.le.tpl_end)then
               tpl=tpl_p
-              if(kpr.eq.1)print *,' tpl_p d_tpl tay==',tpl_p,d_tpl,tay
+              print *,' tpl_p d_tpl tay==',tpl_p,d_tpl,tay
            end if
 	end if
 
@@ -815,8 +815,8 @@ c----------------------------
         n_li=0
         next=next0
 	tay=tay_th
-	if(kpr.eq.1)print *,' **  tay=TAY_th ',tay
-        if(kpr.eq.1)print*,'ntay=',ntay
+	print *,' **  tay=TAY_th ',tay
+        print*,'ntay=',ntay
 	call cam_t()
 
 	end if
@@ -855,7 +855,7 @@ c--------------------------------------------------------
            tay=tay_00
            call cam_t()
            call inv()
-           if(kpr.eq.1)print *,' TAY=========',tay
+           print *,' TAY=========',tay
 
         return
 
@@ -869,17 +869,17 @@ c        if(ntay.eq.15)then
         end if
 
 	if(ntay.gt.0)then
-	if(kpr.eq.1)print *,' betpj beta--',betpj,beta
+	print *,' betpj beta--',betpj,beta
 	te_a=te_a*beta/betpj
 	end if
 
 	al1=(te_a-te_b)/(te0(1)-te_b)
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' te_a te_b --',te_a,te_b
 
 	do i=1,n
            te0(i)=(te0(i)-te_b)*al1+te_b
@@ -887,9 +887,9 @@ c        if(ntay.eq.15)then
 	end do
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 	return
@@ -936,17 +936,17 @@ c        if(ntay.eq.15)then
         end if
 
 	if(ntay.gt.0)then
-	if(kpr.eq.1)print *,' betpj beta--',betpj,beta
+	print *,' betpj beta--',betpj,beta
 	te_a=te_a*beta/betpj
 	end if
 
 	al1=(te_a-te_b)/(te0(1)-te_b)
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' te_a te_b --',te_a,te_b
 
 	do i=1,n
            te0(i)=(te0(i)-te_b)*al1+te_b
@@ -954,9 +954,9 @@ c        if(ntay.eq.15)then
 	end do
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 	return
@@ -1025,17 +1025,17 @@ c--------------------------------------------------------
         if(k_ener.eq.1)return
 
 	if(ntay.gt.0)then
-	if(kpr.eq.1)print *,' betpj beta--',betpj,beta
+	print *,' betpj beta--',betpj,beta
 	te_a=te_a*beta/betpj
 	end if
 
 	al1=(te_a-te_b)/(te0(1)-te_b)
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' te_a te_b --',te_a,te_b
 
 	do i=1,n
            te0(i)=(te0(i)-te_b)*al1+te_b
@@ -1043,9 +1043,9 @@ c--------------------------------------------------------
 	end do
 
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 	return
@@ -1096,12 +1096,12 @@ c-------------------------------------------
 	kaxis=0
 	if(ntay.eq.ndisrup)then
 	tay=tay_th
-	if(kpr.eq.1)print *,' **  tay=TAY_th ',tay
-        if(kpr.eq.1)print*,'ntay=',ntay
+	print *,' **  tay=TAY_th ',tay
+        print*,'ntay=',ntay
 	call cam_t()
 	te_b=te_h
 	delta=(te_a-te_b)/t_disr
-	if(kpr.eq.1)print *,' ntay delta -- VDE--',ntay,delta
+	print *,' ntay delta -- VDE--',ntay,delta
 	end if
 c---------------------
 	if(ntay.gt.0)then
@@ -1113,17 +1113,17 @@ c---------------------
 	k_d=1
 	tpl_in=tpl
 	fmax_in=dfmax(n)
-	if(kpr.eq.1)print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
+	print *,' ==== k_d kaxis te_a te_b',k_d,kaxis,te_a,te_b
 	end if
 
 	al1=(te_a-te_b)/(te0(1)-te_b)
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 
-	if(kpr.eq.1)print *,' al1 delta k_d--',al1,delta,k_d
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' al1 delta k_d--',al1,delta,k_d
+	print *,' te_a te_b --',te_a,te_b
 
 	do i=1,n
            te0(i)=(te0(i)-te_b)*al1+te_b
@@ -1131,9 +1131,9 @@ c---------------------
 	end do
       end if
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 	apr='-tq0-'
-	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
+	print 71,apr,(tq0(i),i=1,n)
 c--------------------------------------
 	if(k_d.gt.0)then
 	fmax_avr=dfmax(n)
@@ -1141,11 +1141,11 @@ c--------------------------------------
      *  fmax_in)**(1.+tpl/tpl_in) )
 	if(del_r1.lt.0.)del_r1=0.
 	del_r=del_r+del_r1
- 	if(kpr.eq.1)print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
- 	if(kpr.eq.1)print *,'d_halo tpl_in',d_halo,tpl_in
- 	if(kpr.eq.1)print *,'ntay del_r1 del_r',ntay,del_r1,del_r
+ 	print *,'fmax_avr fmax_in',fmax_avr*1.e-5,fmax_in*1.e-5
+ 	print *,'d_halo tpl_in',d_halo,tpl_in
+ 	print *,'ntay del_r1 del_r',ntay,del_r1,del_r
 	if(del_r.lt.0.)del_r=0.
- 	if(kpr.eq.1)print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
+ 	print *,' tt tay  q_95 c_h',tt,tay,q_95,c_h
 	end if
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
@@ -1191,7 +1191,7 @@ c
 	next=next0
 	if(ntay.eq.ndisrup)then
 	delta=(te_a-te_b)/t_disr
-	if(kpr.eq.1)print *,' ntay delta -- disruption--',ntay,delta
+	print *,' ntay delta -- disruption--',ntay,delta
 	end if
 c---------------------
 	if(ntay.gt.0)then
@@ -1203,7 +1203,7 @@ c---------------------
 	k_d=1
 	tpl_in=tpl
 	fmax_in=dfmax(n)
-	if(kpr.eq.1)print *,' ==== kaxis te_a te_b',kaxis,te_a,te_b
+	print *,' ==== kaxis te_a te_b',kaxis,te_a,te_b
 	end if
 c
 	if(kaxis.eq.1.and.kmaj.eq.1)then
@@ -1215,7 +1215,7 @@ c
            next=9999
            if(tpl_p.le.tpl_end)then
               tpl=tpl_p
-              if(kpr.eq.1)print *,' tpl_p d_tpl tay==',tpl_p,d_tpl,tay
+              print *,' tpl_p d_tpl tay==',tpl_p,d_tpl,tay
            end if
 	end if
 
@@ -1226,10 +1226,10 @@ c
 
 	al1=(te_a-te_b)/(te0(1)-te_b)
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 
-	if(kpr.eq.1)print *,' al1 delta --',al1,delta
-	if(kpr.eq.1)print *,' te_a te_b --',te_a,te_b
+	print *,' al1 delta --',al1,delta
+	print *,' te_a te_b --',te_a,te_b
 
 	do i=1,n
            te0(i)=(te0(i)-te_b)*al1+te_b
@@ -1237,14 +1237,14 @@ c
 	end do
       end if
 	apr='-te0-'
-	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
+	print 71,apr,(te0(i),i=1,n)
 
 	read (*,*)
 c
 	if(ntay.eq.ndisrup)then
 	tay=tay_th
-	if(kpr.eq.1)print *,' **  TAY k_q',tay,k_q
-        if(kpr.eq.1)print*,'ntay=',ntay
+	print *,' **  TAY k_q',tay,k_q
+        print*,'ntay=',ntay
 	call cam_t()
 	end if
 
@@ -1256,19 +1256,19 @@ c
      *  fmax_in)**(1.+tpl/tpl_in) )
 	if(del_r1.lt.0.)del_r1=0.
 	del_r=del_r+del_r1
- 	if(kpr.eq.1)print *,'ntay del_r1 del_r',ntay,del_r1,del_r
+ 	print *,'ntay del_r1 del_r',ntay,del_r1,del_r
 	if(del_r.lt.0.)del_r=0.
- 	if(kpr.eq.1)print *,' tt tay del_r q_95 c_h',tt,tay,del_r,q_95,c_h
+ 	print *,' tt tay del_r q_95 c_h',tt,tay,del_r,q_95,c_h
 	end if
 	next=next0
 c  test of n_li----
         if(ntay.eq.li_drop)then
            n_li=1
            tpl_p=tpl
-        if(kpr.eq.1)print *,' n_li===tpl_p ',n_li,tpl_p
+        print *,' n_li===tpl_p ',n_li,tpl_p
         end if
 
-        if(kpr.eq.1)print *,' n_li===',n_li
+        print *,' n_li===',n_li
 
         n_dif=0
         if(n_li.eq.1.or.n_li.eq.1)n_dif=1
@@ -1278,7 +1278,7 @@ c  test of n_li----
            next=9999
            if(tpl_p.le.tpl_end)then
               tpl=tpl_p
-              if(kpr.eq.1)print *,' tpl_p d_tpl tay==',tpl_p,d_tpl,tay
+              print *,' tpl_p d_tpl tay==',tpl_p,d_tpl,tay
            end if
 	end if
 

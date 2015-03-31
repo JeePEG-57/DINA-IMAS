@@ -3,33 +3,38 @@
 AR = ar
 ARFLAGS = -ru
 FC = gfortran
+
+f2c= cc -fpic
+
 FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
 
 DINASRC = \
-a_dina.f  add.f atsv.f\
-bispl.f bispla.f bisplee.f Bohm_gyroBohm_L.f\
-bound.f bp_gribov_1.f bpol3.f  brz.f bunema.f\
-camloop.f camlxt.f con_fil.f con_mike.f\
-con_vs3_17_ch10.f ddunew0_test.f disr.f diter_1.f\
-dop_jetto.f edf.f efi_fil.f efi_ves.f\
-eni_BgB_CT.f etspxhi2.f fit.f flux_pl.f\
-forces_for_control.f g_gaps_rus.f gen.f gr_psi_d_pc.f\
-green_br_N.f green_d.f inh.f map.f\
-min_distance_1cm_1.f min_distance_pfw_1cm.f\
-move.f n_matlab.f ndop1_new2_400_beam.f\
-ndop_4_avr.f neq0_jetto.f neqm.f obrm.f oosep_4.f\
-out42_for.f pet.f pf_t.f pfsvd11x.f pid.f pp0.f progonu.f\
-read_por.f sh.f sh1_N2.f sh_astra_dt_beam.f\
-sh_br.f sh_d3d.f svd.f svd0m.f svd2.f uuu.f\
-victor_HL.f write_eqdsk_scen_tok.f write_jetto.f\
-write_plasma_W.f zca_tsp.f zcam_d3d.f zcamit.f\
-zrad.f zu0.f zyb0_0.f
+		a_dina.f  add.f atsv_kav.f\
+		bispl.f bispla.f bisplee.f Bohm_gyroBohm_L.f\
+		bound.f bp_gribov_1.f bpol3.f break_new.f brz.f bunema.f\
+		camloop.f camlxt.f con_fil.f con_mike.f\
+		ddunew0.f disr.f diter_1.f\
+		dop_6_HL_Be1.f dop_pet.f edf.f efi_fil.f efi_ves.f elem_i.f eni_ae.f\
+		eni_BgB_CT.f etspxhi2.f fit.f flux_pl.f\
+		forces_for_control.f g_gaps_rus.f gen.f gr_psi_d_pc.f\
+		green_br_N.f green_d.f inh.f map.f\
+		min_distance_1cm_1.f min_distance_pfw_1cm.f\
+		move.f n_matlab_kav.f n_matlab_kav2.f ndop1_new2_400.f\
+		ndop_4.f neq0_sep_lim_32.f neqm.f obrm.f oosep_4.f\
+		out42_for.f pet.f pf_t.f pfsvd11x.f pid.f pp0.f progonu.f\
+		read_por.f sh.f sh1_N2.f sh_astra_dt_beam.f\
+		sh_br.f sh_d3d.f solver.f spline.f svd.f svd0m.f svd2.f uuu.f\
+		victor_HL_test.f write_eqdsk_scen_tok.f write_jetto.f\
+		write_plasma_W_imas.f zca_tsp.f zcam_d3d.f zcamit.f\
+		zu0.f zyb0_0.f
+
 
 DINAOBJ = $(DINASRC:.f=.o)
 
-CONTROLSRC = add_dll.f con_vs3_17_ch10.f field_dina.f
+CONTROLSRC = t15_2.c t15_2_data.c rt_look.c rt_look1d.c \
+	rt_nonfinite.c rt_rand.c rtGetNaN.c rtGetInf.c
 
-CONTROLOBJ = $(CONTROLSRC:.f=.o)
+CONTROLOBJ = $(CONTROLSRC:.c=.o)
 
 all: dina_99.a dina_kav.a
 
@@ -41,6 +46,10 @@ dina_kav.a: $(CONTROLOBJ)
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
+
+%.o: %.c
+	$(f2c)  -c $<
+
 
 clean:
 	-rm -f *.o

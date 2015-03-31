@@ -26,10 +26,10 @@ c       ---- vessel current ------
 c	ygr(7,igr)=tokc
 c	yy(7)='Ivv[kA]'
 c*** Power across separatrix with thermoconductivity + dQ/dt, MW
-ccc	ygr(7,igr)=p_sep
-ccc	yy(7)='Psep[MW]'
-	ygr(7,igr)=tokbut
-	yy(7)='Ibut[kA]'
+cc	ygr(7,igr)=p_sep
+cc	yy(7)='Psep[MW]'
+	ygr(7,igr)=wdh
+	yy(7)='P_Joul[MW]'
 c       ---- elong ------
 	ygr(8,igr)=eksk
 c	yy(8)='k_99'
@@ -94,10 +94,8 @@ c       ---- uact ------
 	yy(20)='VS_res[Wb]'
 c*********************************************************
 c	---- tay_e -----
-ccc	ygr(21,igr)=tene
-ccc	yy(21)='Tay_E[ms]'
-	ygr(21,igr)=uli_p
-	yy(21)='li_kavin'
+	ygr(21,igr)=tene
+	yy(21)='Tay_E[ms]'
 c       ---- rsep ------
 c	ygr(23,igr)=rsep
 c	yy(23)='Rsep[cm]'
@@ -114,11 +112,8 @@ c!!!!!	c_e=vs/(0.1*4*pi*rmag*1.e-2*tpl*1.e-3)
 	ygr(23,igr)=c_e_old
 	yy(23)='C_Ejima'
 
-c	ygr(23,igr)=tokae*1.d-3
-c	yy(23)='I run [MA]'
-
-	    ygr(23,igr)=zvel
-		yy(23)='zvel'
+	ygr(23,igr)=tokae*1.d-3
+	yy(23)='I run [MA]'
 
 	
 c       ---- W_sum ------
@@ -539,6 +534,8 @@ c*******************************************
         if(ntay.gt.2)gfus=gfus+w_fusion*tay*1.e-3/3600.
         ygr(146,igr)=w_fusion
 	yy(146)='Wfus,MW'
+	ygr(11,igr)=w_fusion
+	yy(11)='Wfus,MW'
 
 	p_sum=wae+waq+wdop
 	    ygr(147,igr)=p_sum

@@ -5,7 +5,7 @@ global t_start t_end ng1;
 
 t_start=-18.7e3;
 t_end=58.92e5;
-ng1=240;
+ng1=52;
 
 % the required m-files:
 % read_names.m
@@ -16,10 +16,8 @@ names_file='na_ramp';                      % file with names
 
 i_gr=2;
 
-%source_file(1).name='for042_6565'   % name for second file "for042"
-%source_file(1).name='f42_6565'   % name for second file "for042"
-source_file(1).name='rez1_0\for042'   % name for second file "for042"
-%source_file(1).name='rez2\for042'   % name for second file "for042"
+%source_file(1).name='rez4_1\for042'   % name for second file "for042"
+source_file(1).name='rez3\for042'   % name for second file "for042"
 source_file(1).legend='1';          % legend for second file
 
 if(i_gr > 1)
@@ -30,7 +28,7 @@ source_file(2).legend='2';                 % legend for first file
 end
 
 if(i_gr > 2)
-source_file(3).name='for042' ;                   % name for first file "for042"
+source_file(3).name='rez3\for042' ;                   % name for first file "for042"
 source_file(3).legend='3';                 % legend for first file
 
 end

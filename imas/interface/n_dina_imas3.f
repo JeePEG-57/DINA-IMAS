@@ -26,10 +26,10 @@
 
 	real *8 a_print(200)
 	
-      parameter (kint=200)
+      parameter (kint=500)
       
       dimension c_input1(kint),c_input2(kint)
-      dimension c_output1(kint),c_output2(kint)
+      dimension c_output1(kint),c_output2(kint),c_output3(kint)
 
 	character *25 apr
 
@@ -46,10 +46,13 @@ c =================================================================
 
 !      kpr=key_mat(4)
 
-      kpr=0
+ !     kpr=0
+
+      if(kpr.eq.1)print *,' kpr===',kpr
+      
 
       do i=1,6
-	a_print(i)=key_mat(i)
+!	a_print(i)=key_mat(i)
       end do
       
 	n_pr=6
@@ -61,11 +64,11 @@ c =================================================================
 
       n_input1=2
       do i=1,n_input1
-      c_input1(i)=p_input_1(i)
+          c_input1(i)=p_input_1(i)
       end do
 
       do i=1,n_input1
-	a_print(i)=c_input1(i)
+!	a_print(i)=c_input1(i)
       end do
       
 	n_pr=n_input1
@@ -73,15 +76,16 @@ c =================================================================
 	num=10
 !	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
 
-      n_input2=15
+!      n_input2=15
+      n_input2=38
       
      
       do i=1,n_input2
-      c_input2(i)=p_input_2(i)
+        c_input2(i)=p_input_2(i)
       end do
 
       do i=1,n_input2
-	a_print(i)=c_input2(i)
+!	a_print(i)=c_input2(i)
       end do
       
 	n_pr=n_input2
@@ -94,13 +98,27 @@ c =================================================================
 
  !       goto 5
 
+      n_output3=32
+
+      do i=1,n_output3
+!	a_print(i)=c_output3(i)
+      end do
+      
+	n_pr=n_output3
+	apr='  output3'
+	num=10
+!	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
+
+
+
 	  call dina2(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !------------------------------------outputs
-     *  c_output1,c_output2)
+     *  c_output1,c_output2,c_output3)
 
 c ============ outputs ==============================================
+
 
 5     continue
 
@@ -111,7 +129,7 @@ c ============ outputs ==============================================
         end do
 
       do i=1,n_output1
-	a_print(i)=output_1(i)
+!	a_print(i)=output_1(i)
       end do
       
 	n_pr=n_output1
@@ -121,33 +139,55 @@ c ============ outputs ==============================================
 
       npf=15
       n_gaps=6
-
-      n_output2=npf+n_gaps+npf
+      ncam=100
       
-	a_print(1)=npf
-	a_print(2)=n_gaps
+      n_output2=n_gaps+npf+ncam
       
-	n_pr=2
-	apr='  npf n_ga'
+      n_output3=32
+      
+	a_print(1)=n_gaps
+	a_print(2)=npf
+	a_print(3)=ncam
+      
+	n_pr=3
+	apr='  n_ga npf ncam '
 	num=10
-!	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
+	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
               
         do i=1,n_output2
         output_2(i)=c_output2(i)
         end do
 
       do i=1,n_output2
-	a_print(i)=output_2(i)
+!	a_print(i)=output_2(i)
       end do
       
 	n_pr=n_output2
 	apr='  output2'
 	num=10
-!	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
+!	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
+
+        do i=1,n_output3
+ !       output_3(i)=c_output3(i)
+        end do
+
+      do i=1,n_output3
+!	a_print(i)=c_output3(i)
+      end do
+      
+	n_pr=n_output3
+	apr='  output3'
+	num=10
+!	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
+
+
+
 
 
       return
       end
+
+
       
 	subroutine dina_outp(n_xx,
      * tpl_xx,uli_xx,v_xx,s_plasma_xx,psi_ax_xx,rmag_xx,zmag_xx,
@@ -166,7 +206,7 @@ c ============ outputs ==============================================
 
       n_xx=n
 
-	pi=3.14159
+!	pi=3.14159
 	
 	tpl_xx=tpl*1000.
 	
@@ -214,6 +254,15 @@ c=================================================
 	      psi_xx(i,j)=psi(i,j)*1.e-5*2.*pi
 	   end do
 	end do
+
+
+	if(kpr.eq.1)print *,' tt t_vde=',tt,t_vde
+
+      if(tt.gt.t_vde)then
+	print *,' tt t_vde=',tt,t_vde
+      stop      
+      end if
+      
 
 
       return

@@ -1,31 +1,37 @@
 XLIB= /usr/X11R6/lib
 
-#f2c= g77 -ff2c -fno-automatic
-f2c= gfortran -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -fno-omit-frame-pointer
+f2c= cc -fpic 
 
 
 S=./
 V=$(S)
 
-os=		add_dll.o con_vs3_17_ch10.o field_dina.o
+os=     t15_2.o t15_2_data.o rt_look.o rt_look1d.o \
+	rt_nonfinite.o rt_rand.o rtGetNaN.o rtGetInf.o 
 
 
-dina_kav.a: $(os)
-	ar -ru dina_kav.a $(os)
-
-
-add_dll.o:	$(S)add_dll.f
-		$(f2c) -c   -w   $(S)add_dll.f
-
-con_vs3_17_ch10.o:	$(S)con_vs3_17_ch10.f
-		$(f2c) -c  -w $(S)con_vs3_17_ch10.f
-
-field_dina.o:	$(S)field_dina.f
-		$(f2c) -c  -w $(S)field_dina.f
+dina_kav.a:	$(os)
 
 
 
+		ar -rv dina_kav.a $(os) 
 
 
+t15_2.o:	$(S)t15_2.c
+		$(f2c) -c   -w   $(S)t15_2.c
+t15_2_data.o:	$(S)t15_2_data.c
+		$(f2c) -c   -w   $(S)t15_2_data.c
+rt_look.o:	$(S)rt_look.c
+		$(f2c) -c   -w   $(S)rt_look.c
+rt_look1d.o:	$(S)rt_look1d.c
+		$(f2c) -c   -w   $(S)rt_look1d.c
+rt_nonfinite.o:	$(S)rt_nonfinite.c
+		$(f2c) -c   -w   $(S)rt_nonfinite.c
+rt_rand.o:	$(S)rt_rand.c
+		$(f2c) -c   -w   $(S)rt_rand.c
+rtGetInf.o:	$(S)rtGetInf.c
+		$(f2c) -c   -w   $(S)rtGetInf.c
+rtGetNaN.o:	$(S)rtGetNaN.c
+		$(f2c) -c   -w   $(S)rtGetNaN.c
 
 

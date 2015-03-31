@@ -52,7 +52,7 @@ c
 	i_dop=i_dop+1
 
 c	open (unit=42,file='f42_br.dat',access='append',
-	if(i_dop.eq.1)open (unit=42,file='f42_br.dat',
+	if(i_dop.eq.1)open (unit=42,file='f42.dat',
      *	form='formatted')
 
 c
@@ -1041,13 +1041,16 @@ c
 
 	dimension ttt(500)
 
+      common
+     *  /ge5/kpr
+
 	character *200 f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,
      * f11,f12,f13,f14,f15,f16
 c
 
 	if(kpr.eq.1)print *,' nwnh=',nwnh
-      kk=1
-      
+
+
 c-----------
 	open (unit=40,file='flux_flat.fl',form='formatted')
 	read (40,*)
@@ -1577,7 +1580,7 @@ c!        write(41,*)' i y ',i,y(i)
 	end do                                                                 
 
 	if(kpr.eq.1)print *,'z1,   zk,    r1,     rk'
-	if(kpr.eq.1)print *,ze(1),ze(nze),re(1),re(nre)
+	if(kpr.eq.1)print *,ze(1),ze(nz),re(1),re(nr)
 
 
 	return

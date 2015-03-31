@@ -13,8 +13,13 @@ c      end
 
 
 
-            subroutine ZRAD(Nz,k,i1,Te,Xz)
-c................Author: V.E.Zhogolev (01.06.2000), modification (29.12.2004)
+            subroutine ZRAD1(Nz,k,i1,Te,Xz)
+
+
+cDEC$ ATTRIBUTES DLLEXPORT::  ZRAD1
+
+c................Author: V.E.Zhogolev (01.06.2000)
+c, modification (29.12.2004)
 c
 c Purpose: 
 c     To calculate the radial profile 1 of 3  effective characteristics 

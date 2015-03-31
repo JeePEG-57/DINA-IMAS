@@ -106,6 +106,9 @@ C----------------------------------
 	urr=rref
 	vrr=zref
 
+        if(kpr.eq.1)print*,'urr vrr',urr,vrr
+
+
 c---Z stabilization---
 
 	do i=1,nr
@@ -239,7 +242,7 @@ c-------------------
 	   del_pf1=x1*vec_br(k)
            pf(k)=pf(k)+del_pf1
 
-           if(kpr.eq.1)
+           if(kpr.eq.1.and.(vec_br(k).gt.0.1.or.vec_bz(k).gt.0.1))
      * print *,' k pf0 pf del_r del_z ',k,pf0(k),pf(k),del_pf1,del_pf2
 
 	END DO

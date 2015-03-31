@@ -111,6 +111,14 @@ C
 		he_bgb(i) = he_bohm
 		xi_bgb(i) = xi_bohm
 	end do
+
+
+	do i=1,n 
+		he_bgb(i) = he_bgb(i)+1.d-5
+		xi_bgb(i) = xi_bgb(i)+1.d-5
+	end do
+
+
 C
 C	kpr = 1
 C

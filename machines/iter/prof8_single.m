@@ -7,6 +7,10 @@
 %* It is created by TRINITI team at 17.05.02                      *    
 %*================================================================* 
 
+k_beg=7;
+%k_beg=7;
+%k_step=1;
+file_name='p_data1';
 
 while(1)
        fid=fopen(file_name,'r');
@@ -35,7 +39,7 @@ while 1
       tm(j,i)=t(j);
       [x(j,i),count]=fscanf(fid, '%g',1);
    end
-   count
+   count;
 %=========================================   
 
    for i=1:iprof
@@ -105,7 +109,7 @@ fid=fclose(fid);
  
 jt=1; % for control in "while loop" 
 kkk=0; % number of figure 
-j
+j;
 
 if(j==1)
     x(2,:)=x(1,:);
@@ -133,7 +137,7 @@ end
 jt =k_beg;
 
 while(jt<=j)
-jt
+jt;
 j1=jt; 
 j2=jt+k_step; 
 j3=jt+2*k_step;
@@ -143,6 +147,7 @@ jt=jt+3*k_step;
 
 kkk=kkk+1;
 figure(1);
+clf
 
 % =============== 1-4 graphics ==========================!
 subplot(2,2,1);
@@ -210,15 +215,24 @@ subplot(2,2,2);
   %legend(num2str(j1),num2str(j2),num2str(j3),1);
   xlabel('r [cm]');
   %ylabel('pprime'); 
-  ylabel('j 0');
+  ylabel('n d');
+
 
 subplot(2,2,3);
 
-  plot(x(j1,:),z3(j1,:),x(j2,:),z3(j2,:),x(j3,:),z3(j3,:));
+  hold on
+  plot(x(j1,:),z1(j1,:),'k');
+  plot(x(j2,:),z1(j2,:),'k');
+  plot(x(j3,:),z1(j3,:),'k');
   grid on;
+  
+  plot(x(j1,:),z3(j1,:),'b');
+  plot(x(j2,:),z3(j2,:),'r');
+  plot(x(j3,:),z3(j3,:),'m');
+  
   %legend(num2str(j1),num2str(j2),num2str(j3));
   xlabel('r [cm]');
-  ylabel('sigma');
+  ylabel('J bo');
 
 subplot(2,2,4);
 
@@ -235,7 +249,7 @@ subplot(2,2,4);
 %======================================================================!
 
   k_fig=kkk;
-  str2=[ 'prof' num2str(k_fig) ]
+  str2=[ 'prof' num2str(k_fig) ];
   
  % keyboard;
   
@@ -280,6 +294,7 @@ subplot(2,2,1);
   xlabel('r [cm]');
   ylabel('-q-');
 
+  
 subplot(2,2,2);
 
   plot(x(j1,:),z6(j1,:),x(j2,:),z6(j2,:),x(j3,:),z6(j3,:));
@@ -320,7 +335,7 @@ subplot(2,2,3);
   grid on;
   %legend('1','2','3');
   xlabel('r [cm]');
-  ylabel('j boot');
+  ylabel('T i, eV');
 
 subplot(2,2,4);
 
@@ -332,13 +347,13 @@ subplot(2,2,4);
 
 
 
-disp('To continue - press Enter');
+%disp('To continue - press Enter');
 
 %pause
 
 %  k_fig=k_fig+1
   k_fig=kkk;
-  str2=[ 'prof' num2str(k_fig) ]
+  str2=[ 'prof' num2str(k_fig) ];
   
  % keyboard;
   

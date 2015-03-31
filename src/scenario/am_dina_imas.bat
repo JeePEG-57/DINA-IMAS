@@ -1,22 +1,27 @@
-objects= 	a_dina.obj add.obj atsv.obj \
+objects= 	a_dina.obj add.obj \
 		bispl.obj bispla.obj bisplee.obj Bohm_gyroBohm_L.obj \
 		bound.obj bp_gribov_1.obj bpol3.obj  brz.obj bunema.obj \
 		camloop.obj camlxt.obj con_fil.obj con_mike.obj \
-		con_vs3_17_ch10.obj cons_func.obj ddunew0_test.obj disr.obj\
-		diter_1.obj dop_jetto.obj edf.obj efi_fil.obj efi_ves.obj\
-		eni_BgB_CT.obj etspxhi2.obj fit.obj flux_pl.obj\
-		forces_for_control.obj g_gaps_rus.obj gen.obj gr_psi_d_pc.obj\
-		green_br_N.obj green_d.obj inh.obj map.obj\
-		min_distance_1cm_1.obj min_distance_pfw_1cm.obj\
-		move.obj n_matlab.obj n_dina_imas.obj ndop1_new2_400_beam.obj\
-		ndop_4_avr.obj neq0_jetto.obj neqm.obj obrm.obj oosep_4.obj\
+		con_vs3vs1_hl_1.obj ddunew0.obj disr.obj \
+		diter_1.obj dop_6_HL_Be1.obj edf.obj efi_fil.obj efi_ves.obj \
+		eni_BgB_CT.obj etspxhi2.obj fit.obj flux_pl.obj \
+		forces_for_control.obj g_gaps_rus.obj gen.obj gr_psi_d_pc.obj \
+		green_br_N.obj green_d.obj inh.obj map.obj \
+		min_distance_1cm_1.obj min_distance_pfw_1cm.obj \
+		move.obj n_matlab_kav.obj \
+		n_matlab_kav2.obj \
+		n_dina_imas.obj \
+                ndop1_new2_400.obj \
+		ndop_4.obj neq0_sep_lim_32.obj neqm.obj obrm.obj oosep_4.obj \
 		out42_for.obj pet.obj pf_t.obj pfsvd11x.obj \
 		pid.obj pp0.obj progonu.obj\
-		read_por.obj sh.obj sh1_N2.obj sh_astra_dt_beam.obj\
-		sh_br.obj sh_d3d.obj svd.obj svd0m.obj svd2.obj uuu.obj\
-		victor_HL.obj write_eqdsk_scen_tok.obj write_jetto.obj\
-		write_plasma_W.obj zca_tsp.obj zcam_d3d.obj zcamit.obj\
-		zrad.obj zu0.obj zyb0_0.obj
+		read_por.obj sh.obj sh1_N2.obj sh_astra_dt_beam.obj \
+		sh_br.obj sh_d3d.obj svd.obj svd0m.obj svd2.obj uuu.obj \
+		victor_HL_test.obj write_eqdsk_scen_tok.obj write_jetto.obj \
+		write_plasma_W.obj zca_tsp.obj zcam_d3d.obj zcamit.obj \
+		zu0.obj zyb0_0.obj \
+		atsv_kav.obj break_new.obj elem_i.obj dop_pet.obj \
+		eni_ae.obj solver.obj spline.obj 
 
 dina_v90.dll:   $(objects)
 
@@ -27,8 +32,6 @@ a_dina.obj:     a_dina.f
 add.obj:	add.f
 		mex    -v  -c   add.f -f df60opts.bat
 
-atsv.obj:	atsv.f
-		mex    -v  -c      atsv.f -f df60opts.bat
 
 bispl.obj:	bispl.f
 		mex    -v  -c     bispl.f -f df60opts.bat
@@ -69,14 +72,14 @@ con_fil.obj:	con_fil.f
 con_mike.obj:	con_mike.f parf8
 		mex    -v  -c    con_mike.f -f df60opts.bat
 
-con_vs3_17_ch10.obj:	con_vs3_17_ch10.f 
-		mex   -v  -c con_vs3_17_ch10.f -f df60opts.bat
+con_vs3vs1_hl_1.obj:	con_vs3vs1_hl_1.f 
+		mex   -v  -c con_vs3vs1_hl_1.f -f df60opts.bat
 
 cons_func.obj:	cons_func.f 
 		mex   -v  -c cons_func.f -f df60opts.bat
 
-ddunew0_test.obj: ddunew0_test.f
-		mex   -v  -c ddunew0_test.f -f df60opts.bat
+ddunew0.obj:    ddunew0.f
+		mex   -v  -c ddunew0.f -f df60opts.bat
 
 disr.obj:	disr.f
 		mex   -v  -c  disr.f -f df60opts.bat
@@ -84,8 +87,8 @@ disr.obj:	disr.f
 diter_1.obj:	diter_1.f
 		mex    -v  -c   diter_1.f -f df60opts.bat
 
-dop_jetto.obj:	dop_jetto.f dop_vs_pfw_1.inc  new_com.inc
-		mex   -v  -c  dop_jetto.f -f df60opts.bat
+dop_6_HL_Be1.obj:	dop_6_HL_Be1.f dop_vs_pfw_1.inc  new_com.inc
+		mex   -v  -c  dop_6_HL_Be1.f -f df60opts.bat
 
 edf.obj:	edf.f
 		mex    -v  -c    edf.f -f df60opts.bat
@@ -141,21 +144,24 @@ min_distance_pfw_1cm.obj:min_distance_pfw_1cm.f
 move.obj:	move.f
 		mex    -v  -c    move.f -f df60opts.bat
 
-n_matlab.obj:	n_matlab.f new_com.inc
-		mex   -v  -c  n_matlab.f -f df60opts.bat
+n_matlab_kav.obj:	n_matlab_kav.f new_com.inc
+		mex   -v  -c  n_matlab_kav.f -f df60opts.bat
+
+n_matlab_kav2.obj:	n_matlab_kav2.f new_com.inc
+		mex   -v  -c  n_matlab_kav2.f -f df60opts.bat
 
 n_dina_imas.obj:	n_dina_imas.f 
 		mex   -v  -c  n_dina_imas.f -f df60opts.bat
 
 
-ndop1_new2_400_beam.obj:	ndop1_new2_400_beam.f parf8
-		mex   -v  -c ndop1_new2_400_beam.f -f df60opts.bat
+ndop1_new2_400.obj:	ndop1_new2_400.f parf8
+		mex   -v  -c ndop1_new2_400.f -f df60opts.bat
 
-ndop_4_avr.obj:	ndop_4_avr.f
-		mex   -v  -c ndop_4_avr.f -f df60opts.bat
+ndop_4.obj:	ndop_4.f
+		mex   -v  -c ndop_4.f -f df60opts.bat
 
-neq0_jetto.obj:	neq0_jetto.f new_com.inc
-		mex   -v  -c neq0_jetto.f -f df60opts.bat
+neq0_sep_lim_32.obj:	neq0_sep_lim_32.f new_com.inc
+		mex   -v  -c neq0_sep_lim_32.f -f df60opts.bat
 
 neqm.obj:	neqm.f
 		mex    -v  -c    neqm.f -f df60opts.bat
@@ -217,8 +223,8 @@ svd2.obj:	svd2.f
 uuu.obj:	uuu.f
 		mex    -v  -c      uuu.f -f df60opts.bat
 
-victor_HL.obj:	victor_HL.f new_com.inc
-		mex   -v  -c victor_HL.f -f df60opts.bat
+victor_HL_test.obj:	victor_HL_test.f new_com.inc
+		mex   -v  -c victor_HL_test.f -f df60opts.bat
 
 write_eqdsk_scen_tok.obj:	write_eqdsk_scen_tok.f
 		mex    -v  -c      write_eqdsk_scen_tok.f -f df60opts.bat
@@ -238,8 +244,6 @@ zcam_d3d.obj:	zcam_d3d.f
 zcamit.obj:	zcamit.f
 		mex    -v  -c     zcamit.f -f df60opts.bat
 
-zrad.obj:	zrad.f
-		mex    -v  -c      zrad.f -f df60opts.bat
 
 zu0.obj:	zu0.f
 		mex    -v  -c    zu0.f -f df60opts.bat
@@ -249,6 +253,24 @@ zyb0_0.obj:	zyb0_0.f
 
 
 
+atsv_kav.obj:	atsv_kav.for
+		mex -v  -c atsv_kav.for -f df60opts.bat
+break_new.obj:	break_new.f
+		mex -v  -c break_new.f -f df60opts.bat
+elem_i.obj:	elem_i.f
+		mex -v  -c elem_i.f -f df60opts.bat
+dop_pet.obj:	dop_pet.f
+		mex -v  -c dop_pet.f -f df60opts.bat
+eni_ae.obj:	eni_ae.f
+		mex -v  -c eni_ae.f -f df60opts.bat
+
+solver.obj:	solver.f
+		mex -v  -c solver.f -f df60opts.bat
+spline.obj:	spline.f
+		mex -v  -c spline.f -f df60opts.bat
+
+cons_fun.obj:	cons_fun.f
+		mex -v  -c cons_fun.f -f df60opts.bat
 
 
 

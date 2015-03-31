@@ -615,6 +615,9 @@ c	call c_ctime('map_time= ',10)
      *  dfmaxc(*),q(*)
 
 	include 'parf0'
+	
+      common
+     *  /ge5/kpr                                                        
 
 	dimension psi(npo),work(npo),ppx_w(npo),pffx_w(npo)
 
@@ -811,6 +814,12 @@ c	if(kpr.eq.1)PRINT 71,apr,(pffx(i),i=1,n)
 	apr='--q++'
 	if(kpr.eq.1)PRINT 71,apr,(q(i),i=1,n)
 
+      do i=1,n
+	ppx(i)=ppx_w(i)
+	pffx(i)=pffx_w(i)
+	end do
+
+
 
 71 	FORMAT(20X,A6/,(12E10.3))
 
@@ -850,6 +859,9 @@ c------------
      *  pfi(*),c2(*),c3(*),ha(*),psi(*),fx(*),
      *  xpl(npo,*),ypl(npo,*),x_map(npo,*),y_map(npo,*),
      *  dm0(*)
+
+      common
+     *  /ge5/kpr                                                        
 
 	character *12 apr
 
@@ -946,12 +958,17 @@ c
 
 	q(1)=q(2)
 
+
+	do i=1,n
+	dm0(i)=2.d0*pi*psval(i)
+	end do
+
 	apr='-m-pp-'
 	if(kpr.eq.1)print 71,apr,(pp(i),i=1,n)
 	apr='-pff-'
 	if(kpr.eq.1)print 71,apr,(pff(i),i=1,n)
 	apr='-q-'
-c	if(kpr.eq.1)print 71,apr,(q(i),i=1,n)
+	if(kpr.eq.1)print 71,apr,(q(i),i=1,n)
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 c
@@ -1077,3 +1094,234 @@ c	t_t2=c_time()
 	return
 	end
 
+	subroutine map_kav()
+	include 'double.inc'
+	include 'new_com.inc'                                                  
+                                                                        
+	call map_kav_c(m,n,                                                        
+     *  sinus,cosin,pbound,x_map,y_map,rmag,zmag,delta0,                
+     *  psval,k_map,                                                    
+     *  kpr)                                                            
+                                                                        
+	return                                                                 
+	end                                                                    
+                                                                        
+                                                                        
+	subroutine map_kav_c(m,n,                                                  
+     *  sinus,cosin,pbound,x_map,y_map,um,vm,delta0,                    
+     *  psval,k_map,                                                    
+     *  kpr)                                                            
+        include 'double.inc'                                                                        
+c---------------------------------------------------------              
+c  calculate psi_map (                                                  
+c-------------------------------------------------------------------    
+c                                                                       
+	parameter ( n_map=1200)                                                
+	include 'parf0'                                                        
+	                                                                       
+	dimension sinus(m),cosin(m),x_map(npo,m),y_map(npo,m),                 
+     *  psval(n)                                                        
+                                                                        
+	dimension ps_map(n_map,ntet),a_map(n_map,ntet),ps_ma(n_map),           
+     *  a_ma(n_map),index(ntet)                                         
+                                                                        
+	dimension pdd(6)                                                            
+	dimension a_print(200)
+	character *30 apr
+
+c                                                                       
+c###	pocoef=0.25*delta0                                                 
+	pocoef=0.1*delta0                                                      
+                                                                        
+c	call c_ctime('init',4)                                                
+                                                                        
+c	print *,' k_map==',k_map                                              
+                                                                        
+	if(k_map.eq.1)go to 1000                                               
+                                                                        
+c	call boxd(um,vm,pdd,ier)                                               
+                                                                        
+!!!	fint=pdd(1)                                                            
+
+	fint=psval(1)
+	                                                                      
+c	call boxd_pp(um,vm,fint)                                              
+                                                                        
+                                                                        
+	ix=1                                                                   
+	                                                                       
+	do i=1,m                                                               
+	   ps_map(ix,i)=fint                                                   
+	   a_map(ix,i)=0.                                                      
+	end do                                                                 
+                                                                        
+c	print *,' MAP um vm pmag m',um,vm,fint,m                              
+                                                                        
+c                                                                       
+	do i=1,m                                                               
+                                                                        
+	x_map(1,i)=um                                                          
+	y_map(1,i)=vm                                                          
+                                                                        
+	dpo=pocoef                                                             
+                                                                        
+	poi=0.                                                                 
+c	poi=delta0                                                              
+                                                                        
+	ix=1                                                                   
+                                                                        
+901	continue                                                            
+                    
+				  
+	if(poi.le.2.*delta0)then 
+	dpo=0.1*pocoef
+	else
+	dpo=pocoef
+	end if
+				                                                      
+	poi=poi+dpo                                                            
+                                                                        
+	re=um+poi*cosin(i)                                                     
+	ze=vm+poi*sinus(i)                                                     
+                                                                        
+c	print *,' i um vm poi   ',i,um,vm,poi                                 
+c                                                                       
+	call boxd(re,ze,pdd,ier)                                               
+                                                                        
+	fint=pdd(1)                                                            
+                                                                        
+c	call boxd_pp(re,ze,fint)                                              
+                                                                        
+c	print *,' i psi r z ',i,fint,re,ze                                    
+c                                                                       
+        ps=fint                                                         
+c                                                                       
+	   ix=ix+1   
+	   
+	   if(ix.gt.n_map)then
+
+	a_print(1)=ix
+	a_print(2)=n_map
+	n_pr=2
+	apr='ix GT n_map'
+	num=25
+	call out42(n_pr,a_print,num,apr)
+
+	call pau()
+	
+	stop
+
+	return
+
+	   end if
+	                                                             
+	   ps_map(ix,i)=ps                                                     
+	   a_map(ix,i)=poi                                                     
+	   index(i)=ix                                                         
+                                                                        
+	if(ps.gt.pbound) go to 901                                             
+	                                                                       
+	end do     
+	
+	                                                            
+                                                                        
+                                                                        
+ 1000	continue                                                          
+                                                                        
+                                                                        
+                                                                        
+	do i=1,m                                                               
+                                                                        
+	   ix=index(i) 
+	   if(ix.gt.n_map)then
+!!!	print *,' ix gt n_map',ix,n_map
+!!!	read (*,*)
+	   end if
+	   
+c	a_print(1)=i
+	n_pr=1
+	apr='i'
+	num=25
+c	call out42(n_pr,a_print,num,apr)
+	                                                           
+	   do ii=1,ix                                                          
+	      ps_ma(ii)=ps_map(ii,i)                                           
+	      a_ma(ii)=a_map(ii,i)                                             
+	   end do                                                              
+
+
+	do ii=1,n
+c	a_print(ii)=ps_ma(ii)
+	end do	
+	n_pr=n
+	apr='ps_ma'
+	num=25
+c	call out42(n_pr,a_print,num,apr)
+
+	do ii=1,n
+c	a_print(ii)=a_ma(ii)
+	end do	
+	n_pr=n
+	apr='a_ma'
+	num=25
+c	call out42(n_pr,a_print,num,apr)
+                                                                        
+	   do ii=2,n                                                           
+                                                                        
+	      if(ii.le.n)then                                                  
+		 call feet_in(ps_ma,a_ma,ix,psval(ii),xp)                             
+	      else                                                             
+		 call feet_lin(ps_ma,a_ma,ix,psval(ii),xp)                            
+	      end if                                                           
+                                                                        
+c	print *,' ii ix psval xp',ii,ix,psval(ii),xp                          
+                                                                        
+	re=um+xp*cosin(i)                                                      
+	ze=vm+xp*sinus(i)                                                      
+                                                                        
+	x_map(ii,i)=re                                                         
+	y_map(ii,i)=ze                                                         
+                                                                        
+c	print *,' ii i ix x_map y_map',ii,i,ix,x_map(ii,i),y_map(ii,i)        
+                                                                        
+	end do                                                                 
+                                                                        
+	end do                                                                 
+
+
+c		call pau()
+
+
+	i_test=0
+	if(i_test.eq.1)then                                                                        
+	errp=0.
+	do i=1,n                                                               
+	do j=1,m                                                              
+	ro=(x_map(i,j)-um)/(x_map(n,j)-um)                                                    
+	ypl=vm+ro*(y_map(n,j)-vm)                                         
+	err=dabs(ypl-y_map(i,j))
+!	errp=dmax1(err,errp) 
+	if(err.gt.errp)then
+	print *,' map i j err ',i,j,err
+	errp=err
+	end if
+
+	end do                                                                 
+	end do                                                                
+                                                                        
+	errp=0.
+	do j=1,m                                                             
+	err=dabs(1.-(cosin(j)**2+sinus(j)**2) )
+!	errp=dmax1(err,errp) 
+	if(err.gt.errp)then
+	print *,' j err ',j,err
+	errp=err
+	end if
+
+	end do                                                                 
+	
+	end if                                                                        
+                                                                        
+	return                                                                 
+	end                                                                    
+                                                                        

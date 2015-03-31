@@ -5,11 +5,11 @@
  l_i(3)      
  Rmag[cm]    
  Zmag[cm]    
- Ibut[kA]    
+ P_Joul[MW]  
  k_bnd       
  Ne_avr[20]  
  Gamma       
- Zeff_a      
+ Wfus,MW     
  psiext_av,vs
  Te_avr[eV]  
  Ti_avr[eV]  
@@ -19,9 +19,9 @@
  q_95        
  q_ax        
  VS_res[Wb]  
- li_kavin    
+ Tay_E[ms]   
  Zsep[cm]    
- zvel        
+ I run [MA]  
  Pmag[Vs]    
  error_01    
  error_02    

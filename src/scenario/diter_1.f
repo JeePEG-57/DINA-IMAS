@@ -22,6 +22,7 @@ c	implicit real*8 (a-h,o-z)
      *  /ge1/PI
      *	/ge1e/rs00,tpl
      *  /ge5/kpr
+     *  /ge7/eu,rout,zout,elong
 	common
      *  /mid6/bp_0(npo),a_m(npo),r_m(npo)
      *  /mid7/bsq(npo),bsqi(npo),fasp(npo)
@@ -151,8 +152,10 @@ C
 	if(kpr.eq.1)print *,'TKP TKF [kA]',TKP,TKF
 	if(kpr.eq.1)print *,'TK=TKP+TKF[kA]=',TK, 'kA'
 c----
-	  r_avr=v/s
-	  	
+	r_avr=v/s
+	
+	 r_avr=rout
+
         bt=bt0*rs0/r_avr
 
 c-----------
@@ -166,12 +169,7 @@ c  internal inductance li*I**2/2.=epol*1.e-7   I is plasma c.[A]
 c----
 ccc	uli=2.*epol*100./(tk*1.e3)**2/r_avr
 
-	uli_old=2.*epol*100./(tpl*1.e3)**2/r_avr
-	uli=2.*epol*100./(tpl*1.e3)**2/rs0
-
-	if(kpr.eq.1)print *,'r_avr rs0=',r_avr,rs0
-	if(kpr.eq.1)print *,'uli old uli=',uli_old,uli
-
+	uli=2.*epol*100./(tpl*1.e3)**2/r_avr
 
 	dli=dli*200./(tk*1.e3)**2/(8.*pi)
 	dlint1=dlint/bpbound1**2

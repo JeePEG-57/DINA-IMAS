@@ -68,6 +68,7 @@
      *  /dfm8/ajb(npo),sigk(npo)
      *  /dfm9/aj0(npo)
      *  /dfm11/c20(npo),tok1(npo),tok2(npo)
+     *  /dfm12/betj,dlint,bett,bet2,betpc,tk,tkp,tkf
      *  /dfm13/tokel,tokfi,tokbut
      *  /dfm14/tokae,ajae(npo),ajae0(npo),enae
      *	/dfm15/uli
@@ -169,6 +170,10 @@
      *  /fluxc11/npl,pl_cur(nwnh),x_cur(nwnh),y_cur(nwnh)
      *  /fluxc9/fdd,fdd0
      *	/fluxc10/x1,y1,dx1,dy1
+     *  /fluxc13/volt_sec(kf)
+     *  /fluxc14/vs_pf,vs_pl,vs_tot 
+     *	/fluxc16/tor_flh,tor_flp,tor_fl
+     *  /fluxc17/f_index
      *  /fluxc18/alf_tok,int_tok
 
 
@@ -388,6 +393,7 @@ c** it is used in cur, dop_port.inc, victor.f
      *  /c_map1/x_map(npo,ntet),y_map(npo,ntet)
      *  /c_map2/p_nor(npo)
      *  /c_map3/k_map
+     *  /c_map5/e_pol(npo),dl_pol(npo)
 
         COMMON
      *  /mid1/C1(npo),C2(npo),C3(npo)
@@ -431,7 +437,9 @@ c** it is used in cur, dop_port.inc, victor.f
      *  /efil_16/n_pp
      *  /efil_17/eu_fil
      *  /efil_18/x_b(ntet),y_b(ntet)
-     *  /efil_19/n_rad,n_tet
+
+!!!     *  /efil_19/n_rad,n_tet
+
      *  /efil_20/i_beta
 
 	common
@@ -495,7 +503,39 @@ c   -------FOR ramp---------
        common /sep_points/n_sep,x_sep(mu1),y_sep(mu1)
        common /sep_points2/n_sep2,x_sep2(mu1),y_sep2(mu1)
   
+c  Energy commons
+
+        common /c_ener1/tene_e
         common /c_ener2/ro_bar,alf_bar
+
+        common /c_ener3/diff_ext(npo),dxe_ext(npo),
+     *  dxq_ext(npo),ajb_ext(npo),psin_ext(npo),
+     *  vd_ext(npo)
+
+        common /c_ener4/key_ext
+        common /c_ener5/tene,ptot_dop
+        common /c_ener6/vd_bound,v_ext
+        common /c_ener7/ext_transp(npo)
+        common /c_ener8/x_e_neo(npo),x_i_neo(npo)
+        common /c_ener9/ft(npo)
+
+        common /c_ener10/power_el,pow_el,ro_el,del_el
+        common /c_ener11/power_ion,pow_ion,ro_ion,del_ion
+        common /c_ener12/p_e(npo),p_i(npo),
+     *  aj_cd(npo),pne_ext(npo)
+        common /c_ener13/te_ext(npo),ti_ext(npo)
+        common /c_ener14/sigma_ext(npo)
+        common /c_ener15/p_ext(npo)
+
+        common /c_ener16/qe0_ext(npo),qq0_ext(npo),
+     *  del_ext(npo)
+        common /c_ener17/sigk_ext(npo)
+
+
+
+
+
+
 
 	    common
      *  /pol6_add1/ppx1(npo),pffx1(npo),ppx2(npo),pffx2(npo)
@@ -533,4 +573,59 @@ c  additional  for runaways..
 	common
      *  /c_new_halo13/i_e(nwnh)
 
+
+c ECH
+
+	common
+     *  /c_ech0/i_ech
+     *  /c_ech1/power_ech1,tpl_ech1
+     *  /c_ech2/aj0_ech1(npo),sb_ech1(npo)
+
+     *  /c_ech3/power_ech2,tpl_ech2
+     *  /c_ech4/aj0_ech2(npo),sb_ech2(npo)
+
+     *  /c_ech5/power_ech,tpl_ech
+     *  /c_ech6/aj0_ech(npo),sb_ech(npo)
+
+     *  /c_ech7/p_e1,r_e1,z_e1,dz_e1,dr_e1
+     *  /c_ech8/p_e2(10),r_e2(10),z_e2(10),dz_e2(10),dr_e2(10)
+     *  /c_ech9/key_ech,k_bu
+     *  /c_ech10/ro_ech,del_ech
+     *  /c_ech11/num_ech
+
+     *  /c_ech12/power_ech3,tpl_ech3
+     *  /c_ech13/aj0_ech3(npo),sb_ech3(npo)
+     *  /c_ech14/c_e2(10)
+     *  /c_ech15/del_ech0
+     *  /c_ech16/aj0_ech_1(npo),sb_ech_1(npo)
+     *  /c_ech17/tpl_ech_1,power_ech_1
+
+c zyb commons
+
+        common 
+     *  /c_imp1/sel(npo)
+     *  /c_imp2/q_loss(npo),q_rad(npo)
+     *  /c_imp3/tt1
+     *  /c_imp4/alf_n,tay_lo
+     *  /c_imp5/tempe(npo),tempi(npo)
+
+
+  
+c
+	common
+     *  /c_br4/wdh,p_oh
+
+	common /c_imp_out1/dens_imp_neut(10)
+	common /c_imp_out2/qlos_e,qlos_imp,qloss_ion
+
+	common
+     *  /c_tab1/pstab(npo),pptab(npo),fptab(npo),qtab(npo)
+     *  /c_tab2/nutab
+     *  /c_tab3/pptab0(npo),fptab0(npo)
+
+c*** Victor's common blocks
+     *   /vic_1/uact
+	common 
+     *  /c_ktm_1/vs_bound
+     *  /c_ktm_2/vs_res,vs_ext
 

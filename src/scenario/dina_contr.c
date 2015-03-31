@@ -12,7 +12,7 @@
 #define N_MAT 		100	/* maximum number of elts in key_mat */
 
 
-static int key_mat[N_MAT];
+static long key_mat[N_MAT];
 
 static double *vec_mat_in;
 
@@ -20,12 +20,12 @@ static double vec_mat[N_MAT];
 
 static long n_port1;
 static long n_port2;
-static int n_port3;
+static long n_port3;
 
-static int out_port1;
-static int out_port2;
-static int out_port3;
-static int out_port4;
+static long out_port1;
+static long out_port2;
+static long out_port3;
+static long out_port4;
 
 
 
@@ -62,7 +62,7 @@ static double ttt;
 
 #if defined (_MSC_VER)
 
-#define eq_ech_ eq_ech
+#define eq_ech_ EQ_ECH
 
 #endif
 
@@ -85,7 +85,7 @@ static double ttt;
 extern void eq_ech_(double	*t_mat,
 					   double	*ttt,
 					   double	*dt_mat,
-					   int		*key_mat,
+					   long		*key_mat,
 					   double	*vec_mat,
 					   double	*p_input1,
 					   double	*p_input2,
@@ -94,7 +94,7 @@ extern void eq_ech_(double	*t_mat,
 					   double	*output_2,
 					   double	*output_3,
 					   double	*output_4,
-					   int		*ng);
+					   long		*ng);
 
 
 /******************************************************************************/
@@ -110,7 +110,7 @@ static void mdlCheckParameters(SimStruct *S)
    
 	double *temp;
 
-	int m,n;
+	long m,n;
 
 	temp = mxGetPr(ssGetSFcnParam(S,KEYMATARG));
 
@@ -166,13 +166,13 @@ static void mdlCheckParameters(SimStruct *S)
 /******************************************************************************/
 static void mdlInitializeSizes(SimStruct *S)
 {
-	int m,n;
+	long m,n;
 
-	int k;
+	long k;
 
 	long in_port1, in_port2;
-	int in_port3;
-	int out_port1, out_port2, out_port3, out_port4;
+	long in_port3;
+	long out_port1, out_port2, out_port3, out_port4;
 
 	double *temp;
 
@@ -196,7 +196,7 @@ static void mdlInitializeSizes(SimStruct *S)
 
 	for (k=0; k < 25; k++) { 
 
-		key_mat[k]	= (int)temp[k];
+		key_mat[k]	= (long)temp[k];
 
 	}
 	in_port1=key_mat[5];
@@ -366,7 +366,7 @@ SimStruct *S;
 
 
 
-    int	k;
+    long	k;
 
 	
 	real_T *output_1  = (real_T *)ssGetOutputPortRealSignal(S,0);
@@ -536,11 +536,11 @@ int_T     tid;
 	double *c_3 = (double *) ssGetDWork(S, 3);
 
 
-    int k;
+    long k;
 
-	int	ng;	
+	long	ng;	
 
-	int in_port3;
+	long in_port3;
 
     double *p_input_1;  
     

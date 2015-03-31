@@ -17,7 +17,7 @@ integer :: pulse, run, iloop, trig
 
 
 integer :: i, k, j, idx
-integer :: nr, nz, n1, n2, ke
+integer :: nr, nz, n1, n2, ke, i_wr
 
 integer :: TimeSteps, CurTimeStep
 
@@ -69,27 +69,27 @@ call imas_close(idx)
 	TimeSteps = size(equilibrium%time)
 	CurTimeStep = 1
 
-nr = size(equilibrium%profiles_2d(1)%grid%dim1(:,CurTimeStep))
-nz = size(equilibrium%profiles_2d(1)%grid%dim2(:,CurTimeStep))
+nz = size(equilibrium%profiles_2d(1)%grid%dim1(:,CurTimeStep))
+nr = size(equilibrium%profiles_2d(1)%grid%dim2(:,CurTimeStep))
 ke = size(equilibrium%coordinate_system%r(:,1,CurTimeStep))
 
 write(*,*) 'nr nz ke = ',nr,nz,ke
 
 allocate(x(nr))
 allocate(y(nz))
-allocate(psi(nz,nr))
+allocate(psi(nr,nz))
 allocate(xu(ke))
 allocate(yu(ke))
 
 !write(*,*) 'test1'
-x(1:nr) = equilibrium%profiles_2d(1)%grid%dim1(1:nr,CurTimeStep)
-y(1:nz) = equilibrium%profiles_2d(1)%grid%dim2(1:nz,CurTimeStep)
+y(1:nz) = equilibrium%profiles_2d(1)%grid%dim1(1:nz,CurTimeStep)
+x(1:nr) = equilibrium%profiles_2d(1)%grid%dim2(1:nr,CurTimeStep)
 
 
 !write(*,*) 'test2'
 
-    do i=1,nr
-    do j=1,nz
+    do i=1,nz
+    do j=1,nr
       psi(j,i) = equilibrium%profiles_2d(1)%psi(i,j,CurTimeStep)
     enddo
     enddo
@@ -109,12 +109,16 @@ tt = equilibrium%time(CurTimeStep)
 psi_ax = equilibrium%global_quantities%psi_axis(CurTimeStep)
 psi_bnd = equilibrium%global_quantities%psi_boundary(CurTimeStep)
 
+    i_wr=0
+    if(i_wr.eq.1)then
+
     call write_graf_imas2(nr,nz,ke, &
      &	0.01d0,0.01d0,tt,&
      &  psi,x,y,xu,yu,&
      &  psi_ax,psi_bnd,psi_bnd,0.d0,0.d0) 
 
-
+    end if
+    
 
 trig = 0
 

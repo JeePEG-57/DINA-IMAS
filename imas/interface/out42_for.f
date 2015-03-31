@@ -3,10 +3,18 @@
 	include 'double.inc'
 
 	dimension ygr(*)
-	character *20 name
+	character name(*)
+
+      print *,name(1:num)
+
+	write(6,'("",20(1pe12.5))'),
+     *  (ygr(i),i=1,ng)
+
+!	write(6,'("",a20,20(1pe12.5))'),
+!     *  name(1:num),(ygr(i),i=1,ng)
 
 !!!	if(kpr.eq.1)print '(a20,(20(1p,e12.5)))',name,(ygr(i),i=1,ng)
-	if(kpr.eq.1)print '(a20/,(6(1p,e12.5)))',name,(ygr(i),i=1,ng)
+!	print '(a20/,(6(1p,e12.5)))',name(1:num),(ygr(i),i=1,ng)
 
 	return
 	end
@@ -15,8 +23,8 @@
 	subroutine out42(n_pr,a_print,num,apr)
 	include 'double.inc'
 	dimension a_print(*)
-	character *20 apr
-
+	character apr(*)    
+      
 	call out42_c(n_pr,a_print,num,apr)
 
 
@@ -28,9 +36,4 @@
 
 
 
-	subroutine pau()
-	include 'double.inc'
-
-	return
-	end
 
