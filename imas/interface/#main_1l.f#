@@ -1,0 +1,26 @@
+	stop
+
+      do i=1,2
+      c_output1(i)=1000.
+      end do
+
+
+      do i=1,38
+      c_output2(i)=a_out(i)
+      end do
+
+      
+!      call t15_2_output2() 
+
+!      call t15_2_terminate()
+      
+
+	return
+	end
+
+      subroutine sub1
+      common /cb/ i, j, k
+      integer i, j, k
+      print *,i,j,k
+      return
+      end

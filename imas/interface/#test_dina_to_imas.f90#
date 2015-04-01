@@ -1,0 +1,165 @@
+! main test
+! test the DINA_IMAS
+! Jo Lister, August 2013
+
+use ids_schemas
+use ids_routines
+implicit none
+
+interface 
+! Declaration of the dina_imas subroutine
+    subroutine dina_to_imas( em_coupling0_in, equilibrium0_in,  &
+ & pf_active0_in, pf_passive0_in,  equilibrium_in, &
+ & magnetics_in, pf_active_in, pf_passive_in, core_profiles_in, &
+ & arr_in1,arr_out1)
+ 
+     use ids_schemas
+! note that IDS0 are all prescribed, the others are dynamic
+      type (ids_dina) :: dina0_in, dina_in
+      type (ids_em_coupling) :: em_coupling0_in
+      type (ids_equilibrium) :: equilibrium0_in, equilibrium_in
+      type (ids_magnetics) :: magnetics_in
+      type (ids_pf_active) :: pf_active0_in, pf_active_in
+      type (ids_pf_passive) :: pf_passive0_in, pf_passive_in
+      type (ids_core_profiles)   :: core_profiles_in
+
+    real (DP) :: arr_in1(31), arr_out1(31)
+
+    end subroutine
+end interface
+
+
+type (ids_dina) :: dina0, dina
+type (ids_em_coupling) :: em_coupling0, em_coupling1
+type (ids_equilibrium) :: equilibrium0, equilibrium,equilibrium1
+type (ids_magnetics) :: magnetics
+type (ids_pf_active) :: pf_active0, pf_active,pf_active1
+type (ids_pf_passive) :: pf_passive0, pf_passive, pf_passive1
+type (ids_core_profiles)   :: core_profiles,core_profiles1
+
+real (DP) :: arr_in1(51), arr_out1(51)
+
+! define the pulse and run numbers for testing, will be done later outside
+
+integer ::  prescribedpulse=160, prescribedrun=1
+
+! define local variables
+integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
+real (DP) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
+integer :: idx, idx0
+integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
+! main test
+integer,save :: i1=11, i2=8, ke=57
+
+! for timing tests
+INTEGER :: clock_start,clock_end,clock_rate
+
+
+print *,' Enter pulse number'
+read (*,*)prescribedpulse
+print *,' pulse number='
+
+print *,' Enter run number'
+read (*,*)prescribedrun
+
+
+call imas_create('ids',prescribedpulse,prescribedrun,1,1,idx0)
+print *,' before ids_get idx0',idx0
+
+
+write(*,*) 'call DINA_to_IMAS i =',iloop
+
+call dina_to_imas( em_coupling0, equilibrium0,   &
+ & pf_active0,  pf_passive0,  equilibrium, &
+ & magnetics, pf_active, pf_passive, core_profiles, &
+ & arr_in1,arr_out1)
+
+
+
+  write(*,*) 'Shapes - testdinaimas'
+  write(*,100) shape(em_coupling0%mutual_grid_active),shape(em_coupling0%mutual_grid_passive)
+
+write(*,*) 'Shapes - testdinaimas'
+write(*,100) shape(em_coupling0%mutual_loops_active),shape(em_coupling0%mutual_passive_active)
+
+100 format (2I5, 4x,2I5, 4x, 2I5, 4x,2I5)
+
+write(*,*)  'write_ids'
+
+call ids_put(idx0,"em_coupling",em_coupling0)
+call ids_put(idx0,"pf_active",pf_active)
+call ids_put(idx0,"pf_passive",pf_passive)
+
+    write(*,*) 'x EQ'
+    write(*,*)equilibrium%coordinate_system%grid%dim1(1:10,1)
+    write(*,*) 'y EQ'
+    write(*,*)equilibrium%coordinate_system%grid%dim2(1:10,1)
+
+    write(*,*) 'xu EQ'
+    write(*,*)equilibrium%coordinate_system%r(1:ke,1,1)
+    write(*,*) 'yu EQ'
+    write(*,*)equilibrium%coordinate_system%z(1:ke,1,1)
+
+call ids_put(idx0,"equilibrium",equilibrium)
+write(*,*) 'ids_put OK!'
+
+call imas_close(idx0)
+
+write(*,*) 'DINA_IMAS Exiting cleanly'
+
+
+write(*,*) 'Reading saved data...'
+
+call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
+call ids_get(idx0,'em_coupling',em_coupling1)
+
+write(*,*) 'TestDINAIMAS - TestElements: '
+write(*,*) em_coupling1%mutual_grid_active(i1,i2)
+write(*,*) em_coupling1%mutual_grid_passive(i1,i2)
+
+write(*,*) em_coupling1%mutual_loops_passive(i1,i2)
+write(*,*) em_coupling1%field_probes_passive(i1,i2) 
+
+write(*,*) em_coupling1%mutual_loops_active(i1,i2)
+write(*,*) em_coupling1%field_probes_active(i1,i2)
+
+write(*,*) em_coupling1%mutual_active_active(i1,i2)
+write(*,*) em_coupling1%mutual_passive_passive(i1,i2)
+write(*,*) em_coupling1%mutual_passive_active(i1,i2)
+
+
+call ids_get(idx0,'pf_active',pf_active1)
+call ids_get(idx0,'pf_passive',pf_passive1)
+
+write(*,*) 'pfs resistances'
+write(*,*) pf_active1%coil(6)%resistance
+write(*,*) pf_passive1%loop(16)%resistance
+
+
+call ids_get(idx0,'equilibrium',equilibrium1)
+
+
+    write(*,*) 'x EQ'
+    write(*,*)equilibrium1%coordinate_system%grid%dim1(1:10,1)
+    write(*,*) 'y EQ'
+    write(*,*)equilibrium1%coordinate_system%grid%dim2(1:10,1)
+
+    write(*,*) 'xu EQ'
+    write(*,*)equilibrium1%coordinate_system%r(1:ke,1,1)
+    write(*,*) 'yu EQ'
+    write(*,*)equilibrium1%coordinate_system%z(1:ke,1,1)
+
+
+! write(*,*) 'TestDINAIMAS - CoreProfiles Elements: '
+! write(*,*) core_profiles%magnetic_shear(1,14)
+! write(*,*) core_profiles%magnetic_shear(2,14)
+! 
+! call ids_get(idx0,'core_profiles',core_profiles1)
+! write(*,*) 'TestDINAIMAS - CoreProfiles1 Elements: '
+! write(*,*) core_profiles1%magnetic_shear(1,14)
+! write(*,*) core_profiles1%magnetic_shear(2,14)
+
+
+call imas_close(idx0)
+
+end 

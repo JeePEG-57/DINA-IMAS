@@ -39,9 +39,11 @@ CONTROLOBJ = $(CONTROLSRC:.c=.o)
 all: dina_99.a dina_kav.a
 
 dina_99.a: $(DINAOBJ)
+	$(RM) -r dina_99.a
 	$(AR) $(ARFLAGS) $@ $(DINAOBJ)
 
 dina_kav.a: $(CONTROLOBJ)
+	$(RM) -r dina_kav.a
 	$(AR) $(ARFLAGS) $@ $(CONTROLOBJ)
 
 %.o: %.f
