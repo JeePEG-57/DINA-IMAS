@@ -707,9 +707,9 @@
     </TupleP>
   </returnType>
   <semantic>ITER</semantic>
-  <keplerFolder>/home/ITER/lukashv/kepler</keplerFolder>
+  <keplerFolder>$HOME/kepler</keplerFolder>
   <ptFolder>empty</ptFolder>
-  <homeFolder>/home/ITER/lukashv</homeFolder>
+  <homeFolder>$HOMEv</homeFolder>
   <compiler>gfortran</compiler>
   <libraries/>
   <lang>fortran</lang>
