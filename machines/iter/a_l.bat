@@ -1,0 +1,81 @@
+rm for042
+rm z_cur.dat
+rm file1.eqdsk
+rm file2.eqdsk
+rm psi_data
+rm tok_data
+rm separ_coor
+rm pfc_new.dat
+rm volt_new.dat
+rm plasma.dat
+rm plasma_start.dat
+rm tabppf2.txt
+rm fc.txt
+rm tcam.txt
+rm rpp.txt
+rm zpp.txt
+cp i_wr_1.dat i_wr.dat
+../../ramp_2014_dec/dina_mat/p_dina > a1&
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+
+
+

@@ -1,0 +1,18 @@
+rm -f for042
+rm -f z_cur.dat
+rm -f file1.eqdsk
+rm -f file2.eqdsk
+rm -f psi_data
+rm -f tok_data
+rm -f separ_coor
+rm -f pfc_new.dat
+rm -f volt_new.dat
+rm -f plasma.dat
+rm -f plasma_start.dat
+rm -f tabppf2.txt
+rm -f fc.txt
+rm -f tcam.txt
+rm -f rpp.txt
+rm -f zpp.txt
+cp i_wr_1.dat i_wr.dat
+../dina_mat/p_dina >/dev/null&
