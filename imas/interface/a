@@ -1,1 +1,0 @@
-gfortran -w -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none -I/work/imas/projects/ual/2.0/fortraninterface/amd64_gfortran -g   -c n_dina_imas3.f

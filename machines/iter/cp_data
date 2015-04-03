@@ -1,7 +1,0 @@
-cp ~/matlab/TEST/chopperv.dat .
-cp ~/matlab/TEST/fsupplyv.dat .
-cp ~/matlab/TEST/PP_DINA.dat .
-cp ~/matlab/TEST/ipp.dat .
-cp ~/matlab/TEST/ip.dat .
-cp ~/matlab/TEST/zp.dat .
-
