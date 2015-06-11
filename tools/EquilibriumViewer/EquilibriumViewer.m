@@ -351,18 +351,6 @@ AxesRefresh(handles.Main_Axes1);
 
 
 
-function [cpo]= LoadIDS(shot, run, ids)
-% Check arguments
-if (nargin ~=3)
-    error('Bad number of input arguments. (Must be 3: numShot, run, ids)');
-end
-addpath /work/imas/projects/ual/2.0/matlabinterface;
-
-expIdx = imas_open('ids', shot, run);
-cpo=ids_get(expIdx, ids);
-imas_close(expIdx,'ids',shot,run);
-
-
 % --- Executes on button press in Main_ButtonAnimation.
 function Main_ButtonAnimation_Callback(hObject, eventdata, handles)
 % hObject    handle to Main_ButtonAnimation (see GCBO)

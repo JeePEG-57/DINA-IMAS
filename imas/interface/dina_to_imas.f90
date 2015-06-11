@@ -1,6 +1,5 @@
 subroutine dina_to_imas(em_coupling0,equilibrium0, pf_active0, &
-    & pf_passive0, equilibrium, magnetics,  pf_active, pf_passive , core_profiles, &
-    & arr_in1,arr_out1)
+    & pf_passive0)
 
 
 use ids_schemas
@@ -8,15 +7,10 @@ use ids_routines
 implicit none
 
 ! trees are static or dynamic; if not defined, they are static
-type (ids_dina) :: dina0, dina
 type (ids_em_coupling)  :: em_coupling0
-type (ids_equilibrium) :: equilibrium0, equilibrium
-type (ids_magnetics)   :: magnetics
-type (ids_pf_active)   :: pf_active0, pf_active
-type (ids_pf_passive)   :: pf_passive0, pf_passive
-type (ids_core_profiles)   :: core_profiles
-
-real (DP) :: arr_in1(*), arr_out1(*)
+type (ids_equilibrium) :: equilibrium0
+type (ids_pf_active)   :: pf_active0
+type (ids_pf_passive)   :: pf_passive0
 
 
 ! define local fixed size variables
@@ -37,8 +31,6 @@ integer,save :: n_output1, n_output2
 integer,save ::  n_gaps=6
           
 integer :: pulse=109, run=1, prescribedpulse=150, prescribedrun=8
-
-integer :: idx, idx0
 
 
 integer,save :: key(27)=(/ (0,i=1,27) /)
@@ -264,27 +256,27 @@ write(*,*) "pfs resistances"
 write(*,*) pfres(1:npf)
 write(*,*) rcam(1:16)
 
-allocate(pf_active%coil(nact))
-allocate(pf_passive%loop(npass))
+allocate(pf_active0%coil(nact))
+allocate(pf_passive0%loop(npass))
 
-allocate(pf_active%time(1))
-allocate(pf_passive%time(1))
+allocate(pf_active0%time(1))
+allocate(pf_passive0%time(1))
 
-pf_active%ids_properties%homogeneous_time = 1
-pf_passive%ids_properties%homogeneous_time = 1
+pf_active0%ids_properties%homogeneous_time = 1
+pf_passive0%ids_properties%homogeneous_time = 1
 
-pf_active%coil(1:nact)%resistance = pfres(1:nact)
-pf_passive%loop(1:npass)%resistance = rcam(1:npass)
+pf_active0%coil(1:nact)%resistance = pfres(1:nact)
+pf_passive0%loop(1:npass)%resistance = rcam(1:npass)
 
 
-pf_active%time(1) = 0.35
-pf_passive%time(1) = 0.35
+pf_active0%time(1) = 0.35
+pf_passive0%time(1) = 0.35
 
 write(*,*) "pfs resistances"
 
     
-write(*,*) pf_active%coil(1:npf)%resistance
-write(*,*) pf_passive%loop(1:16)%resistance
+write(*,*) pf_active0%coil(1:npf)%resistance
+write(*,*) pf_passive0%loop(1:16)%resistance
 
 
  write(*,*) "Before limiter"
@@ -301,31 +293,33 @@ write(*,*) pf_passive%loop(1:16)%resistance
 ! 
 ! 	allocate(equilibrium%???)
 
-allocate(equilibrium%time(1))
+allocate(equilibrium0%time_slice(TimeSteps))
+allocate(equilibrium0%time(TimeSteps))
 ! 
 ! 
-equilibrium%ids_properties%homogeneous_time = 1
+equilibrium0%ids_properties%homogeneous_time = 1
 ! 
 ! 
 ! 	equilibrium%???(1:nr) = x(1:nr)
 ! 	equilibrium%???(1:nz) = y(1:nz)
 ! 
-equilibrium%time(1) = 0.35
+equilibrium0%time_slice(1)%time = 0.35
+equilibrium0%time(1) = equilibrium0%time_slice(1)%time
 
-    allocate(equilibrium%coordinate_system%grid%dim1(nr,TimeSteps))
-    allocate(equilibrium%coordinate_system%grid%dim2(nz,TimeSteps))
+    allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim1(nr))
+    allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim2(nz))
 
-    equilibrium%coordinate_system%grid%dim1(1:nr,1)=x(1:nr) ![m]
-    equilibrium%coordinate_system%grid%dim2(1:nz,1)=y(1:nz) ![m]
+    equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr)=x(1:nr) ![m]
+    equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz)=y(1:nz) ![m]
 
-    allocate(equilibrium%coordinate_system%r(ke,1,TimeSteps))
-    allocate(equilibrium%coordinate_system%z(ke,1,TimeSteps))
+    allocate(equilibrium0%time_slice(1)%coordinate_system%r(ke,1))
+    allocate(equilibrium0%time_slice(1)%coordinate_system%z(ke,1))
 
     write(*,*) "ke==",ke
 
 
-    equilibrium%coordinate_system%r(1:ke,1,1)=xu(1:ke)
-    equilibrium%coordinate_system%z(1:ke,1,1)=yu(1:ke)
+    equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)=xu(1:ke)
+    equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)=yu(1:ke)
 
 ! 
 ! 

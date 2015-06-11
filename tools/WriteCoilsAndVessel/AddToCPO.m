@@ -14,7 +14,7 @@ PFActiveString = 'pf_active';
 PFPassiveString = 'pf_passive';
 
 if nargin == 3
-    if Occurence ~= 0
+    if Occurence > 0
         PFActiveString = [PFActiveString '/' num2str(Occurence)];
         PFPassiveString = [PFPassiveString '/' num2str(Occurence)];
     end

@@ -13,9 +13,52 @@ assignin('base','pf_equilibrium',equilibrium);
 assignin('base','pf_core_profiles',core_profiles);
 
 
-X = equilibrium.time;
+Ntime = length(equilibrium.time_slice);
+Nslice = length(equilibrium.time);
+if  Ntime ~= Nslice
+    disp(['Time slices amount (' num2str(Nslice) ') is not equal time moments amount(' num2str(Ntime) ').']);
+    return
+end
+
+
+X = equilibrium.time';
 XName = 'Time';
 XUnits = 's';
+
+
+ip = zeros(1);
+li_3 = zeros(1);
+volume = zeros(1);
+area = zeros(1);
+
+psi_axis = zeros(1);
+magnetic_axis_r = zeros(1);
+magnetic_axis_z = zeros(1);
+q_axis = zeros(1);
+
+q_95 = zeros(1);
+w_mhd = zeros(1);
+
+for i=1:size(equilibrium.time_slice,2)
+    
+    ip(i) = equilibrium.time_slice{1,i}.global_quantities.ip;
+    li_3(i) = equilibrium.time_slice{1,i}.global_quantities.li_3;
+    volume(i) = equilibrium.time_slice{1,i}.global_quantities.volume;
+    area(i) = equilibrium.time_slice{1,i}.global_quantities.area;
+
+    psi_axis(i) = equilibrium.time_slice{1,i}.global_quantities.psi_axis;
+    magnetic_axis_r(i) = equilibrium.time_slice{1,i}.global_quantities.magnetic_axis.r;
+    magnetic_axis_z(i) = equilibrium.time_slice{1,i}.global_quantities.magnetic_axis.z;
+    q_axis(i) = equilibrium.time_slice{1,i}.global_quantities.q_axis;   
+
+    q_95(i) = equilibrium.time_slice{1,i}.global_quantities.q_95;
+    w_mhd(i) = equilibrium.time_slice{1,i}.global_quantities.w_mhd;
+    
+end
+
+
+r0 = equilibrium.vacuum_toroidal_field.r0;
+b0 = equilibrium.vacuum_toroidal_field.b0';
 
 
 %---------------------------------------
@@ -23,19 +66,20 @@ XUnits = 's';
 figure(1);
 
 subplot(2,2,1);
-PlotQuantity(X,equilibrium.global_quantities.ip,XName,XUnits,'I_p','A');
+PlotQuantity(X,ip,XName,XUnits,'I_p','A');
 
 
 subplot(2,2,2);
-PlotQuantity(X,equilibrium.global_quantities.li_3,XName,XUnits,'li 3','-');
+PlotQuantity(X,li_3,XName,XUnits,'li 3','-');
 
 
 subplot(2,2,3);
-PlotQuantity(X,equilibrium.global_quantities.volume,XName,XUnits,'Volume','m^3');
+PlotQuantity(X,volume,XName,XUnits,'Volume','m^3');
 
 
 subplot(2,2,4);
-PlotQuantity(X,equilibrium.global_quantities.area,XName,XUnits,'Area','m^2');
+PlotQuantity(X,area,XName,XUnits,'Area','m^2');
+
 
 
 %-------------------------------------------------------
@@ -43,43 +87,44 @@ PlotQuantity(X,equilibrium.global_quantities.area,XName,XUnits,'Area','m^2');
 figure(2);
 
 subplot(2,2,1);
-PlotQuantity(X,equilibrium.global_quantities.psi_axis,XName,XUnits,'psi_a_x_i_s','Wb');
+PlotQuantity(X,psi_axis,XName,XUnits,'psi_a_x_i_s','Wb');
 
 
 subplot(2,2,2);
-PlotQuantity(X,equilibrium.global_quantities.magnetic_axis.r,XName,XUnits,'r','m');
+PlotQuantity(X,magnetic_axis_r,XName,XUnits,'r','m');
 
 
 subplot(2,2,3);
-PlotQuantity(X,equilibrium.global_quantities.magnetic_axis.z,XName,XUnits,'z','m');
+PlotQuantity(X,magnetic_axis_z,XName,XUnits,'z','m');
 
 
 subplot(2,2,4);
-PlotQuantity(X,equilibrium.global_quantities.q_axis,XName,XUnits,'q_a_x_i_s','-');
+PlotQuantity(X,q_axis,XName,XUnits,'q_a_x_i_s','-');
 
 %-------------------------------------------------------
 
 % figure(3);
 % 
 % subplot(2,2,1);
-% PlotQuantity(X,equilibrium.global_quantities.q_95,XName,XUnits,'q_9_5','-');
+% PlotQuantity(X,q_95,XName,XUnits,'q_9_5','-');
 % 
 % 
 % subplot(2,2,2);
-% PlotQuantity(X,equilibrium.global_quantities.vacuum_toroidal_field.r0,XName,XUnits,'r_B_0','m');
+% PlotQuantity(X,b0,XName,XUnits,['B_0 for R = ' num2str(r0) ' m'],'T');
 % 
 % 
 % subplot(2,2,3);
-% PlotQuantity(X,equilibrium.global_quantities.vacuum_toroidal_field.b0,XName,XUnits,'B_0','T');
-% 
-% 
-% subplot(2,2,4);
-% PlotQuantity(X,equilibrium.global_quantities.w_mhd,XName,XUnits,'W_M_H_D','J');
+% PlotQuantity(X,w_mhd,XName,XUnits,'W_M_H_D','J');
 
 end
 
 
 function PlotQuantity(x,y,Namex,Unitsx,Namey,Unitsy)
+
+if size(x) ~= size(y)
+    disp('Size of x != size of y');
+    return 
+end
 
 plot(x,y);
 title(Namey);

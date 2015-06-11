@@ -1,10 +1,10 @@
 <ActorGenerator>
-  <version>V2.0</version>
+  <version>V3.0</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>../interface/dina_contr.a</fFile>
-  <subrt>dina_contr</subrt>
+  <fFile>../interface/dina_put_slice.a</fFile>
+  <subrt>dina_put_slice</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
     <vector>
@@ -268,26 +268,80 @@
           </entry>
         </tHash>
         <tc>
-          <ffile>/work/imas/projects/fc2k/2.0/KeplerJniActorGen/bin/../scripts/TC_Types.py</ffile>
+          <ffile>/work/imas/projects/fc2k/KeplerJniActorGen_3.0/bin/../scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams>
           <vector>
-            <string>double</string>
+            <string>pf_active</string>
+            <string>0</string>
+            <string>0</string>
             <string>0</string>
             <string>1</string>
-            <string>501</string>
-            <string>1</string>
             <string>0</string>
-            <string>ar_in1</string>
+            <string>null</string>
           </vector>
           <vector>
-            <string>double</string>
+            <string>pf_passive</string>
+            <string>0</string>
+            <string>0</string>
             <string>0</string>
             <string>1</string>
-            <string>501</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
+            <string>equilibrium</string>
+            <string>0</string>
+            <string>0</string>
             <string>0</string>
             <string>1</string>
-            <string>ar_out1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
+            <string>core_profiles</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
+            <string>integer</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>pulse</string>
+          </vector>
+          <vector>
+            <string>integer</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>run</string>
+          </vector>
+          <vector>
+            <string>integer</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>iloop</string>
+          </vector>
+          <vector>
+            <string>integer</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>trigger</string>
           </vector>
         </tupleParams>
         <uHash>
@@ -323,9 +377,9 @@
       </default>
     </TupleP>
   </tupleParams>
-  <actor>dinacontr19</actor>
-  <actorFolder>eu/itm/dinacontr19</actorFolder>
-  <ualFolder>/work/imas/projects/ual/2.0</ualFolder>
+  <actor>dinaputslice21</actor>
+  <actorFolder>eu/itm/dinaputslice21</actorFolder>
+  <ualFolder>/work/imas/projects/ual/DD3.0.3_PUAL3.0.4</ualFolder>
   <returnType serialization="custom">
     <unserializable-parents/>
     <vector>
@@ -589,7 +643,7 @@
           </entry>
         </tHash>
         <tc>
-          <ffile>/work/imas/projects/fc2k/2.0/KeplerJniActorGen/bin/../scripts/TC_Types.py</ffile>
+          <ffile>/work/imas/projects/fc2k/KeplerJniActorGen_3.0/bin/../scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams/>
         <uHash>
@@ -637,5 +691,5 @@
   <MPI>false</MPI>
   <BATCH>false</BATCH>
   <InitFunc>false</InitFunc>
-  <FC2Kpath>/work/imas/projects/fc2k/2.0/KeplerJniActorGen/bin/..</FC2Kpath>
+  <FC2Kpath>/work/imas/projects/fc2k/KeplerJniActorGen_3.0/bin/..</FC2Kpath>
 </ActorGenerator>

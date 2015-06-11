@@ -28,12 +28,13 @@ real(DP) :: tt,psi_ax,psi_bnd
 
 
 
-call imas_open('ids',pulse,run,idx) 
- 
-
 if (iloop == 1) then
 
-write(*,*)  'Put non-timed'
+
+  write(*,*) 'Create new pulse file...'
+  call imas_create('ids',pulse,run,1,1,idx)
+  write(*,*) 'Pulse file is created, put non-timed...'
+
 
   call ids_put(idx,"pf_active",pf_active)
   call ids_put(idx,"pf_passive",pf_passive)
@@ -41,23 +42,27 @@ write(*,*)  'Put non-timed'
   call ids_put(idx,"equilibrium",equilibrium)
   call ids_put(idx,"core_profiles",core_profiles)
 
+  write(*,*)  'Pulse put!'
+
 else
 
-write(*,*)  'Put slices'
+  write(*,*) 'Open pulse file...'
+  call imas_open('ids',pulse,run,idx) 
+  write(*,*)  'Pulse file is opened, put slices'
 
-write(*,*)  'Put pf_active'
-call ids_put_slice(idx,"pf_active",pf_active)
+  write(*,*)  'Put pf_active'
+  call ids_put_slice(idx,"pf_active",pf_active)
 
-write(*,*)  'Put pf_passive'
-call ids_put_slice(idx,"pf_passive",pf_passive)
+  write(*,*)  'Put pf_passive'
+  call ids_put_slice(idx,"pf_passive",pf_passive)
 
-write(*,*)  'Put equilibrium'
-call ids_put_slice(idx,"equilibrium",equilibrium)
+  write(*,*)  'Put equilibrium'
+  call ids_put_slice(idx,"equilibrium",equilibrium)
 
-write(*,*)  'Put core_profiles'
-call ids_put_slice(idx,"core_profiles",core_profiles)
+  write(*,*)  'Put core_profiles'
+  call ids_put_slice(idx,"core_profiles",core_profiles)
 
-write(*,*)  'Slices put'
+  write(*,*)  'Slices put!'
 
 endif
 
@@ -66,12 +71,12 @@ call imas_close(idx)
 
 
 
-	TimeSteps = size(equilibrium%time)
+	TimeSteps = size(equilibrium%time_slice)
 	CurTimeStep = 1
 
-nz = size(equilibrium%profiles_2d(1)%grid%dim1(:,CurTimeStep))
-nr = size(equilibrium%profiles_2d(1)%grid%dim2(:,CurTimeStep))
-ke = size(equilibrium%coordinate_system%r(:,1,CurTimeStep))
+nz = size(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(:))
+nr = size(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(:))
+ke = size(equilibrium%time_slice(CurTimeStep)%coordinate_system%r(:,1))
 
 write(*,*) 'nr nz ke = ',nr,nz,ke
 
@@ -82,32 +87,32 @@ allocate(xu(ke))
 allocate(yu(ke))
 
 !write(*,*) 'test1'
-y(1:nz) = equilibrium%profiles_2d(1)%grid%dim1(1:nz,CurTimeStep)
-x(1:nr) = equilibrium%profiles_2d(1)%grid%dim2(1:nr,CurTimeStep)
+y(1:nz) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nz)
+x(1:nr) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nr)
 
 
 !write(*,*) 'test2'
 
     do i=1,nz
     do j=1,nr
-      psi(j,i) = equilibrium%profiles_2d(1)%psi(i,j,CurTimeStep)
+      psi(j,i) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)
     enddo
     enddo
 
 !write(*,*) 'test3'
 
-xu(1:ke) = equilibrium%coordinate_system%r(1:ke,1,CurTimeStep)
+xu(1:ke) = equilibrium%time_slice(CurTimeStep)%coordinate_system%r(1:ke,1)
 
 !write(*,*) 'test4'
-yu(1:ke) = equilibrium%coordinate_system%z(1:ke,1,CurTimeStep)
+yu(1:ke) = equilibrium%time_slice(CurTimeStep)%coordinate_system%z(1:ke,1)
 
 !write(*,*) 'test5'
 
 tt = equilibrium%time(CurTimeStep)
 
 
-psi_ax = equilibrium%global_quantities%psi_axis(CurTimeStep)
-psi_bnd = equilibrium%global_quantities%psi_boundary(CurTimeStep)
+psi_ax = equilibrium%time_slice(CurTimeStep)%global_quantities%psi_axis
+psi_bnd = equilibrium%time_slice(CurTimeStep)%global_quantities%psi_boundary
 
     i_wr=0
     if(i_wr.eq.1)then

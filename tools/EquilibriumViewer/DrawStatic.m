@@ -8,8 +8,16 @@ axes(Axes);
 Frame = 1;
 
 
-xu = 1.e2*handles.Equilibrium.coordinate_system.r(:,1,Frame);
-yu = 1.e2*handles.Equilibrium.coordinate_system.z(:,1,Frame);
+% Read limiter line
+Lszx = size(handles.Equilibrium.time_slice{1,Frame}.coordinate_system.r);
+Lszy = size(handles.Equilibrium.time_slice{1,Frame}.coordinate_system.z);
+if length(Lszx) == 2 && length(Lszy) == 2
+    xu = 1.e2*handles.Equilibrium.time_slice{1,Frame}.coordinate_system.r(:,1);
+    yu = 1.e2*handles.Equilibrium.time_slice{1,Frame}.coordinate_system.z(:,1);
+else
+    xu = [NaN];
+    yu = [NaN];
+end
 
 
 lw=1; %LineWidth

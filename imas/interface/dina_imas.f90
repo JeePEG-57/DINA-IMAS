@@ -109,7 +109,7 @@ print *,'em_coupling0%mutual_loops_grid 1',nflux
 nbpol=size(em_coupling0%field_probes_grid,1)
 print *,'em_coupling0%field_probes_grid 1',nbpol
 
-ke=size(equilibrium0%coordinate_system%r,1)
+ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
 print *,'equilibrium0%coordinate_system%r 1',ke
 
 
@@ -146,8 +146,8 @@ write(*,*) 'Entering DINA_IMAS, first_call = ', first_call, loop_count, dina_tim
 
 flush(6)
 
-print *,' before imas_open'
 
+!print *,' before imas_open'
 ! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
 ! print *,' before ids_get idx0',idx0
 ! 
@@ -155,8 +155,7 @@ print *,' before imas_open'
 ! call ids_get(idx0,"pf_active",pf_active)
 ! 
 ! call imas_close(idx0)
-
-print *,' close imas'
+!print *,' close imas'
 
 
   write(*,*) 'Shapes '
@@ -203,11 +202,11 @@ pfres(1:nact) = pf_active0%coil(1:nact)%resistance
 rcam(1:npass) = pf_passive0%loop(1:npass)%resistance
 
 
-xu(1:ke)=equilibrium0%coordinate_system%r(1:ke,1,1)
-yu(1:ke)=equilibrium0%coordinate_system%z(1:ke,1,1)
+xu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)
+yu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)
 
-x(1:nr)=equilibrium0%coordinate_system%grid%dim1(1:nr,1) ![m]
-y(1:nz)=equilibrium0%coordinate_system%grid%dim2(1:nz,1) ![m]
+x(1:nr)=equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr) ![m]
+y(1:nz)=equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz) ![m]
 
 gridrange(1)=y(1)
 gridrange(2)=y(nz)
@@ -230,6 +229,8 @@ write(*,*) "End of static data extraction"
         kloop=nflux
         kprobe=nbpol
 
+
+
      call  dina_v96_in(ncam,npf,kloop,kprobe,&
 & 	gridrange,nact,npass,&
 &	fluxarr,vesarr, pslgreen,bprgreen,&
@@ -237,6 +238,7 @@ write(*,*) "End of static data extraction"
 &	xu,yu,ke,key,&
 &   pfgreen,vesgreen,pfprobe,&
 &   vesprobe,ngrid)
+
 
 
 first_call = first_call+1 ! cancel the initialisation for the next call
@@ -270,7 +272,6 @@ end do
      &	input_1,input_2,input_3, &
      &	output_1,output_2,output_3,output_4,ng)
 
-!    write(*,*) 'dina_imas loop, first_call = ', first_call, loop_count
 
 
 
@@ -279,6 +280,8 @@ end do
      & q_ax,q_95,rs0,bt0,wen2,tt,  &
      & ai,te0,tq0,pne,tok1,q,  &
      & x,y,psi,psi_bnd)
+
+
 
     dina_time=tt
  
@@ -367,28 +370,8 @@ pf_passive%time(1) = dina_time
 
 ! Allocations equilibrium
 
-    allocate(equilibrium%global_quantities%ip(TimeSteps))
-  
-    allocate(equilibrium%global_quantities%li_3(TimeSteps))
-  
-    allocate(equilibrium%global_quantities%volume(TimeSteps))
-  
-    allocate(equilibrium%global_quantities%area(TimeSteps))
-  
-    allocate(equilibrium%global_quantities%psi_axis(TimeSteps))
-
-    allocate(equilibrium%global_quantities%psi_boundary(TimeSteps))
-  
-    allocate(equilibrium%global_quantities%magnetic_axis%r(TimeSteps))
-    allocate(equilibrium%global_quantities%magnetic_axis%z(TimeSteps))
-  
-    allocate(equilibrium%global_quantities%q_axis(TimeSteps))  
-    allocate(equilibrium%global_quantities%q_95(TimeSteps))
-  
-!    allocate(equilibrium%global_quantities%vacuum_toroidal_field%r0(TimeSteps)) - time independed
-    allocate(equilibrium%global_quantities%vacuum_toroidal_field%b0(TimeSteps))
-  
-    allocate(equilibrium%global_quantities%w_mhd(TimeSteps))
+    allocate(equilibrium%time_slice(TimeSteps))
+    allocate(equilibrium%time(TimeSteps))
   
     
     n1 = nz
@@ -396,42 +379,43 @@ pf_passive%time(1) = dina_time
 
     !allocate(equilibrium%coordinate_system%grid%dim1(n1,TimeSteps))
     !allocate(equilibrium%coordinate_system%grid%dim2(n2,TimeSteps))
-    allocate(equilibrium%coordinate_system%r(ke,1,TimeSteps))
-    allocate(equilibrium%coordinate_system%z(ke,1,TimeSteps))
+    allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%r(ke,1))
+    allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%z(ke,1))
   
-    allocate(equilibrium%profiles_2d(1))
-    allocate(equilibrium%profiles_2d(1)%psi(nz,nr,TimeSteps))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(nz,nr))
     
-    allocate(equilibrium%profiles_2d(1)%grid%dim1(nz,TimeSteps))
-    allocate(equilibrium%profiles_2d(1)%grid%dim2(nr,TimeSteps))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(nz))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(nr))
     
-    allocate(equilibrium%time(TimeSteps))
+    
+    allocate(equilibrium%vacuum_toroidal_field%b0(TimeSteps))
   
 ! Filling equilibrium 
 
     equilibrium%ids_properties%homogeneous_time = 1
     
     
-    equilibrium%global_quantities%ip(CurTimeStep) = tpl ![A]
-	equilibrium%global_quantities%li_3(CurTimeStep) = uli
-	equilibrium%global_quantities%volume(CurTimeStep) = v ![m3]
-	equilibrium%global_quantities%area(CurTimeStep) = s_plasma ![m2]
-	equilibrium%global_quantities%psi_axis(CurTimeStep) = psi_ax ![Wb]
-	equilibrium%global_quantities%psi_boundary(CurTimeStep) = psi_bnd ![Wb]
-	equilibrium%global_quantities%magnetic_axis%r(CurTimeStep) = rmag ![m]
-	equilibrium%global_quantities%magnetic_axis%z(CurTimeStep) = zmag ![m]
-	equilibrium%global_quantities%q_axis(CurTimeStep) = q_ax
-	equilibrium%global_quantities%q_95(CurTimeStep) = q_95
-	equilibrium%global_quantities%vacuum_toroidal_field%r0 = rs0 ![m], time independed
-	equilibrium%global_quantities%vacuum_toroidal_field%b0(CurTimeStep) = bt0 ![T]
-	equilibrium%global_quantities%w_mhd(CurTimeStep) = wen2 ![J]
+    equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%li_3 = uli
+	equilibrium%time_slice(CurTimeStep)%global_quantities%volume = v ![m3]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%area = s_plasma ![m2]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%psi_axis= psi_ax ![Wb]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%psi_boundary = psi_bnd ![Wb]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%r = rmag ![m]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%z = zmag ![m]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%q_axis = q_ax
+	equilibrium%time_slice(CurTimeStep)%global_quantities%q_95 = q_95
+	equilibrium%time_slice(CurTimeStep)%global_quantities%w_mhd = wen2 ![J]
 
+	equilibrium%vacuum_toroidal_field%r0 = rs0 ![m]
+	equilibrium%vacuum_toroidal_field%b0(CurTimeStep) = bt0 ![T]
     
-    !equilibrium%coordinate_system%grid%dim1(1:n1,CurTimeStep)=x(1:n1) ![m]
-    !equilibrium%coordinate_system%grid%dim2(1:n2,CurTimeStep)=y(1:n2) ![m]
+    !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim1(1:n1)=x(1:n1) ![m]
+    !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim2(1:n2)=y(1:n2) ![m]
 
-    equilibrium%profiles_2d(1)%grid%dim1(1:nz,CurTimeStep)=y(1:nz)
-    equilibrium%profiles_2d(1)%grid%dim2(1:nr,CurTimeStep)=x(1:nr)
+    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nz)=y(1:nz)
+    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nr)=x(1:nr)
 
 
     call write_graf_imas0(nr,nz,ke, &
@@ -443,14 +427,14 @@ pf_passive%time(1) = dina_time
 
     do i=1,nz
     do j=1,nr
-      equilibrium%profiles_2d(1)%psi(i,j,CurTimeStep)=psi(j,i)
+      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)=psi(j,i)
     enddo
     enddo
     
 
     do i=1,nz
     do j=1,nr
-      psi1(j,i) = equilibrium%profiles_2d(1)%psi(i,j,CurTimeStep)
+      psi1(j,i) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)
     enddo
     enddo
 
@@ -466,38 +450,38 @@ pf_passive%time(1) = dina_time
     end if
     
 
-    equilibrium%coordinate_system%r(1:ke,1,CurTimeStep) = xu(1:ke)
-    equilibrium%coordinate_system%z(1:ke,1,CurTimeStep) = yu(1:ke)
+    equilibrium%time_slice(CurTimeStep)%coordinate_system%r(1:ke,1) = xu(1:ke)
+    equilibrium%time_slice(CurTimeStep)%coordinate_system%z(1:ke,1) = yu(1:ke)
 
 
-
+    equilibrium%time_slice(CurTimeStep)%time = tt
     equilibrium%time(CurTimeStep) = tt ![s]
     
 ! Allocations core_profiles    
 
-    allocate(core_profiles%rho_tor_norm(n,TimeSteps))
-    allocate(core_profiles%t_e(n,TimeSteps))
-    allocate(core_profiles%t_i_average(n,TimeSteps))
-    allocate(core_profiles%n_e(n,TimeSteps))
-    allocate(core_profiles%j_tor(n,TimeSteps))
-    allocate(core_profiles%q(n,TimeSteps))
-    
-    
+    allocate(core_profiles%profiles_1d(TimeSteps))
     allocate(core_profiles%time(TimeSteps))
+
+    allocate(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%t_e(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%n_e(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
  
 ! Filling core_profiles  
 
     core_profiles%ids_properties%homogeneous_time = 1
     
     
-    core_profiles%rho_tor_norm(1:n, CurTimeStep) = ai(1:n)
-	core_profiles%t_e(1:n, CurTimeStep) = te0(1:n)
-	core_profiles%t_i_average(1:n, CurTimeStep) = tq0(1:n)
-	core_profiles%n_e(1:n, CurTimeStep) = pne(1:n)
-	core_profiles%j_tor(1:n, CurTimeStep) = tok1(1:n) ![A/m2]
-	core_profiles%q(1:n, CurTimeStep) = q(1:n)
+    core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
+	core_profiles%profiles_1d(CurTimeStep)%t_e(1:n) = te0(1:n)
+	core_profiles%profiles_1d(CurTimeStep)%t_i_average(1:n) = tq0(1:n)
+	core_profiles%profiles_1d(CurTimeStep)%n_e(1:n) = pne(1:n)
+	core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
+	core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
     
-    
+    core_profiles%profiles_1d(CurTimeStep)%time = tt
     core_profiles%time(CurTimeStep) = tt ![s]
     
     

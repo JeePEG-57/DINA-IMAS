@@ -49,8 +49,7 @@ type (ids_core_profiles)   :: core_profiles
 real (DP) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
-! integer :: pulse=109, run=1, prescribedpulse=150, prescribedrun=1
-integer :: pulse=150, run=3, prescribedpulse=150, prescribedrun=1
+integer :: pulse=170, run=2, prescribedpulse=170, prescribedrun=1
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
@@ -64,7 +63,7 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 print *,' Enter pulse number'
 !read (*,*)prescribedpulse
-prescribedpulse=160
+prescribedpulse=170
 
 print *,' pulse number',prescribedpulse
 pulse=prescribedpulse
@@ -74,7 +73,7 @@ print *,' Enter run number'
 prescribedrun=1
 print *,' run number',prescribedrun
 
-
+write(*,*) 'The file'
 
 write(*,*) 'Reading the prescribed IDS'
 call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
@@ -87,25 +86,11 @@ call ids_get(idx0,"pf_passive",pf_passive0)
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
 
-write(*,*) 'Open new pulse file !'
-call imas_create('ids',pulse,run,1,1,idx)
-write(*,*) 'Created pulse file, idx = ', idx
-
-call ids_get(idx,"pf_active",pf_active)
-call ids_get(idx,"pf_passive",pf_passive)
-call ids_get(idx,"equilibrium",equilibrium)
-call ids_get(idx,"core_profiles",core_profiles)
-
-!! DINA LOOP CALLS
 
 arr_in1(1:31)=1
 arr_out1(1:31)=0
 
-call imas_close(idx)
-
-!!!!!!!do iloop=1,20
-!do iloop=1,5000
-do iloop=1,999000
+do iloop=1,4000
 
 write(*,*) 'call DINA_IMAS i =',iloop
 
@@ -179,20 +164,26 @@ call ids_deallocate(equilibrium0)
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
 
-stop
+call ids_deallocate(pf_active)
+call ids_deallocate(pf_passive)
+call ids_deallocate(equilibrium)
+call ids_deallocate(magnetics)
 
-write(*,*) 'Read back full dynamic IDS as a test'
+! write(*,*) 'Read back full dynamic IDS as a test'
+! 
+! call imas_open('ids',pulse,run,idx)
+! !call ids_get(idx,"magnetics",magnetics)
+! call ids_get(idx,"pf_active",pf_active)
+! call ids_get(idx,"pf_passive",pf_passive)
+! 
+! call imas_close(idx)
+! 
+! write(*,*) "coil 1 current = ",pf_active%coil(1)%current%data
+! !write(*,*) "outline = ", pf_active%coil(5)%element(1)%geometry%outline%r
+! !write(*,*) "shape1",dina%output_group_7%shape%data(1,:)
+! write(*,*) "loop 1 current = ",pf_passive%loop(1)%current
 
-call imas_open('ids',pulse,run,idx)
-!call ids_get(idx,"magnetics",magnetics)
-call ids_get(idx,"pf_active",pf_active)
-call ids_get(idx,"pf_passive",pf_passive)
 
-write(*,*) "coil 1 current",pf_active%coil(1)%current%data
-print*,'outline ', pf_active%coil(5)%element(1)%geometry%outline%r
-!write(*,*) "shape1",dina%output_group_7%shape%data(1,:)
-
-call imas_close(idx)
 write(*,*) 'DINA_IMAS Exiting cleanly'
 
 end 

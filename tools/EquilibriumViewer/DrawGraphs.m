@@ -28,14 +28,14 @@ DataName = UserData.ProfileName;
 
 s_time = handles.Equilibrium.time(Frame);
     
-x = 1.e2*handles.Equilibrium.profiles_2d{1}.grid.dim1(:,Frame);
-y = 1.e2*handles.Equilibrium.profiles_2d{1}.grid.dim2(:,Frame); 
+y = 1.e2*handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.grid.dim1;
+x = 1.e2*handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.grid.dim2; 
 
-psi = handles.Equilibrium.profiles_2d{1}.psi(:,:,Frame);
+psi = handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.psi;
     
     
-pmag = handles.Equilibrium.global_quantities.psi_axis(Frame);
-pbound = handles.Equilibrium.global_quantities.psi_boundary(Frame);
+pmag = handles.Equilibrium.time_slice{1,Frame}.global_quantities.psi_axis;
+pbound = handles.Equilibrium.time_slice{1,Frame}.global_quantities.psi_boundary;
 
 
 lw=1; %LineWidth
@@ -55,6 +55,10 @@ for i=1:n_g+20
     PL(i)=avalb;
 end 
   
+
+size(x)
+size(y)
+size(psi)
 
 [~,h1]=contour(x,y,psi,PL(1:n_g-1),'r');  %flux
 

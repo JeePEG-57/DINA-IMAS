@@ -43,6 +43,8 @@ else
 end
 % End initialization code - DO NOT EDIT
 
+addpath ..;
+
 
 % --- Executes just before ProfilesViewer is made visible.
 function ProfilesViewer_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -289,7 +291,7 @@ else
     handles.Step = 10;
 end
 
-handles.TimeSteps = length(handles.CoreProfiles.time);
+handles.TimeSteps = length(handles.CoreProfiles.profiles_1d);
 
 handles.MaxStepNumber = floor((handles.TimeSteps - 1)/(handles.Step*3) + 1);
 
@@ -366,103 +368,79 @@ handles = guidata(hObject);
 
 axes(Axes);
 
+GraphsInAxes = 3;
 
-n1 = handles.Frame;
-n2 = n1 + handles.Step;
-n3 = n2 + handles.Step;
 
+if handles.Frame <= handles.TimeSteps
+    Times = zeros(1,1);
+
+    Times(1,1) = handles.Frame;
+
+    for i=1:(GraphsInAxes-1)
+        NextStep = Times(1,i) + handles.Step;
+        if NextStep <= handles.TimeSteps
+            Times(1,i+1) = NextStep;
+        else
+            break
+        end
+    end
+else
+    Times = [];
+end
 
 t = handles.CoreProfiles.time;
-
-x = handles.CoreProfiles.rho_tor_norm;
-
 
 UserData = get(Axes,'UserData');
 
 DataName = UserData.ProfileName;
-if strcmp(DataName,'n_e')
-    y = handles.CoreProfiles.n_e;
-elseif strcmp(DataName,'T_e')
-    y = handles.CoreProfiles.t_e;
-elseif strcmp(DataName,'T_i average')
-    y = handles.CoreProfiles.t_i_average;
-elseif strcmp(DataName,'j_t_o_r')
-    y = handles.CoreProfiles.j_tor;
-elseif strcmp(DataName,'q')
-    y = handles.CoreProfiles.q;
-elseif strcmp(DataName,'rho_t_o_r _n_o_r_m')
-    y = handles.CoreProfiles.rho_tor_norm;
-    x = zeros(size(handles.CoreProfiles.rho_tor_norm,1),size(handles.CoreProfiles.rho_tor_norm,2));
-    for i=1:size(x,1)
-        x(i,:) = (i-1)/(size(x,1)-1);
-    end
-else
-    return
-end
-   
 
 LegendStrings = {};
 
+ColorString = 'bgrymc';
 
-if UserData.Lines(1) == -1
-    UserData.Lines(1) = line(NaN,NaN);
-end
+for it = 1:length(Times)
 
-if n1 <= handles.TimeSteps
-    t1 = t(n1);
-    x1 = x(:,n1);
-    y1 = y(:,n1); 
-
-
-    set(UserData.Lines(1),'XData',x1,'YData',y1);
-
-    set(UserData.Lines(1),'Color','b');
+    x = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.grid.rho_tor_norm;
     
-    LegendStrings{length(LegendStrings)+1} = ['t = ' num2str(t1)];
-else
-    set(UserData.Lines(1),'XData',NaN,'YData',NaN);
+    if strcmp(DataName,'n_e')
+        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.n_e;
+    elseif strcmp(DataName,'T_e')
+        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.t_e;
+    elseif strcmp(DataName,'T_i average')
+        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.t_i_average;
+    elseif strcmp(DataName,'j_t_o_r')
+        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.j_tor;
+    elseif strcmp(DataName,'q')
+        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.q;
+    elseif strcmp(DataName,'rho_t_o_r _n_o_r_m')
+        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.grid.rho_tor_norm;
+        x = zeros(length(handles.CoreProfiles.profiles_1d{1,Times(1,it)}.grid.rho_tor_norm));
+        for i=1:length(x)
+            x(i) = (i-1)/(length(x)-1);
+        end
+    else
+        return
+    end
+
+
+    if UserData.Lines(it) == -1
+        UserData.Lines(it) = line(NaN,NaN);
+    end
+
+
+    CurTime = t(Times(1,it));
+
+    set(UserData.Lines(it),'XData',x,'YData',y);
+
+    set(UserData.Lines(it),'Color',ColorString(it));
+
+    LegendStrings{length(LegendStrings)+1} = ['t = ' num2str(CurTime) ' s'];
+
 end
 
 
-
-if UserData.Lines(2) == -1
-    UserData.Lines(2) = line(NaN,NaN);
-end
-
-if n2 <= handles.TimeSteps
-    t2 = t(n2);
-    x2 = x(:,n2);
-    y2 = y(:,n2); 
-
-
-    set(UserData.Lines(2),'XData',x2,'YData',y2);
-
-    set(UserData.Lines(2),'Color','g');
-    
-    LegendStrings{length(LegendStrings)+1} = ['t = ' num2str(t2)];
-else
-    set(UserData.Lines(2),'XData',NaN,'YData',NaN);
-end
-
-
-
-if UserData.Lines(3) == -1
-    UserData.Lines(3) = line(NaN,NaN);
-end
-
-if n3 <= handles.TimeSteps
-    t3 = t(n3);
-    x3 = x(:,n3);
-    y3 = y(:,n3); 
-
-
-    set(UserData.Lines(3),'XData',x3,'YData',y3);
-
-    set(UserData.Lines(3),'Color','r');
-    
-    LegendStrings{length(LegendStrings)+1} = ['t = ' num2str(t3)];
-else
-    set(UserData.Lines(3),'XData',NaN,'YData',NaN);
+for it = (size(Times,2)+1):GraphsInAxes;
+    set(UserData.Lines(it),'XData',NaN,'YData',NaN);
 end
 
 
@@ -479,15 +457,3 @@ title(DataName, 'Color','w');
 
 legend(LegendStrings);
 
-
-
-function [cpo]= LoadIDS(shot, run, ids)
-% Check arguments
-if (nargin ~=3)
-    error('Bad number of input arguments. (Must be 3: numShot, run, ids)');
-end
-addpath /work/imas/projects/ual/2.0/matlabinterface;
-
-expIdx = imas_open('ids', shot, run);
-cpo=ids_get(expIdx, ids);
-imas_close(expIdx,'ids',shot,run);

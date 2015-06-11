@@ -6,7 +6,7 @@ dina:
 	make -C src/scenario
 
 interface: dina
-	make -C imas/interface -f make_dina_lib
+	make -C imas/interface
 
 fc2k: interface
 	make -C imas/fc2k
@@ -14,8 +14,8 @@ fc2k: interface
 
 clean:
 	make -C src/scenario clean
-	make -C imas/interface -f make_dina_lib clean
+	make -C imas/interface clean
 
 distclean:
 	make -C src/scenario distclean
-	make -C imas/interface -f make_dina_lib distclean
+	make -C imas/interface distclean

@@ -1,16 +1,14 @@
-F90_gfortran=gfortran
+F90_gfortran=gfortran -w
 COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none -I$(UAL)/fortraninterface/amd64_gfortran -g  
 LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
-
-dir_v96=for/
-
 
 TARGETS += test_dina_to_imas 
 
 LIB_SOURCE1 += dina_to_imas.o n_dina_imas4.o
 
+DINADIR := ../../src/scenario
+
 all: $(TARGETS)
-	
 
 #--------------------- gfortran ------------------------
 
@@ -24,11 +22,10 @@ test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
-n_dina_imas4.o: $(dir_v96)n_dina_imas4.f 
-	$(F90_gfortran) $(COPTS_gfortran) -c -w $(dir_v96)n_dina_imas4.f
+n_dina_imas4.o: $(DINADIR)n_dina_imas4.f 
+	$(F90_gfortran) $(COPTS_gfortran) -c -w $(DINADIR)n_dina_imas4.f
 
 
 clean:
 	rm *.o
-	rm test_dina
-	rm dina_imas.a
+	rm test_dina_to_imas

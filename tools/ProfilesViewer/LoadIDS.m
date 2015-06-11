@@ -3,9 +3,7 @@ function [cpo]= LoadIDS(shot, run, ids)
 if (nargin ~=3)
     error('Bad number of input arguments. (Must be 3: numShot, run, ids)');
 end
-addpath /work/imas/projects/ual/2.0/matlabinterface;
-
-disp('LoadIDS');
+UALInterface;
 
 expIdx = imas_open('ids', shot, run);
 cpo=ids_get(expIdx, ids);
