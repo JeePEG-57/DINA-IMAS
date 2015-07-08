@@ -463,9 +463,9 @@ pf_passive%time(1) = dina_time
     allocate(core_profiles%time(TimeSteps))
 
     allocate(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
-    allocate(core_profiles%profiles_1d(CurTimeStep)%t_e(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
-    allocate(core_profiles%profiles_1d(CurTimeStep)%n_e(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%density(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
  
@@ -475,9 +475,9 @@ pf_passive%time(1) = dina_time
     
     
     core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
-	core_profiles%profiles_1d(CurTimeStep)%t_e(1:n) = te0(1:n)
+	core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(1:n) = te0(1:n)
 	core_profiles%profiles_1d(CurTimeStep)%t_i_average(1:n) = tq0(1:n)
-	core_profiles%profiles_1d(CurTimeStep)%n_e(1:n) = pne(1:n)
+	core_profiles%profiles_1d(CurTimeStep)%electrons%density(1:n) = pne(1:n)
 	core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
 	core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
     
