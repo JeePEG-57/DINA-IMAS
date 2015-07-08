@@ -1,2 +1,5 @@
 *~
 *.[oa]
+imas/fc2k/*.xml
+!imas/fc2k/*-template.xml
+imas/interface/test_dina
