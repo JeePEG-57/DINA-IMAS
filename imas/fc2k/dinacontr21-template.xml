@@ -268,7 +268,7 @@
           </entry>
         </tHash>
         <tc>
-          <ffile>/work/imas/projects/fc2k/KeplerJniActorGen_3.0/bin/../scripts/TC_Types.py</ffile>
+          <ffile>$FC2K/scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams>
           <vector>
@@ -325,7 +325,7 @@
   </tupleParams>
   <actor>dinacontr21</actor>
   <actorFolder>eu/itm/dinacontr21</actorFolder>
-  <ualFolder>/work/imas/projects/ual/DD3.0.3_PUAL3.0.4</ualFolder>
+  <ualFolder>$IMAS_PREFIX</ualFolder>
   <returnType serialization="custom">
     <unserializable-parents/>
     <vector>
@@ -589,7 +589,7 @@
           </entry>
         </tHash>
         <tc>
-          <ffile>/work/imas/projects/fc2k/KeplerJniActorGen_3.0/bin/../scripts/TC_Types.py</ffile>
+          <ffile>$FC2K/scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams/>
         <uHash>
@@ -637,5 +637,5 @@
   <MPI>false</MPI>
   <BATCH>false</BATCH>
   <InitFunc>false</InitFunc>
-  <FC2Kpath>/work/imas/projects/fc2k/KeplerJniActorGen_3.0/bin/..</FC2Kpath>
+  <FC2Kpath>$FC2K</FC2Kpath>
 </ActorGenerator>
