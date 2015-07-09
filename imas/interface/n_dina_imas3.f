@@ -3,7 +3,7 @@
      *	output_1,output_2,output_3,output_4,ng)
 
 
-	include 'double.inc'
+!	include 'double.inc'
 !	include 'new_com.inc'
 
       common
@@ -195,7 +195,7 @@ c ============ outputs ==============================================
      * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
      * x_xx,y_xx,psi_xx,psi_bnd_xx)
 
-	include 'double.inc'
+!	include 'double.inc'
 	include 'new_com.inc'
 
 	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
@@ -294,7 +294,7 @@ c=================================================
 
      *  pfprobe_mat,vesprobe_mat,ngrid2)
 
-      	include 'double.inc'
+!      	include 'double.inc'
 
 	include 'parf2'
 
