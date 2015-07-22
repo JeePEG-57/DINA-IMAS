@@ -46,10 +46,12 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 
 print *,' Enter shot number'
-read (*,*)prescribedpulse
+!read (*,*)prescribedpulse
+prescribedpulse = 170
 
 print *,' Enter run number'
-read (*,*)prescribedrun
+!read (*,*)prescribedrun
+prescribedrun = 1
 
 
 call imas_create('ids',prescribedpulse,prescribedrun,1,1,idx0)
@@ -102,6 +104,13 @@ write(*,*) 'ids_put OK!'
 
 call imas_close(idx0)
 
+write(*,*) 'Deallocate ids'
+call ids_deallocate(em_coupling0)
+call ids_deallocate(pf_active0)
+call ids_deallocate(pf_passive0)
+call ids_deallocate(equilibrium0)
+
+
 write(*,*) 'DINA_IMAS Exiting cleanly'
 
 
@@ -133,8 +142,11 @@ write(*,*) pf_active1%coil(6)%resistance
 write(*,*) pf_passive1%loop(16)%resistance
 
 
+write(*,*) 'Get equilibrium'
 call ids_get(idx0,'equilibrium',equilibrium1)
 
+write(*,*) 'Close DB'
+call imas_close(idx0)
 
     write(*,*) 'x EQ'
     write(*,*)equilibrium1%time_slice(1)%coordinate_system%grid%dim1(1:10)
@@ -147,8 +159,12 @@ call ids_get(idx0,'equilibrium',equilibrium1)
     write(*,*)equilibrium1%time_slice(1)%coordinate_system%z(1:ke,1)
 
 
+write(*,*) 'Deallocate ids'
+call ids_deallocate(em_coupling1)
+call ids_deallocate(pf_active1)
+call ids_deallocate(pf_passive1)
+call ids_deallocate(equilibrium1)
 
-call imas_close(idx0)
 
 write(*,*) 'All finished.'
 

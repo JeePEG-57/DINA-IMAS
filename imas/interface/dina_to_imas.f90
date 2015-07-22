@@ -293,8 +293,8 @@ write(*,*) pf_passive0%loop(1:16)%resistance
 ! 
 ! 	allocate(equilibrium%???)
 
-allocate(equilibrium0%time_slice(TimeSteps))
-allocate(equilibrium0%time(TimeSteps))
+allocate(equilibrium0%time_slice(1))
+allocate(equilibrium0%time(1))
 ! 
 ! 
 equilibrium0%ids_properties%homogeneous_time = 1

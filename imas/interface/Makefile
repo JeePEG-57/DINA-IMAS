@@ -5,7 +5,7 @@ LIBS_gfortran=`pkg-config imas-gfortran --libs`
 
 f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
 
-TARGETS += test_dina dina_imas.a dina_contr.a dina_put_slice.a out42_for.o n_kav.o n_dina_imas3.o dina_put_slice.o main_1l.o
+TARGETS += test_dina test_dina_to_imas dina_imas.a dina_contr.a dina_put_slice.a out42_for.o n_kav.o n_dina_imas3.o dina_put_slice.o main_1l.o
 
 LIB_SOURCE1 += dina_imas.o n_dina_imas3.o out42_for.o
 
@@ -24,12 +24,19 @@ test_dina: test_dina_imas.o dina_put_slice.a dina_imas.a dina_contr.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
+test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
+	@echo "   * $^ -> $@"
+	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+
 %.o: %.f90
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
 n_dina_imas3.o: n_dina_imas3.f 
 	$(F90_gfortran) $(COPTS_gfortran) -c n_dina_imas3.f
+
+n_dina_imas4.o: n_dina_imas4.f
+	$(F90_gfortran) $(COPTS_gfortran) -c -w n_dina_imas4.f
 
 main_1l.o: main_1l.f 
 	$(f2c) -c main_1l.f
@@ -55,8 +62,9 @@ dina_contr.a: $(LIB_SOURCE2)
 	ar -rcs dina_contr.a dina_contr.o main_1l.o n_kav.o out42_for.o
 
 clean:
-	rm *.o
-	rm test_dina
-	rm dina_imas.a
-	rm dina_contr.a
-	rm dina_put_slice.a
+	rm -f *.o
+	rm -f test_dina
+	rm -f test_dina_to_imas
+	rm -f dina_imas.a
+	rm -f dina_contr.a
+	rm -f dina_put_slice.a
