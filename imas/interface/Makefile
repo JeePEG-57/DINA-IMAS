@@ -54,8 +54,8 @@ dina_contr.a: $(LIB_SOURCE2)
 	ar -rcs dina_contr.a dina_contr.o main_1l.o n_kav.o out42_for.o
 
 clean:
-	rm *.o
-	rm test_dina
-	rm dina_imas.a
-	rm dina_contr.a
-	rm dina_put_slice.a
+	rm -f *.o
+	rm -f test_dina
+	rm -f dina_imas.a
+	rm -f dina_contr.a
+	rm -f dina_put_slice.a
