@@ -79,10 +79,13 @@ real(DP), dimension(:,:), ALLOCATABLE,save :: fluxarr,vesarr,pslgreen,bprgreen,p
 real(DP), dimension(:,:), ALLOCATABLE,save :: pfc,pfgreen,vesgreen,pfprobe,vesprobe
 real(DP), dimension(:), ALLOCATABLE,save :: pfres, rcam, xu, yu
 
+real (DP),save :: cpu_old = 0.d0, cpu_new
+
 
 
 if (first_call == 1) then ! convert input trees to local variables before calling dina
 
+call cpu_time(cpu_old)
 
 call system("rm psi_data")
 call system("rm psi_data_imas")
@@ -310,6 +313,13 @@ end do
 !write(*,*) "-dina inp=",arr_in1(1:n_input1+n_input2)
 !write(*,*) "dina out=",arr_out1(1:n_output1+n_output2)
     
+
+
+	call cpu_time(cpu_new)
+
+	write(*,*) 'CPUTime = ', cpu_new-cpu_old
+
+	cpu_old = cpu_new
 
 
 call ids_copy(pf_active0,pf_active)
