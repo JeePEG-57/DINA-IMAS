@@ -320,6 +320,7 @@ end do
 	call cpu_time(cpu_new)
 
 	write(*,*) 'CPUTime = ', cpu_new-cpu_old
+
 	call write_cputime(cpu_new-cpu_old, cpu_new, 0)
 
 	cpu_old = cpu_new
