@@ -219,6 +219,8 @@ gridrange(4)=x(nr)
 
 write(*,*) "End of static data extraction"
 
+call write_cputime(0.d0, 0.d0, 1)
+
   write(*,*) "pfres(1:3)=",pfres(1:3)
   write(*,*) "rcam(1:3)=",rcam(1:3)
   write(*,*) "limiterxu(1:3)=", xu(1:3)
@@ -318,6 +320,7 @@ end do
 	call cpu_time(cpu_new)
 
 	write(*,*) 'CPUTime = ', cpu_new-cpu_old
+	call write_cputime(cpu_new-cpu_old, cpu_new, 0)
 
 	cpu_old = cpu_new
 
@@ -598,3 +601,29 @@ end subroutine
 	return
 	end
 
+
+	subroutine write_cputime(deltatime, time, flag_start)
+
+	real(8) :: deltatime, time
+	integer :: flag_start
+
+6000	format(4(1x,1pe14.7))
+	
+	write(*,*) 'Write Graph Enter...'
+
+	if (flag_start.eq.1) call system("rm cputime_dinaimas")
+
+	open (unit=62,file='cputime_dinaimas',access='append',form='formatted')
+
+	if (flag_start.eq.1) then
+		write(62,*) "     Step    ","     Absolute"
+	else
+		write (62,6000) deltatime, time
+	end if
+
+        close (62)
+
+        
+        
+	return
+	end
