@@ -1,0 +1,29 @@
+F90_gfortran=gfortran
+COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none -I$(UAL)/fortraninterface/amd64_gfortran -g  
+LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
+
+#SCHEMAS = /work/imas/projects/ual/2.0/fortraninterface/ids_schemas.f90
+
+LIB_SOURCE1 += dina_imas.o
+
+TARGETS +=  test_dina dina_imas.a
+
+all: $(TARGETS)
+
+#--------------------- gfortran ------------------------
+test_dina: test_dina_imas.o dina_imas.o 
+	@echo "   * $^ -> $@"
+	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+
+%.o: %.f90
+	@echo "   * $^ -> $@"
+	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
+
+dina_imas.a: $(LIB_SOURCE1)
+	@echo "   * $^ -> $@"
+	ar -rcs dina_imas.a  dina_imas.o 
+
+clean:
+	rm *.o
+	rm test_dina
+

@@ -1,25 +1,24 @@
-function DrawGraphs(hObject, Axes, Step)
+function [Code] = DrawGraphs(hObject, Axes, Frame)
+
+Code = 1;
 
 handles = guidata(hObject);
 
 axes(Axes);
 
+
 if nargin == 3
-    handles.StepNumber = Step;
+    handles.Frame = Frame;
 elseif nargin == 2
-    Step = handles.StepNumber;
+    Frame = handles.Frame;
 else
     return
 end
 
-Frame = GetFrame(Step,handles.Step,1);
 
-if Frame > handles.TimeSteps
-    return
+if ishandle(handles.Dynamic)
+    delete(handles.Dynamic);
 end
-
-
-delete(handles.Dynamic);
 
 
 UserData = get(Axes,'UserData');
@@ -36,6 +35,12 @@ psi = handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.psi;
     
 pmag = handles.Equilibrium.time_slice{1,Frame}.global_quantities.psi_axis;
 pbound = handles.Equilibrium.time_slice{1,Frame}.global_quantities.psi_boundary;
+
+
+% if max(max(psi)) == min(min(psi))
+if pmag == pbound
+    return
+end
 
 
 lw=1; %LineWidth
@@ -56,9 +61,9 @@ for i=1:n_g+20
 end 
   
 
-size(x)
-size(y)
-size(psi)
+%size(x)
+%size(y)
+%size(psi)
 
 [~,h1]=contour(x,y,psi,PL(1:n_g-1),'r');  %flux
 
@@ -97,3 +102,7 @@ hold off
 set(Axes,'UserData',UserData);
 
 guidata(hObject, handles);
+
+Code = 0;
+
+end

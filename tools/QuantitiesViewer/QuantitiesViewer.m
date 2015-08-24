@@ -1,10 +1,30 @@
-function View0DQuantities(shot,run)
+function QuantitiesViewer(varargin)
 
+if nargin == 2
+    shot = varargin{1};
+    run = varargin{2};
+else
+    
+    [MyPath,~,~] = fileparts(mfilename('fullpath'));
 
-pf_active = LoadIDS(shot, run, 'pf_active');
-pf_passive = LoadIDS(shot, run, 'pf_passive');
-equilibrium = LoadIDS(shot, run, 'equilibrium');
-core_profiles = LoadIDS(shot, run, 'core_profiles');
+    addpath(MyPath);
+    addpath([MyPath '/..']);
+
+    IDSCoords = [MyPath '/../IDS_Coordinates.mat'];
+    if exist(IDSCoords,'file')
+        S = load(IDSCoords);
+    else
+        S = struct('Shot',170,'Run',5);
+    end
+    
+    shot = S.Shot;
+    run = S.Run; 
+end
+
+pf_active = mexLoadIDS(shot, run, 'pf_active');
+pf_passive = mexLoadIDS(shot, run, 'pf_passive');
+equilibrium = mexLoadIDS(shot, run, 'equilibrium');
+core_profiles = mexLoadIDS(shot, run, 'core_profiles');
 
 
 assignin('base','pf_active',pf_active);

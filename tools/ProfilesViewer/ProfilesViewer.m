@@ -22,7 +22,7 @@ function varargout = ProfilesViewer(varargin)
 
 % Edit the above text to modify the response to help ProfilesViewer
 
-% Last Modified by GUIDE v2.5 29-Oct-2014 06:50:53
+% Last Modified by GUIDE v2.5 24-Aug-2015 21:37:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,11 +57,28 @@ function ProfilesViewer_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for ProfilesViewer
 handles.output = hObject;
 
-% Update handles structure
-guidata(hObject, handles);
-
 % UIWAIT makes ProfilesViewer wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
+
+[MyPath,~,~] = fileparts(mfilename('fullpath'));
+
+handles.MyPath = MyPath;
+
+addpath(MyPath);
+addpath([MyPath '/..']);
+
+IDSCoords = [MyPath '/../IDS_Coordinates.mat'];
+if exist(IDSCoords,'file')
+    S = load(IDSCoords);
+else
+    S = struct('Shot',170,'Run',5);
+end
+
+set(handles.Main_Shot, 'String', num2str(S.Shot));
+set(handles.Main_Run, 'String', num2str(S.Run));
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -279,7 +296,7 @@ function LoadData(hObject)
 
 handles = guidata(hObject);
 
-handles.CoreProfiles = LoadIDS(handles.Shot, handles.Run, 'core_profiles');
+handles.CoreProfiles = mexLoadIDS(handles.Shot, handles.Run, 'core_profiles');
 
 handles.Frame = 1;
 handles.StepNumber = 1;
@@ -456,4 +473,3 @@ ylabel(DataName);
 title(DataName, 'Color','w');
 
 legend(LegendStrings);
-
