@@ -296,14 +296,16 @@ function LoadData(hObject)
 
 handles = guidata(hObject);
 
+disp('Loading IDS`s...');
 handles.CoreProfiles = mexLoadIDS(handles.Shot, handles.Run, 'core_profiles');
+disp('Loaded!');
 
 handles.Frame = 1;
 handles.StepNumber = 1;
 
 Temp = str2double(get(handles.Main_FrameStep, 'String'));
 if ~isnan(Temp)
-    handles.Step = round(abs(Temp));
+    handles.Step = max(1,round(abs(Temp)));
 else
     handles.Step = 10;
 end

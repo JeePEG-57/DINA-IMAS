@@ -30,8 +30,8 @@ YCoeff = YArea/YPixels;
 
 MaxCoeff = max([XCoeff YCoeff]);
 
-XAreaNew = MaxCoeff*XPixels;
-YAreaNew = MaxCoeff*YPixels;
+XAreaNew = Grow*MaxCoeff*XPixels;
+YAreaNew = Grow*MaxCoeff*YPixels;
 
 XLimN(1) = XLim(1) - (XAreaNew - XArea)/2;
 XLimN(2) = XLim(2) + (XAreaNew - XArea)/2;

@@ -21,10 +21,13 @@ else
     run = S.Run; 
 end
 
+
+disp('Loading IDS`s...');
 pf_active = mexLoadIDS(shot, run, 'pf_active');
 pf_passive = mexLoadIDS(shot, run, 'pf_passive');
 equilibrium = mexLoadIDS(shot, run, 'equilibrium');
 core_profiles = mexLoadIDS(shot, run, 'core_profiles');
+disp('Loaded!');
 
 
 assignin('base','pf_active',pf_active);

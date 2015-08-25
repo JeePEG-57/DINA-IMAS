@@ -101,6 +101,9 @@ hold off
   
 set(Axes,'UserData',UserData);
 
+%set(Axes, 'XLim', [0 1200]); 
+%set(Axes, 'YLim', [-700 700]); 
+
 guidata(hObject, handles);
 
 Code = 0;

@@ -425,10 +425,10 @@ while get(hObject, 'Value')
    
     [Code] = DrawGraphs(hObject, handles.Main_Axes1, CurrentFrame);
 
-    
-    if Code == 0    
-        set(handles.Main_AnimationStatus, 'String', ...
+    set(handles.Main_AnimationStatus, 'String', ...
             char('Animation...', ['Frame # ' num2str(CurrentFrame)]));
+        
+    if Code == 0    
         pause(0.15); 
     end
    

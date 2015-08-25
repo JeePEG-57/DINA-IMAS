@@ -80,7 +80,7 @@ guidata(hObject, handles);
 
 CreateMex([MyPath '/mexIDS/fortran']);
 
-system(['cp -f -p ' MyPath '/mexIDS/fortran/mexLoadIDS.mex* ' MyPath]);
+[~,~] = system(['cp -f -p ' MyPath '/mexIDS/fortran/mexLoadIDS.mex* ' MyPath]);
 
 CheckFields(hObject);
 
