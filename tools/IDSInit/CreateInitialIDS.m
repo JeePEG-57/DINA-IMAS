@@ -1,5 +1,7 @@
 function CreateInitialIDS()
 
+addpath('..');
+
 [status, result] = system('../../imas/interface/test_dina_to_imas');
 
 status
