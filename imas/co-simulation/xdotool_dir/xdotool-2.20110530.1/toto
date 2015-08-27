@@ -1,0 +1,1306 @@
+cc -pipe -O2 -pedantic -Wall -W -Wundef -Wendif-labels -Wshadow -Wpointer-arith -Wbad-function-cast -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wdisabled-optimization -Wno-missing-field-initializers -g  -std=c99 -I/usr/X11R6/include -I/usr/local/include -fPIC -c xdo.c
+xdo.c:24:22: error: X11/Xlib.h: Aucun fichier ou dossier de ce type
+xdo.c:25:23: error: X11/Xatom.h: Aucun fichier ou dossier de ce type
+xdo.c:26:27: error: X11/Xresource.h: Aucun fichier ou dossier de ce type
+xdo.c:27:23: error: X11/Xutil.h: Aucun fichier ou dossier de ce type
+xdo.c:28:34: error: X11/extensions/XTest.h: Aucun fichier ou dossier de ce type
+xdo.c:29:37: error: X11/extensions/Xinerama.h: Aucun fichier ou dossier de ce type
+xdo.c:30:24: error: X11/keysym.h: Aucun fichier ou dossier de ce type
+xdo.c:31:28: error: X11/cursorfont.h: Aucun fichier ou dossier de ce type
+In file included from xdo.c:33:
+xdo.h:13:19: error: X11/X.h: Aucun fichier ou dossier de ce type
+In file included from xdo.c:33:
+xdo.h:67: error: expected specifier-qualifier-list before ‘KeyCode’
+xdo.h:86: error: expected specifier-qualifier-list before ‘Display’
+xdo.h:124: warning: struct has no members
+xdo.h:245: error: expected ‘)’ before ‘*’ token
+xdo.h:276: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:294: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:304: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:320: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:335: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:362: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:372: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:386: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:409: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:417: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:425: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:439: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:465: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:469: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:482: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:496: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:509: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:520: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:529: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:535: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:546: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:555: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:563: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:571: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:579: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:588: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:599: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:612: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:623: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:631: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:638: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:643: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:651: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:651: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:664: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:665: error: expected declaration specifiers or ‘...’ before ‘Screen’
+xdo.h:674: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:686: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:694: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:736: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:748: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:759: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:772: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:772: error: expected declaration specifiers or ‘...’ before ‘Atom’
+xdo.h:773: error: expected declaration specifiers or ‘...’ before ‘Atom’
+xdo.h:812: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:820: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:848: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:864: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:864: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.h:872: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:56: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘_xdo_keycode_from_char’
+xdo.c:57: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘_xdo_keysym_from_char’
+xdo.c:63: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:66: error: expected declaration specifiers or ‘...’ before ‘XKeyEvent’
+xdo.c:67: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:70: error: expected declaration specifiers or ‘...’ before ‘KeyCode’
+xdo.c:71: error: expected declaration specifiers or ‘...’ before ‘KeyCode’
+xdo.c:73: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:83: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘atom_NET_WM_PID’
+xdo.c:84: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘atom_NET_WM_NAME’
+xdo.c:85: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘atom_WM_NAME’
+xdo.c:86: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘atom_STRING’
+xdo.c:87: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘atom_UTF8_STRING’
+xdo.c: In function ‘xdo_new’:
+xdo.c:90: error: ‘Display’ undeclared (first use in this function)
+xdo.c:90: error: (Each undeclared identifier is reported only once
+xdo.c:90: error: for each function it appears in.)
+xdo.c:90: error: ‘xdpy’ undeclared (first use in this function)
+xdo.c:92: warning: implicit declaration of function ‘XOpenDisplay’
+xdo.c:92: warning: nested extern declaration of ‘XOpenDisplay’
+xdo.c:102: warning: implicit declaration of function ‘xdo_new_with_opened_display’
+xdo.c:102: warning: nested extern declaration of ‘xdo_new_with_opened_display’
+xdo.c: At top level:
+xdo.c:105: error: expected ‘)’ before ‘*’ token
+xdo.c: In function ‘xdo_free’:
+xdo.c:145: error: ‘xdo_t’ has no member named ‘display_name’
+xdo.c:146: error: ‘xdo_t’ has no member named ‘display_name’
+xdo.c:147: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:148: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:149: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:149: error: ‘xdo_t’ has no member named ‘close_display_when_freed’
+xdo.c:150: warning: implicit declaration of function ‘XCloseDisplay’
+xdo.c:150: warning: nested extern declaration of ‘XCloseDisplay’
+xdo.c:150: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:151: error: ‘xdo_t’ has no member named ‘modmap’
+xdo.c:152: warning: implicit declaration of function ‘XFreeModifiermap’
+xdo.c:152: warning: nested extern declaration of ‘XFreeModifiermap’
+xdo.c:152: error: ‘xdo_t’ has no member named ‘modmap’
+xdo.c:153: error: ‘xdo_t’ has no member named ‘keymap’
+xdo.c:154: warning: implicit declaration of function ‘XFree’
+xdo.c:154: warning: nested extern declaration of ‘XFree’
+xdo.c:154: error: ‘xdo_t’ has no member named ‘keymap’
+xdo.c: At top level:
+xdo.c:163: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_wait_for_map_state’:
+xdo.c:165: error: ‘XWindowAttributes’ undeclared (first use in this function)
+xdo.c:165: error: expected ‘;’ before ‘attr’
+xdo.c:166: error: ‘attr’ undeclared (first use in this function)
+xdo.c:166: error: ‘IsUnmapped’ undeclared (first use in this function)
+xdo.c:168: warning: implicit declaration of function ‘XGetWindowAttributes’
+xdo.c:168: warning: nested extern declaration of ‘XGetWindowAttributes’
+xdo.c:168: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:168: error: ‘wid’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:175: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_map’:
+xdo.c:177: warning: implicit declaration of function ‘XMapWindow’
+xdo.c:177: warning: nested extern declaration of ‘XMapWindow’
+xdo.c:177: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:177: error: ‘wid’ undeclared (first use in this function)
+xdo.c:178: warning: implicit declaration of function ‘XFlush’
+xdo.c:178: warning: nested extern declaration of ‘XFlush’
+xdo.c:178: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:182: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_unmap’:
+xdo.c:184: warning: implicit declaration of function ‘XUnmapWindow’
+xdo.c:184: warning: nested extern declaration of ‘XUnmapWindow’
+xdo.c:184: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:184: error: ‘wid’ undeclared (first use in this function)
+xdo.c:185: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:189: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:189: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_reparent’:
+xdo.c:191: warning: implicit declaration of function ‘XReparentWindow’
+xdo.c:191: warning: nested extern declaration of ‘XReparentWindow’
+xdo.c:191: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:191: error: ‘wid_source’ undeclared (first use in this function)
+xdo.c:191: error: ‘wid_target’ undeclared (first use in this function)
+xdo.c:192: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:196: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:197: error: expected declaration specifiers or ‘...’ before ‘Screen’
+xdo.c: In function ‘xdo_get_window_location’:
+xdo.c:199: error: ‘XWindowAttributes’ undeclared (first use in this function)
+xdo.c:199: error: expected ‘;’ before ‘attr’
+xdo.c:200: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:200: error: ‘wid’ undeclared (first use in this function)
+xdo.c:200: error: ‘attr’ undeclared (first use in this function)
+xdo.c:203: error: ‘Window’ undeclared (first use in this function)
+xdo.c:203: error: expected ‘;’ before ‘unused_child’
+xdo.c:207: warning: implicit declaration of function ‘XTranslateCoordinates’
+xdo.c:207: warning: nested extern declaration of ‘XTranslateCoordinates’
+xdo.c:207: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:208: error: ‘unused_child’ undeclared (first use in this function)
+xdo.c:217: error: ‘screen_ret’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:224: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_get_window_size’:
+xdo.c:227: error: ‘XWindowAttributes’ undeclared (first use in this function)
+xdo.c:227: error: expected ‘;’ before ‘attr’
+xdo.c:228: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:228: error: ‘wid’ undeclared (first use in this function)
+xdo.c:228: error: ‘attr’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:241: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_move’:
+xdo.c:242: error: ‘XWindowChanges’ undeclared (first use in this function)
+xdo.c:242: error: expected ‘;’ before ‘wc’
+xdo.c:244: error: ‘wc’ undeclared (first use in this function)
+xdo.c:247: warning: implicit declaration of function ‘XConfigureWindow’
+xdo.c:247: warning: nested extern declaration of ‘XConfigureWindow’
+xdo.c:247: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:247: error: ‘wid’ undeclared (first use in this function)
+xdo.c:247: error: ‘CWX’ undeclared (first use in this function)
+xdo.c:247: error: ‘CWY’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:251: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_translate_with_sizehint’:
+xdo.c:254: error: ‘XSizeHints’ undeclared (first use in this function)
+xdo.c:254: error: expected ‘;’ before ‘hints’
+xdo.c:256: warning: implicit declaration of function ‘XGetWMNormalHints’
+xdo.c:256: warning: nested extern declaration of ‘XGetWMNormalHints’
+xdo.c:256: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:256: error: ‘window’ undeclared (first use in this function)
+xdo.c:256: error: ‘hints’ undeclared (first use in this function)
+xdo.c:257: error: ‘PResizeInc’ undeclared (first use in this function)
+xdo.c:266: error: ‘PBaseSize’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:282: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_setsize’:
+xdo.c:283: error: ‘XWindowChanges’ undeclared (first use in this function)
+xdo.c:283: error: expected ‘;’ before ‘wc’
+xdo.c:291: error: ‘wc’ undeclared (first use in this function)
+xdo.c:295: error: ‘window’ undeclared (first use in this function)
+xdo.c:296: warning: passing argument 4 of ‘xdo_window_translate_with_sizehint’ makes pointer from integer without a cast
+xdo.c:251: note: expected ‘int *’ but argument is of type ‘int’
+xdo.c:296: error: too many arguments to function ‘xdo_window_translate_with_sizehint’
+xdo.c:301: warning: passing argument 4 of ‘xdo_window_translate_with_sizehint’ makes pointer from integer without a cast
+xdo.c:251: note: expected ‘int *’ but argument is of type ‘int’
+xdo.c:301: error: too many arguments to function ‘xdo_window_translate_with_sizehint’
+xdo.c:305: error: ‘CWWidth’ undeclared (first use in this function)
+xdo.c:309: error: ‘CWHeight’ undeclared (first use in this function)
+xdo.c:312: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:313: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:317: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_set_override_redirect’:
+xdo.c:320: error: ‘XSetWindowAttributes’ undeclared (first use in this function)
+xdo.c:320: error: expected ‘;’ before ‘wattr’
+xdo.c:321: error: ‘CWOverrideRedirect’ undeclared (first use in this function)
+xdo.c:322: error: ‘wattr’ undeclared (first use in this function)
+xdo.c:323: warning: implicit declaration of function ‘XChangeWindowAttributes’
+xdo.c:323: warning: nested extern declaration of ‘XChangeWindowAttributes’
+xdo.c:323: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:323: error: ‘wid’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:328: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_setclass’:
+xdo.c:331: error: ‘XClassHint’ undeclared (first use in this function)
+xdo.c:331: error: ‘hint’ undeclared (first use in this function)
+xdo.c:331: warning: implicit declaration of function ‘XAllocClassHint’
+xdo.c:331: warning: nested extern declaration of ‘XAllocClassHint’
+xdo.c:332: warning: implicit declaration of function ‘XGetClassHint’
+xdo.c:332: warning: nested extern declaration of ‘XGetClassHint’
+xdo.c:332: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:332: error: ‘wid’ undeclared (first use in this function)
+xdo.c:339: warning: implicit declaration of function ‘XSetClassHint’
+xdo.c:339: warning: nested extern declaration of ‘XSetClassHint’
+xdo.c:339: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:344: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_seturgency’:
+xdo.c:346: error: ‘XWMHints’ undeclared (first use in this function)
+xdo.c:346: error: ‘hint’ undeclared (first use in this function)
+xdo.c:346: warning: implicit declaration of function ‘XGetWMHints’
+xdo.c:346: warning: nested extern declaration of ‘XGetWMHints’
+xdo.c:346: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:346: error: ‘wid’ undeclared (first use in this function)
+xdo.c:348: warning: implicit declaration of function ‘XAllocWMHints’
+xdo.c:348: warning: nested extern declaration of ‘XAllocWMHints’
+xdo.c:351: error: ‘XUrgencyHint’ undeclared (first use in this function)
+xdo.c:355: warning: implicit declaration of function ‘XSetWMHints’
+xdo.c:355: warning: nested extern declaration of ‘XSetWMHints’
+xdo.c:355: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:360: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_setprop’:
+xdo.c:367: warning: implicit declaration of function ‘XChangeProperty’
+xdo.c:367: warning: nested extern declaration of ‘XChangeProperty’
+xdo.c:367: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:367: error: ‘wid’ undeclared (first use in this function)
+xdo.c:368: warning: implicit declaration of function ‘XInternAtom’
+xdo.c:368: warning: nested extern declaration of ‘XInternAtom’
+xdo.c:368: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:368: error: ‘False’ undeclared (first use in this function)
+xdo.c:369: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:370: error: ‘PropModeReplace’ undeclared (first use in this function)
+xdo.c:376: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:377: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:378: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:383: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_focus’:
+xdo.c:385: warning: implicit declaration of function ‘XSetInputFocus’
+xdo.c:385: warning: nested extern declaration of ‘XSetInputFocus’
+xdo.c:385: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:385: error: ‘wid’ undeclared (first use in this function)
+xdo.c:385: error: ‘RevertToParent’ undeclared (first use in this function)
+xdo.c:385: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:386: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:390: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_wait_for_size’:
+xdo.c:398: error: ‘window’ undeclared (first use in this function)
+xdo.c:399: warning: passing argument 4 of ‘xdo_window_translate_with_sizehint’ makes pointer from integer without a cast
+xdo.c:251: note: expected ‘int *’ but argument is of type ‘unsigned int’
+xdo.c:399: error: too many arguments to function ‘xdo_window_translate_with_sizehint’
+xdo.c:405: warning: passing argument 4 of ‘xdo_window_translate_with_sizehint’ makes pointer from integer without a cast
+xdo.c:251: note: expected ‘int *’ but argument is of type ‘int’
+xdo.c:405: warning: pointer targets in passing argument 5 of ‘xdo_window_translate_with_sizehint’ differ in signedness
+xdo.c:251: note: expected ‘int *’ but argument is of type ‘unsigned int *’
+xdo.c:405: error: too many arguments to function ‘xdo_window_translate_with_sizehint’
+xdo.c:415: error: too many arguments to function ‘xdo_get_window_size’
+xdo.c:422: error: too many arguments to function ‘xdo_get_window_size’
+xdo.c: At top level:
+xdo.c:430: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_wait_for_active’:
+xdo.c:431: error: ‘Window’ undeclared (first use in this function)
+xdo.c:431: error: expected ‘;’ before ‘activewin’
+xdo.c:438: error: ‘activewin’ undeclared (first use in this function)
+xdo.c:438: error: ‘window’ undeclared (first use in this function)
+xdo.c:439: error: too many arguments to function ‘xdo_window_get_active’
+xdo.c: At top level:
+xdo.c:450: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_activate’:
+xdo.c:453: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:453: error: expected ‘;’ before ‘xev’
+xdo.c:454: error: ‘XWindowAttributes’ undeclared (first use in this function)
+xdo.c:454: error: expected ‘;’ before ‘wattr’
+xdo.c:456: error: ‘False’ undeclared (first use in this function)
+xdo.c:465: error: ‘True’ undeclared (first use in this function)
+xdo.c:467: error: ‘wid’ undeclared (first use in this function)
+xdo.c:467: error: too many arguments to function ‘xdo_get_desktop_for_window’
+xdo.c:471: error: ‘xev’ undeclared (first use in this function)
+xdo.c:472: error: ‘ClientMessage’ undeclared (first use in this function)
+xdo.c:473: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:475: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:478: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:480: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:480: error: ‘wattr’ undeclared (first use in this function)
+xdo.c:481: warning: implicit declaration of function ‘XSendEvent’
+xdo.c:481: warning: nested extern declaration of ‘XSendEvent’
+xdo.c:481: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:482: error: ‘SubstructureNotifyMask’ undeclared (first use in this function)
+xdo.c:482: error: ‘SubstructureRedirectMask’ undeclared (first use in this function)
+xdo.c: In function ‘xdo_set_number_of_desktops’:
+xdo.c:492: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:492: error: expected ‘;’ before ‘xev’
+xdo.c:493: error: ‘Window’ undeclared (first use in this function)
+xdo.c:493: error: expected ‘;’ before ‘root’
+xdo.c:496: error: ‘False’ undeclared (first use in this function)
+xdo.c:503: error: ‘root’ undeclared (first use in this function)
+xdo.c:503: warning: implicit declaration of function ‘RootWindow’
+xdo.c:503: warning: nested extern declaration of ‘RootWindow’
+xdo.c:503: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:505: error: ‘xev’ undeclared (first use in this function)
+xdo.c:506: error: ‘ClientMessage’ undeclared (first use in this function)
+xdo.c:507: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:509: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:514: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:515: error: ‘SubstructureNotifyMask’ undeclared (first use in this function)
+xdo.c:515: error: ‘SubstructureRedirectMask’ undeclared (first use in this function)
+xdo.c: In function ‘xdo_get_number_of_desktops’:
+xdo.c:522: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:522: error: expected ‘;’ before ‘type’
+xdo.c:526: error: ‘Window’ undeclared (first use in this function)
+xdo.c:526: error: expected ‘;’ before ‘root’
+xdo.c:527: error: expected ‘;’ before ‘request’
+xdo.c:529: error: ‘False’ undeclared (first use in this function)
+xdo.c:536: error: ‘request’ undeclared (first use in this function)
+xdo.c:536: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:537: error: ‘root’ undeclared (first use in this function)
+xdo.c:537: warning: implicit declaration of function ‘XDefaultRootWindow’
+xdo.c:537: warning: nested extern declaration of ‘XDefaultRootWindow’
+xdo.c:537: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:539: error: ‘type’ undeclared (first use in this function)
+xdo.c:539: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c: In function ‘xdo_set_current_desktop’:
+xdo.c:554: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:554: error: expected ‘;’ before ‘xev’
+xdo.c:555: error: ‘Window’ undeclared (first use in this function)
+xdo.c:555: error: expected ‘;’ before ‘root’
+xdo.c:558: error: ‘root’ undeclared (first use in this function)
+xdo.c:558: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:560: error: ‘False’ undeclared (first use in this function)
+xdo.c:567: error: ‘xev’ undeclared (first use in this function)
+xdo.c:568: error: ‘ClientMessage’ undeclared (first use in this function)
+xdo.c:569: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:571: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:575: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:577: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:578: error: ‘SubstructureNotifyMask’ undeclared (first use in this function)
+xdo.c:578: error: ‘SubstructureRedirectMask’ undeclared (first use in this function)
+xdo.c: In function ‘xdo_get_current_desktop’:
+xdo.c:585: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:585: error: expected ‘;’ before ‘type’
+xdo.c:589: error: ‘Window’ undeclared (first use in this function)
+xdo.c:589: error: expected ‘;’ before ‘root’
+xdo.c:591: error: expected ‘;’ before ‘request’
+xdo.c:593: error: ‘False’ undeclared (first use in this function)
+xdo.c:600: error: ‘request’ undeclared (first use in this function)
+xdo.c:600: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:601: error: ‘root’ undeclared (first use in this function)
+xdo.c:601: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:603: error: ‘type’ undeclared (first use in this function)
+xdo.c:603: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c: At top level:
+xdo.c:616: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_set_desktop_for_window’:
+xdo.c:617: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:617: error: expected ‘;’ before ‘xev’
+xdo.c:619: error: ‘XWindowAttributes’ undeclared (first use in this function)
+xdo.c:619: error: expected ‘;’ before ‘wattr’
+xdo.c:620: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:620: error: ‘wid’ undeclared (first use in this function)
+xdo.c:620: error: ‘wattr’ undeclared (first use in this function)
+xdo.c:622: error: ‘False’ undeclared (first use in this function)
+xdo.c:630: error: ‘xev’ undeclared (first use in this function)
+xdo.c:631: error: ‘ClientMessage’ undeclared (first use in this function)
+xdo.c:632: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:634: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:640: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:641: error: ‘SubstructureNotifyMask’ undeclared (first use in this function)
+xdo.c:641: error: ‘SubstructureRedirectMask’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:647: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_get_desktop_for_window’:
+xdo.c:648: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:648: error: expected ‘;’ before ‘type’
+xdo.c:652: error: expected ‘;’ before ‘request’
+xdo.c:654: error: ‘False’ undeclared (first use in this function)
+xdo.c:662: error: ‘request’ undeclared (first use in this function)
+xdo.c:662: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:664: error: ‘wid’ undeclared (first use in this function)
+xdo.c:664: error: ‘type’ undeclared (first use in this function)
+xdo.c:664: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c: At top level:
+xdo.c:677: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_get_active’:
+xdo.c:678: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:678: error: expected ‘;’ before ‘type’
+xdo.c:682: error: expected ‘;’ before ‘request’
+xdo.c:683: error: ‘Window’ undeclared (first use in this function)
+xdo.c:683: error: expected ‘;’ before ‘root’
+xdo.c:685: error: ‘False’ undeclared (first use in this function)
+xdo.c:692: error: ‘request’ undeclared (first use in this function)
+xdo.c:692: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:693: error: ‘root’ undeclared (first use in this function)
+xdo.c:693: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:694: error: ‘type’ undeclared (first use in this function)
+xdo.c:694: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c:697: error: ‘window_ret’ undeclared (first use in this function)
+xdo.c:697: error: expected expression before ‘)’ token
+xdo.c: At top level:
+xdo.c:707: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_select_with_click’:
+xdo.c:709: error: ‘Screen’ undeclared (first use in this function)
+xdo.c:709: error: ‘screen’ undeclared (first use in this function)
+xdo.c:712: warning: implicit declaration of function ‘ScreenOfDisplay’
+xdo.c:712: warning: nested extern declaration of ‘ScreenOfDisplay’
+xdo.c:712: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:718: error: ‘Cursor’ undeclared (first use in this function)
+xdo.c:718: error: expected ‘;’ before ‘cursor’
+xdo.c:720: warning: implicit declaration of function ‘XGrabPointer’
+xdo.c:720: warning: nested extern declaration of ‘XGrabPointer’
+xdo.c:720: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:720: error: ‘False’ undeclared (first use in this function)
+xdo.c:720: error: ‘ButtonReleaseMask’ undeclared (first use in this function)
+xdo.c:721: error: ‘GrabModeSync’ undeclared (first use in this function)
+xdo.c:721: error: ‘GrabModeAsync’ undeclared (first use in this function)
+xdo.c:721: error: ‘cursor’ undeclared (first use in this function)
+xdo.c:721: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:722: error: ‘AlreadyGrabbed’ undeclared (first use in this function)
+xdo.c:729: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:729: error: expected ‘;’ before ‘e’
+xdo.c:730: warning: implicit declaration of function ‘XAllowEvents’
+xdo.c:730: warning: nested extern declaration of ‘XAllowEvents’
+xdo.c:730: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:730: error: ‘SyncPointer’ undeclared (first use in this function)
+xdo.c:731: warning: implicit declaration of function ‘XWindowEvent’
+xdo.c:731: warning: nested extern declaration of ‘XWindowEvent’
+xdo.c:731: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:731: error: ‘e’ undeclared (first use in this function)
+xdo.c:732: warning: implicit declaration of function ‘XUngrabPointer’
+xdo.c:732: warning: nested extern declaration of ‘XUngrabPointer’
+xdo.c:732: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:733: warning: implicit declaration of function ‘XFreeCursor’
+xdo.c:733: warning: nested extern declaration of ‘XFreeCursor’
+xdo.c:733: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:737: error: ‘window_ret’ undeclared (first use in this function)
+xdo.c:743: error: too many arguments to function ‘xdo_window_find_client’
+xdo.c: At top level:
+xdo.c:749: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_raise’:
+xdo.c:751: warning: implicit declaration of function ‘XRaiseWindow’
+xdo.c:751: warning: nested extern declaration of ‘XRaiseWindow’
+xdo.c:751: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:751: error: ‘wid’ undeclared (first use in this function)
+xdo.c:752: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: In function ‘xdo_mousemove’:
+xdo.c:764: error: ‘Window’ undeclared (first use in this function)
+xdo.c:764: error: expected ‘;’ before ‘screen_root’
+xdo.c:765: warning: implicit declaration of function ‘XWarpPointer’
+xdo.c:765: warning: nested extern declaration of ‘XWarpPointer’
+xdo.c:765: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:765: error: ‘None’ undeclared (first use in this function)
+xdo.c:765: error: ‘screen_root’ undeclared (first use in this function)
+xdo.c:766: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:756: warning: unused parameter ‘screen’
+xdo.c: At top level:
+xdo.c:770: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_mousemove_relative_to_window’:
+xdo.c:771: error: ‘XWindowAttributes’ undeclared (first use in this function)
+xdo.c:771: error: expected ‘;’ before ‘attr’
+xdo.c:772: error: ‘Window’ undeclared (first use in this function)
+xdo.c:772: error: expected ‘;’ before ‘unused_child’
+xdo.c:775: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:775: error: ‘window’ undeclared (first use in this function)
+xdo.c:775: error: ‘attr’ undeclared (first use in this function)
+xdo.c:776: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:777: error: ‘unused_child’ undeclared (first use in this function)
+xdo.c:778: warning: implicit declaration of function ‘XScreenNumberOfScreen’
+xdo.c:778: warning: nested extern declaration of ‘XScreenNumberOfScreen’
+xdo.c: In function ‘xdo_mousemove_relative’:
+xdo.c:783: warning: implicit declaration of function ‘XTestFakeRelativeMotionEvent’
+xdo.c:783: warning: nested extern declaration of ‘XTestFakeRelativeMotionEvent’
+xdo.c:783: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:783: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:784: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:788: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘_xdo_mousebutton’:
+xdo.c:791: error: ‘window’ undeclared (first use in this function)
+xdo.c:792: warning: implicit declaration of function ‘XTestFakeButtonEvent’
+xdo.c:792: warning: nested extern declaration of ‘XTestFakeButtonEvent’
+xdo.c:792: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:792: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:793: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:798: error: ‘XButtonEvent’ undeclared (first use in this function)
+xdo.c:798: error: expected ‘;’ before ‘xbpe’
+xdo.c:801: error: ‘xbpe’ undeclared (first use in this function)
+xdo.c:806: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:807: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:808: error: ‘True’ undeclared (first use in this function)
+xdo.c:812: error: ‘None’ undeclared (first use in this function)
+xdo.c:814: error: ‘ButtonPress’ undeclared (first use in this function)
+xdo.c:814: error: ‘ButtonRelease’ undeclared (first use in this function)
+xdo.c:818: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:826: error: ‘Button1MotionMask’ undeclared (first use in this function)
+xdo.c:827: error: ‘Button2MotionMask’ undeclared (first use in this function)
+xdo.c:828: error: ‘Button3MotionMask’ undeclared (first use in this function)
+xdo.c:829: error: ‘Button4MotionMask’ undeclared (first use in this function)
+xdo.c:830: error: ‘Button5MotionMask’ undeclared (first use in this function)
+xdo.c:833: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:833: error: ‘ButtonPressMask’ undeclared (first use in this function)
+xdo.c:833: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:833: error: expected expression before ‘)’ token
+xdo.c:834: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:840: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_mouseup’:
+xdo.c:841: error: ‘window’ undeclared (first use in this function)
+xdo.c:841: error: ‘False’ undeclared (first use in this function)
+xdo.c:841: error: too many arguments to function ‘_xdo_mousebutton’
+xdo.c: At top level:
+xdo.c:844: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_mousedown’:
+xdo.c:845: error: ‘window’ undeclared (first use in this function)
+xdo.c:845: error: ‘True’ undeclared (first use in this function)
+xdo.c:845: error: too many arguments to function ‘_xdo_mousebutton’
+xdo.c: In function ‘xdo_mouselocation’:
+xdo.c:850: error: too many arguments to function ‘xdo_mouselocation2’
+xdo.c: At top level:
+xdo.c:853: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_mousewindow’:
+xdo.c:854: error: ‘window_ret’ undeclared (first use in this function)
+xdo.c:854: error: too many arguments to function ‘xdo_mouselocation2’
+xdo.c: At top level:
+xdo.c:858: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_mouselocation2’:
+xdo.c:859: error: ‘False’ undeclared (first use in this function)
+xdo.c:862: error: ‘Window’ undeclared (first use in this function)
+xdo.c:862: error: expected ‘;’ before ‘window’
+xdo.c:863: error: expected ‘;’ before ‘root’
+xdo.c:866: warning: implicit declaration of function ‘ScreenCount’
+xdo.c:866: warning: nested extern declaration of ‘ScreenCount’
+xdo.c:866: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:869: error: ‘Screen’ undeclared (first use in this function)
+xdo.c:869: error: ‘screen’ undeclared (first use in this function)
+xdo.c:869: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:870: warning: implicit declaration of function ‘XQueryPointer’
+xdo.c:870: warning: nested extern declaration of ‘XQueryPointer’
+xdo.c:870: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:870: warning: implicit declaration of function ‘RootWindowOfScreen’
+xdo.c:870: warning: nested extern declaration of ‘RootWindowOfScreen’
+xdo.c:871: error: ‘root’ undeclared (first use in this function)
+xdo.c:871: error: ‘window’ undeclared (first use in this function)
+xdo.c:873: error: ‘True’ undeclared (first use in this function)
+xdo.c:879: error: ‘window_ret’ undeclared (first use in this function)
+xdo.c:883: error: expected ‘;’ before ‘client’
+xdo.c:886: error: ‘client’ undeclared (first use in this function)
+xdo.c:886: error: too many arguments to function ‘xdo_window_find_client’
+xdo.c:889: error: too many arguments to function ‘xdo_window_find_client’
+xdo.c: At top level:
+xdo.c:912: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_click’:
+xdo.c:914: error: ‘window’ undeclared (first use in this function)
+xdo.c:914: error: too many arguments to function ‘xdo_mousedown’
+xdo.c:920: error: too many arguments to function ‘xdo_mouseup’
+xdo.c: At top level:
+xdo.c:924: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_click_multiple’:
+xdo.c:928: error: ‘window’ undeclared (first use in this function)
+xdo.c:928: error: too many arguments to function ‘xdo_click’
+xdo.c: At top level:
+xdo.c:942: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_type’:
+xdo.c:963: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:963: warning: implicit declaration of function ‘_xdo_keycode_from_char’
+xdo.c:963: warning: nested extern declaration of ‘_xdo_keycode_from_char’
+xdo.c:964: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:964: warning: implicit declaration of function ‘_xdo_keysym_from_char’
+xdo.c:964: warning: nested extern declaration of ‘_xdo_keysym_from_char’
+xdo.c:965: error: ‘charcodemap_t’ has no member named ‘modmask’
+xdo.c:966: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:967: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:967: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:967: error: ‘NoSymbol’ undeclared (first use in this function)
+xdo.c:973: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:973: warning: implicit declaration of function ‘XStringToKeysym’
+xdo.c:973: warning: nested extern declaration of ‘XStringToKeysym’
+xdo.c:977: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:988: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:989: error: ‘charcodemap_t’ has no member named ‘index’
+xdo.c:991: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:998: error: ‘charcodemap_t’ has no member named ‘index’
+xdo.c:999: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1002: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1003: error: ‘charcodemap_t’ has no member named ‘index’
+xdo.c:1005: error: ‘charcodemap_t’ has no member named ‘modmask’
+xdo.c:1005: error: ‘ShiftMask’ undeclared (first use in this function)
+xdo.c:1010: error: ‘charcodemap_t’ has no member named ‘index’
+xdo.c:1010: error: ‘charcodemap_t’ has no member named ‘index’
+xdo.c:1012: error: ‘charcodemap_t’ has no member named ‘modmask’
+xdo.c:1012: error: ‘Mod5Mask’ undeclared (first use in this function)
+xdo.c:1024: error: ‘window’ undeclared (first use in this function)
+xdo.c:1024: error: ‘True’ undeclared (first use in this function)
+xdo.c:1024: warning: passing argument 3 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.h:439: note: expected ‘int’ but argument is of type ‘struct charcodemap_t *’
+xdo.c:1024: warning: passing argument 6 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.h:439: note: expected ‘useconds_t’ but argument is of type ‘void *’
+xdo.c:1024: error: too many arguments to function ‘xdo_keysequence_list_do’
+xdo.c:1025: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1026: error: ‘False’ undeclared (first use in this function)
+xdo.c:1026: warning: passing argument 3 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.h:439: note: expected ‘int’ but argument is of type ‘struct charcodemap_t *’
+xdo.c:1026: warning: passing argument 6 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.h:439: note: expected ‘useconds_t’ but argument is of type ‘void *’
+xdo.c:1026: error: too many arguments to function ‘xdo_keysequence_list_do’
+xdo.c: At top level:
+xdo.c:1037: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘_xdo_keysequence_do’:
+xdo.c:1043: error: ‘False’ undeclared (first use in this function)
+xdo.c:1048: error: ‘window’ undeclared (first use in this function)
+xdo.c:1048: warning: passing argument 3 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.h:439: note: expected ‘int’ but argument is of type ‘struct charcodemap_t *’
+xdo.c:1048: warning: passing argument 5 of ‘xdo_keysequence_list_do’ makes pointer from integer without a cast
+xdo.h:439: note: expected ‘int *’ but argument is of type ‘int’
+xdo.c:1048: warning: passing argument 6 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.h:439: note: expected ‘useconds_t’ but argument is of type ‘int *’
+xdo.c:1048: error: too many arguments to function ‘xdo_keysequence_list_do’
+xdo.c: At top level:
+xdo.c:1056: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_keysequence_list_do’:
+xdo.c:1063: error: ‘KeySym’ undeclared (first use in this function)
+xdo.c:1063: error: ‘keysyms’ undeclared (first use in this function)
+xdo.c:1070: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1070: error: ‘xdo_t’ has no member named ‘keycode_high’
+xdo.c:1075: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1076: warning: implicit declaration of function ‘XKeysymToString’
+xdo.c:1076: warning: nested extern declaration of ‘XKeysymToString’
+xdo.c:1096: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1097: error: expected ‘;’ before ‘keysym_list’
+xdo.c:1098: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:1099: warning: implicit declaration of function ‘XChangeKeyboardMapping’
+xdo.c:1099: warning: nested extern declaration of ‘XChangeKeyboardMapping’
+xdo.c:1099: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1099: error: ‘keysym_list’ undeclared (first use in this function)
+xdo.c:1100: warning: implicit declaration of function ‘XSync’
+xdo.c:1100: warning: nested extern declaration of ‘XSync’
+xdo.c:1100: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1100: error: ‘False’ undeclared (first use in this function)
+xdo.c:1102: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1108: error: ‘window’ undeclared (first use in this function)
+xdo.c:1108: warning: passing argument 3 of ‘_xdo_send_key’ makes integer from pointer without a cast
+xdo.c:67: note: expected ‘int’ but argument is of type ‘struct charcodemap_t *’
+xdo.c:1108: error: too many arguments to function ‘_xdo_send_key’
+xdo.c:1110: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1114: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1118: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1118: error: too many arguments to function ‘_xdo_cached_keycode_to_modifier’
+xdo.c:1120: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1120: error: too many arguments to function ‘_xdo_cached_keycode_to_modifier’
+xdo.c:1126: error: expected ‘;’ before ‘keysym_list’
+xdo.c:1128: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:1129: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1133: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:1138: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_keysequence_down’:
+xdo.c:1140: error: ‘window’ undeclared (first use in this function)
+xdo.c:1140: error: ‘True’ undeclared (first use in this function)
+xdo.c:1140: warning: passing argument 3 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘int’ but argument is of type ‘const char *’
+xdo.c:1140: warning: passing argument 5 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘useconds_t’ but argument is of type ‘void *’
+xdo.c:1140: error: too many arguments to function ‘_xdo_keysequence_do’
+xdo.c: At top level:
+xdo.c:1143: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_keysequence_up’:
+xdo.c:1145: error: ‘window’ undeclared (first use in this function)
+xdo.c:1145: error: ‘False’ undeclared (first use in this function)
+xdo.c:1145: warning: passing argument 3 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘int’ but argument is of type ‘const char *’
+xdo.c:1145: warning: passing argument 5 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘useconds_t’ but argument is of type ‘void *’
+xdo.c:1145: error: too many arguments to function ‘_xdo_keysequence_do’
+xdo.c: At top level:
+xdo.c:1148: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_keysequence’:
+xdo.c:1152: error: ‘window’ undeclared (first use in this function)
+xdo.c:1152: error: ‘True’ undeclared (first use in this function)
+xdo.c:1152: warning: passing argument 3 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘int’ but argument is of type ‘const char *’
+xdo.c:1152: warning: passing argument 5 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘useconds_t’ but argument is of type ‘int *’
+xdo.c:1152: error: too many arguments to function ‘_xdo_keysequence_do’
+xdo.c:1153: error: ‘False’ undeclared (first use in this function)
+xdo.c:1153: warning: passing argument 3 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘int’ but argument is of type ‘const char *’
+xdo.c:1153: warning: passing argument 5 of ‘_xdo_keysequence_do’ makes integer from pointer without a cast
+xdo.c:1037: note: expected ‘useconds_t’ but argument is of type ‘int *’
+xdo.c:1153: error: too many arguments to function ‘_xdo_keysequence_do’
+xdo.c: At top level:
+xdo.c:1159: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_get_focus’:
+xdo.c:1163: warning: implicit declaration of function ‘XGetInputFocus’
+xdo.c:1163: warning: nested extern declaration of ‘XGetInputFocus’
+xdo.c:1163: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1163: error: ‘window_ret’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:1176: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_wait_for_focus’:
+xdo.c:1177: error: ‘Window’ undeclared (first use in this function)
+xdo.c:1177: error: expected ‘;’ before ‘focuswin’
+xdo.c:1180: error: ‘focuswin’ undeclared (first use in this function)
+xdo.c:1180: error: too many arguments to function ‘xdo_window_get_focus’
+xdo.c:1186: error: ‘window’ undeclared (first use in this function)
+xdo.c:1188: error: too many arguments to function ‘xdo_window_get_focus’
+xdo.c: At top level:
+xdo.c:1201: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_sane_get_focus’:
+xdo.c:1202: error: ‘window_ret’ undeclared (first use in this function)
+xdo.c:1202: error: too many arguments to function ‘xdo_window_get_focus’
+xdo.c:1203: error: too many arguments to function ‘xdo_window_find_client’
+xdo.c: At top level:
+xdo.c:1207: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:1207: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_find_client’:
+xdo.c:1210: error: ‘Window’ undeclared (first use in this function)
+xdo.c:1210: error: expected ‘;’ before ‘dummy’
+xdo.c:1212: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:1212: error: expected ‘;’ before ‘atom_wmstate’
+xdo.c:1214: error: ‘False’ undeclared (first use in this function)
+xdo.c:1216: error: ‘window’ undeclared (first use in this function)
+xdo.c:1222: error: ‘atom_wmstate’ undeclared (first use in this function)
+xdo.c:1222: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c:1227: warning: implicit declaration of function ‘XQueryTree’
+xdo.c:1227: warning: nested extern declaration of ‘XQueryTree’
+xdo.c:1227: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1227: error: ‘dummy’ undeclared (first use in this function)
+xdo.c:1227: error: ‘parent’ undeclared (first use in this function)
+xdo.c:1227: error: ‘children’ undeclared (first use in this function)
+xdo.c:1239: error: ‘True’ undeclared (first use in this function)
+xdo.c:1241: error: too many arguments to function ‘xdo_window_find_client’
+xdo.c:1244: error: ‘window_ret’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:1269: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘_xdo_keycode_from_char’
+xdo.c:1282: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘_xdo_keysym_from_char’
+xdo.c: In function ‘_xdo_get_key_index’:
+xdo.c:1305: error: ‘xdo_t’ has no member named ‘charcodes_len’
+xdo.c:1308: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1309: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c: In function ‘_xdo_has_xtest’:
+xdo.c:1316: warning: implicit declaration of function ‘XTestQueryExtension’
+xdo.c:1316: warning: nested extern declaration of ‘XTestQueryExtension’
+xdo.c:1316: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1316: error: ‘True’ undeclared (first use in this function)
+xdo.c: In function ‘_xdo_populate_charcode_map’:
+xdo.c:1325: warning: implicit declaration of function ‘XDisplayKeycodes’
+xdo.c:1325: warning: nested extern declaration of ‘XDisplayKeycodes’
+xdo.c:1325: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1325: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1325: error: ‘xdo_t’ has no member named ‘keycode_high’
+xdo.c:1326: error: ‘xdo_t’ has no member named ‘modmap’
+xdo.c:1326: warning: implicit declaration of function ‘XGetModifierMapping’
+xdo.c:1326: warning: nested extern declaration of ‘XGetModifierMapping’
+xdo.c:1326: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1327: error: ‘xdo_t’ has no member named ‘keymap’
+xdo.c:1327: warning: implicit declaration of function ‘XGetKeyboardMapping’
+xdo.c:1327: warning: nested extern declaration of ‘XGetKeyboardMapping’
+xdo.c:1327: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1327: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1328: error: ‘xdo_t’ has no member named ‘keycode_high’
+xdo.c:1328: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1329: error: ‘xdo_t’ has no member named ‘keysyms_per_keycode’
+xdo.c:1333: error: ‘xdo_t’ has no member named ‘keycode_high’
+xdo.c:1333: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1334: error: ‘xdo_t’ has no member named ‘keysyms_per_keycode’
+xdo.c:1335: error: ‘xdo_t’ has no member named ‘charcodes_len’
+xdo.c:1336: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1341: warning: implicit declaration of function ‘XKeysymToKeycode’
+xdo.c:1341: warning: nested extern declaration of ‘XKeysymToKeycode’
+xdo.c:1341: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1341: error: ‘XK_Shift_L’ undeclared (first use in this function)
+xdo.c:1344: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1344: error: ‘xdo_t’ has no member named ‘keycode_high’
+xdo.c:1350: error: ‘xdo_t’ has no member named ‘keysyms_per_keycode’
+xdo.c:1352: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1352: error: ‘xdo_t’ has no member named ‘keysyms_per_keycode’
+xdo.c:1353: error: ‘KeySym’ undeclared (first use in this function)
+xdo.c:1353: error: expected ‘;’ before ‘keysym’
+xdo.c:1354: error: ‘keysym’ undeclared (first use in this function)
+xdo.c:1354: error: ‘NoSymbol’ undeclared (first use in this function)
+xdo.c:1360: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1363: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1364: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1365: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1365: error: too many arguments to function ‘_xdo_query_keycode_to_modifier’
+xdo.c:1366: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1352: warning: unused variable ‘keymap_index’
+xdo.c:1377: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1378: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1378: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1378: error: ‘XK_Return’ undeclared (first use in this function)
+xdo.c:1379: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1380: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1383: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1384: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1384: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1384: error: ‘XK_Tab’ undeclared (first use in this function)
+xdo.c:1385: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1386: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c: In function ‘_xdo_keysequence_to_keycode_list’:
+xdo.c:1425: error: ‘False’ undeclared (first use in this function)
+xdo.c:1428: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1435: error: ‘KeySym’ undeclared (first use in this function)
+xdo.c:1435: error: expected ‘;’ before ‘sym’
+xdo.c:1436: error: ‘KeyCode’ undeclared (first use in this function)
+xdo.c:1436: error: expected ‘;’ before ‘key’
+xdo.c:1447: error: ‘sym’ undeclared (first use in this function)
+xdo.c:1448: error: ‘NoSymbol’ undeclared (first use in this function)
+xdo.c:1451: error: ‘key’ undeclared (first use in this function)
+xdo.c:1457: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1478: warning: implicit declaration of function ‘XKeycodeToKeysym’
+xdo.c:1478: warning: nested extern declaration of ‘XKeycodeToKeysym’
+xdo.c:1478: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1479: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1486: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:1487: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1488: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1493: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1496: error: ‘charcodemap_t’ has no member named ‘index’
+xdo.c:1499: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:1500: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1501: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1502: error: ‘charcodemap_t’ has no member named ‘index’
+xdo.c:1512: error: ‘charcodemap_t’ has no member named ‘symbol’
+xdo.c:1513: error: ‘charcodemap_t’ has no member named ‘needs_binding’
+xdo.c:1514: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1515: error: ‘charcodemap_t’ has no member named ‘modmask’
+xdo.c:1528: error: ‘True’ undeclared (first use in this function)
+xdo.c: In function ‘_is_success’:
+xdo.c:1533: error: ‘xdo_t’ has no member named ‘quiet’
+xdo.c: At top level:
+xdo.c:1540: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c:1540: error: expected declaration specifiers or ‘...’ before ‘Atom’
+xdo.c:1541: error: expected declaration specifiers or ‘...’ before ‘Atom’
+xdo.c: In function ‘xdo_getwinprop’:
+xdo.c:1542: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:1542: error: expected ‘;’ before ‘actual_type’
+xdo.c:1550: warning: implicit declaration of function ‘XGetWindowProperty’
+xdo.c:1550: warning: nested extern declaration of ‘XGetWindowProperty’
+xdo.c:1550: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1550: error: ‘window’ undeclared (first use in this function)
+xdo.c:1550: error: ‘atom’ undeclared (first use in this function)
+xdo.c:1551: error: ‘False’ undeclared (first use in this function)
+xdo.c:1551: error: ‘AnyPropertyType’ undeclared (first use in this function)
+xdo.c:1551: error: ‘actual_type’ undeclared (first use in this function)
+xdo.c:1554: error: ‘BadWindow’ undeclared (first use in this function)
+xdo.c:1557: error: ‘Success’ undeclared (first use in this function)
+xdo.c:1575: error: ‘type’ undeclared (first use in this function)
+xdo.c: In function ‘_xdo_ewmh_is_supported’:
+xdo.c:1586: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:1586: error: expected ‘;’ before ‘type’
+xdo.c:1589: error: ‘results’ undeclared (first use in this function)
+xdo.c:1592: error: ‘Window’ undeclared (first use in this function)
+xdo.c:1592: error: expected ‘;’ before ‘root’
+xdo.c:1593: error: expected ‘;’ before ‘request’
+xdo.c:1594: error: expected ‘;’ before ‘feature_atom’
+xdo.c:1596: error: ‘request’ undeclared (first use in this function)
+xdo.c:1596: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1596: error: ‘False’ undeclared (first use in this function)
+xdo.c:1597: error: ‘feature_atom’ undeclared (first use in this function)
+xdo.c:1597: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1598: error: ‘root’ undeclared (first use in this function)
+xdo.c:1598: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1600: error: expected expression before ‘)’ token
+xdo.c:1603: error: ‘True’ undeclared (first use in this function)
+xdo.c:1588: warning: unused variable ‘size’
+xdo.c: At top level:
+xdo.c:1610: error: expected declaration specifiers or ‘...’ before ‘XKeyEvent’
+xdo.c: In function ‘_xdo_init_xkeyevent’:
+xdo.c:1611: error: ‘xk’ undeclared (first use in this function)
+xdo.c:1611: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1612: error: ‘None’ undeclared (first use in this function)
+xdo.c:1613: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:1614: error: ‘True’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:1620: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘_xdo_send_key’:
+xdo.c:1622: error: ‘window’ undeclared (first use in this function)
+xdo.c:1625: error: ‘charcodemap_t’ has no member named ‘modmask’
+xdo.c:1626: error: ‘ShiftMask’ undeclared (first use in this function)
+xdo.c:1626: error: ‘LockMask’ undeclared (first use in this function)
+xdo.c:1626: error: ‘ControlMask’ undeclared (first use in this function)
+xdo.c:1626: error: ‘Mod1Mask’ undeclared (first use in this function)
+xdo.c:1626: error: ‘Mod2Mask’ undeclared (first use in this function)
+xdo.c:1627: error: ‘Mod3Mask’ undeclared (first use in this function)
+xdo.c:1627: error: ‘Mod4Mask’ undeclared (first use in this function)
+xdo.c:1627: error: ‘Mod5Mask’ undeclared (first use in this function)
+xdo.c:1633: error: ‘KeyCode’ undeclared (first use in this function)
+xdo.c:1633: warning: statement with no effect
+xdo.c:1633: error: expected ‘;’ before ‘modkey’
+xdo.c:1642: error: ‘modkey’ undeclared (first use in this function)
+xdo.c:1642: warning: statement with no effect
+xdo.c:1645: warning: implicit declaration of function ‘XTestFakeKeyEvent’
+xdo.c:1645: warning: nested extern declaration of ‘XTestFakeKeyEvent’
+xdo.c:1645: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1645: error: ‘CurrentTime’ undeclared (first use in this function)
+xdo.c:1646: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1646: error: ‘False’ undeclared (first use in this function)
+xdo.c:1652: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1652: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1653: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1657: error: ‘XKeyEvent’ undeclared (first use in this function)
+xdo.c:1657: warning: statement with no effect
+xdo.c:1657: error: expected ‘;’ before ‘xk’
+xdo.c:1658: error: ‘xk’ undeclared (first use in this function)
+xdo.c:1658: error: too many arguments to function ‘_xdo_init_xkeyevent’
+xdo.c:1659: error: request for member ‘window’ in something not a structure or union
+xdo.c:1659: warning: statement with no effect
+xdo.c:1660: error: request for member ‘keycode’ in something not a structure or union
+xdo.c:1660: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1660: warning: statement with no effect
+xdo.c:1661: error: request for member ‘state’ in something not a structure or union
+xdo.c:1661: error: ‘charcodemap_t’ has no member named ‘modmask’
+xdo.c:1661: error: invalid operands to binary | (have ‘int’ and ‘int *’)
+xdo.c:1661: warning: statement with no effect
+xdo.c:1662: error: request for member ‘type’ in something not a structure or union
+xdo.c:1662: error: ‘KeyPress’ undeclared (first use in this function)
+xdo.c:1662: error: ‘KeyRelease’ undeclared (first use in this function)
+xdo.c:1662: warning: statement with no effect
+xdo.c:1663: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1663: error: request for member ‘window’ in something not a structure or union
+xdo.c:1663: error: ‘True’ undeclared (first use in this function)
+xdo.c:1663: error: ‘KeyPressMask’ undeclared (first use in this function)
+xdo.c:1663: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:1663: error: expected expression before ‘)’ token
+xdo.c:1663: error: invalid operands to binary * (have ‘int *’ and ‘int *’)
+xdo.c:1667: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:1673: error: expected declaration specifiers or ‘...’ before ‘KeyCode’
+xdo.c: In function ‘_xdo_query_keycode_to_modifier’:
+xdo.c:1675: error: ‘xdo_t’ has no member named ‘modmap’
+xdo.c:1675: error: request for member ‘max_keypermod’ in something not a structure or union
+xdo.c:1675: warning: initialization makes integer from pointer without a cast
+xdo.c:1678: error: ‘xdo_t’ has no member named ‘modmap’
+xdo.c:1678: error: request for member ‘modifiermap’ in something not a structure or union
+xdo.c:1679: error: ‘keycode’ undeclared (first use in this function)
+xdo.c:1679: error: ‘xdo_t’ has no member named ‘modmap’
+xdo.c:1679: error: request for member ‘modifiermap’ in something not a structure or union
+xdo.c:1679: warning: comparison between pointer and integer
+xdo.c:1681: error: ‘ShiftMapIndex’ undeclared (first use in this function)
+xdo.c:1681: error: ‘ShiftMask’ undeclared (first use in this function)
+xdo.c:1681: warning: return makes integer from pointer without a cast
+xdo.c:1682: error: ‘LockMapIndex’ undeclared (first use in this function)
+xdo.c:1682: error: ‘LockMask’ undeclared (first use in this function)
+xdo.c:1682: warning: return makes integer from pointer without a cast
+xdo.c:1683: error: ‘ControlMapIndex’ undeclared (first use in this function)
+xdo.c:1683: error: ‘ControlMask’ undeclared (first use in this function)
+xdo.c:1683: warning: return makes integer from pointer without a cast
+xdo.c:1684: error: ‘Mod1MapIndex’ undeclared (first use in this function)
+xdo.c:1684: error: ‘Mod1Mask’ undeclared (first use in this function)
+xdo.c:1684: warning: return makes integer from pointer without a cast
+xdo.c:1685: error: ‘Mod2MapIndex’ undeclared (first use in this function)
+xdo.c:1685: error: ‘Mod2Mask’ undeclared (first use in this function)
+xdo.c:1685: warning: return makes integer from pointer without a cast
+xdo.c:1686: error: ‘Mod3MapIndex’ undeclared (first use in this function)
+xdo.c:1686: error: ‘Mod3Mask’ undeclared (first use in this function)
+xdo.c:1686: warning: return makes integer from pointer without a cast
+xdo.c:1687: error: ‘Mod4MapIndex’ undeclared (first use in this function)
+xdo.c:1687: error: ‘Mod4Mask’ undeclared (first use in this function)
+xdo.c:1687: warning: return makes integer from pointer without a cast
+xdo.c:1688: error: ‘Mod5MapIndex’ undeclared (first use in this function)
+xdo.c:1688: error: ‘Mod5Mask’ undeclared (first use in this function)
+xdo.c:1688: warning: return makes integer from pointer without a cast
+xdo.c: At top level:
+xdo.c:1698: error: expected declaration specifiers or ‘...’ before ‘KeyCode’
+xdo.c: In function ‘_xdo_cached_keycode_to_modifier’:
+xdo.c:1700: error: ‘xdo_t’ has no member named ‘charcodes_len’
+xdo.c:1700: warning: initialization makes integer from pointer without a cast
+xdo.c:1703: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1703: error: request for member ‘code’ in something not a structure or union
+xdo.c:1703: error: ‘keycode’ undeclared (first use in this function)
+xdo.c:1704: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1704: error: request for member ‘modmask’ in something not a structure or union
+xdo.c:1704: warning: return makes integer from pointer without a cast
+xdo.c: In function ‘_xdo_cached_modifier_to_keycode’:
+xdo.c:1714: error: ‘xdo_t’ has no member named ‘charcodes_len’
+xdo.c:1714: warning: comparison between pointer and integer
+xdo.c:1715: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1715: error: request for member ‘modmask’ in something not a structure or union
+xdo.c:1715: warning: comparison between pointer and integer
+xdo.c:1716: error: ‘xdo_t’ has no member named ‘charcodes’
+xdo.c:1716: error: request for member ‘code’ in something not a structure or union
+xdo.c:1716: warning: return makes integer from pointer without a cast
+xdo.c:1720: error: ‘ShiftMask’ undeclared (first use in this function)
+xdo.c: In function ‘xdo_active_keys_to_keycode_list’:
+xdo.c:1740: warning: implicit declaration of function ‘XQueryKeymap’
+xdo.c:1740: warning: nested extern declaration of ‘XQueryKeymap’
+xdo.c:1740: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1742: error: ‘xdo_t’ has no member named ‘keycode_low’
+xdo.c:1742: warning: assignment makes integer from pointer without a cast
+xdo.c:1742: error: ‘xdo_t’ has no member named ‘keycode_high’
+xdo.c:1742: warning: comparison between pointer and integer
+xdo.c:1743: error: too many arguments to function ‘_xdo_cached_keycode_to_modifier’
+xdo.c:1754: error: ‘charcodemap_t’ has no member named ‘code’
+xdo.c:1754: warning: statement with no effect
+xdo.c: In function ‘xdo_get_input_state’:
+xdo.c:1768: error: ‘Window’ undeclared (first use in this function)
+xdo.c:1768: warning: statement with no effect
+xdo.c:1768: error: expected ‘;’ before ‘root’
+xdo.c:1771: error: ‘root’ undeclared (first use in this function)
+xdo.c:1771: warning: implicit declaration of function ‘DefaultRootWindow’
+xdo.c:1771: warning: nested extern declaration of ‘DefaultRootWindow’
+xdo.c:1771: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1771: warning: statement with no effect
+xdo.c:1773: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1773: error: ‘dummy’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:1797: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_clear_active_modifiers’:
+xdo.c:1799: error: ‘window’ undeclared (first use in this function)
+xdo.c:1800: error: ‘False’ undeclared (first use in this function)
+xdo.c:1800: warning: passing argument 2 of ‘xdo_keysequence_list_do’ from incompatible pointer type
+xdo.c:1056: note: expected ‘struct charcodemap_t *’ but argument is of type ‘int *’
+xdo.c:1800: warning: passing argument 3 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.c:1056: note: expected ‘int’ but argument is of type ‘struct charcodemap_t *’
+xdo.c:1800: warning: passing argument 6 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.c:1056: note: expected ‘useconds_t’ but argument is of type ‘void *’
+xdo.c:1800: error: too many arguments to function ‘xdo_keysequence_list_do’
+xdo.c:1802: error: ‘Button1MotionMask’ undeclared (first use in this function)
+xdo.c:1802: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1803: warning: passing argument 2 of ‘xdo_mouseup’ makes integer from pointer without a cast
+xdo.c:840: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1803: error: too many arguments to function ‘xdo_mouseup’
+xdo.c:1804: error: ‘Button2MotionMask’ undeclared (first use in this function)
+xdo.c:1804: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1805: warning: passing argument 2 of ‘xdo_mouseup’ makes integer from pointer without a cast
+xdo.c:840: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1805: error: too many arguments to function ‘xdo_mouseup’
+xdo.c:1806: error: ‘Button3MotionMask’ undeclared (first use in this function)
+xdo.c:1806: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1807: warning: passing argument 2 of ‘xdo_mouseup’ makes integer from pointer without a cast
+xdo.c:840: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1807: error: too many arguments to function ‘xdo_mouseup’
+xdo.c:1808: error: ‘Button4MotionMask’ undeclared (first use in this function)
+xdo.c:1808: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1809: warning: passing argument 2 of ‘xdo_mouseup’ makes integer from pointer without a cast
+xdo.c:840: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1809: error: too many arguments to function ‘xdo_mouseup’
+xdo.c:1810: error: ‘Button5MotionMask’ undeclared (first use in this function)
+xdo.c:1810: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1811: warning: passing argument 2 of ‘xdo_mouseup’ makes integer from pointer without a cast
+xdo.c:840: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1811: error: too many arguments to function ‘xdo_mouseup’
+xdo.c:1812: error: ‘LockMask’ undeclared (first use in this function)
+xdo.c:1812: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1816: warning: passing argument 2 of ‘xdo_keysequence_down’ from incompatible pointer type
+xdo.c:1138: note: expected ‘const char *’ but argument is of type ‘int *’
+xdo.c:1816: warning: passing argument 3 of ‘xdo_keysequence_down’ makes integer from pointer without a cast
+xdo.c:1138: note: expected ‘useconds_t’ but argument is of type ‘const char *’
+xdo.c:1816: error: too many arguments to function ‘xdo_keysequence_down’
+xdo.c:1817: warning: passing argument 2 of ‘xdo_keysequence_up’ from incompatible pointer type
+xdo.c:1143: note: expected ‘const char *’ but argument is of type ‘int *’
+xdo.c:1817: warning: passing argument 3 of ‘xdo_keysequence_up’ makes integer from pointer without a cast
+xdo.c:1143: note: expected ‘useconds_t’ but argument is of type ‘const char *’
+xdo.c:1817: error: too many arguments to function ‘xdo_keysequence_up’
+xdo.c:1820: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: At top level:
+xdo.c:1824: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_set_active_modifiers’:
+xdo.c:1827: error: ‘window’ undeclared (first use in this function)
+xdo.c:1828: error: ‘True’ undeclared (first use in this function)
+xdo.c:1828: warning: passing argument 2 of ‘xdo_keysequence_list_do’ from incompatible pointer type
+xdo.c:1056: note: expected ‘struct charcodemap_t *’ but argument is of type ‘int *’
+xdo.c:1828: warning: passing argument 3 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.c:1056: note: expected ‘int’ but argument is of type ‘struct charcodemap_t * const’
+xdo.c:1828: warning: passing argument 6 of ‘xdo_keysequence_list_do’ makes integer from pointer without a cast
+xdo.c:1056: note: expected ‘useconds_t’ but argument is of type ‘void *’
+xdo.c:1828: error: too many arguments to function ‘xdo_keysequence_list_do’
+xdo.c:1829: error: ‘Button1MotionMask’ undeclared (first use in this function)
+xdo.c:1829: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1830: warning: passing argument 2 of ‘xdo_mousedown’ makes integer from pointer without a cast
+xdo.c:844: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1830: error: too many arguments to function ‘xdo_mousedown’
+xdo.c:1831: error: ‘Button2MotionMask’ undeclared (first use in this function)
+xdo.c:1831: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1832: warning: passing argument 2 of ‘xdo_mousedown’ makes integer from pointer without a cast
+xdo.c:844: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1832: error: too many arguments to function ‘xdo_mousedown’
+xdo.c:1833: error: ‘Button3MotionMask’ undeclared (first use in this function)
+xdo.c:1833: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1834: warning: passing argument 2 of ‘xdo_mousedown’ makes integer from pointer without a cast
+xdo.c:844: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1834: error: too many arguments to function ‘xdo_mousedown’
+xdo.c:1835: error: ‘Button4MotionMask’ undeclared (first use in this function)
+xdo.c:1835: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1836: warning: passing argument 2 of ‘xdo_mousedown’ makes integer from pointer without a cast
+xdo.c:844: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1836: error: too many arguments to function ‘xdo_mousedown’
+xdo.c:1837: error: ‘Button5MotionMask’ undeclared (first use in this function)
+xdo.c:1837: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1838: warning: passing argument 2 of ‘xdo_mousedown’ makes integer from pointer without a cast
+xdo.c:844: note: expected ‘int’ but argument is of type ‘int *’
+xdo.c:1838: error: too many arguments to function ‘xdo_mousedown’
+xdo.c:1839: error: ‘LockMask’ undeclared (first use in this function)
+xdo.c:1839: error: invalid operands to binary & (have ‘unsigned int’ and ‘int *’)
+xdo.c:1843: warning: passing argument 2 of ‘xdo_keysequence_down’ from incompatible pointer type
+xdo.c:1138: note: expected ‘const char *’ but argument is of type ‘int *’
+xdo.c:1843: warning: passing argument 3 of ‘xdo_keysequence_down’ makes integer from pointer without a cast
+xdo.c:1138: note: expected ‘useconds_t’ but argument is of type ‘const char *’
+xdo.c:1843: error: too many arguments to function ‘xdo_keysequence_down’
+xdo.c:1844: warning: passing argument 2 of ‘xdo_keysequence_up’ from incompatible pointer type
+xdo.c:1143: note: expected ‘const char *’ but argument is of type ‘int *’
+xdo.c:1844: warning: passing argument 3 of ‘xdo_keysequence_up’ makes integer from pointer without a cast
+xdo.c:1143: note: expected ‘useconds_t’ but argument is of type ‘const char *’
+xdo.c:1844: error: too many arguments to function ‘xdo_keysequence_up’
+xdo.c:1847: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1847: error: ‘False’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:1857: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_get_pid’:
+xdo.c:1858: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:1858: warning: statement with no effect
+xdo.c:1858: error: expected ‘;’ before ‘type’
+xdo.c:1864: error: ‘atom_NET_WM_PID’ undeclared (first use in this function)
+xdo.c:1865: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1865: error: ‘False’ undeclared (first use in this function)
+xdo.c:1865: warning: statement with no effect
+xdo.c:1868: error: ‘window’ undeclared (first use in this function)
+xdo.c:1868: error: ‘type’ undeclared (first use in this function)
+xdo.c:1868: warning: passing argument 2 of ‘xdo_getwinprop’ from incompatible pointer type
+xdo.c:1540: note: expected ‘long int *’ but argument is of type ‘int *’
+xdo.c:1868: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c: In function ‘xdo_get_desktop_viewport’:
+xdo.c:1911: error: ‘False’ undeclared (first use in this function)
+xdo.c:1911: warning: comparison between pointer and integer
+xdo.c:1918: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:1918: warning: statement with no effect
+xdo.c:1918: error: expected ‘;’ before ‘type’
+xdo.c:1922: warning: statement with no effect
+xdo.c:1922: error: expected ‘;’ before ‘request’
+xdo.c:1923: error: ‘Window’ undeclared (first use in this function)
+xdo.c:1923: warning: statement with no effect
+xdo.c:1923: error: expected ‘;’ before ‘root’
+xdo.c:1924: error: ‘root’ undeclared (first use in this function)
+xdo.c:1924: error: ‘request’ undeclared (first use in this function)
+xdo.c:1924: error: ‘type’ undeclared (first use in this function)
+xdo.c:1924: warning: passing argument 2 of ‘xdo_getwinprop’ from incompatible pointer type
+xdo.c:1540: note: expected ‘long int *’ but argument is of type ‘int *’
+xdo.c:1924: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c:1926: error: ‘XA_CARDINAL’ undeclared (first use in this function)
+xdo.c:1930: warning: implicit declaration of function ‘XGetAtomName’
+xdo.c:1930: warning: nested extern declaration of ‘XGetAtomName’
+xdo.c:1930: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1930: warning: format ‘%s’ expects type ‘char *’, but argument 3 has type ‘int’
+xdo.c: In function ‘xdo_set_desktop_viewport’:
+xdo.c:1948: error: ‘XEvent’ undeclared (first use in this function)
+xdo.c:1948: warning: statement with no effect
+xdo.c:1948: error: expected ‘;’ before ‘xev’
+xdo.c:1950: error: ‘Window’ undeclared (first use in this function)
+xdo.c:1950: warning: statement with no effect
+xdo.c:1950: error: expected ‘;’ before ‘root’
+xdo.c:1952: error: ‘xev’ undeclared (first use in this function)
+xdo.c:1952: warning: passing argument 3 of ‘memset’ makes integer from pointer without a cast
+/usr/include/bits/string3.h:78: note: expected ‘size_t’ but argument is of type ‘int *’
+xdo.c:1953: error: request for member ‘type’ in something not a structure or union
+xdo.c:1953: error: ‘ClientMessage’ undeclared (first use in this function)
+xdo.c:1953: warning: statement with no effect
+xdo.c:1954: error: request for member ‘xclient’ in something not a structure or union
+xdo.c:1954: error: request for member ‘display’ in something not a structure or union
+xdo.c:1954: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1954: warning: statement with no effect
+xdo.c:1955: error: request for member ‘xclient’ in something not a structure or union
+xdo.c:1955: error: request for member ‘window’ in something not a structure or union
+xdo.c:1955: error: ‘root’ undeclared (first use in this function)
+xdo.c:1955: warning: statement with no effect
+xdo.c:1956: error: request for member ‘xclient’ in something not a structure or union
+xdo.c:1956: error: request for member ‘message_type’ in something not a structure or union
+xdo.c:1956: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1957: error: ‘False’ undeclared (first use in this function)
+xdo.c:1957: warning: statement with no effect
+xdo.c:1958: error: request for member ‘xclient’ in something not a structure or union
+xdo.c:1958: error: request for member ‘format’ in something not a structure or union
+xdo.c:1958: warning: statement with no effect
+xdo.c:1959: error: request for member ‘xclient’ in something not a structure or union
+xdo.c:1959: error: request for member ‘data’ in something not a structure or union
+xdo.c:1959: error: request for member ‘l’ in something not a structure or union
+xdo.c:1960: error: request for member ‘xclient’ in something not a structure or union
+xdo.c:1960: error: request for member ‘data’ in something not a structure or union
+xdo.c:1960: error: request for member ‘l’ in something not a structure or union
+xdo.c:1962: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1963: error: ‘SubstructureNotifyMask’ undeclared (first use in this function)
+xdo.c:1963: error: ‘SubstructureRedirectMask’ undeclared (first use in this function)
+xdo.c:1963: error: invalid operands to binary | (have ‘int *’ and ‘int *’)
+xdo.c: At top level:
+xdo.c:1970: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_kill’:
+xdo.c:1972: warning: implicit declaration of function ‘XKillClient’
+xdo.c:1972: warning: nested extern declaration of ‘XKillClient’
+xdo.c:1972: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1972: error: ‘window’ undeclared (first use in this function)
+xdo.c: At top level:
+xdo.c:1976: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_get_window_name’:
+xdo.c:1979: error: ‘atom_NET_WM_NAME’ undeclared (first use in this function)
+xdo.c:1979: error: ‘Atom’ undeclared (first use in this function)
+xdo.c:1980: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1980: error: ‘False’ undeclared (first use in this function)
+xdo.c:1980: warning: statement with no effect
+xdo.c:1982: error: ‘atom_WM_NAME’ undeclared (first use in this function)
+xdo.c:1983: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1983: warning: statement with no effect
+xdo.c:1985: error: ‘atom_STRING’ undeclared (first use in this function)
+xdo.c:1986: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1986: warning: statement with no effect
+xdo.c:1988: error: ‘atom_UTF8_STRING’ undeclared (first use in this function)
+xdo.c:1989: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:1989: warning: statement with no effect
+xdo.c:1992: warning: statement with no effect
+xdo.c:1992: error: expected ‘;’ before ‘type’
+xdo.c:2002: error: ‘window’ undeclared (first use in this function)
+xdo.c:2003: error: ‘type’ undeclared (first use in this function)
+xdo.c:2003: warning: passing argument 2 of ‘xdo_getwinprop’ from incompatible pointer type
+xdo.c:1540: note: expected ‘long int *’ but argument is of type ‘int *’
+xdo.c:2003: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c:2006: warning: passing argument 2 of ‘xdo_getwinprop’ from incompatible pointer type
+xdo.c:1540: note: expected ‘long int *’ but argument is of type ‘int *’
+xdo.c:2006: error: too many arguments to function ‘xdo_getwinprop’
+xdo.c:2009: warning: assignment makes integer from pointer without a cast
+xdo.c: At top level:
+xdo.c:2014: error: expected declaration specifiers or ‘...’ before ‘Window’
+xdo.c: In function ‘xdo_window_minimize’:
+xdo.c:2019: error: ‘XWindowAttributes’ undeclared (first use in this function)
+xdo.c:2019: warning: statement with no effect
+xdo.c:2019: error: expected ‘;’ before ‘attr’
+xdo.c:2020: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:2020: error: ‘window’ undeclared (first use in this function)
+xdo.c:2020: error: ‘attr’ undeclared (first use in this function)
+xdo.c:2021: error: request for member ‘screen’ in something not a structure or union
+xdo.c:2024: warning: implicit declaration of function ‘XIconifyWindow’
+xdo.c:2024: warning: nested extern declaration of ‘XIconifyWindow’
+xdo.c:2024: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c: In function ‘_xdo_debug’:
+xdo.c:2032: error: ‘xdo_t’ has no member named ‘debug’
+xdo.c: In function ‘_xdo_eprintf’:
+xdo.c:2043: error: ‘xdo_t’ has no member named ‘quiet’
+xdo.c:2043: error: ‘True’ undeclared (first use in this function)
+xdo.c: In function ‘xdo_enable_feature’:
+xdo.c:2052: error: ‘xdo_t’ has no member named ‘features_mask’
+xdo.c:2052: warning: statement with no effect
+xdo.c: In function ‘xdo_disable_feature’:
+xdo.c:2056: error: ‘xdo_t’ has no member named ‘features_mask’
+xdo.c:2056: warning: statement with no effect
+xdo.c: In function ‘xdo_has_feature’:
+xdo.c:2060: error: ‘xdo_t’ has no member named ‘features_mask’
+xdo.c:2060: error: invalid operands to binary & (have ‘int *’ and ‘int’)
+xdo.c:2060: warning: return makes integer from pointer without a cast
+xdo.c: In function ‘xdo_get_viewport_dimensions’:
+xdo.c:2067: warning: implicit declaration of function ‘XineramaQueryExtension’
+xdo.c:2067: warning: nested extern declaration of ‘XineramaQueryExtension’
+xdo.c:2067: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:2067: warning: implicit declaration of function ‘XineramaIsActive’
+xdo.c:2067: warning: nested extern declaration of ‘XineramaIsActive’
+xdo.c:2067: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:2069: error: ‘XineramaScreenInfo’ undeclared (first use in this function)
+xdo.c:2069: error: ‘info’ undeclared (first use in this function)
+xdo.c:2069: error: invalid operands to binary * (have ‘int *’ and ‘int *’)
+xdo.c:2069: warning: statement with no effect
+xdo.c:2072: warning: implicit declaration of function ‘XineramaQueryScreens’
+xdo.c:2072: warning: nested extern declaration of ‘XineramaQueryScreens’
+xdo.c:2072: error: ‘xdo_t’ has no member named ‘xdpy’
+xdo.c:2072: warning: statement with no effect
+xdo.c:2078: error: request for member ‘width’ in something not a structure or union
+xdo.c:2078: warning: cast from pointer to integer of different size
+xdo.c:2079: error: request for member ‘height’ in something not a structure or union
+xdo.c:2079: warning: cast from pointer to integer of different size
+xdo.c:2084: error: ‘Window’ undeclared (first use in this function)
+xdo.c:2084: warning: statement with no effect
+xdo.c:2084: error: expected ‘;’ before ‘root’
+xdo.c:2085: error: ‘root’ undeclared (first use in this function)
+xdo.c:2085: warning: pointer targets in passing argument 2 of ‘xdo_get_window_size’ differ in signedness
+xdo.c:224: note: expected ‘unsigned int *’ but argument is of type ‘int *’
+xdo.c:2085: error: too many arguments to function ‘xdo_get_window_size’
+make: *** [xdo.o] Erreur 1
