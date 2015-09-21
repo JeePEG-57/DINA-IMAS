@@ -22,12 +22,13 @@ else
 end
 
 
-disp('Loading IDS`s...');
-pf_active = mexLoadIDS(shot, run, 'pf_active');
-pf_passive = mexLoadIDS(shot, run, 'pf_passive');
-equilibrium = mexLoadIDS(shot, run, 'equilibrium');
-core_profiles = mexLoadIDS(shot, run, 'core_profiles');
-disp('Loaded!');
+IDSData = ViewIDSDataAccess();
+
+pf_active = IDSData.pf_active;
+pf_passive = IDSData.pf_passive;
+equilibrium = IDSData.equilibrium;
+core_profiles = IDSData.core_profiles;
+
 
 
 assignin('base','pf_active',pf_active);

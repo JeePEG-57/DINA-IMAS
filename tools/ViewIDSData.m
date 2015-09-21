@@ -75,12 +75,20 @@ addpath([MyPath '/mexIDS/fortran']);
 handles.Shot = 170;
 handles.Run = 5;
 
+%handles
+
+%set(handles.Main_LoadingStatus, 'String', 'Press Load button');
+
 % Update handles structure
 guidata(hObject, handles);
 
 CreateMex([MyPath '/mexIDS/fortran']);
 
 [~,~] = system(['cp -f -p ' MyPath '/mexIDS/fortran/mexLoadIDS.mex* ' MyPath]);
+
+ViewIDSDataAccess('Lock');
+IDSData = struct('pf_active',[],'pf_passive',[],'equilibrium',[],'core_profiles',[]);
+ViewIDSDataAccess(IDSData);
 
 CheckFields(hObject);
 
@@ -132,14 +140,24 @@ Temp = str2double(get(handles.Main_Shot, 'String'));
 if isnan(Temp)
     flag = 1;
 else
-    handles.Shot = round(abs(Temp));
+    Shot = round(abs(Temp));
+    
+    if handles.Shot ~= Shot
+        handles.Shot = Shot;
+        set(handles.Main_LoadingStatus, 'String', 'Press Load button');
+    end
 end
 
 Temp = str2double(get(handles.Main_Run, 'String'));
 if isnan(Temp)
     flag = 1;
 else
-    handles.Run = round(abs(Temp));   
+    Run = round(abs(Temp));   
+        
+    if handles.Run ~= Run
+        handles.Run = Run;
+        set(handles.Main_LoadingStatus, 'String', 'Press Load button');
+    end
 end
     
 if flag == 0
@@ -148,6 +166,11 @@ if flag == 0
     Shot = handles.Shot;
     Run = handles.Run;
     save([handles.MyPath '/IDS_Coordinates.mat'], 'Shot', 'Run');
+else
+    set(handles.Main_LoadingStatus, 'String', 'Incorrect IDS data');
+    set(handles.Main_View0D,'Enable','Off');
+    set(handles.Main_View1D,'Enable','Off');
+    set(handles.Main_ViewEq,'Enable','Off');    
 end
 
 
@@ -199,3 +222,77 @@ function Main_Run_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+% --- Executes on button press in Main_Button_Load.
+function Main_Button_Load_Callback(hObject, eventdata, handles)
+% hObject    handle to Main_Button_Load (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if CheckFields(hObject)
+    return
+end
+
+%disp('Loading IDS`s:');
+set(handles.Main_LoadingStatus,'String', 'Loading...');
+pause(0.01);
+
+IDSData = ViewIDSDataAccess();
+
+%disp('Loading pf_active...');
+set(handles.Main_LoadingStatus,'String', 'Loading pf_active...');
+pause(0.01);
+IDSData.pf_active = mexLoadIDS(handles.Shot, handles.Run, 'pf_active');
+
+%disp('Loading pf_passive...');
+set(handles.Main_LoadingStatus,'String', 'Loading pf_passive...');
+pause(0.01);
+IDSData.pf_passive = mexLoadIDS(handles.Shot, handles.Run, 'pf_passive');
+
+%disp('Loading equilibrium...');
+set(handles.Main_LoadingStatus,'String', 'Loading equilibrium...');
+pause(0.01);
+IDSData.equilibrium = mexLoadIDS(handles.Shot, handles.Run, 'equilibrium');
+
+%disp('Loading core_profiles...');
+set(handles.Main_LoadingStatus,'String', 'Loading core_profiles...');
+pause(0.01);
+IDSData.core_profiles = mexLoadIDS(handles.Shot, handles.Run, 'core_profiles');
+
+%disp('All IDS`s loaded!');
+
+ViewIDSDataAccess(IDSData);
+
+handles.TimeSteps = length(IDSData.equilibrium.time);
+
+guidata(hObject, handles);
+
+set(handles.Main_LoadingStatus,'String', char('Loaded', [num2str(handles.TimeSteps) ' steps']));
+
+set(handles.Main_View0D,'Enable','On');
+set(handles.Main_View1D,'Enable','On');
+set(handles.Main_ViewEq,'Enable','On');
+
+
+% --- Executes on button press in Main_CheckWorkspace.
+function Main_CheckWorkspace_Callback(hObject, eventdata, handles)
+% hObject    handle to Main_CheckWorkspace (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+IDSData = ViewIDSDataAccess();
+
+assignin('base','pf_active',IDSData.pf_active);
+assignin('base','pf_passive',IDSData.pf_passive);
+assignin('base','equilibrium',IDSData.equilibrium);
+assignin('base','core_profiles',IDSData.core_profiles);
+
+
+
+% --- Executes during object deletion, before destroying properties.
+function Figure_ViewIDS_DeleteFcn(hObject, eventdata, handles)
+% hObject    handle to Figure_ViewIDS (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ViewIDSDataAccess('Unlock');

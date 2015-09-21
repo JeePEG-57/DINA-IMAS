@@ -22,7 +22,7 @@ function varargout = ProfilesViewer(varargin)
 
 % Edit the above text to modify the response to help ProfilesViewer
 
-% Last Modified by GUIDE v2.5 24-Aug-2015 21:37:55
+% Last Modified by GUIDE v2.5 22-Sep-2015 00:00:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,18 +67,20 @@ handles.MyPath = MyPath;
 addpath(MyPath);
 addpath([MyPath '/..']);
 
-IDSCoords = [MyPath '/../IDS_Coordinates.mat'];
-if exist(IDSCoords,'file')
-    S = load(IDSCoords);
-else
-    S = struct('Shot',170,'Run',5);
-end
-
-set(handles.Main_Shot, 'String', num2str(S.Shot));
-set(handles.Main_Run, 'String', num2str(S.Run));
+% IDSCoords = [MyPath '/../IDS_Coordinates.mat'];
+% if exist(IDSCoords,'file')
+%     S = load(IDSCoords);
+% else
+%     S = struct('Shot',170,'Run',5);
+% end
+% 
+% set(handles.Main_Shot, 'String', num2str(S.Shot));
+% set(handles.Main_Run, 'String', num2str(S.Run));
 
 % Update handles structure
 guidata(hObject, handles);
+
+LoadData(hObject);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -98,12 +100,12 @@ function Main_Button_Next_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-handles.StepNumber = min([handles.StepNumber+1 handles.MaxStepNumber]);
-
-handles.Frame = GetFrame(handles.StepNumber,handles.Step,3);
+handles.Frame = min([handles.Frame+handles.Step handles.MaxStepNumber]);
 
 guidata(hObject, handles);
 
+
+set(handles.Main_TargetStep, 'String', num2str(handles.Frame));  
 
 DrawGraphs(hObject, handles.Main_Axes1);
 DrawGraphs(hObject, handles.Main_Axes2);
@@ -118,22 +120,17 @@ function Main_Button_Back_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-handles.StepNumber = max([handles.StepNumber-1 1]);
-
-handles.Frame = GetFrame(handles.StepNumber,handles.Step,3);
+handles.Frame = max([handles.Frame-handles.Step 1]);
 
 guidata(hObject, handles);
 
+
+set(handles.Main_TargetStep, 'String', num2str(handles.Frame));  
 
 DrawGraphs(hObject, handles.Main_Axes1);
 DrawGraphs(hObject, handles.Main_Axes2);
 DrawGraphs(hObject, handles.Main_Axes3);
 DrawGraphs(hObject, handles.Main_Axes4);
-
-
-function [Frame] = GetFrame(FrameStep, Step, Graphs)
-
-Frame = 1 + (FrameStep-1)*Step*Graphs;
 
 
 
@@ -142,12 +139,13 @@ function Main_Button_Start_Callback(hObject, eventdata, handles)
 % hObject    handle to Main_Button_Start (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.StepNumber = 1;
 
-handles.Frame = GetFrame(handles.StepNumber,handles.Step,3);
+handles.Frame = 1;
 
 guidata(hObject, handles);
 
+
+set(handles.Main_TargetStep, 'String', num2str(handles.Frame));  
 
 DrawGraphs(hObject, handles.Main_Axes1);
 DrawGraphs(hObject, handles.Main_Axes2);
@@ -160,12 +158,14 @@ function Main_Button_Finish_Callback(hObject, eventdata, handles)
 % hObject    handle to Main_Button_Finish (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.StepNumber = handles.MaxStepNumber;
+GraphsAmount = 3;
 
-handles.Frame = GetFrame(handles.StepNumber,handles.Step,3);
+handles.Frame = handles.MaxStepNumber - (GraphsAmount-1)*handles.Step;
 
 guidata(hObject, handles);
 
+
+set(handles.Main_TargetStep, 'String', num2str(handles.Frame));  
 
 DrawGraphs(hObject, handles.Main_Axes1);
 DrawGraphs(hObject, handles.Main_Axes2);
@@ -262,32 +262,7 @@ function AxesNumber_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
-end
-
-
-
-function [flag] = CheckFields(hObject)
-
-handles = guidata(hObject);
-
-flag = 1;
-
-Temp = str2double(get(handles.Main_Shot, 'String'));
-if isnan(Temp)
-    flag = 0;
-    return
-end
-handles.Shot = round(abs(Temp));
-
-
-Temp = str2double(get(handles.Main_Run, 'String'));
-if isnan(Temp)
-    flag = 0;
-    return
-end
-handles.Run = round(abs(Temp));   
-    
-guidata(hObject, handles);    
+end   
 
     
 
@@ -296,23 +271,22 @@ function LoadData(hObject)
 
 handles = guidata(hObject);
 
-disp('Loading IDS`s...');
-handles.CoreProfiles = mexLoadIDS(handles.Shot, handles.Run, 'core_profiles');
-disp('Loaded!');
+
+IDSData = ViewIDSDataAccess();
+
+handles.CoreProfiles = IDSData.core_profiles;
+
 
 handles.Frame = 1;
-handles.StepNumber = 1;
+handles.Step = 10;
 
 Temp = str2double(get(handles.Main_FrameStep, 'String'));
 if ~isnan(Temp)
     handles.Step = max(1,round(abs(Temp)));
-else
-    handles.Step = 10;
 end
+set(handles.Main_FrameStep, 'String', num2str(handles.Step));
 
-handles.TimeSteps = length(handles.CoreProfiles.profiles_1d);
-
-handles.MaxStepNumber = floor((handles.TimeSteps - 1)/(handles.Step*3) + 1);
+handles.MaxStepNumber = length(handles.CoreProfiles.profiles_1d);
 
 UserData = struct('ProfileName','','Lines',repmat(-1,[1,3]));
 
@@ -336,6 +310,14 @@ cla(handles.Main_Axes4);
 guidata(hObject,handles);
 
 
+set(handles.Main_TargetStep, 'String', num2str(handles.Frame));  
+
+DrawGraphs(hObject, handles.Main_Axes1);
+DrawGraphs(hObject, handles.Main_Axes2);
+DrawGraphs(hObject, handles.Main_Axes3);
+DrawGraphs(hObject, handles.Main_Axes4);
+
+
 
 
 function Main_FrameStep_Callback(hObject, eventdata, handles)
@@ -345,6 +327,13 @@ function Main_FrameStep_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of Main_FrameStep as text
 %        str2double(get(hObject,'String')) returns contents of Main_FrameStep as a double
+Temp = str2double(get(handles.Main_FrameStep, 'String'));
+if ~isnan(Temp)
+    handles.Step = max(1,round(abs(Temp)));
+end
+set(handles.Main_FrameStep, 'String', num2str(handles.Step));
+
+guidata(hObject,handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -360,26 +349,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in Main_Button_Load.
-function Main_Button_Load_Callback(hObject, eventdata, handles)
-% hObject    handle to Main_Button_Load (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-if CheckFields(hObject) == 0
-    return
-end
-
-LoadData(hObject);
-
-
-DrawGraphs(hObject, handles.Main_Axes1);
-DrawGraphs(hObject, handles.Main_Axes2);
-DrawGraphs(hObject, handles.Main_Axes3);
-DrawGraphs(hObject, handles.Main_Axes4);
-
-
 
 function DrawGraphs(hObject, Axes)
 
@@ -389,15 +358,14 @@ axes(Axes);
 
 GraphsInAxes = 3;
 
-
-if handles.Frame <= handles.TimeSteps
+if handles.Frame <= handles.MaxStepNumber
     Times = zeros(1,1);
 
     Times(1,1) = handles.Frame;
 
     for i=1:(GraphsInAxes-1)
         NextStep = Times(1,i) + handles.Step;
-        if NextStep <= handles.TimeSteps
+        if NextStep <= handles.MaxStepNumber
             Times(1,i+1) = NextStep;
         else
             break
@@ -475,3 +443,50 @@ ylabel(DataName);
 title(DataName, 'Color','w');
 
 legend(LegendStrings);
+
+
+
+function Main_TargetStep_Callback(hObject, eventdata, handles)
+% hObject    handle to Main_TargetStep (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Main_TargetStep as text
+%        str2double(get(hObject,'String')) returns contents of Main_TargetStep as a double
+Default = handles.Frame;
+
+Value = str2double(get(hObject, 'String'));
+
+if ~isnan(Value)
+    Value = round(Value);
+    
+    NewFrame = max(Value, Default);
+    NewFrame = min(NewFrame, handles.MaxStepNumber);
+    
+else
+    NewFrame = Default;
+end
+
+set(hObject, 'String', num2str(NewFrame));
+
+handles.Frame = NewFrame;
+guidata(hObject,handles);
+
+DrawGraphs(hObject, handles.Main_Axes1);
+DrawGraphs(hObject, handles.Main_Axes2);
+DrawGraphs(hObject, handles.Main_Axes3);
+DrawGraphs(hObject, handles.Main_Axes4);
+
+
+
+% --- Executes during object creation, after setting all properties.
+function Main_TargetStep_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Main_TargetStep (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

@@ -65,18 +65,20 @@ handles.MyPath = MyPath;
 addpath(MyPath);
 addpath([MyPath '/..']);
 
-IDSCoords = [MyPath '/../IDS_Coordinates.mat'];
-if exist(IDSCoords,'file')
-    S = load(IDSCoords);
-else
-    S = struct('Shot',170,'Run',5);
-end
-
-set(handles.Main_Shot, 'String', num2str(S.Shot));
-set(handles.Main_Run, 'String', num2str(S.Run));
+% IDSCoords = [MyPath '/../IDS_Coordinates.mat'];
+% if exist(IDSCoords,'file')
+%     S = load(IDSCoords);
+% else
+%     S = struct('Shot',170,'Run',5);
+% end
+% 
+% set(handles.Main_Shot, 'String', num2str(S.Shot));
+% set(handles.Main_Run, 'String', num2str(S.Run));
 
 % Update handles structure
 guidata(hObject, handles);
+
+LoadData(hObject);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -104,8 +106,9 @@ if ~get(handles.Main_ButtonAnimation, 'Value')
 
     DrawGraphs(hObject, handles.Main_Axes1);
     
-    set(handles.Main_AnimationStatus, 'String', ...
-        char('Stopped', ['Frame # ' num2str(handles.Frame)]));
+    set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
+    set(handles.Main_AnimationStatus, 'String', 'Stopped');
+    
 end
 
 
@@ -123,8 +126,9 @@ if ~get(handles.Main_ButtonAnimation, 'Value')
 
     DrawGraphs(hObject, handles.Main_Axes1);
 
-    set(handles.Main_AnimationStatus, 'String', ...
-        char('Stopped', ['Frame # ' num2str(handles.Frame)]));
+    set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
+    set(handles.Main_AnimationStatus, 'String', 'Stopped');
+    
 end
 
 
@@ -143,8 +147,9 @@ if ~get(handles.Main_ButtonAnimation, 'Value')
 
     DrawGraphs(hObject, handles.Main_Axes1);
 
-    set(handles.Main_AnimationStatus, 'String', ...
-        char('Stopped', ['Frame # ' num2str(handles.Frame)]));
+    set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
+    set(handles.Main_AnimationStatus, 'String', 'Stopped');
+    
 end
 
 
@@ -163,8 +168,8 @@ if ~get(handles.Main_ButtonAnimation, 'Value')
 
     DrawGraphs(hObject, handles.Main_Axes1);
 
-    set(handles.Main_AnimationStatus, 'String', ...
-        char('Stopped', ['Frame # ' num2str(handles.Frame)]));
+    set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
+    set(handles.Main_AnimationStatus, 'String', 'Stopped');
 
 end
 
@@ -259,32 +264,7 @@ function AxesNumber_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
-end
-
-
-
-function [flag] = CheckFields(hObject)
-
-handles = guidata(hObject);
-
-flag = 1;
-
-Temp = str2double(get(handles.Main_Shot, 'String'));
-if isnan(Temp)
-    flag = 0;
-    return
-end
-handles.Shot = round(abs(Temp));
-
-
-Temp = str2double(get(handles.Main_Run, 'String'));
-if isnan(Temp)
-    flag = 0;
-    return
-end
-handles.Run = round(abs(Temp));   
-    
-guidata(hObject, handles);    
+end   
 
     
 
@@ -293,18 +273,12 @@ function LoadData(hObject)
 
 handles = guidata(hObject);
 
-set(handles.Main_LoadingStatus,'String', 'Loading...');
-pause(0.01);
 
-handles.Equilibrium = mexLoadIDS(handles.Shot, handles.Run, 'equilibrium');
+IDSData = ViewIDSDataAccess();
 
-handles.PFActive = mexLoadIDS(handles.Shot, handles.Run, 'pf_active');
-handles.PFPassive = mexLoadIDS(handles.Shot, handles.Run, 'pf_passive');
-
-% handles.Equilibrium = LoadIDS(handles.Shot, handles.Run, 'equilibrium');
-% 
-% handles.PFActive = LoadIDS(handles.Shot, handles.Run, 'pf_active');
-% handles.PFPassive = LoadIDS(handles.Shot, handles.Run, 'pf_passive');
+handles.Equilibrium = IDSData.equilibrium;
+handles.PFActive = IDSData.pf_active;
+handles.PFPassive = IDSData.pf_passive;
 
 
 handles.Frame = 1;
@@ -332,7 +306,14 @@ cla(handles.Main_Axes1);
 
 guidata(hObject,handles);
 
-set(handles.Main_LoadingStatus,'String', char('Loaded', [num2str(handles.TimeSteps) ' steps']));
+
+cla(handles.Main_Axes1);
+
+DrawStatic(hObject, handles.Main_Axes1);
+
+DrawGraphs(hObject, handles.Main_Axes1, handles.Frame);
+
+AxesRefresh(handles.Main_Axes1);
 
 
 
@@ -379,30 +360,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in Main_Button_Load.
-function Main_Button_Load_Callback(hObject, eventdata, handles)
-% hObject    handle to Main_Button_Load (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-if CheckFields(hObject) == 0
-    return
-end
-
-cla(handles.Main_Axes1);
-
-LoadData(hObject);
-
-handles = guidata(hObject);
-
-DrawStatic(hObject, handles.Main_Axes1);
-
-DrawGraphs(hObject, handles.Main_Axes1, handles.Frame);
-
-AxesRefresh(handles.Main_Axes1);
-
-
 
 % --- Executes on button press in Main_ButtonAnimation.
 function Main_ButtonAnimation_Callback(hObject, eventdata, handles)
@@ -425,19 +382,18 @@ while get(hObject, 'Value')
    
     [Code] = DrawGraphs(hObject, handles.Main_Axes1, CurrentFrame);
 
-    set(handles.Main_AnimationStatus, 'String', ...
-            char('Animation...', ['Frame # ' num2str(CurrentFrame)]));
-        
+    set(handles.Main_TargetStep, 'String', num2str(CurrentFrame));   
+    set(handles.Main_AnimationStatus, 'String', 'Animation...');
+    
     if Code == 0    
         pause(0.15); 
     end
    
 end
 
-
-set(handles.Main_AnimationStatus, 'String', ...
-    char('Stopped', ['Frame # ' num2str(handles.Frame)]));
-
+set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
+set(handles.Main_AnimationStatus, 'String', 'Stopped');
+    
 set(hObject, 'Value', 0);
 
 
@@ -455,21 +411,6 @@ end
 
 
 
-% --- Executes on button press in Main_CheckWorkspace.
-function Main_CheckWorkspace_Callback(hObject, eventdata, handles)
-% hObject    handle to Main_CheckWorkspace (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of Main_CheckWorkspace
-
-
-assignin('base','equilibrium',handles.Equilibrium);
-assignin('base','pf_active',handles.PFActive);
-assignin('base','pf_passive',handles.PFPassive);
-
-
-
 function Main_TargetStep_Callback(hObject, eventdata, handles)
 % hObject    handle to Main_TargetStep (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -478,7 +419,7 @@ function Main_TargetStep_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of Main_TargetStep as text
 %        str2double(get(hObject,'String')) returns contents of Main_TargetStep as a double
 
-Default = 1;
+Default = handles.Frame;
 
 Value = str2double(get(hObject,'String'));
 
