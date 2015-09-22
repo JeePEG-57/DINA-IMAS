@@ -30,13 +30,6 @@ equilibrium = IDSData.equilibrium;
 core_profiles = IDSData.core_profiles;
 
 
-
-assignin('base','pf_active',pf_active);
-assignin('base','pf_passive',pf_passive);
-assignin('base','pf_equilibrium',equilibrium);
-assignin('base','pf_core_profiles',core_profiles);
-
-
 Ntime = length(equilibrium.time_slice);
 Nslice = length(equilibrium.time);
 if  Ntime ~= Nslice

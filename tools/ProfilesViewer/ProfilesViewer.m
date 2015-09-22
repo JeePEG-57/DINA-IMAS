@@ -327,11 +327,23 @@ function Main_FrameStep_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of Main_FrameStep as text
 %        str2double(get(hObject,'String')) returns contents of Main_FrameStep as a double
-Temp = str2double(get(handles.Main_FrameStep, 'String'));
-if ~isnan(Temp)
-    handles.Step = max(1,round(abs(Temp)));
+Default = handles.Step;
+
+Value = str2double(get(hObject,'String'));
+
+if ~isnan(Value)
+    Value = round(Value);
+    if Value > 0 && Value < handles.MaxStepNumber
+        NewValue = Value;
+    else
+        NewValue = Default;
+    end
+else
+    NewValue = Default;
 end
-set(handles.Main_FrameStep, 'String', num2str(handles.Step));
+
+set(hObject,'String',num2str(NewValue));
+handles.Step = NewValue;
 
 guidata(hObject,handles);
 
@@ -383,7 +395,7 @@ DataName = UserData.ProfileName;
 
 LegendStrings = {};
 
-ColorString = 'bgrymc';
+ColorString = 'bgrmcy';
 
 for it = 1:length(Times)
 
@@ -426,7 +438,7 @@ for it = 1:length(Times)
 end
 
 
-for it = (size(Times,2)+1):GraphsInAxes;
+for it = (length(Times)+1):GraphsInAxes;
     set(UserData.Lines(it),'XData',NaN,'YData',NaN);
 end
 
@@ -460,7 +472,7 @@ Value = str2double(get(hObject, 'String'));
 if ~isnan(Value)
     Value = round(Value);
     
-    NewFrame = max(Value, Default);
+    NewFrame = max(Value, 1);
     NewFrame = min(NewFrame, handles.MaxStepNumber);
     
 else

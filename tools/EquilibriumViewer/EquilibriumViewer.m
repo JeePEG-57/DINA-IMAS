@@ -172,100 +172,6 @@ if ~get(handles.Main_ButtonAnimation, 'Value')
     set(handles.Main_AnimationStatus, 'String', 'Stopped');
 
 end
-
-
-
-function Main_Shot_Callback(hObject, eventdata, handles)
-% hObject    handle to Main_Shot (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Main_Shot as text
-%        str2double(get(hObject,'String')) returns contents of Main_Shot as a double
-
-
-
-% --- Executes during object creation, after setting all properties.
-function Main_Shot_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Main_Shot (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function Main_Run_Callback(hObject, eventdata, handles)
-% hObject    handle to Main_Run (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of Main_Run as text
-%        str2double(get(hObject,'String')) returns contents of Main_Run as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function Main_Run_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Main_Run (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on selection change in Main_ListProfiles.
-function Main_ListProfiles_Callback(hObject, eventdata, handles)
-% hObject    handle to Main_ListProfiles (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns Main_ListProfiles contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from Main_ListProfiles
-
-
-% --- Executes during object creation, after setting all properties.
-function Main_ListProfiles_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to Main_ListProfiles (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function AxesNumber_Callback(hObject, eventdata, handles)
-% hObject    handle to AxesNumber (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of AxesNumber as text
-%        str2double(get(hObject,'String')) returns contents of AxesNumber as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function AxesNumber_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to AxesNumber (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end   
-
     
 
 
@@ -282,14 +188,14 @@ handles.PFPassive = IDSData.pf_passive;
 
 
 handles.Frame = 1;
-
+handles.Step = 10;
 
 Temp = str2double(get(handles.Main_FrameStep, 'String'));
 if ~isnan(Temp)
-    handles.Step = max([round(abs(Temp)) 1]);
-else
-    handles.Step = 1;
+    handles.Step = max(1,round(abs(Temp)));
 end
+set(handles.Main_FrameStep, 'String', num2str(handles.Step));
+
 
 handles.TimeSteps = length(handles.Equilibrium.time);
 
@@ -326,13 +232,13 @@ function Main_FrameStep_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of Main_FrameStep as text
 %        str2double(get(hObject,'String')) returns contents of Main_FrameStep as a double
 
-Default = 1;
+Default = handles.Step;
 
 Value = str2double(get(hObject,'String'));
 
 if ~isnan(Value)
     Value = round(Value);
-    if Value ~= 0
+    if Value ~= 0 && abs(Value) < handles.MaxStepNumber
         NewValue = Value;
     else
         NewValue = Default;
@@ -342,8 +248,8 @@ else
 end
 
 set(hObject,'String',num2str(NewValue));
-
 handles.Step = NewValue;
+
 guidata(hObject,handles);
 
 
@@ -426,7 +332,7 @@ Value = str2double(get(hObject,'String'));
 if ~isnan(Value)
     Value = round(Value);
     
-    NewFrame = max(Value, Default);
+    NewFrame = max(Value, 1);
     NewFrame = min(NewFrame, handles.MaxStepNumber);
     
 else
