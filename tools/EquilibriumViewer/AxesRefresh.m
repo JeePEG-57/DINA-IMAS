@@ -40,5 +40,10 @@ YLimN(1) = YLim(1) - (YAreaNew - YArea)/2;
 YLimN(2) = YLim(2) + (YAreaNew - YArea)/2;
 
 
+if XLimN(1) < 0   
+    XLimN(2) = XLimN(2) - XLimN(1);
+    XLimN(1) = 0;   
+end
+
 set(CurAxes,'XLim',XLimN);
 set(CurAxes,'YLim',YLimN);

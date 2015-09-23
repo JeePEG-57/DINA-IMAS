@@ -30,15 +30,19 @@ equilibrium = IDSData.equilibrium;
 core_profiles = IDSData.core_profiles;
 
 
-Ntime = length(equilibrium.time_slice);
-Nslice = length(equilibrium.time);
+Ntime = length(equilibrium.time);
+Nslice = length(equilibrium.time_slice);
 if  Ntime ~= Nslice
-    disp(['Time slices amount (' num2str(Nslice) ') is not equal time moments amount(' num2str(Ntime) ').']);
-    return
+    disp(['Length of equilibrium.time_slice (' num2str(Nslice) ') is not equal length of equilibrium.time (' num2str(Ntime) ').']);
+    %return
 end
 
 
-X = equilibrium.time';
+X = zeros(1);
+for i=1:Nslice
+    X(i) = equilibrium.time_slice{1,i}.time;
+end
+%X = equilibrium.time';
 XName = 'Time';
 XUnits = 's';
 
@@ -56,7 +60,7 @@ q_axis = zeros(1);
 q_95 = zeros(1);
 w_mhd = zeros(1);
 
-for i=1:size(equilibrium.time_slice,2)
+for i=1:Nslice
     
     ip(i) = equilibrium.time_slice{1,i}.global_quantities.ip;
     li_3(i) = equilibrium.time_slice{1,i}.global_quantities.li_3;

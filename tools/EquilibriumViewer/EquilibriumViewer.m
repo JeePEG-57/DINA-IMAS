@@ -100,11 +100,11 @@ function Main_Button_Next_Callback(hObject, eventdata, handles)
 
 if ~get(handles.Main_ButtonAnimation, 'Value')
     
-    handles.Frame = min([handles.Frame+handles.Step handles.MaxStepNumber]);
+    handles.Frame = min([handles.Frame+abs(handles.Step) handles.MaxStepNumber]);
 
     guidata(hObject, handles);
 
-    DrawGraphs(hObject, handles.Main_Axes1);
+    DrawDynamic(hObject, handles.Main_Axes1);
     
     set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
     set(handles.Main_AnimationStatus, 'String', 'Stopped');
@@ -120,11 +120,11 @@ function Main_Button_Back_Callback(hObject, eventdata, handles)
 
 if ~get(handles.Main_ButtonAnimation, 'Value')
     
-    handles.Frame = max([handles.Frame-handles.Step 1]);
+    handles.Frame = max([handles.Frame-abs(handles.Step) 1]);
 
     guidata(hObject, handles);
 
-    DrawGraphs(hObject, handles.Main_Axes1);
+    DrawDynamic(hObject, handles.Main_Axes1);
 
     set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
     set(handles.Main_AnimationStatus, 'String', 'Stopped');
@@ -145,7 +145,7 @@ if ~get(handles.Main_ButtonAnimation, 'Value')
 
     guidata(hObject, handles);
 
-    DrawGraphs(hObject, handles.Main_Axes1);
+    DrawDynamic(hObject, handles.Main_Axes1);
 
     set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
     set(handles.Main_AnimationStatus, 'String', 'Stopped');
@@ -166,7 +166,7 @@ if ~get(handles.Main_ButtonAnimation, 'Value')
 
     guidata(hObject, handles);
 
-    DrawGraphs(hObject, handles.Main_Axes1);
+    DrawDynamic(hObject, handles.Main_Axes1);
 
     set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
     set(handles.Main_AnimationStatus, 'String', 'Stopped');
@@ -197,7 +197,7 @@ end
 set(handles.Main_FrameStep, 'String', num2str(handles.Step));
 
 
-handles.TimeSteps = length(handles.Equilibrium.time);
+handles.TimeSteps = length(handles.Equilibrium.time_slice);
 
 handles.MaxStepNumber = handles.TimeSteps;
 
@@ -217,7 +217,7 @@ cla(handles.Main_Axes1);
 
 DrawStatic(hObject, handles.Main_Axes1);
 
-DrawGraphs(hObject, handles.Main_Axes1, handles.Frame);
+DrawDynamic(hObject, handles.Main_Axes1, handles.Frame);
 
 AxesRefresh(handles.Main_Axes1);
 
@@ -286,7 +286,7 @@ while get(hObject, 'Value')
         break
     end
    
-    [Code] = DrawGraphs(hObject, handles.Main_Axes1, CurrentFrame);
+    [Code] = DrawDynamic(hObject, handles.Main_Axes1, CurrentFrame);
 
     set(handles.Main_TargetStep, 'String', num2str(CurrentFrame));   
     set(handles.Main_AnimationStatus, 'String', 'Animation...');
@@ -297,7 +297,7 @@ while get(hObject, 'Value')
    
 end
 
-set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
+%set(handles.Main_TargetStep, 'String', num2str(handles.Frame));   
 set(handles.Main_AnimationStatus, 'String', 'Stopped');
     
 set(hObject, 'Value', 0);
@@ -344,7 +344,7 @@ set(hObject,'String',num2str(NewFrame));
 handles.Frame = NewFrame;
 guidata(hObject,handles);
 
-DrawGraphs(hObject, handles.Main_Axes1, NewFrame);
+DrawDynamic(hObject, handles.Main_Axes1, NewFrame);
 
 
 
