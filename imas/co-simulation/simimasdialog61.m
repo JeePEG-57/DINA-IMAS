@@ -37,7 +37,8 @@ function [sys,x0,str,ts,KepFlag,SimFlag,fileID] = mdlInitializeSizes()
 KepFlag =0;
 SimFlag =0;
 
-wkf='./test61.xml'
+wkf='./DINA_Scenario_PCSSP61.xml'
+%wkf='./test61.xml'
 %[s,t]=unix(sprintf('/home/ITER/lukashv/ITERIS/TEST/launch_IMAS.sh %s',wkf));
 %t
 %s=unix(sprintf('nohup /home/ITER/lukashv/ITERIS/TEST/launch_IMAS.sh %s > /dev/null',wkf));
