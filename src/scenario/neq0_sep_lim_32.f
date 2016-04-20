@@ -61,6 +61,7 @@
 
 c----------
 	dimension f(nwnh)
+	dimension pspl_temp(nwnh)                                      
 
 	delta0=1.2*sqrt(dx**2+dy**2)
 	COEF=10./(4.*PI)
@@ -82,6 +83,10 @@ c calc.psi(i,j)
 	if(kpr.eq.1)print *,' call to psi_tot--'
 
 c	call bz_calc()
+
+	   do i=1,nwnh                                                         
+	      pspl_temp(i)=pspl(i)                                            
+	   end do                                                              
 
 	call psi_tot()
 
@@ -204,6 +209,9 @@ c!!!	if(abs(del_r).gt.1.e-1)call bound_hcoor()
 c	if(abs(del_r).gt.1.e-1.and.ntay.gt.0)
 c     *  call bound_h2()
 
+	   do i=1,nwnh   
+	      pspl(i)=0.5d0*(pspl_temp(i)+pspl(i))
+         end do
 
 	do i=1,nr
 	do j=1,nz
@@ -4039,6 +4047,8 @@ c
 
         common
      *  /c_ge5/ksepa 
+        common
+     *  /graf1/tri,tri_up,tri_dw,el_up,el_dw
 
 
 	common
@@ -4126,6 +4136,17 @@ c	zmin=amin1(zmin,zmin_p)
 	zout=0.5*(zmax+zmin)
 	rout=0.5*(xleft+xright)
 	elong=bheight/eu
+
+	asp=rout/eu
+        el_up=(zmax-zmag)/eu
+        el_dw=(zmag-zmin)/eu
+        tri_up=(rout-rmax)/eu
+        tri_dw=(rout-rmin)/eu
+
+	tri=0.5*(tri_up+tri_dw)
+
+        if(kpr.eq.1)print *,' EL_UP EL_DW ASP',el_up,el_dw,asp
+        if(kpr.eq.1)print *,' tri TRI_UP TRI_DW',tri,tri_up,tri_dw
 
         if(ksepa.eq.1)elong_sep=0.5*(zmax-zsep)/eu
 

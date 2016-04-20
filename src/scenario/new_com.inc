@@ -70,6 +70,7 @@
      *  /dfm11/c20(npo),tok1(npo),tok2(npo)
      *  /dfm12/betj,dlint,bett,bet2,betpc,tk,tkp,tkf
      *  /dfm13/tokel,tokfi,tokbut
+     *  /dfm13e/tokuv
      *  /dfm14/tokae,ajae(npo),ajae0(npo),enae
      *	/dfm15/uli
 
@@ -110,6 +111,7 @@
      *	/cont18/t_vde,time_disr
      *  /cont20/x_gaps(kf_c),y_gaps(kf_c),gaps(kf_c),n_gaps
      *  /cont21/n_ga,n_int
+     *  /cont23/v_gaps(kf_c),d_gaps0(kf_c)      
 
 	common
      *	/point1/r0,z0
@@ -370,16 +372,22 @@ c** it is used in cur, dop_port.inc, victor.f
      *  /vic_009/p_sep_tot
      *  /vic_010/tt_errIp
      *  /vic_011/n_pasc
-     *  /vic_012/pion,palf,w_imp2,w_imp3
+
+c---------------------------
+
+     *  /vic_012/pion,palf,w_imp2,w_imp3,w_imp4,w_imp5
     
      *  /vic_013/w_imp
-	
-     *  /vic_014/w_imp4,w_imp5
-    
+     *  /vic_014/dt_term_h
+     *  /vic_015/dt_end
+     *  /vic_016/tt_rampup
+     *  /vic_017/w_fusion
+     *  /vic_018/r_lh_new
 
-     *  /vic_015/sigma_jetto(npo),sigma_dina(npo)
-    
-     *  /vic_016/xu_dist(mu_l),yu_dist(mu_l)
+c----------
+
+
+     *  /vic_016_imas/xu_dist(mu_l),yu_dist(mu_l)
 
         common
      *	/c_vec1/vec_br(kf),vec_bz(kf)
@@ -628,4 +636,11 @@ c*** Victor's common blocks
 	common 
      *  /c_ktm_1/vs_bound
      *  /c_ktm_2/vs_res,vs_ext
+
+
+        common
+     *  /graf1/tri,tri_up,tri_dw,el_up,el_dw
+
+	common
+     *  /c_grib2/rp1,zp1,dist1,rp2,zp2,dist2
 

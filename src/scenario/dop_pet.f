@@ -7,7 +7,7 @@
      * tene,ptot_dop,vs_res,vs_ext,
      * betj,pf_turns,r_tok,z_tok,
      * rmag,xleft,xright,tec,tqc,pcch,pion,psi_pf,vs_pf,vs_tot,
-     * zvconverter,u_kd)
+     * zvconverter,u_kd,tpl)
 
 
 
@@ -19,7 +19,7 @@
      * tene,ptot,vs_res,vs_ext,
      * betj,pf_turns,r_tok,z_tok,
      * rmag,xleft,xright,tec,tqc,pcch,pion,psi_pf,vs_pf,vs_tot,
-     * zvconverter,u_kd)
+     * zvconverter,u_kd,tpl)
 
     	include 'double.inc'
 c-------------------------------------------------                      
@@ -127,7 +127,8 @@ c   Calculation of Uvs1 (in kV)
       rout=0.
       rmag=0.
  
-
+      p_hl=1.
+      
        if(kpr.eq.1)print*,'eu_xx rmag_xx ',z_1,z_2,tec
 
 
@@ -366,6 +367,7 @@ c
 
 	common
      *  /c_kav2/epol,vol_pl
+     *  /c_vs3/Pvs3, P_rg
 
       dimension dNB_xx(24)
 
@@ -1761,6 +1763,12 @@ c	shape_out(32)=vs_ext
 	write (41,*)pcch,vs_res,p_loss
 	write(41,*)' rmag zmag'
 	write (41,*)rmag,zmag
+	close (41)
+
+	open (unit=41,file='Pvs3.dat',
+     *	form='formatted')
+	write(41,*)'Pvs3 P_rg'
+	write (41,*)Pvs3,P_rg
 	close (41)
 
 	tene=tene*1.d3

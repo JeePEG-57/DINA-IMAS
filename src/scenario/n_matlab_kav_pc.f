@@ -318,7 +318,7 @@ c	print *,' HYU!!!!'
 
 c	stop
 
-!      i_flat_ext=1
+      i_flat_ext=1
       
 !      print *,' i_flat==',i_flat_ext
       

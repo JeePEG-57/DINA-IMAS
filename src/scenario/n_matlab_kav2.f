@@ -12,7 +12,7 @@
      *       del_ramp,omega,
      *       ro_bar,alf_bar,vchopper,pf0,pf_p,key_lh,key_h_to_l,
      *       tt_dw,tt_h,betp_flat,coef_kessel_1,vs_start,tt_emo,omg_ppx,
-     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke)
+     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke,r_lh_new,pf_turns)
 
 	return
 	end
@@ -27,14 +27,14 @@
      *       del_ramp,omega,
      *       ro_bar,alf_bar,vchopper,pf0,pf_p,key_lh,key_h_to_l,
      *       tt_dw,tt_h,betp_flat,coef_kessel_1,vs_start,tt_emo,omg_ppx,
-     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke)
+     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke,r_lh_new,pf_turns)
 
 	include 'double.inc'
 	include 'parf0'
 	include 'parf1'
 
 	dimension pf(*),q(*),gaps0(*),vchopper(*),pf0(*),pf_p(*)
-	dimension xu(*),yu(*),xu_dist(*),yu_dist(*)
+	dimension xu(*),yu(*),xu_dist(*),yu_dist(*),pf_turns(*)
 
 	common
 
@@ -115,8 +115,12 @@
      *  /ef_0/key_ef
 	common
      *  /c_con8/key_con
+     *  /c_con9/key_sig_coef
 
         common/vic_vic/coef_port
+     *  /vic_014/dt_term_h
+     *  /vic_015/dt_end
+     *  /vic_016/tt_rampup
 
 	dimension tcam(*),tcam0(*),ind(kf),pfhelp(kf)
 
@@ -127,13 +131,42 @@
 	character *30 apr
 	dimension a_print(200)
 
+
+!!! Ics1_eob=-30e-3*ntur(3); t_eob2=25; c_eob=0.9999; 
+!!! cIp_end=1.5; dt_end=dtpl_term_l*cIp_end/7.5;
+
+c********* FROM KAVIN ********
+c*** tt_dw - start of ramp down
+c*** dt_end - time duration of ramp down form 1.5 MA up to 0
+c*** dt_term_h - time duration between tt_dw and H to L transition
+c*** tt_rampup - SOF time
+
+
+!           read (41,*)dtpl_term_h,dtpl_term_l,cIp_end,
+!            CS1_eob,dt_contr_hl
+
+
+!!           dt_term_h=dtpl_term_h*1e3
+
+!!        cIp_hl=tpl/1e3
+
+!           dt_end=cIp_end/cIp_hl*dtpl_term_l*1e3
+
+
+!!        if(pf(3)/pf_turns(3).lt.CS1_eob .and. k_CS1.eq.0 
+!!     *     .and. tt.gt.dt_contr_hl*1e3) then
+!!        k_CS1=1
+!!        tt_eob=tt-1e-3
+!!        tt_dw=tt_eob
+
+
 !      kpr=1
 
 !      tt_dw=1.e8
 
       i_en=i_en+1
 
-      	if(i_en2.eq.1)then	
+      	if(i_en2.eq.-1)then	
         open (unit=1,file='kpr.dat',form='formatted')
         read (1,*)
         read (1,*)kpr
@@ -144,6 +177,8 @@
 	end if
 
       if(i_en.gt.1)goto 2323
+     
+       key_sig_coef=1.d0
      
     !   kpr=1
 
@@ -220,6 +255,11 @@ c	call shape_d3d()
     	VN(I)=VI(I)/VMAX
 	end do
 
+       call gamma_z1_read()
+       call gamma_z2_read()
+       call gamma_z3_read()
+       call gamma_z4_read()
+
 	if(k_ener.eq.1)call dens_prog()
 	call pp_calc()
 
@@ -268,9 +308,33 @@ c* vic  To read tay_simul
 	   xu_dist(i)=xu(i)
 	   yu_dist(i)=yu(i)
 	end do
+          open (unit=40,file='tt_kavin2.dat',form='formatted') 
+          read (40,*) 
+          read (40,*)tt_rampup
+          read (40,*) 
+          read (40,*)dtpl_term_h,dtpl_term_l,cIp_end
+          read (40,*) 
+          read (40,*)CS1_eob,dt_contr_hl
+
+	  close (40)
+
+        dt_term_h=dtpl_term_h*1e3
+
+          if(kpr.eq.1)print*,
+     *   'dtpl_term_h,dtpl_term_l,cIp_end',
+     *   dtpl_term_h,dtpl_term_l,cIp_end
+
+          if(kpr.eq.1)print*,
+     *   'CS1_eob,dt_contr_hl',
+     *   CS1_eob,dt_contr_hl
+
+          if(kpr.eq.1)print*,
+     *   'pf3 pf_turns(3) dt_term_h',
+     *   pf(3),pf_turns(3),dt_term_h
 
 
-
+!      kpr=3
+       
        goto 2323
 
 
@@ -749,6 +813,11 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
     	VN(I)=VI(I)/VMAX
 	end do
 
+       call gamma_z1_read()
+       call gamma_z2_read()
+       call gamma_z3_read()
+       call gamma_z4_read()
+
 	if(k_ener.eq.1)call dens_prog()
 	call pp_calc()
 
@@ -866,15 +935,43 @@ c	   read(*,*)
 
 	  close (40)
 
-
         return
-      
 
+	tt_h=1.e8
+
+      
 2323	continue
 
+c*** !!!!! *** FROM KAVIN ******
+	   if(ntay.le.next+1)then
+ccc	      tt_h=1.e8
+	      tt_avr=1.e8
+	   else	      
+ccc	      tt_h=tt_rampup+1100.
+	      tt_avr=tt_rampup+1100.
+	   end if
+
+	   if(tt.gt.tt_rampup+1100..and.r_lh_new.gt.1..and.
+     *         key_help.eq.0)then
+	      key_help=1
+	      tt_h=tt
+	   end if
+          if(kpr.eq.1)print*,
+     *   'tt tt_rampup r_lh_new tt_h',tt,tt_rampup,r_lh_new,tt_h
+	   tt_h=1.e8
+
+c*******************************
 
       if(i_3323.eq.1)goto 3323
-      
+
+
+        if(pf(3)/pf_turns(3).lt.CS1_eob .and. k_CS1.eq.0 
+     *     .and. tt.gt.dt_contr_hl*1e3) then
+        k_CS1=1
+        tt_eob=tt-1.e-3
+        tt_dw=tt_eob
+        end if
+        
 
       if(tt.gt.time_to.and.tt.le.time_back.and.i_lim.eq.0)then
       i_lim=1
@@ -886,9 +983,7 @@ c	   read(*,*)
 	end if
 	
 
-
-
-	if(tt.ge.93.41e3.and.tt.le.93.44e3)then
+	if(tt.ge.93.41e6.and.tt.le.93.44e6)then
 c	   del_tt=del_tt+tay
 c	   if(del_tt.ge.1000.)then
 c	      del_tt=0.
@@ -974,13 +1069,14 @@ c	   if(tay.gt.5.)tay=5.
 
 c****** tay decreasing ******
 ccc	   if(tt.ge.tt_elm)then
-	   if(tt.ge.tt_dw-5.e3)then
+!	   if(tt.ge.tt_dw-5.e3)then
+	   if(tt.ge.tt_dw.and.tay.gt.tay_dw)then
 c	      tay=tay/1.2
 	      tay=tay/1.5
 ccc	      if(tay.lt.tay_elm)tay=tay_elm
 	      if(tay.lt.tay_dw)tay=tay_dw
 	      call cam_t()
-      call shape_pfres()
+            call shape_pfres()
 	      call inv_gen()
 !	      call gen()
 	   end if
@@ -1057,8 +1153,9 @@ c**********************
 
 c*************
 	pnor=6.25e8
-	if(tt.gt.tt_dw+20.)emoe=15.*pnor
-	if(tt.gt.tt_dw+40.)emoe=0.
+c	if(tt.gt.tt_dw+20.)emoe=15.*pnor
+c	if(tt.gt.tt_dw+40.)emoe=0.
+	if(tt.gt.tt_dw+dt_term_h)emoe=0.
 c*************
 	if(kpr.eq.1)print*,'emoe=',emoe
 	if(kpr.eq.1)print*,'!!!! tt tt_dw=',tt,tt_dw
@@ -1234,7 +1331,7 @@ c	end if
 
 c%%%%%%% eqdsk writing %%%%%%%%%
 
-	if(tt.ge.130.062e3.and.k_eqdsk.eq.0)then
+	if(tt.ge.130.062e5.and.k_eqdsk.eq.0)then
 	   k_eqdsk=k_eqdsk+1
 	   call equidsk_write(k_eqdsk)
 	   call te0_write(k_eqdsk)
@@ -1243,7 +1340,7 @@ c%%%%%%% eqdsk writing %%%%%%%%%
 c	   stop
 	end if
 
-	if(tt.ge.130.0906e3.and.k_eqdsk.eq.1)then
+	if(tt.ge.130.0906e5.and.k_eqdsk.eq.1)then
 	   k_eqdsk=k_eqdsk+1
 	   call equidsk_write(k_eqdsk)
 	   call write_separ_coor()
@@ -1251,7 +1348,7 @@ c	   stop
 c	   stop
 	end if
 
-	if(tt.ge.658.e3.and.k_eqdsk.eq.2)then
+	if(tt.ge.658.e5.and.k_eqdsk.eq.2)then
 	   k_eqdsk=k_eqdsk+1
 c	   call equidsk_write(k_eqdsk)
 	   call write_separ_coor()
@@ -1263,12 +1360,12 @@ c	   call equidsk_write(k_eqdsk)
 c	   call equidsk_write(k_eqdsk)
 	end if
 
-	if(tt.ge.624.5e3.and.k_eqdsk.eq.4)then
+	if(tt.ge.624.5e5.and.k_eqdsk.eq.4)then
 	   k_eqdsk=k_eqdsk+1
 c	   call equidsk_write(k_eqdsk)
 	end if
 
-	if(tt.ge.629.2e3.and.k_eqdsk.eq.5)then
+	if(tt.ge.629.2e5.and.k_eqdsk.eq.5)then
 	   k_eqdsk=k_eqdsk+1
 c	   call equidsk_write(k_eqdsk)
 	end if
@@ -1746,6 +1843,25 @@ c-----------------------------
 c   vessel cuurents taken after convergance of equilibrium---
 
 c----------------------------
+	if(k_ener.eq.1)then
+
+	if(tt.gt.tt_h-500.)then
+	   call vic_prof_chg()
+	end if
+
+	if(tt.gt.tt_h_to_l-500.)then
+	   call vic_prof_chg1()
+	end if
+	
+       call gamma_z1_read()
+       call gamma_z2_read()
+       call gamma_z3_read()
+       call gamma_z4_read()
+
+	 call dens_prog()
+
+       end if
+      
 
 c
       	VMAX=1.E5
@@ -1754,6 +1870,11 @@ c
 	end do
 	if(kpr.eq.1)
      *	print *,' -----k_ener t_dop-- q(2)',k_ener,t_dop,q(2)
+
+c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
+        call vic_t_edge()
+
+
 	if(k_ener.eq.1)	CALL ENERGY(N)
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
@@ -1818,7 +1939,8 @@ cccccc        tt_h=80100.
 c        tt_h=70100.
 c        tt_h=50100.
 cccccccc        tt_h_to_l=600000.
-	if(kpr.eq.1)print*,'!!!tt key_h_to_l tt_h_to_l ntay',tt,key_h_to_l,tt_h_to_l,ntay 
+	if(kpr.eq.1)print*,'!!!tt key_h_to_l tt_h_to_l ntay',
+     *  tt,key_h_to_l,tt_h_to_l,ntay 
 
 	if(key_h_to_l.eq.1)tt_h_to_l=tt
 c
@@ -1829,19 +1951,6 @@ c
 	if(kpr.eq.1)print*,'!!!key_h_to_l key_lh',key_h_to_l,key_lh
 c****************************************************
 	
-	if(k_ener.eq.1)then
-	
-	if(tt.gt.tt_h-500.)then
-	   call vic_prof_chg()
-	end if
-
-	if(tt.gt.tt_h_to_l-500.)then
-	   call vic_prof_chg1()
-	end if
-	
-		call dens_prog()
-
-      end if
       
 	if(ntay.eq.next)then
       call shape_pfres()
@@ -1887,7 +1996,7 @@ c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c!!!!! Transfer VCHOPPER_DINA_order to VCHOPPER_original_order !!!!!!
 c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
-        call vic_t_edge()
+cccccc        call vic_t_edge()
 
 c  	call shape_f9a() 
 c	call filter()
@@ -1930,51 +2039,77 @@ c	stop
 !!!	go to 2323
       end if
       
+!      kpr=1
       
 	t_end=tt
-	t_vde=t_end+250.e3
 	
+!	t_vde=t_end+250.e3
+
+!      if(kpr.eq.1)print*,'t_vde t_end',t_vde,t_end
+
+      dt_end=dtpl_term_l*cIp_end/7.5*1e3;
+
+      if(kpr.eq.1)print*,'dt_end',dt_end
+	
+      t_tpl_down=dt_end
+
+      d_tpl=tpl/t_tpl_down
+
+      if(kpr.eq.1)print*,'t_tpl_down d_tpl',t_tpl_down,d_tpl
+
 	i_3323=1
 
-      tpl=1.d-10
+c      tpl=1.d-10
       
-      tpl0=1.d-10
+c      tpl0=1.d-10
 	
-	return
+c	return
 
-c	if(kpr.eq.1)print*,'before 3323'
-c	if(kpr.eq.1)print*,'tt tpl t_end t_vde',tt,tpl,t_end,t_vde
+	if(kpr.eq.1)print*,'before 3323'
+	if(kpr.eq.1)print*,'tt tpl t_end t_vde',tt,tpl,t_end,t_vde
 
 3323	continue
 
-	ntay=ntay+1
 
-	tt=tt+tay
+
+!	ntay=ntay+1
+
+!	tt=tt+tay
 	
-!	tpl=tpl-d_tpl*tay
+      call curr_calc(tpl)
+
+	if(kpr.eq.1)print*,'ntay tt tpl',ntay,tt,tpl
+
+	tpl=tpl-d_tpl*tay
+
+      cIp_hl=tpl/1e3
+
+      if(tpl.lt.1.d-8)then
+      tpl=1.d-8
+      d_tpl=0.d0
+      end if
 	
 !	if(tpl.le.1.d0)tpl=1.d0
 
-
 	a_print(1)=tt
-	a_print(2)=t_vde
+	a_print(2)=d_tpl
 	a_print(3)=tpl
 	a_print(4)=tay
 
 	n_pr=4
-	apr=' tt t_vde tpl tay '
+	apr=' tt d_tpl tpl tay '
 	num=30
-	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
+	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
 
 
 c*** To read Ip and PF_p preprogrammed waveforms (in DINA order)
 c*** from scr_data file 
-!      call vic_shape_ip_iam()
+c      call vic_shape_ip_iam()
 	   
-!        call r_volt()
+c        call r_volt()
 
-!        call vic_gaps0_read()
-!	call SCEN_CONTROL(key_h_to_l)
+c        call vic_gaps0_read()
+c	call SCEN_CONTROL(key_h_to_l)
 
 	  call loopflux()
                                                       
@@ -1982,10 +2117,13 @@ c*** from scr_data file
 
         call shape_pfres()
         call gen()
+
+c        call gen_pf()
+
 !      	call ful()
 
 c****** PF current limits checking ***********
-!        call vic_pf_limits()
+c        call vic_pf_limits()
 c*********************************************
 c!!!!! Transfer VCHOPPER to VCHOPPER_DINA_order !!!!!!!!!!!!!!!!!!
 c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2003,17 +2141,10 @@ c**** pfc_new.dat and volt_new.dat files writing ***
 
 	call time_out()
 
-!!!	if(tt.lt.t_vde)go to 3323
-	if(tt.lt.t_vde)then
-	return
-!	go to 3323
-      end if
-
-c-----------------------------------
-	return
+c	if(tt.lt.t_vde)go to 3323
+!	if(tt.lt.t_vde)then
 
 
-	stop
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 	return
 	end
@@ -2269,6 +2400,52 @@ c	read (*,*)
 	end
 
 c
+	subroutine curr_calc(tpl)
+	include 'double.inc'
+      include 'parf2'
+
+	common
+     *  /ge1/pi
+     *  /ge5/kpr
+     *	/fluxc7/coef,coef1,api
+	common
+     *	/v_jp/f(nwnh)
+	common
+     *  /eq1/psi(nr,nz),pspl(nwnh),x(nn),y(MM),dx,dy
+
+	COEF=10./(4.*PI)
+	api=1./(2.*pi)
+
+      TOk=0.d0
+      do kk=1,nwnh
+	f00=F(kk)
+	TOK=TOK+f00
+      end do
+	TOK=TOK*COEF*dx*dy
+
+	if(kpr.eq.1)print *,'coef ',tpl,COEF*dx*dy
+	al1=tpl/tok
+C
+	if(kpr.eq.1)print *,'tpl tok ',tpl,tok
+      
+c
+	coef1=al1*dx*dy*coef
+c-------
+c  calc. flux from plasma to vessel,PF loops and probes...
+	call pl_out(f)
+
+      do kk=1,nwnh
+	F(kk)=F(kk)*al1
+      end do
+
+
+	return
+	end
+
+
+
+
+                                                                        
 
 
                                                                         

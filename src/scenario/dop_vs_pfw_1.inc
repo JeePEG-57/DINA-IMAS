@@ -415,7 +415,8 @@ c****************************************************
 	yy(113)='tay_H[ms]'
 	
 	ygr(114,igr)=r_lh
-	yy(114)='r_LH'
+	ygr(114,igr)=r_lh_new 
+		yy(114)='r_LH'
 	
 	if(ksepa.eq.0)then
 		ell=eksk
@@ -542,10 +543,13 @@ c*******************************************
 		yy(147)='Psum,MW'
 
 	P_HL=0.082/2.5*(pcch/10.)**0.73*5.3**0.74*(s_plasma/1.e4)**0.98
-	    ygr(148,igr)=P_HL
+	
+	if(kpr.eq.1)print *,' p_hl s_plasma pcch=',p_hl,s_plasma,pcch 
+	
+		    ygr(148,igr)=P_HL
 		yy(148)='P_HL,MW'
 c****************************************************
-	pmag_out_1=dm0(1)*1.e-5
+	   pmag_out_1=dm0(1)*1.e-5
 c	   ygr(149,igr)=pmag_out_1
 c		yy(149)='Pmag Tr'
 
@@ -658,6 +662,10 @@ c   Calculation of Uvs1 (in kV)
         U_vs1=-u_kd(7)*pf_turns(7)*1.e-3
 
 c***********************************
+
+!	print *,' write_data_in_time'
+
+
 c***********************************
       call write_data_in_time(
      *	tt,tpl,betpj,eu,uli,r_cur,z_cur,p_sep,wel,wio,eksk,

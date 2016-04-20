@@ -41,7 +41,8 @@ cDEC$ ATTRIBUTES ALIAS:'_t15_2_terminate'::t15_2_terminate
      *  k_out, a_out)
 cDEC$ ATTRIBUTES DLLIMPORT, stdcall::  t15_2_output
 cDEC$ ATTRIBUTES ALIAS:'_t15_2_output'::t15_2_output
-cDEC$ ATTRIBUTES VALUE :: k_in,k_out
+cDEC$ ATTRIBUTES VALUE :: k_in
+cDEC$ ATTRIBUTES REFERENCE :: k_out
 cDEC$ ATTRIBUTES REFERENCE :: a_in,a_out
 
        integer k_in,k_out
@@ -64,12 +65,12 @@ cDEC$ ATTRIBUTES ALIAS:'_t15_2_output2'::t15_2_output2
       character(80) dll_name
 	logical aa2
           
-      real *8 a, b, a_in(200),a_out(100)
+      real *8 a, b, a_in(200),a_out(200)
       real *8 EqTime,SimStep
 
       i_en=i_en+1
 
-	print * ,' T15--initi'
+!	print * ,' T15--initi'
 
  !     stop
       
@@ -80,12 +81,13 @@ cDEC$ ATTRIBUTES ALIAS:'_t15_2_output2'::t15_2_output2
       if(i_en.eq.1)then
 !       call t15_2_initialize(EqTime,SimStep)
        call t15_2_initialize(aa2)
-     	 print *,'EqTime,SimStep',EqTime,SimStep
+!     	 print *,'EqTime,SimStep',EqTime,SimStep
+      k_out=13
       end if
       
 
       k_in=15+123
-      k_out=13
+      
       
       do i=1,15
       a_in(i)=c_input1(i)
@@ -95,15 +97,17 @@ cDEC$ ATTRIBUTES ALIAS:'_t15_2_output2'::t15_2_output2
       a_in(i+15)=c_input2(i)
       end do
     
-     	print * ,' k_in a_in',k_in,a_in(1:24)
+!     	print * ,' k_in a_in',k_in,a_in(1:24)
       
       
       call t15_2_output(k_in, a_in,
      *  k_out, a_out) 
 
-      	print * ,' k_out a_out',k_out,a_out(1:15)
+ !      print * ,' k_out a_out',k_out,a_out(1:15)
+ !      print * ,' k_out2 a_out',k_out,a_out(15+1:15+11)
+ !      print * ,' k_out3 a_out',k_out,a_out(15+11+1:15+11+12)
       
-      do i=1,15
+      do i=1,38
       c_output2(i)=a_out(i)
       end do
 

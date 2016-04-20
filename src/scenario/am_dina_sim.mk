@@ -12,19 +12,20 @@ os=		a_dina.o  add.o atsv_kav.o\
 		bound.o bp_gribov_1.o bpol3.o break_new.o brz.o bunema.o\
 		camloop.o camlxt.o con_fil.o con_mike.o\
 		ddunew0.o disr.o diter_1.o\
-		dop_imp_new.o dop_pet.o edf.o efi_fil.o efi_ves.o elem_i.o eni_ae.o\
-		eni_imp_H.o etspxhi2.o fit.o flux_pl.o\
+		dop_6_HL_Be1.o dop_pet.o edf.o efi_fil.o efi_ves.o elem_i.o eni_ae.o\
+		eni_BgB_CT.o etspxhi2.o fit.o flux_pl.o\
 		forces_for_control.o g_gaps_rus.o gen.o gr_psi_d_pc.o\
 		green_br_N.o green_d.o inh.o map.o\
-		min_distance_1cm_w.o min_distance_pfw_1cm.o\
-		move.o n_matlab_kav.o n_matlab_kav2.o ndop1_new2_400.o\
+		min_distance_1cm_1.o min_distance_pfw_1cm.o\
+		move.o n_matlab_kav.o n_matlab_kav2.o n_dina_imas.o\
+		ndop1_new2_400.o\
 		ndop_4.o neq0_sep_lim_32.o neqm.o obrm.o oosep_4.o\
 		out42_for.o pet.o pf_t.o pfsvd11x.o pid.o pp0.o progonu.o\
 		read_por.o sh.o sh1_N2.o sh_astra_dt_beam.o\
 		sh_br.o sh_d3d.o solver.o spline.o svd.o svd0m.o svd2.o uuu.o\
-		victor_imp_new1_H.o write_eqdsk_scen_tok.o write_jetto.o\
+		victor_HL_test.o write_eqdsk_scen_tok.o write_jetto.o\
 		write_plasma_W_imas.o zca_tsp.o zcam_d3d.o zcamit.o\
-		zu0_w.o zyb0_0.o
+		zu0.o zyb0_0.o
 
 dina_99.a: $(os)
 	ar -ru dina_99.a $(os)
@@ -37,8 +38,8 @@ a_dina.o:	$(S)a_dina.f
 add.o:		$(S)add.f
 		$(f2c) -c   -w   $(S)add.f
 
-atsv_kav.o:		atsv_kav.for
-		$(f2c) -c   -w      atsv_kav.for
+atsv_kav.o:		atsv_kav.f
+		$(f2c) -c   -w      atsv_kav.f
 
 bispl.o:	$(S)bispl.f
 		$(f2c) -c   -w     $(S)bispl.f
@@ -94,8 +95,8 @@ disr.o:		disr.f
 diter_1.o:	$(S)diter_1.f
 		$(f2c) -c   -w   $(S)diter_1.f
 
-dop_imp_new.o:	dop_imp_new.f dop_vs_pfw_1.inc  new_com.inc
-		$(f2c) -c  -w  dop_imp_new.f
+dop_6_HL_Be1.o:	dop_6_HL_Be1.f dop_vs_pfw_1.inc  new_com.inc
+		$(f2c) -c  -w  dop_6_HL_Be1.f
 
 dop_pet.o:	dop_pet.f new_com.inc
 		$(f2c) -c  -w  dop_pet.f
@@ -116,8 +117,8 @@ eni_ae.o:	$(S)eni_ae.f
 		$(f2c) -c   -w   $(S)eni_ae.f
 
 
-eni_imp_H.o:	$(S)eni_imp_H.f
-		$(f2c) -c   -w   $(S)eni_imp_H.f
+eni_BgB_CT.o:	$(S)eni_BgB_CT.f
+		$(f2c) -c   -w   $(S)eni_BgB_CT.f
 
 etspxhi2.o:	$(S)etspxhi2.f
 		$(f2c) -c   -w  $(S)etspxhi2.f
@@ -153,8 +154,8 @@ inh.o:		$(S)inh.f
 map.o:		map.f
 		$(f2c) -c   -w      map.f
 
-min_distance_1cm_w.o:	min_distance_1cm_w.f
-		$(f2c) -c   -w      min_distance_1cm_w.f
+min_distance_1cm_1.o:	min_distance_1cm_1.f
+		$(f2c) -c   -w      min_distance_1cm_1.f
 
 min_distance_pfw_1cm.o:	min_distance_pfw_1cm.f
 		$(f2c) -c   -w      min_distance_pfw_1cm.f
@@ -168,6 +169,8 @@ n_matlab_kav.o:	n_matlab_kav.f new_com.inc
 n_matlab_kav2.o:	n_matlab_kav2.f new_com.inc
 		$(f2c) -c  -w  n_matlab_kav2.f
 
+n_dina_imas.o:	n_dina_imas.f 
+		$(f2c) -c  -w  n_dina_imas.f 
 
 
 ndop1_new2_400.o:	ndop1_new2_400.f parf8
@@ -246,8 +249,8 @@ svd2.o:		$(S)svd2.f
 uuu.o:		$(S)uuu.f
 		$(f2c) -c   -w      $(S)uuu.f
 
-victor_imp_new1_H.o:	victor_imp_new1_H.f new_com.inc
-		$(f2c) -c  -w victor_imp_new1_H.f
+victor_HL_test.o:	victor_HL_test.f new_com.inc
+		$(f2c) -c  -w victor_HL_test.f
 
 
 write_eqdsk_scen_tok.o:	write_eqdsk_scen_tok.f
@@ -269,8 +272,8 @@ zcamit.o:	zcamit.f
 		$(f2c) -c   -w     zcamit.f
 
 
-zu0_w.o:	$(S)zu0_w.f
-		$(f2c) -c   -w    $(S)zu0_w.f
+zu0.o:		$(S)zu0.f
+		$(f2c) -c   -w    $(S)zu0.f
 
 zyb0_0.o:	$(S)zyb0_0.f
 		$(f2c) -c   -w    $(S)zyb0_0.f

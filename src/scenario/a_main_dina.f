@@ -9,7 +9,7 @@ c	include 'fgraph.fi'
       dimension c_input1(kint),c_input2(kint)
       dimension c_output1(kint),c_output2(kint),c_output3(kint)
 
- !     kpr=1
+      kpr=1
 
       print *,' -------- a_main=',a_main
 

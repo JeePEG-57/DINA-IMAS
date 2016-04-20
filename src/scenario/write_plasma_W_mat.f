@@ -55,39 +55,6 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
 
         dimension dNB_xx(24),wr(150)
 
-c******* Begin of Sign changing ******
-        tpl_imas=tpl*(-1)
-
-        pf1_imas=pf1*(-1)
-        pf2_imas=pf2*(-1)
-        pf3_imas=pf3*(-1)
-        pf4_imas=pf4*(-1)
-        pf5_imas=pf5*(-1)
-        pf6_imas=pf6*(-1)
-        pf7_imas=pf7*(-1)
-        pf8_imas=pf8*(-1)
-        pf9_imas=pf9*(-1)
-        pf10_imas=pf10*(-1)
-        pf11_imas=pf11*(-1)
-
-        zv1_imas=zv1*(-1)
-        zv2_imas=zv2*(-1)
-        zv3_imas=zv3*(-1)
-        zv4_imas=zv4*(-1)
-        zv5_imas=zv5*(-1)
-        zv6_imas=zv6*(-1)
-        zv7_imas=zv7*(-1)
-        zv8_imas=zv8*(-1)
-        zv9_imas=zv9*(-1)
-        zv10_imas=zv10*(-1)
-        zv11_imas=zv11*(-1)
-
-        Curr_vs1_imas=Curr_vs1*(-1)
-        Curr_vs2_imas=Curr_vs2*(-1)
-
-        U_vs1_imas=U_vs1*(-1)
-        U_vs2_imas=U_vs2*(-1)
-c******* End of Sign changing ******
 
 	  i_en=i_en+1
 
@@ -137,15 +104,7 @@ c-----------------
         if(wdop.lt.1.e-5)qtep=0.
         
         pohm=wdh
-
-c*** Begin of sign changing ***
-        psiext_av_imas=psiext_av*(-1)
-        psi_pf_imas=psi_pf*(-1)
-        psi_ax_imas=psi_ax*(-1)
-c*** End of sign changing ***
-
-cc        psi_ext=psiext_av
-        psi_ext=psiext_av_imas
+        psi_ext=psiext_av
         
         Emag=psipl_av*tpl/1000./2.
 
@@ -242,7 +201,7 @@ c     * tokc zvel'
 		end do	
 					
 	wr(1)=t
-	wr(2)=tpl_imas/1000.
+	wr(2)=tpl/1000.
 	wr(3)=rout/100.
 	wr(4)=eu/100.
 	wr(5)=eksk
@@ -273,35 +232,35 @@ c     * tokc zvel'
 	wr(30)=vs
 	wr(31)=c_e_old
 	wr(32)=psi_ext !!!! %%% one needs to need to add tcam to psi_pf 
-	wr(33)=psi_pf_imas
-	wr(34)=psi_ax_imas
-	wr(35)=pf1_imas
-	wr(36)=pf2_imas
-	wr(37)=pf3_imas
-	wr(38)=pf4_imas
-	wr(39)=pf5_imas
-	wr(40)=pf6_imas
-	wr(41)=pf7_imas
-	wr(42)=pf8_imas
-	wr(43)=pf9_imas
-	wr(44)=pf10_imas
-	wr(45)=pf11_imas
-	wr(46)=zv1_imas
-	wr(47)=zv2_imas
-	wr(48)=zv3_imas
-	wr(49)=zv4_imas
-	wr(50)=zv5_imas
-	wr(51)=zv6_imas
-	wr(52)=zv7_imas
-	wr(53)=zv8_imas
-	wr(54)=zv9_imas
-	wr(55)=zv10_imas
-	wr(56)=zv11_imas
-	wr(57)=Curr_vs1_imas
-	wr(58)=Curr_vs2_imas
+	wr(33)=psi_pf
+	wr(34)=psi_ax
+	wr(35)=pf1
+	wr(36)=pf2
+	wr(37)=pf3
+	wr(38)=pf4
+	wr(39)=pf5
+	wr(40)=pf6
+	wr(41)=pf7
+	wr(42)=pf8
+	wr(43)=pf9
+	wr(44)=pf10
+	wr(45)=pf11
+	wr(46)=zv1
+	wr(47)=zv2
+	wr(48)=zv3
+	wr(49)=zv4
+	wr(50)=zv5
+	wr(51)=zv6
+	wr(52)=zv7
+	wr(53)=zv8
+	wr(54)=zv9
+	wr(55)=zv10
+	wr(56)=zv11
+	wr(57)=Curr_vs1
+	wr(58)=Curr_vs2
 	wr(59)=Curr_vs3
-	wr(60)=U_vs1_imas
-	wr(61)=U_vs2_imas
+	wr(60)=U_vs1
+	wr(61)=U_vs2
 	wr(62)=U_vs3
 	wr(63)=Ptotal
 	wr(64)=P_rg   !!!!! we will do it later
@@ -318,7 +277,7 @@ cccccc	wr(73)=r_lh
 	wr(74)=Emag  !!! we will do it later
 	wr(75)=pl_inductance !!! we will do it later 
 	wr(76)=wen2/1000.
-        wr(77)=-(uact+1.e-8)/wr(2)
+        wr(77)=(uact+1.e-8)/wr(2)
         wr(78)=wr(75)/wr(77)*1.e6
 
 	wr(79)=coef_He

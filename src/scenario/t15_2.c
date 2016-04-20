@@ -5,19 +5,16 @@
 # define t15_2_terminate t15_2_terminate_
 
 #endif
-
-
-
 /*
  * File: t15_2.c
  *
  * Real-Time Workshop code generated for Simulink model t15_2.
  *
- * Model version                        : 1.1118
+ * Model version                        : 1.1128
  * Real-Time Workshop file version      : 7.4  (R2009b)  29-Jun-2009
- * Real-Time Workshop file generated on : Tue Feb 10 20:20:16 2015
+ * Real-Time Workshop file generated on : Thu Mar 24 12:39:33 2016
  * TLC version                          : 7.4 (Jul 14 2009)
- * C/C++ source code generated on       : Tue Feb 10 20:20:17 2015
+ * C/C++ source code generated on       : Thu Mar 24 12:39:34 2016
  *
  * Target selection: ert_shrlib.tlc
  * Embedded hardware selection: 32-bit Generic
@@ -26,7 +23,6 @@
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
-
 #include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,9 +30,6 @@
 
 #include "t15_2.h"
 #include "t15_2_private.h"
-
-
-
 
 
 int kpr =0;
@@ -61,330 +54,120 @@ RT_MODEL_t15_2 *t15_2_M = &t15_2_M_;
 void t15_2_step(void)
 {
   {
-    real_T deltaT;
-    real_T riseValLimit[11];
     real_T rateLimiterRate[11];
-    real_T fallValLimit[11];
-    real_T riseValLimit_0;
-    real_T rateLimiterRate_0;
+    real_T tmin;
     int32_T i;
     int32_T tmp;
-
-    /* DiscreteStateSpace: '<S22>/Power Supply' */
-    {
-      t15_2_B.PowerSupply[0] = (t15_2_P.PowerSupply_C[0])*
-        t15_2_DWork.PowerSupply_DSTATE[0];
-      t15_2_B.PowerSupply[1] = (t15_2_P.PowerSupply_C[1])*
-        t15_2_DWork.PowerSupply_DSTATE[1];
-      t15_2_B.PowerSupply[2] = (t15_2_P.PowerSupply_C[2])*
-        t15_2_DWork.PowerSupply_DSTATE[2];
-      t15_2_B.PowerSupply[3] = (t15_2_P.PowerSupply_C[3])*
-        t15_2_DWork.PowerSupply_DSTATE[3];
-      t15_2_B.PowerSupply[4] = (t15_2_P.PowerSupply_C[4])*
-        t15_2_DWork.PowerSupply_DSTATE[4];
-      t15_2_B.PowerSupply[5] = (t15_2_P.PowerSupply_C[5])*
-        t15_2_DWork.PowerSupply_DSTATE[5];
-      t15_2_B.PowerSupply[6] = (t15_2_P.PowerSupply_C[6])*
-        t15_2_DWork.PowerSupply_DSTATE[6];
-      t15_2_B.PowerSupply[7] = (t15_2_P.PowerSupply_C[7])*
-        t15_2_DWork.PowerSupply_DSTATE[7];
-      t15_2_B.PowerSupply[8] = (t15_2_P.PowerSupply_C[8])*
-        t15_2_DWork.PowerSupply_DSTATE[8];
-      t15_2_B.PowerSupply[9] = (t15_2_P.PowerSupply_C[9])*
-        t15_2_DWork.PowerSupply_DSTATE[9];
-      t15_2_B.PowerSupply[10] = (t15_2_P.PowerSupply_C[10])*
-        t15_2_DWork.PowerSupply_DSTATE[10];
-    }
 
     /* Gain: '<Root>/1e-3' incorporates:
      *  Inport: '<Root>/In1'
      */
-    t15_2_B.e3 = t15_2_P.e3_Gain * t15_2_U.In1[8];
+    t15_2_Y.Time = t15_2_P.e3_Gain * t15_2_U.In1[8];
 
-    /* UnitDelay: '<S36>/UD' */
+    /* UnitDelay: '<S61>/UD' */
     t15_2_B.Uk1 = t15_2_DWork.UD_DSTATE;
 
-    /* Sum: '<S36>/Diff' */
-    t15_2_B.Diff = t15_2_B.e3 - t15_2_B.Uk1;
+    /* Sum: '<S61>/Diff' */
+    t15_2_B.Diff = t15_2_Y.Time - t15_2_B.Uk1;
 
-    /* Product: '<S22>/Divide' incorporates:
-     *  Constant: '<S22>/SimStep'
-     */
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide[i] = t15_2_B.PowerSupply[i] * t15_2_P.SimStep_Value /
-        t15_2_B.Diff;
-    }
-
-    /* RateLimiter: '<S22>/Rate Limiter' */
-    if (t15_2_DWork.LastMajorTime == (rtInf)) {
-      memcpy((void *)(&t15_2_B.RateLimiter[0]), (void *)(&t15_2_B.Divide[0]),
-             11U * sizeof(real_T));
-    } else {
-      deltaT = t15_2_M->Timing.t[0] - t15_2_DWork.LastMajorTime;
-      for (i = 0; i < 11; i++) {
-        riseValLimit[i] = deltaT * t15_2_P.RateLimiter_RisingLim[i];
-        rateLimiterRate[i] = t15_2_B.Divide[i] - t15_2_DWork.PrevY[i];
-        if (rateLimiterRate[i] > riseValLimit[i]) {
-          t15_2_B.RateLimiter[i] = t15_2_DWork.PrevY[i] + riseValLimit[i];
-        } else {
-          fallValLimit[i] = deltaT * t15_2_P.RateLimiter_FallingLim[i];
-          if (rateLimiterRate[i] < fallValLimit[i]) {
-            t15_2_B.RateLimiter[i] = t15_2_DWork.PrevY[i] + fallValLimit[i];
-          } else {
-            t15_2_B.RateLimiter[i] = t15_2_B.Divide[i];
-          }
-        }
-      }
-    }
-
-    /* Gain: '<S22>/Gain' */
+    /* Gain: '<S3>/Gain' */
     t15_2_B.Gain = t15_2_P.Gain_Gain * t15_2_B.Diff;
 
-    /* Saturate: '<S22>/Saturation6' */
-    for (i = 0; i < 11; i++) {
-      /* Product: '<S22>/Divide1' */
-      t15_2_B.Divide1[i] = t15_2_B.RateLimiter[i] * t15_2_B.Gain;
-      deltaT = t15_2_B.Divide1[i];
-      t15_2_B.Saturation6[i] = rt_SATURATE(deltaT,
-        t15_2_P.Saturation6_LowerSat[i], t15_2_P.Saturation6_UpperSat[i]);
-    }
-
-    /* Gain: '<S1>/1e-6   ' incorporates:
-     *  Inport: '<Root>/In2'
+    /* Saturate: '<S3>/Saturation6' incorporates:
+     *  RateLimiter: '<S3>/Rate Limiter'
      */
-    for (i = 0; i < 15; i++) {
-      t15_2_B.e6[i] = t15_2_U.In2[i + 6] * t15_2_P.e6_Gain;
-    }
-
     for (i = 0; i < 11; i++) {
-      /* Gain: '<S23>/1e3' */
-      t15_2_B.e3_l[i] = t15_2_P.e3_Gain_g * t15_2_B.e6[i];
+      /* Memory: '<S3>/Memory' */
+      t15_2_B.Memory[i] = t15_2_DWork.Memory_PreviousInput[i];
 
-      /* Abs: '<S23>/Abs' */
-      t15_2_B.Abs[i] = fabs(t15_2_B.e3_l[i]);
-
-      /* Gain: '<S23>/ntur' incorporates:
-       *  Constant: '<S2>/Imax'
+      /* Product: '<S3>/Divide' incorporates:
+       *  Constant: '<S3>/SimStep'
        */
-      t15_2_B.ntur[i] = t15_2_P.ntur_Gain[i] * t15_2_P.Imax_Value[i];
+      t15_2_B.Divide[i] = t15_2_B.Memory[i] * t15_2_P.SimStep_Value /
+        t15_2_B.Diff;
+      rateLimiterRate[i] = t15_2_B.Divide[i] - t15_2_DWork.PrevY[i];
+      if (rateLimiterRate[i] > t15_2_P.RateLimiter_RisingLim[i]) {
+        t15_2_B.RateLimiter[i] = t15_2_DWork.PrevY[i] +
+          t15_2_P.RateLimiter_RisingLim[i];
+      } else if (rateLimiterRate[i] < t15_2_P.RateLimiter_FallingLim[i]) {
+        t15_2_B.RateLimiter[i] = t15_2_DWork.PrevY[i] +
+          t15_2_P.RateLimiter_FallingLim[i];
+      } else {
+        t15_2_B.RateLimiter[i] = t15_2_B.Divide[i];
+      }
 
-      /* Sum: '<S23>/Sum2' */
-      t15_2_B.Sum2[i] = t15_2_B.ntur[i] - t15_2_B.Abs[i];
+      t15_2_DWork.PrevY[i] = t15_2_B.RateLimiter[i];
 
-      /* Gain: '<S23>/c_cur_max' */
-      t15_2_B.c_cur_max[i] = t15_2_P.c_cur_max_Gain * t15_2_B.ntur[i];
-
-      /* Sum: '<S23>/Sum1' */
-      t15_2_B.Sum1[i] = t15_2_B.ntur[i] - t15_2_B.c_cur_max[i];
-
-      /* Product: '<S23>/Divide4' */
-      t15_2_B.Divide4[i] = t15_2_B.Sum2[i] / t15_2_B.Sum1[i];
-
-      /* Product: '<S23>/Divide1' */
-      t15_2_B.Divide1_d[i] = t15_2_B.Divide4[i] * t15_2_B.Divide4[i] *
-        t15_2_B.Divide4[i];
-      deltaT = t15_2_B.Divide1_d[i];
-      t15_2_B.Saturation[i] = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat,
-        t15_2_P.Saturation_UpperSat);
-
-      /* RelationalOperator: '<S37>/Compare' incorporates:
-       *  Constant: '<S37>/Constant'
-       */
-      t15_2_B.Compare[i] = (t15_2_B.Saturation[i] < t15_2_P.Constant_Value);
-
-      /* Product: '<S23>/Divide2' */
-      t15_2_B.Divide2[i] = t15_2_B.e6[i] * t15_2_B.Saturation6[i];
-
-      /* RelationalOperator: '<S38>/Compare' */
-      t15_2_B.Compare_j[i] = (t15_2_B.Divide2[i] < 0.0);
-
-      /* Logic: '<S23>/Logical Operator' */
-      t15_2_B.LogicalOperator[i] = ((t15_2_B.Compare[i] != 0) &&
-        (t15_2_B.Compare_j[i] != 0));
-
-      /* Sum: '<S23>/Sum3' */
-      t15_2_B.Sum3[i] = t15_2_B.Saturation[i] + (real_T)
-        t15_2_B.LogicalOperator[i];
-      deltaT = t15_2_B.Sum3[i];
-      t15_2_B.Saturation1[i] = rt_SATURATE(deltaT, t15_2_P.Saturation1_LowerSat,
-        t15_2_P.Saturation1_UpperSat);
-
-      /* Product: '<S23>/Divide6' */
-      t15_2_B.Divide6[i] = t15_2_B.Saturation6[i] * t15_2_B.Saturation1[i];
+      /* Product: '<S3>/Divide1' */
+      t15_2_B.Divide1[i] = t15_2_B.RateLimiter[i] * t15_2_B.Gain;
+      rateLimiterRate[i] = t15_2_B.Divide1[i];
+      t15_2_B.Saturation6[i] = rt_SATURATE(rateLimiterRate[i],
+        t15_2_P.Saturation6_LowerSat[i], t15_2_P.Saturation6_UpperSat[i]);
     }
 
     /* Gain: '<S1>/1e-6' incorporates:
      *  Inport: '<Root>/In1'
      */
-    t15_2_B.e6_c = t15_2_P.e6_Gain_c * t15_2_U.In1[3];
+    t15_2_B.e6 = t15_2_P.e6_Gain * t15_2_U.In1[3];
 
-    /* RelationalOperator: '<S26>/Relational Operator' incorporates:
-     *  Constant: '<S26>/0'
+    /* RelationalOperator: '<S55>/Compare' incorporates:
+     *  Constant: '<S55>/Constant'
      */
-    t15_2_B.RelationalOperator = (real_T)(t15_2_B.e6_c > t15_2_P._Value);
+    t15_2_B.Compare = (t15_2_B.e6 < t15_2_P.Constant_Value);
 
-    /* RelationalOperator: '<S32>/Relational Operator' incorporates:
-     *  Constant: '<S32>/t_eob-dt_contr_hl'
+    /* RelationalOperator: '<S56>/Compare' incorporates:
+     *  Constant: '<S56>/Constant'
      */
-    t15_2_B.RelationalOperator_p = (real_T)(t15_2_B.e3 >
-      t15_2_P.t_eobdt_contr_hl_Value);
+    t15_2_B.Compare_e = (t15_2_Y.Time > t15_2_P.Constant_Value_f);
 
-    /* UniformRandomNumber: '<S35>/Uniform Random Number' */
+    /* Logic: '<S41>/Logical Operator2' */
+    t15_2_B.LogicalOperator2 = (real_T)((t15_2_B.Compare != 0) &&
+      (t15_2_B.Compare_e != 0));
+
+    /* Logic: '<S41>/Logical Operator1' */
+    t15_2_B.LogicalOperator1 = (real_T)!(t15_2_B.LogicalOperator2 != 0.0);
+
+    /* UniformRandomNumber: '<S43>/Uniform Random Number' */
     t15_2_B.UniformRandomNumber = t15_2_DWork.UniformRandomNumber_NextOutput;
 
-    /* UnitDelay: '<S20>/UD' */
-    t15_2_B.Uk1_h = t15_2_DWork.UD_DSTATE_a;
+    /* UnitDelay: '<S31>/UD' */
+    t15_2_B.Uk1_a = t15_2_DWork.UD_DSTATE_n;
 
-    /* UnitDelay: '<S21>/UD' */
-    t15_2_B.Uk1_a = t15_2_DWork.UD_DSTATE_h;
+    /* UnitDelay: '<S32>/UD' */
+    t15_2_B.Uk1_g = t15_2_DWork.UD_DSTATE_h;
 
-    /* Derivative: '<S7>/Derivative' */
-    {
-      real_T t = t15_2_M->Timing.t[0];
-      real_T timeStampA = t15_2_DWork.Derivative_RWORK.TimeStampA;
-      real_T timeStampB = t15_2_DWork.Derivative_RWORK.TimeStampB;
-      real_T *lastU = &t15_2_DWork.Derivative_RWORK.LastUAtTimeA;
-      if (timeStampA >= t && timeStampB >= t) {
-        t15_2_B.Derivative = 0.0;
-      } else {
-        real_T deltaT;
-        real_T lastTime = timeStampA;
-        if (timeStampA < timeStampB) {
-          if (timeStampB < t) {
-            lastTime = timeStampB;
-            lastU = &t15_2_DWork.Derivative_RWORK.LastUAtTimeB;
-          }
-        } else if (timeStampA >= t) {
-          lastTime = timeStampB;
-          lastU = &t15_2_DWork.Derivative_RWORK.LastUAtTimeB;
-        }
-
-        deltaT = t - lastTime;
-        t15_2_B.Derivative = (t15_2_U.In1[1] - *lastU++) / deltaT;
-      }
+    /* Gain: '<S1>/1e-6   ' incorporates:
+     *  Inport: '<Root>/In2'
+     */
+    for (i = 0; i < 15; i++) {
+      t15_2_B.e6_l[i] = t15_2_U.In2[i + 6] * t15_2_P.e6_Gain_h;
     }
 
     /* Switch: '<S2>/t>t_tran2d' incorporates:
      *  Constant: '<S2>/zeros(2,1)'
      */
-    if (t15_2_B.e3 > t15_2_P.tt_tran2d_Threshold) {
-      /* Switch: '<S7>/EqTime+0.05' */
-      if (t15_2_B.e3 >= t15_2_P.EqTime005_Threshold) {
-        /* Sum: '<S21>/Diff' */
-        t15_2_B.Diff_g = t15_2_B.e3 - t15_2_B.Uk1_a;
+    if (t15_2_Y.Time > t15_2_P.tt_tran2d_Threshold) {
+      /* Sum: '<S32>/Diff' */
+      t15_2_B.Diff_b = t15_2_Y.Time - t15_2_B.Uk1_g;
 
-        /* Sum: '<S20>/Diff' incorporates:
-         *  Inport: '<Root>/In1'
-         */
-        t15_2_B.Diff_c = t15_2_U.In1[1] - t15_2_B.Uk1_h;
+      /* Sum: '<S31>/Diff' incorporates:
+       *  Inport: '<Root>/In1'
+       */
+      t15_2_B.Diff_n = t15_2_U.In1[1] - t15_2_B.Uk1_a;
 
-        /* Product: '<S7>/Divide' */
-        t15_2_B.Divide_na = t15_2_B.Diff_c / t15_2_B.Diff_g;
-        t15_2_B.EqTime005 = t15_2_B.Divide_na;
-      } else {
-        t15_2_B.EqTime005 = t15_2_B.Derivative;
-      }
+      /* Product: '<S11>/Divide' */
+      t15_2_B.Divide_i = t15_2_B.Diff_n / t15_2_B.Diff_b;
 
-      /* Sum: '<S35>/Sum2' */
-      t15_2_B.Sum2_d = t15_2_B.UniformRandomNumber + t15_2_B.EqTime005;
+      /* Sum: '<S43>/Sum2' */
+      t15_2_B.Sum2_d = t15_2_B.UniformRandomNumber + t15_2_B.Divide_i;
       t15_2_B.tt_tran2d[0] = t15_2_B.Sum2_d;
-      t15_2_B.tt_tran2d[1] = t15_2_B.e6[11];
+      t15_2_B.tt_tran2d[1] = t15_2_B.e6_l[11];
     } else {
       t15_2_B.tt_tran2d[0] = t15_2_P.zeros21_Value[0];
       t15_2_B.tt_tran2d[1] = t15_2_P.zeros21_Value[1];
     }
 
-    /* Product: '<S32>/Divide4' */
-    t15_2_B.Divide4_l[0] = t15_2_B.RelationalOperator_p * t15_2_B.tt_tran2d[0];
-    t15_2_B.Divide4_l[1] = t15_2_B.RelationalOperator_p * t15_2_B.tt_tran2d[1];
-
-    /* DiscreteStateSpace: '<S32>/VS. contr hl' */
-    {
-      t15_2_B.VScontrhl[0] = 0.0;
-      t15_2_B.VScontrhl[1] = 0.0;
-      t15_2_B.VScontrhl[2] = 0.0;
-      t15_2_B.VScontrhl[3] = 0.0;
-      t15_2_B.VScontrhl[4] = 0.0;
-      t15_2_B.VScontrhl[5] = 0.0;
-
-      {
-        static const int_T colCidxRow6[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pCidx = &colCidxRow6[0];
-        const real_T *pC0 = &t15_2_P.VScontrhl_C[0];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *y6 = &t15_2_B.VScontrhl[6];
-        int_T numNonZero = 4;
-        *y6 = (*pC0++) * xd[*pCidx++];
-        while (numNonZero--) {
-          *y6 += (*pC0++) * xd[*pCidx++];
-        }
-      }
-
-      t15_2_B.VScontrhl[6] += (t15_2_P.VScontrhl_D[0])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_D[1])*t15_2_B.Divide4_l[1];
-
-      {
-        static const int_T colCidxRow7[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pCidx = &colCidxRow7[0];
-        const real_T *pC5 = &t15_2_P.VScontrhl_C[5];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *y7 = &t15_2_B.VScontrhl[7];
-        int_T numNonZero = 4;
-        *y7 = (*pC5++) * xd[*pCidx++];
-        while (numNonZero--) {
-          *y7 += (*pC5++) * xd[*pCidx++];
-        }
-      }
-
-      t15_2_B.VScontrhl[7] += (t15_2_P.VScontrhl_D[2])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_D[3])*t15_2_B.Divide4_l[1];
-
-      {
-        static const int_T colCidxRow8[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pCidx = &colCidxRow8[0];
-        const real_T *pC10 = &t15_2_P.VScontrhl_C[10];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *y8 = &t15_2_B.VScontrhl[8];
-        int_T numNonZero = 4;
-        *y8 = (*pC10++) * xd[*pCidx++];
-        while (numNonZero--) {
-          *y8 += (*pC10++) * xd[*pCidx++];
-        }
-      }
-
-      t15_2_B.VScontrhl[8] += (t15_2_P.VScontrhl_D[4])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_D[5])*t15_2_B.Divide4_l[1];
-
-      {
-        static const int_T colCidxRow9[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pCidx = &colCidxRow9[0];
-        const real_T *pC15 = &t15_2_P.VScontrhl_C[15];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *y9 = &t15_2_B.VScontrhl[9];
-        int_T numNonZero = 4;
-        *y9 = (*pC15++) * xd[*pCidx++];
-        while (numNonZero--) {
-          *y9 += (*pC15++) * xd[*pCidx++];
-        }
-      }
-
-      t15_2_B.VScontrhl[9] += (t15_2_P.VScontrhl_D[6])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_D[7])*t15_2_B.Divide4_l[1];
-      t15_2_B.VScontrhl[10] = 0.0;
-      t15_2_B.VScontrhl[11] = (t15_2_P.VScontrhl_C[20])*
-        t15_2_DWork.VScontrhl_DSTATE[0] + (t15_2_P.VScontrhl_C[21])*
-        t15_2_DWork.VScontrhl_DSTATE[1]
-        + (t15_2_P.VScontrhl_C[22])*t15_2_DWork.VScontrhl_DSTATE[2]
-        + (t15_2_P.VScontrhl_C[23])*t15_2_DWork.VScontrhl_DSTATE[7];
-      t15_2_B.VScontrhl[11] += (t15_2_P.VScontrhl_D[8])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_D[9])*t15_2_B.Divide4_l[1];
-    }
-
-    /* DiscreteStateSpace: '<S32>/VS. contr' */
+    /* DiscreteStateSpace: '<S38>/VS. contr' */
     {
       t15_2_B.VScontr[0] = 0.0;
       t15_2_B.VScontr[1] = 0.0;
@@ -480,117 +263,235 @@ void t15_2_step(void)
         (t15_2_P.VScontr_D[9])*t15_2_B.tt_tran2d[1];
     }
 
-    /* Switch: '<S32>/t>t_eob-dt_contr_hl' */
+    /* Memory: '<S9>/Memory2' */
+    t15_2_B.Memory2 = t15_2_DWork.Memory2_PreviousInput;
+
+    /* Sum: '<S9>/Add3' */
+    t15_2_B.Add3 = t15_2_B.e6_l[2] + t15_2_B.Memory2;
+
+    /* Memory: '<S9>/Memory1' */
+    t15_2_B.Memory1 = t15_2_DWork.Memory1_PreviousInput;
+
+    /* Switch: '<S9>/Ics1_eob' */
+    if (t15_2_B.Add3 >= t15_2_P.Ics1_eob_Threshold) {
+      t15_2_B.Ics1_eob = t15_2_Y.Time;
+    } else {
+      t15_2_B.Ics1_eob = t15_2_B.Memory1;
+    }
+
+    /* Sum: '<S9>/Add2' */
+    t15_2_B.Add2 = t15_2_B.Ics1_eob - t15_2_Y.Time;
+
+    /* Gain: '<S9>/dtpl_term_l' */
+    t15_2_B.dtpl_term_l = t15_2_P.dtpl_term_l_Gain * t15_2_B.Add2;
+
+    /* Sum: '<S9>/Add1' incorporates:
+     *  Constant: '<S9>/Constant4'
+     */
+    t15_2_B.Add1 = t15_2_B.dtpl_term_l + t15_2_P.Constant4_Value;
+
+    /* Saturate: '<S9>/1 0' */
+    tmin = t15_2_B.Add1;
+    t15_2_B.u = rt_SATURATE(tmin, t15_2_P.u_LowerSat, t15_2_P.u_UpperSat);
+
+    /* RelationalOperator: '<S38>/Relational Operator' incorporates:
+     *  Constant: '<S38>/c_eob '
+     */
+    t15_2_B.RelationalOperator = (real_T)(t15_2_B.u < t15_2_P.c_eob_Value);
+
+    /* Product: '<S38>/Divide4' */
+    t15_2_B.Divide4[0] = t15_2_B.RelationalOperator * t15_2_B.tt_tran2d[0];
+    t15_2_B.Divide4[1] = t15_2_B.RelationalOperator * t15_2_B.tt_tran2d[1];
+
+    /* DiscreteStateSpace: '<S38>/VS. contr hl' */
+    {
+      t15_2_B.VScontrhl[0] = 0.0;
+      t15_2_B.VScontrhl[1] = 0.0;
+      t15_2_B.VScontrhl[2] = 0.0;
+      t15_2_B.VScontrhl[3] = 0.0;
+      t15_2_B.VScontrhl[4] = 0.0;
+      t15_2_B.VScontrhl[5] = 0.0;
+
+      {
+        static const int_T colCidxRow6[5] = { 3, 4, 5, 6, 7 };
+
+        const int_T *pCidx = &colCidxRow6[0];
+        const real_T *pC0 = &t15_2_P.VScontrhl_C[0];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
+        real_T *y6 = &t15_2_B.VScontrhl[6];
+        int_T numNonZero = 4;
+        *y6 = (*pC0++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y6 += (*pC0++) * xd[*pCidx++];
+        }
+      }
+
+      t15_2_B.VScontrhl[6] += (t15_2_P.VScontrhl_D[0])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_D[1])*t15_2_B.Divide4[1];
+
+      {
+        static const int_T colCidxRow7[5] = { 3, 4, 5, 6, 7 };
+
+        const int_T *pCidx = &colCidxRow7[0];
+        const real_T *pC5 = &t15_2_P.VScontrhl_C[5];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
+        real_T *y7 = &t15_2_B.VScontrhl[7];
+        int_T numNonZero = 4;
+        *y7 = (*pC5++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y7 += (*pC5++) * xd[*pCidx++];
+        }
+      }
+
+      t15_2_B.VScontrhl[7] += (t15_2_P.VScontrhl_D[2])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_D[3])*t15_2_B.Divide4[1];
+
+      {
+        static const int_T colCidxRow8[5] = { 3, 4, 5, 6, 7 };
+
+        const int_T *pCidx = &colCidxRow8[0];
+        const real_T *pC10 = &t15_2_P.VScontrhl_C[10];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
+        real_T *y8 = &t15_2_B.VScontrhl[8];
+        int_T numNonZero = 4;
+        *y8 = (*pC10++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y8 += (*pC10++) * xd[*pCidx++];
+        }
+      }
+
+      t15_2_B.VScontrhl[8] += (t15_2_P.VScontrhl_D[4])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_D[5])*t15_2_B.Divide4[1];
+
+      {
+        static const int_T colCidxRow9[5] = { 3, 4, 5, 6, 7 };
+
+        const int_T *pCidx = &colCidxRow9[0];
+        const real_T *pC15 = &t15_2_P.VScontrhl_C[15];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
+        real_T *y9 = &t15_2_B.VScontrhl[9];
+        int_T numNonZero = 4;
+        *y9 = (*pC15++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y9 += (*pC15++) * xd[*pCidx++];
+        }
+      }
+
+      t15_2_B.VScontrhl[9] += (t15_2_P.VScontrhl_D[6])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_D[7])*t15_2_B.Divide4[1];
+      t15_2_B.VScontrhl[10] = 0.0;
+      t15_2_B.VScontrhl[11] = (t15_2_P.VScontrhl_C[20])*
+        t15_2_DWork.VScontrhl_DSTATE[0] + (t15_2_P.VScontrhl_C[21])*
+        t15_2_DWork.VScontrhl_DSTATE[1]
+        + (t15_2_P.VScontrhl_C[22])*t15_2_DWork.VScontrhl_DSTATE[2]
+        + (t15_2_P.VScontrhl_C[23])*t15_2_DWork.VScontrhl_DSTATE[7];
+      t15_2_B.VScontrhl[11] += (t15_2_P.VScontrhl_D[8])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_D[9])*t15_2_B.Divide4[1];
+    }
+
+    /* Switch: '<S38>/c_eob' */
     for (i = 0; i < 12; i++) {
-      if (t15_2_B.e3 > t15_2_P.tt_eobdt_contr_hl_Threshold) {
-        t15_2_B.tt_eobdt_contr_hl[i] = t15_2_B.VScontrhl[i];
+      if (t15_2_B.u > t15_2_P.c_eob_Threshold) {
+        t15_2_B.c_eob[i] = t15_2_B.VScontr[i];
       } else {
-        t15_2_B.tt_eobdt_contr_hl[i] = t15_2_B.VScontr[i];
+        t15_2_B.c_eob[i] = t15_2_B.VScontrhl[i];
       }
     }
 
-    /* RelationalOperator: '<S55>/Compare' incorporates:
-     *  Constant: '<S55>/Constant'
+    /* RelationalOperator: '<S52>/Compare' incorporates:
+     *  Constant: '<S52>/Constant'
      */
-    t15_2_B.Compare_a = (t15_2_B.e6_c < t15_2_P.Constant_Value_p);
+    t15_2_B.Compare_a = (t15_2_B.e6 < t15_2_P.Constant_Value_p);
 
-    /* RelationalOperator: '<S56>/Compare' incorporates:
-     *  Constant: '<S56>/Constant'
+    /* RelationalOperator: '<S53>/Compare' incorporates:
+     *  Constant: '<S53>/Constant'
      */
-    t15_2_B.Compare_e = (t15_2_B.e3 > t15_2_P.Constant_Value_h);
+    t15_2_B.Compare_ev = (t15_2_Y.Time > t15_2_P.Constant_Value_h);
 
-    /* RelationalOperator: '<S57>/Compare' incorporates:
-     *  Constant: '<S57>/Constant'
+    /* RelationalOperator: '<S54>/Compare' incorporates:
+     *  Constant: '<S54>/Constant'
      */
-    t15_2_B.Compare_n = (t15_2_B.e6_c > t15_2_P.Constant_Value_b);
+    t15_2_B.Compare_n = (t15_2_B.e6 > t15_2_P.Constant_Value_b);
 
-    /* Logic: '<S31>/Logical Operator1' */
-    t15_2_B.LogicalOperator1 = (real_T)((t15_2_B.Compare_a != 0) &&
-      (t15_2_B.Compare_e != 0) && (t15_2_B.Compare_n != 0));
+    /* Logic: '<S37>/Logical Operator1' */
+    t15_2_B.LogicalOperator1_m = (real_T)((t15_2_B.Compare_a != 0) &&
+      (t15_2_B.Compare_ev != 0) && (t15_2_B.Compare_n != 0));
 
-    /* Switch: '<S31>/0.99' */
-    if (t15_2_B.LogicalOperator1 >= t15_2_P.u9_Threshold) {
+    /* Switch: '<S37>/0.99' */
+    if (t15_2_B.LogicalOperator1_m >= t15_2_P.u9_Threshold) {
       /* Gain: '<S2>/c_a_tpl1_eob//15' */
-      t15_2_B.c_a_tpl1_eob15 = t15_2_P.c_a_tpl1_eob15_Gain_l * t15_2_B.e6_c;
+      t15_2_B.c_a_tpl1_eob15 = t15_2_P.c_a_tpl1_eob15_Gain_l * t15_2_B.e6;
 
       /* Saturate: '<S2>/Saturation4' */
-      deltaT = t15_2_B.c_a_tpl1_eob15;
-      t15_2_B.Saturation4 = rt_SATURATE(deltaT, t15_2_P.Saturation4_LowerSat,
+      tmin = t15_2_B.c_a_tpl1_eob15;
+      t15_2_B.Saturation4 = rt_SATURATE(tmin, t15_2_P.Saturation4_LowerSat,
         t15_2_P.Saturation4_UpperSat);
       for (i = 0; i < 12; i++) {
         /* Product: '<S2>/Divide11' */
-        t15_2_B.Divide11[i] = t15_2_B.Saturation4 * t15_2_B.tt_eobdt_contr_hl[i];
+        t15_2_B.Divide11[i] = t15_2_B.Saturation4 * t15_2_B.c_eob[i];
         t15_2_B.u9[i] = t15_2_B.Divide11[i];
       }
     } else {
-      /* Switch: '<S2>/t>t_eob1' */
-      if (t15_2_B.e3 > t15_2_P.tt_eob1_Threshold) {
-        /* Gain: '<S2>/1//15' */
-        t15_2_B.u5 = t15_2_P.u5_Gain * t15_2_B.e6_c;
-
-        /* Saturate: '<S2>/Saturation3' */
-        deltaT = t15_2_B.u5;
-        t15_2_B.Saturation3 = rt_SATURATE(deltaT, t15_2_P.Saturation3_LowerSat,
-          t15_2_P.Saturation3_UpperSat);
-        for (i = 0; i < 12; i++) {
-          /* Product: '<S2>/Divide9' */
-          t15_2_B.Divide9[i] = t15_2_B.tt_eobdt_contr_hl[i] *
-            t15_2_B.Saturation3;
-          t15_2_B.tt_eob1[i] = t15_2_B.Divide9[i];
-        }
-      } else {
+      /* Switch: '<S2>/c_eob ' */
+      if (t15_2_B.u > t15_2_P.c_eob_Threshold_cs) {
         /* Switch: '<S2>/Ip>Ip_div' */
-        if (t15_2_B.e6_c > t15_2_P.IpIp_div_Threshold_h) {
+        if (t15_2_B.e6 > t15_2_P.IpIp_div_Threshold_h) {
           /* Gain: '<S2>/atpl1' */
-          t15_2_B.atpl1 = t15_2_P.atpl1_Gain * t15_2_B.e6_c;
+          t15_2_B.atpl1 = t15_2_P.atpl1_Gain * t15_2_B.e6;
           t15_2_B.IpIp_div_l = t15_2_B.atpl1;
         } else {
           /* Gain: '<S2>/c_a_tpl1_eob//15 ' */
-          t15_2_B.c_a_tpl1_eob15_l = t15_2_P.c_a_tpl1_eob15_Gain * t15_2_B.e6_c;
+          t15_2_B.c_a_tpl1_eob15_l = t15_2_P.c_a_tpl1_eob15_Gain * t15_2_B.e6;
           t15_2_B.IpIp_div_l = t15_2_B.c_a_tpl1_eob15_l;
         }
 
         /* Saturate: '<S2>/Saturation2' */
-        deltaT = t15_2_B.IpIp_div_l;
-        t15_2_B.Saturation2 = rt_SATURATE(deltaT, t15_2_P.Saturation2_LowerSat,
+        tmin = t15_2_B.IpIp_div_l;
+        t15_2_B.Saturation2 = rt_SATURATE(tmin, t15_2_P.Saturation2_LowerSat,
           t15_2_P.Saturation2_UpperSat);
         for (i = 0; i < 12; i++) {
           /* Product: '<S2>/Divide8' */
-          t15_2_B.Divide8[i] = t15_2_B.Saturation2 * t15_2_B.tt_eobdt_contr_hl[i];
-          t15_2_B.tt_eob1[i] = t15_2_B.Divide8[i];
+          t15_2_B.Divide8[i] = t15_2_B.Saturation2 * t15_2_B.c_eob[i];
+          t15_2_B.c_eob_pt[i] = t15_2_B.Divide8[i];
+        }
+      } else {
+        /* Gain: '<S2>/1//15' */
+        t15_2_B.u5 = t15_2_P.u5_Gain * t15_2_B.e6;
+
+        /* Saturate: '<S2>/Saturation3' */
+        tmin = t15_2_B.u5;
+        t15_2_B.Saturation3 = rt_SATURATE(tmin, t15_2_P.Saturation3_LowerSat,
+          t15_2_P.Saturation3_UpperSat);
+        for (i = 0; i < 12; i++) {
+          /* Product: '<S2>/Divide9' */
+          t15_2_B.Divide9[i] = t15_2_B.c_eob[i] * t15_2_B.Saturation3;
+          t15_2_B.c_eob_pt[i] = t15_2_B.Divide9[i];
         }
       }
 
-      memcpy((void *)(&t15_2_B.u9[0]), (void *)(&t15_2_B.tt_eob1[0]), 12U *
+      memcpy((void *)(&t15_2_B.u9[0]), (void *)(&t15_2_B.c_eob_pt[0]), 12U *
              sizeof(real_T));
     }
 
-    /* Saturate: '<S2>/Saturation5' */
+    /* Saturate: '<S4>/Saturation VS' */
     for (i = 0; i < 12; i++) {
       /* Product: '<S2>/Divide10' */
-      t15_2_B.Divide10[i] = t15_2_B.RelationalOperator * t15_2_B.u9[i];
-      deltaT = t15_2_B.Divide10[i];
-      t15_2_B.Saturation5[i] = rt_SATURATE(deltaT,
-        t15_2_P.Saturation5_LowerSat[i], t15_2_P.Saturation5_UpperSat[i]);
-
-	  if( i > 99 ){
-		printf("div sat sat_l "
-         " and i "
-         " .  %g %g %g %d  \n",
-		 deltaT,t15_2_B.Saturation5[i],t15_2_P.Saturation5_LowerSat[i],i);
-
-      }
-
+      t15_2_B.Divide10[i] = t15_2_B.LogicalOperator1 * t15_2_B.u9[i];
+      tmin = t15_2_B.Divide10[i];
+      t15_2_B.SaturationVS[i] = rt_SATURATE(tmin,
+        t15_2_P.SaturationVS_LowerSat[i], t15_2_P.SaturationVS_UpperSat[i]);
     }
 
     /* SignalConversion: '<Root>/TmpSignal ConversionAtnpf,12Inport1' */
     for (i = 0; i < 11; i++) {
       /* Sum: '<Root>/Add1' */
-      t15_2_B.Add1[i] = t15_2_B.Divide6[i] + t15_2_B.Saturation5[i];
-      t15_2_B.TmpSignalConversionAtnpf12Inpor[i] = t15_2_B.Add1[i];
+      t15_2_B.Add1_b[i] = t15_2_B.Saturation6[i] + t15_2_B.SaturationVS[i];
+      t15_2_B.TmpSignalConversionAtnpf12Inpor[i] = t15_2_B.Add1_b[i];
     }
 
-    t15_2_B.TmpSignalConversionAtnpf12Inpor[11] = t15_2_B.Saturation5[11];
+    t15_2_B.TmpSignalConversionAtnpf12Inpor[11] = t15_2_B.SaturationVS[11];
+
+    /* Outport: '<Root>/Out1' */
     for (i = 0; i < 15; i++) {
       /* Gain: '<Root>/npf,12' */
       t15_2_B.npf12[i] = 0.0;
@@ -599,415 +500,307 @@ void t15_2_step(void)
           t15_2_B.TmpSignalConversionAtnpf12Inpor[tmp] + t15_2_B.npf12[i];
       }
 
-      /* Outport: '<Root>/Out1' */
       t15_2_Y.Out1[i] = t15_2_B.npf12[i];
     }
 
-    /* Outport: '<Root>/Time' */
-    t15_2_Y.Time = t15_2_B.e3;
+    memcpy((void *)(&t15_2_Y.Out1[15]), (void *)(&t15_2_B.Saturation6[0]), 11U *
+           sizeof(real_T));
+    memcpy((void *)(&t15_2_Y.Out1[26]), (void *)(&t15_2_B.SaturationVS[0]), 12U *
+           sizeof(real_T));
 
-    /* RelationalOperator: '<Root>/Relational Operator' incorporates:
-     *  Constant: '<Root>/Time_stop'
+    /* Memory: '<Root>/Memory2' */
+    t15_2_B.Memory2_f = t15_2_DWork.Memory2_PreviousInput_g;
+
+    /* Gain: '<Root>/-1' incorporates:
+     *  Inport: '<Root>/In1'
      */
-    t15_2_B.RelationalOperator_a = (t15_2_B.e3 >= t15_2_P.Time_stop_Value);
+    t15_2_B.u_o = t15_2_P.u_Gain * t15_2_U.In1[3];
+
+    /* Switch: '<Root>/Ip<Ip_0 ' */
+    if (t15_2_B.u_o > t15_2_P.IpIp_0_Threshold) {
+      t15_2_B.IpIp_0 = t15_2_B.Memory2_f;
+    } else {
+      t15_2_B.IpIp_0 = t15_2_Y.Time;
+    }
+
+    /* Sum: '<Root>/Sum2' incorporates:
+     *  Constant: '<Root>/dt_end_sim'
+     */
+    t15_2_B.Sum2 = t15_2_B.IpIp_0 + t15_2_P.dt_end_sim_Value;
+
+    /* RelationalOperator: '<Root>/Relational Operator' */
+    t15_2_B.RelationalOperator_a = (t15_2_Y.Time >= t15_2_B.Sum2);
 
     /* Stop: '<Root>/Stop Simulation' */
     if (t15_2_B.RelationalOperator_a) {
       rtmSetStopRequested(t15_2_M, 1);
     }
 
-    /* Lookup: '<S5>/Ipl_ref' */
-    t15_2_B.Ipl_ref = rt_Lookup((const real_T *)(&t15_2_P.Ipl_ref_XData[0]), 11,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.Ipl_ref_YData[0]));
+    /* RelationalOperator: '<Root>/Relational Operator1' incorporates:
+     *  Constant: '<Root>/Time_stop'
+     */
+    t15_2_B.RelationalOperator1 = (t15_2_Y.Time >= t15_2_P.Time_stop_Value);
 
-    /* Lookup: '<S5>/Lookup Table1' */
-    t15_2_B.LookupTable1 = rt_Lookup((const real_T *)
-      (&t15_2_P.LookupTable1_XData[0]), 4, t15_2_B.e3, (const real_T *)
-      (&t15_2_P.LookupTable1_YData[0]));
+    /* Stop: '<Root>/Stop Simulation1' */
+    if (t15_2_B.RelationalOperator1) {
+      rtmSetStopRequested(t15_2_M, 1);
+    }
 
-    /* Product: '<S5>/Divide6' */
-    t15_2_B.Divide6_o = t15_2_B.Ipl_ref * t15_2_B.LookupTable1;
+    /* Memory: '<S7>/Memory1' */
+    t15_2_B.Memory1_h = t15_2_DWork.Memory1_PreviousInput_n;
+
+    /* Switch: '<S7>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_c) {
+      /* Lookup: '<S7>/Ipl_ref' */
+      t15_2_B.Ipl_ref_g = rt_Lookup((const real_T *)(&t15_2_P.Ipl_ref_XData[0]),
+        78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Ipl_ref_YData[0]));
+      t15_2_B.c_eob_f = t15_2_B.Ipl_ref_g;
+    } else {
+      t15_2_B.c_eob_f = t15_2_B.Memory1_h;
+    }
+
+    /* Product: '<S7>/Divide6' */
+    t15_2_B.Divide6 = t15_2_B.c_eob_f * t15_2_B.u;
 
     /* Sum: '<S1>/Add1' */
-    t15_2_B.Add1_o = t15_2_B.e6_c - t15_2_B.Divide6_o;
+    t15_2_B.Add1_o = t15_2_B.e6 - t15_2_B.Divide6;
 
-    /* Memory: '<S12>/Memory1' */
-    t15_2_B.Memory1 = t15_2_DWork.Memory1_PreviousInput;
+    /* Memory: '<S15>/Memory2' */
+    t15_2_B.Memory2_l = t15_2_DWork.Memory2_PreviousInput_b;
 
-    /* Switch: '<S12>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold) {
-      t15_2_B.tt_eob = t15_2_B.Memory1;
-    } else {
-      /* Lookup: '<S12>/Icoil2_ref' */
+    /* Switch: '<S15>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_m) {
+      /* Lookup: '<S15>/Icoil2_ref' */
       t15_2_B.Icoil2_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil2_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil2_ref_YData[0]));
-      t15_2_B.tt_eob = t15_2_B.Icoil2_ref;
+        [0]), 78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Icoil2_ref_YData[0]));
+      t15_2_B.c_eob_c = t15_2_B.Icoil2_ref;
+    } else {
+      t15_2_B.c_eob_c = t15_2_B.Memory2_l;
     }
 
-    /* Switch: '<S12>/Ip>0' incorporates:
-     *  Constant: '<S12>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold) {
-      /* Lookup: '<S12>/Lookup Table1' */
-      t15_2_B.LookupTable1_j = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_jx[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_g[0]));
-      t15_2_B.Ip0 = t15_2_B.LookupTable1_j;
-    } else {
-      t15_2_B.Ip0 = t15_2_P.Constant_Value_n;
-    }
+    /* Product: '<S15>/Divide1' */
+    t15_2_B.Divide1_l = t15_2_B.c_eob_c * t15_2_B.u;
 
-    /* Product: '<S12>/Divide6' */
-    t15_2_B.Divide6_e = t15_2_B.tt_eob * t15_2_B.Ip0;
+    /* Sum: '<S6>/Add1' */
+    t15_2_B.Add1_oq = t15_2_B.e6_l[1] - t15_2_B.Divide1_l;
 
-    /* Sum: '<S4>/Add1' */
-    t15_2_B.Add1_oq = t15_2_B.e6[1] - t15_2_B.Divide6_e;
+    /* Memory: '<S13>/Memory2' */
+    t15_2_B.Memory2_k = t15_2_DWork.Memory2_PreviousInput_a;
 
-    /* Memory: '<S10>/Memory1' */
-    t15_2_B.Memory1_d = t15_2_DWork.Memory1_PreviousInput_e;
-
-    /* Switch: '<S10>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_e) {
-      t15_2_B.tt_eob_j = t15_2_B.Memory1_d;
-    } else {
-      /* Lookup: '<S10>/Icoil10_ref' */
+    /* Switch: '<S13>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_o) {
+      /* Lookup: '<S13>/Icoil10_ref' */
       t15_2_B.Icoil10_ref = rt_Lookup((const real_T *)
-        (&t15_2_P.Icoil10_ref_XData[0]), 11, t15_2_B.e3, (const real_T *)
+        (&t15_2_P.Icoil10_ref_XData[0]), 78, t15_2_Y.Time, (const real_T *)
         (&t15_2_P.Icoil10_ref_YData[0]));
-      t15_2_B.tt_eob_j = t15_2_B.Icoil10_ref;
+      t15_2_B.c_eob_p = t15_2_B.Icoil10_ref;
+    } else {
+      t15_2_B.c_eob_p = t15_2_B.Memory2_k;
     }
 
-    /* Switch: '<S10>/Ip>0' incorporates:
-     *  Constant: '<S10>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_g) {
-      /* Lookup: '<S10>/Lookup Table1' */
-      t15_2_B.LookupTable1_mg = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_l[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_o[0]));
-      t15_2_B.Ip0_l = t15_2_B.LookupTable1_mg;
-    } else {
-      t15_2_B.Ip0_l = t15_2_P.Constant_Value_l;
-    }
+    /* Product: '<S13>/Divide1' */
+    t15_2_B.Divide1_h = t15_2_B.c_eob_p * t15_2_B.u;
 
-    /* Product: '<S10>/Divide6' */
-    t15_2_B.Divide6_h = t15_2_B.tt_eob_j * t15_2_B.Ip0_l;
+    /* Sum: '<S6>/Add10' */
+    t15_2_B.Add10 = t15_2_B.e6_l[9] - t15_2_B.Divide1_h;
 
-    /* Sum: '<S4>/Add10' */
-    t15_2_B.Add10 = t15_2_B.e6[9] - t15_2_B.Divide6_h;
+    /* Memory: '<S14>/Memory2' */
+    t15_2_B.Memory2_e = t15_2_DWork.Memory2_PreviousInput_n;
 
-    /* Memory: '<S11>/Memory1' */
-    t15_2_B.Memory1_n = t15_2_DWork.Memory1_PreviousInput_l;
-
-    /* Switch: '<S11>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_n) {
-      t15_2_B.tt_eob_p = t15_2_B.Memory1_n;
-    } else {
-      /* Lookup: '<S11>/Icoil11_ref' */
+    /* Switch: '<S14>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_j) {
+      /* Lookup: '<S14>/Icoil11_ref' */
       t15_2_B.Icoil11_ref = rt_Lookup((const real_T *)
-        (&t15_2_P.Icoil11_ref_XData[0]), 11, t15_2_B.e3, (const real_T *)
+        (&t15_2_P.Icoil11_ref_XData[0]), 78, t15_2_Y.Time, (const real_T *)
         (&t15_2_P.Icoil11_ref_YData[0]));
-      t15_2_B.tt_eob_p = t15_2_B.Icoil11_ref;
+      t15_2_B.c_eob_o = t15_2_B.Icoil11_ref;
+    } else {
+      t15_2_B.c_eob_o = t15_2_B.Memory2_e;
     }
 
-    /* Switch: '<S11>/Ip>0' incorporates:
-     *  Constant: '<S11>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_f) {
-      /* Lookup: '<S11>/Lookup Table1' */
-      t15_2_B.LookupTable1_p = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_gm[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_f[0]));
-      t15_2_B.Ip0_i = t15_2_B.LookupTable1_p;
-    } else {
-      t15_2_B.Ip0_i = t15_2_P.Constant_Value_i;
-    }
+    /* Product: '<S14>/Divide1' */
+    t15_2_B.Divide1_i = t15_2_B.c_eob_o * t15_2_B.u;
 
-    /* Product: '<S11>/Divide6' */
-    t15_2_B.Divide6_f = t15_2_B.tt_eob_p * t15_2_B.Ip0_i;
+    /* Sum: '<S6>/Add11' */
+    t15_2_B.Add11 = t15_2_B.e6_l[10] - t15_2_B.Divide1_i;
 
-    /* Sum: '<S4>/Add11' */
-    t15_2_B.Add11 = t15_2_B.e6[10] - t15_2_B.Divide6_f;
+    /* Memory: '<S16>/Memory2' */
+    t15_2_B.Memory2_l4 = t15_2_DWork.Memory2_PreviousInput_bt;
 
-    /* Memory: '<S13>/Memory1' */
-    t15_2_B.Memory1_c = t15_2_DWork.Memory1_PreviousInput_b;
-
-    /* Switch: '<S13>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_b) {
-      t15_2_B.tt_eob_m = t15_2_B.Memory1_c;
-    } else {
-      /* Lookup: '<S13>/Icoil3_ref' */
+    /* Switch: '<S16>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_a) {
+      /* Lookup: '<S16>/Icoil3_ref' */
       t15_2_B.Icoil3_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil3_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil3_ref_YData[0]));
-      t15_2_B.tt_eob_m = t15_2_B.Icoil3_ref;
+        [0]), 78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Icoil3_ref_YData[0]));
+      t15_2_B.c_eob_k = t15_2_B.Icoil3_ref;
+    } else {
+      t15_2_B.c_eob_k = t15_2_B.Memory2_l4;
     }
 
-    /* Switch: '<S13>/Ip>0' incorporates:
-     *  Constant: '<S13>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_a) {
-      /* Lookup: '<S13>/Lookup Table1' */
-      t15_2_B.LookupTable1_gu = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_f[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_h[0]));
-      t15_2_B.Ip0_b = t15_2_B.LookupTable1_gu;
+    /* Product: '<S16>/Divide1' */
+    t15_2_B.Divide1_e = t15_2_B.c_eob_k * t15_2_B.u;
+
+    /* Sum: '<S6>/Add2' */
+    t15_2_B.Add2_d = t15_2_B.e6_l[2] - t15_2_B.Divide1_e;
+
+    /* Memory: '<S12>/Memory2' */
+    t15_2_B.Memory2_o = t15_2_DWork.Memory2_PreviousInput_c;
+
+    /* Switch: '<S12>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_n) {
+      /* Lookup: '<S12>/Icoil1_ref' */
+      t15_2_B.Icoil1_ref_k = rt_Lookup((const real_T *)
+        (&t15_2_P.Icoil1_ref_XData[0]), 78, t15_2_Y.Time, (const real_T *)
+        (&t15_2_P.Icoil1_ref_YData[0]));
+      t15_2_B.c_eob_kq = t15_2_B.Icoil1_ref_k;
     } else {
-      t15_2_B.Ip0_b = t15_2_P.Constant_Value_ne;
+      t15_2_B.c_eob_kq = t15_2_B.Memory2_o;
     }
 
-    /* Product: '<S13>/Divide6' */
-    t15_2_B.Divide6_h5 = t15_2_B.tt_eob_m * t15_2_B.Ip0_b;
+    /* Product: '<S12>/Divide1' */
+    t15_2_B.Divide1_g = t15_2_B.c_eob_kq * t15_2_B.u;
 
-    /* Sum: '<S4>/Add2' */
-    t15_2_B.Add2 = t15_2_B.e6[2] - t15_2_B.Divide6_h5;
+    /* Sum: '<S6>/Add3' */
+    t15_2_B.Add3_a = t15_2_B.e6_l[0] - t15_2_B.Divide1_g;
 
-    /* Memory: '<S9>/Memory1' */
-    t15_2_B.Memory1_o = t15_2_DWork.Memory1_PreviousInput_j;
+    /* Memory: '<S17>/Memory2' */
+    t15_2_B.Memory2_h = t15_2_DWork.Memory2_PreviousInput_i;
 
-    /* Switch: '<S9>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_k) {
-      t15_2_B.tt_eob_g = t15_2_B.Memory1_o;
-    } else {
-      /* Lookup: '<S9>/Icoil1_ref' */
-      t15_2_B.Icoil1_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil1_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil1_ref_YData[0]));
-      t15_2_B.tt_eob_g = t15_2_B.Icoil1_ref;
-    }
-
-    /* Switch: '<S9>/Ip>0' incorporates:
-     *  Constant: '<S9>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_b) {
-      /* Lookup: '<S9>/Lookup Table1' */
-      t15_2_B.LookupTable1_ma = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_g[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_jv[0]));
-      t15_2_B.Ip0_j = t15_2_B.LookupTable1_ma;
-    } else {
-      t15_2_B.Ip0_j = t15_2_P.Constant_Value_a;
-    }
-
-    /* Product: '<S9>/Divide6' */
-    t15_2_B.Divide6_b = t15_2_B.tt_eob_g * t15_2_B.Ip0_j;
-
-    /* Sum: '<S4>/Add3' */
-    t15_2_B.Add3 = t15_2_B.e6[0] - t15_2_B.Divide6_b;
-
-    /* Memory: '<S14>/Memory1' */
-    t15_2_B.Memory1_l = t15_2_DWork.Memory1_PreviousInput_ei;
-
-    /* Switch: '<S14>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_m) {
-      t15_2_B.tt_eob_b = t15_2_B.Memory1_l;
-    } else {
-      /* Lookup: '<S14>/Icoil4_ref' */
+    /* Switch: '<S17>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_jj) {
+      /* Lookup: '<S17>/Icoil4_ref' */
       t15_2_B.Icoil4_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil4_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil4_ref_YData[0]));
-      t15_2_B.tt_eob_b = t15_2_B.Icoil4_ref;
+        [0]), 78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Icoil4_ref_YData[0]));
+      t15_2_B.c_eob_p1 = t15_2_B.Icoil4_ref;
+    } else {
+      t15_2_B.c_eob_p1 = t15_2_B.Memory2_h;
     }
 
-    /* Switch: '<S14>/Ip>0' incorporates:
-     *  Constant: '<S14>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_n) {
-      /* Lookup: '<S14>/Lookup Table1' */
-      t15_2_B.LookupTable1_c = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_jt[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_gb[0]));
-      t15_2_B.Ip0_h = t15_2_B.LookupTable1_c;
-    } else {
-      t15_2_B.Ip0_h = t15_2_P.Constant_Value_j;
-    }
+    /* Product: '<S17>/Divide1' */
+    t15_2_B.Divide1_la = t15_2_B.c_eob_p1 * t15_2_B.u;
 
-    /* Product: '<S14>/Divide6' */
-    t15_2_B.Divide6_d = t15_2_B.tt_eob_b * t15_2_B.Ip0_h;
+    /* Sum: '<S6>/Add4' */
+    t15_2_B.Add4 = t15_2_B.e6_l[3] - t15_2_B.Divide1_la;
 
-    /* Sum: '<S4>/Add4' */
-    t15_2_B.Add4 = t15_2_B.e6[3] - t15_2_B.Divide6_d;
+    /* Memory: '<S18>/Memory2' */
+    t15_2_B.Memory2_a = t15_2_DWork.Memory2_PreviousInput_bh;
 
-    /* Memory: '<S15>/Memory1' */
-    t15_2_B.Memory1_g = t15_2_DWork.Memory1_PreviousInput_m;
-
-    /* Switch: '<S15>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_i) {
-      t15_2_B.tt_eob_ge = t15_2_B.Memory1_g;
-    } else {
-      /* Lookup: '<S15>/Icoil5_ref' */
+    /* Switch: '<S18>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_b) {
+      /* Lookup: '<S18>/Icoil5_ref' */
       t15_2_B.Icoil5_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil5_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil5_ref_YData[0]));
-      t15_2_B.tt_eob_ge = t15_2_B.Icoil5_ref;
+        [0]), 78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Icoil5_ref_YData[0]));
+      t15_2_B.c_eob_l = t15_2_B.Icoil5_ref;
+    } else {
+      t15_2_B.c_eob_l = t15_2_B.Memory2_a;
     }
 
-    /* Switch: '<S15>/Ip>0' incorporates:
-     *  Constant: '<S15>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_ga) {
-      /* Lookup: '<S15>/Lookup Table1' */
-      t15_2_B.LookupTable1_m = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_g3[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_gu[0]));
-      t15_2_B.Ip0_hc = t15_2_B.LookupTable1_m;
-    } else {
-      t15_2_B.Ip0_hc = t15_2_P.Constant_Value_je;
-    }
+    /* Product: '<S18>/Divide1' */
+    t15_2_B.Divide1_hp = t15_2_B.c_eob_l * t15_2_B.u;
 
-    /* Product: '<S15>/Divide6' */
-    t15_2_B.Divide6_di = t15_2_B.tt_eob_ge * t15_2_B.Ip0_hc;
+    /* Sum: '<S6>/Add5' */
+    t15_2_B.Add5 = t15_2_B.e6_l[4] - t15_2_B.Divide1_hp;
 
-    /* Sum: '<S4>/Add5' */
-    t15_2_B.Add5 = t15_2_B.e6[4] - t15_2_B.Divide6_di;
+    /* Memory: '<S19>/Memory2' */
+    t15_2_B.Memory2_m = t15_2_DWork.Memory2_PreviousInput_m;
 
-    /* Memory: '<S16>/Memory1' */
-    t15_2_B.Memory1_k = t15_2_DWork.Memory1_PreviousInput_g;
-
-    /* Switch: '<S16>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_p) {
-      t15_2_B.tt_eob_m1 = t15_2_B.Memory1_k;
-    } else {
-      /* Lookup: '<S16>/Icoil6_ref' */
+    /* Switch: '<S19>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_g) {
+      /* Lookup: '<S19>/Icoil6_ref' */
       t15_2_B.Icoil6_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil6_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil6_ref_YData[0]));
-      t15_2_B.tt_eob_m1 = t15_2_B.Icoil6_ref;
+        [0]), 78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Icoil6_ref_YData[0]));
+      t15_2_B.c_eob_b = t15_2_B.Icoil6_ref;
+    } else {
+      t15_2_B.c_eob_b = t15_2_B.Memory2_m;
     }
 
-    /* Switch: '<S16>/Ip>0' incorporates:
-     *  Constant: '<S16>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_m) {
-      /* Lookup: '<S16>/Lookup Table1' */
-      t15_2_B.LookupTable1_h = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_e[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_kz[0]));
-      t15_2_B.Ip0_jj = t15_2_B.LookupTable1_h;
+    /* Product: '<S19>/Divide1' */
+    t15_2_B.Divide1_f = t15_2_B.c_eob_b * t15_2_B.u;
+
+    /* Sum: '<S6>/Add6' */
+    t15_2_B.Add6 = t15_2_B.e6_l[5] - t15_2_B.Divide1_f;
+
+    /* Memory: '<S20>/Memory2' */
+    t15_2_B.Memory2_o2 = t15_2_DWork.Memory2_PreviousInput_ns;
+
+    /* Switch: '<S20>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_l) {
+      /* Lookup: '<S20>/Icoil1_ref' */
+      t15_2_B.Icoil1_ref = rt_Lookup((const real_T *)
+        (&t15_2_P.Icoil1_ref_XData_j[0]), 78, t15_2_Y.Time, (const real_T *)
+        (&t15_2_P.Icoil1_ref_YData_d[0]));
+      t15_2_B.c_eob_g = t15_2_B.Icoil1_ref;
     } else {
-      t15_2_B.Ip0_jj = t15_2_P.Constant_Value_o;
+      t15_2_B.c_eob_g = t15_2_B.Memory2_o2;
     }
 
-    /* Product: '<S16>/Divide6' */
-    t15_2_B.Divide6_a = t15_2_B.tt_eob_m1 * t15_2_B.Ip0_jj;
+    /* Product: '<S20>/Divide1' */
+    t15_2_B.Divide1_a = t15_2_B.c_eob_g * t15_2_B.u;
 
-    /* Sum: '<S4>/Add6' */
-    t15_2_B.Add6 = t15_2_B.e6[5] - t15_2_B.Divide6_a;
+    /* Sum: '<S6>/Add7' */
+    t15_2_B.Add7 = t15_2_B.e6_l[6] - t15_2_B.Divide1_a;
 
-    /* Memory: '<S17>/Memory1' */
-    t15_2_B.Memory1_f = t15_2_DWork.Memory1_PreviousInput_o;
+    /* Memory: '<S21>/Memory2' */
+    t15_2_B.Memory2_b = t15_2_DWork.Memory2_PreviousInput_gb;
 
-    /* Switch: '<S17>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_o) {
-      t15_2_B.tt_eob_a = t15_2_B.Memory1_f;
-    } else {
-      /* Lookup: '<S17>/Icoil7_ref' */
-      t15_2_B.Icoil7_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil7_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil7_ref_YData[0]));
-      t15_2_B.tt_eob_a = t15_2_B.Icoil7_ref;
-    }
-
-    /* Switch: '<S17>/Ip>0' incorporates:
-     *  Constant: '<S17>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_e) {
-      /* Lookup: '<S17>/Lookup Table1' */
-      t15_2_B.LookupTable1_on = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_h[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_n[0]));
-      t15_2_B.Ip0_ji = t15_2_B.LookupTable1_on;
-    } else {
-      t15_2_B.Ip0_ji = t15_2_P.Constant_Value_nq;
-    }
-
-    /* Product: '<S17>/Divide6' */
-    t15_2_B.Divide6_i = t15_2_B.tt_eob_a * t15_2_B.Ip0_ji;
-
-    /* Sum: '<S4>/Add7' */
-    t15_2_B.Add7 = t15_2_B.e6[6] - t15_2_B.Divide6_i;
-
-    /* Memory: '<S18>/Memory1' */
-    t15_2_B.Memory1_gs = t15_2_DWork.Memory1_PreviousInput_e2;
-
-    /* Switch: '<S18>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_pi) {
-      t15_2_B.tt_eob_e = t15_2_B.Memory1_gs;
-    } else {
-      /* Lookup: '<S18>/Icoil8_ref' */
+    /* Switch: '<S21>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_gv) {
+      /* Lookup: '<S21>/Icoil8_ref' */
       t15_2_B.Icoil8_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil8_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil8_ref_YData[0]));
-      t15_2_B.tt_eob_e = t15_2_B.Icoil8_ref;
+        [0]), 78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Icoil8_ref_YData[0]));
+      t15_2_B.c_eob_d = t15_2_B.Icoil8_ref;
+    } else {
+      t15_2_B.c_eob_d = t15_2_B.Memory2_b;
     }
 
-    /* Switch: '<S18>/Ip>0' incorporates:
-     *  Constant: '<S18>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_o) {
-      /* Lookup: '<S18>/Lookup Table1' */
-      t15_2_B.LookupTable1_g = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_i[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_a[0]));
-      t15_2_B.Ip0_bw = t15_2_B.LookupTable1_g;
-    } else {
-      t15_2_B.Ip0_bw = t15_2_P.Constant_Value_o2;
-    }
+    /* Product: '<S21>/Divide1' */
+    t15_2_B.Divide1_fa = t15_2_B.c_eob_d * t15_2_B.u;
 
-    /* Product: '<S18>/Divide6' */
-    t15_2_B.Divide6_l = t15_2_B.tt_eob_e * t15_2_B.Ip0_bw;
+    /* Sum: '<S6>/Add8' */
+    t15_2_B.Add8 = t15_2_B.e6_l[7] - t15_2_B.Divide1_fa;
 
-    /* Sum: '<S4>/Add8' */
-    t15_2_B.Add8 = t15_2_B.e6[7] - t15_2_B.Divide6_l;
+    /* Memory: '<S22>/Memory2' */
+    t15_2_B.Memory2_o5 = t15_2_DWork.Memory2_PreviousInput_gn;
 
-    /* Memory: '<S19>/Memory1' */
-    t15_2_B.Memory1_dr = t15_2_DWork.Memory1_PreviousInput_be;
-
-    /* Switch: '<S19>/t>t_eob' */
-    if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_kf) {
-      t15_2_B.tt_eob_bz = t15_2_B.Memory1_dr;
-    } else {
-      /* Lookup: '<S19>/Icoil9_ref' */
+    /* Switch: '<S22>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_l4) {
+      /* Lookup: '<S22>/Icoil9_ref' */
       t15_2_B.Icoil9_ref = rt_Lookup((const real_T *)(&t15_2_P.Icoil9_ref_XData
-        [0]), 11, t15_2_B.e3, (const real_T *)(&t15_2_P.Icoil9_ref_YData[0]));
-      t15_2_B.tt_eob_bz = t15_2_B.Icoil9_ref;
-    }
-
-    /* Switch: '<S19>/Ip>0' incorporates:
-     *  Constant: '<S19>/Constant'
-     */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_l) {
-      /* Lookup: '<S19>/Lookup Table1' */
-      t15_2_B.LookupTable1_o = rt_Lookup((const real_T *)
-        (&t15_2_P.LookupTable1_XData_m[0]), 4, t15_2_B.e3, (const real_T *)
-        (&t15_2_P.LookupTable1_YData_nz[0]));
-      t15_2_B.Ip0_k = t15_2_B.LookupTable1_o;
+        [0]), 78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Icoil9_ref_YData[0]));
+      t15_2_B.c_eob_fg = t15_2_B.Icoil9_ref;
     } else {
-      t15_2_B.Ip0_k = t15_2_P.Constant_Value_g;
+      t15_2_B.c_eob_fg = t15_2_B.Memory2_o5;
     }
 
-    /* Product: '<S19>/Divide6' */
-    t15_2_B.Divide6_c = t15_2_B.tt_eob_bz * t15_2_B.Ip0_k;
+    /* Product: '<S22>/Divide1' */
+    t15_2_B.Divide1_ap = t15_2_B.c_eob_fg * t15_2_B.u;
 
-    /* Sum: '<S4>/Add9' */
-    t15_2_B.Add9 = t15_2_B.e6[8] - t15_2_B.Divide6_c;
+    /* Sum: '<S6>/Add9' */
+    t15_2_B.Add9 = t15_2_B.e6_l[8] - t15_2_B.Divide1_ap;
 
-    /* Lookup: '<S4>/Lookup Table1' */
-    t15_2_B.LookupTable1_a = rt_Lookup((const real_T *)
-      (&t15_2_P.LookupTable1_XData_j[0]), 4, t15_2_B.e3, (const real_T *)
-      (&t15_2_P.LookupTable1_YData_j[0]));
+    /* Lookup: '<S6>/Lookup Table1' */
+    t15_2_B.LookupTable1 = rt_Lookup((const real_T *)
+      (&t15_2_P.LookupTable1_XData[0]), 4, t15_2_Y.Time, (const real_T *)
+      (&t15_2_P.LookupTable1_YData[0]));
 
-    /* Product: '<S4>/Divide6' */
-    t15_2_B.Divide6_lh = t15_2_B.Add5 * t15_2_B.LookupTable1_a;
+    /* Product: '<S6>/Divide6' */
+    t15_2_B.Divide6_l = t15_2_B.Add5 * t15_2_B.LookupTable1;
 
-    /* Sum: '<S3>/Sum2' incorporates:
+    /* Sum: '<S5>/Sum2' incorporates:
      *  Inport: '<Root>/In1'
      */
     t15_2_B.Sum2_f = t15_2_U.In1[5] - t15_2_U.In1[7];
 
-    /* Switch: '<S3>/>=0' incorporates:
+    /* Switch: '<S5>/>=0' incorporates:
      *  Inport: '<Root>/In1'
      */
     if (t15_2_B.Sum2_f >= t15_2_P.u_Threshold) {
-      t15_2_B.u = t15_2_U.In1[7];
+      t15_2_B.u_a = t15_2_U.In1[7];
     } else {
-      t15_2_B.u = t15_2_U.In1[5];
+      t15_2_B.u_a = t15_2_U.In1[5];
     }
 
-    /* Gain: '<S6>/1e2' incorporates:
+    /* Gain: '<S8>/1e2' incorporates:
      *  Inport: '<Root>/In1'
      *  Inport: '<Root>/In2'
      */
@@ -1016,195 +809,434 @@ void t15_2_step(void)
     t15_2_B.e2[2] = t15_2_P.e2_Gain * t15_2_U.In1[6];
     t15_2_B.e2[3] = t15_2_P.e2_Gain * t15_2_U.In2[3];
     t15_2_B.e2[4] = t15_2_P.e2_Gain * t15_2_U.In2[4];
-    t15_2_B.e2[5] = t15_2_P.e2_Gain * t15_2_B.u;
+    t15_2_B.e2[5] = t15_2_P.e2_Gain * t15_2_B.u_a;
 
-    /* Lookup: '<S6>/g1_ref' */
-    t15_2_B.g1_ref = rt_Lookup((const real_T *)(&t15_2_P.g1_ref_XData[0]), 7,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.g1_ref_YData[0]));
+    /* Memory: '<S23>/Memory1' */
+    t15_2_B.Memory1_d = t15_2_DWork.Memory1_PreviousInput_e;
 
-    /* Sum: '<S6>/Add2' */
-    t15_2_B.Add2_i = t15_2_B.e2[0] - t15_2_B.g1_ref;
+    /* Switch: '<S23>/c_eob  ' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_d) {
+      t15_2_B.c_eob_gq = t15_2_Y.Time;
+    } else {
+      t15_2_B.c_eob_gq = t15_2_B.Memory1_d;
+    }
 
-    /* Lookup: '<S6>/Lookup Table1' */
+    /* Switch: '<S23>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_k) {
+      /* Lookup: '<S23>/g1_ref' */
+      t15_2_B.g1_ref = rt_Lookup((const real_T *)(&t15_2_P.g1_ref_XData[0]), 6,
+        t15_2_Y.Time, (const real_T *)(&t15_2_P.g1_ref_YData[0]));
+      t15_2_B.c_eob_d1 = t15_2_B.g1_ref;
+    } else {
+      /* Sum: '<S23>/Add2' */
+      t15_2_B.Add2_a = t15_2_Y.Time - t15_2_B.c_eob_gq;
+
+      /* Lookup: '<S23>/g1_ref_term' */
+      t15_2_B.g1_ref_term = rt_Lookup((const real_T *)
+        (&t15_2_P.g1_ref_term_XData[0]), 3, t15_2_B.Add2_a, (const real_T *)
+        (&t15_2_P.g1_ref_term_YData[0]));
+      t15_2_B.c_eob_d1 = t15_2_B.g1_ref_term;
+    }
+
+    /* Sum: '<S8>/Add2' */
+    t15_2_B.Add2_i = t15_2_B.e2[0] - t15_2_B.c_eob_d1;
+
+    /* Lookup: '<S8>/Lookup Table1' */
     t15_2_B.LookupTable1_b = rt_Lookup((const real_T *)
-      (&t15_2_P.LookupTable1_XData_o[0]), 4, t15_2_B.e3, (const real_T *)
+      (&t15_2_P.LookupTable1_XData_o[0]), 4, t15_2_Y.Time, (const real_T *)
       (&t15_2_P.LookupTable1_YData_k[0]));
 
-    /* Product: '<S6>/Divide6' */
-    t15_2_B.Divide6_id = t15_2_B.Add2_i * t15_2_B.LookupTable1_b;
+    /* Product: '<S8>/Divide6' */
+    t15_2_B.Divide6_i = t15_2_B.Add2_i * t15_2_B.LookupTable1_b;
 
-    /* Lookup: '<S6>/g2_ref' */
-    t15_2_B.g2_ref = rt_Lookup((const real_T *)(&t15_2_P.g2_ref_XData[0]), 7,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.g2_ref_YData[0]));
+    /* Memory: '<S24>/Memory1' */
+    t15_2_B.Memory1_e = t15_2_DWork.Memory1_PreviousInput_h;
 
-    /* Sum: '<S6>/Add1' */
-    t15_2_B.Add1_j = t15_2_B.e2[1] - t15_2_B.g2_ref;
+    /* Switch: '<S24>/c_eob ' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_ly) {
+      t15_2_B.c_eob_o2 = t15_2_Y.Time;
+    } else {
+      t15_2_B.c_eob_o2 = t15_2_B.Memory1_e;
+    }
 
-    /* Lookup: '<S6>/Lookup Table2' */
+    /* Switch: '<S24>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_bf) {
+      /* Lookup: '<S24>/g2_ref' */
+      t15_2_B.g2_ref = rt_Lookup((const real_T *)(&t15_2_P.g2_ref_XData[0]), 6,
+        t15_2_Y.Time, (const real_T *)(&t15_2_P.g2_ref_YData[0]));
+      t15_2_B.c_eob_e = t15_2_B.g2_ref;
+    } else {
+      /* Sum: '<S24>/Add2' */
+      t15_2_B.Add2_e = t15_2_Y.Time - t15_2_B.c_eob_o2;
+
+      /* Lookup: '<S24>/g2_ref_term' */
+      t15_2_B.g2_ref_term = rt_Lookup((const real_T *)
+        (&t15_2_P.g2_ref_term_XData[0]), 3, t15_2_B.Add2_e, (const real_T *)
+        (&t15_2_P.g2_ref_term_YData[0]));
+      t15_2_B.c_eob_e = t15_2_B.g2_ref_term;
+    }
+
+    /* Sum: '<S8>/Add1' */
+    t15_2_B.Add1_j = t15_2_B.e2[1] - t15_2_B.c_eob_e;
+
+    /* Lookup: '<S8>/Lookup Table2' */
     t15_2_B.LookupTable2 = rt_Lookup((const real_T *)
-      (&t15_2_P.LookupTable2_XData[0]), 4, t15_2_B.e3, (const real_T *)
+      (&t15_2_P.LookupTable2_XData[0]), 4, t15_2_Y.Time, (const real_T *)
       (&t15_2_P.LookupTable2_YData[0]));
 
-    /* Product: '<S6>/Divide1' */
+    /* Product: '<S8>/Divide1' */
     t15_2_B.Divide1_k = t15_2_B.Add1_j * t15_2_B.LookupTable2;
 
-    /* Lookup: '<S6>/g3_ref' */
-    t15_2_B.g3_ref = rt_Lookup((const real_T *)(&t15_2_P.g3_ref_XData[0]), 12,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.g3_ref_YData[0]));
+    /* Memory: '<S25>/Memory1' */
+    t15_2_B.Memory1_f = t15_2_DWork.Memory1_PreviousInput_f;
 
-    /* Sum: '<S6>/Add3' */
-    t15_2_B.Add3_b = t15_2_B.e2[2] - t15_2_B.g3_ref;
+    /* Switch: '<S25>/c_eob ' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_b1) {
+      t15_2_B.c_eob_k5 = t15_2_Y.Time;
+    } else {
+      t15_2_B.c_eob_k5 = t15_2_B.Memory1_f;
+    }
 
-    /* Lookup: '<S6>/g4_ref' */
-    t15_2_B.g4_ref = rt_Lookup((const real_T *)(&t15_2_P.g4_ref_XData[0]), 9,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.g4_ref_YData[0]));
+    /* Switch: '<S25>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_p) {
+      /* Lookup: '<S25>/g3_ref' */
+      t15_2_B.g3_ref = rt_Lookup((const real_T *)(&t15_2_P.g3_ref_XData[0]), 10,
+        t15_2_Y.Time, (const real_T *)(&t15_2_P.g3_ref_YData[0]));
+      t15_2_B.c_eob_kv = t15_2_B.g3_ref;
+    } else {
+      /* Sum: '<S25>/Add2' */
+      t15_2_B.Add2_iv = t15_2_Y.Time - t15_2_B.c_eob_k5;
 
-    /* Sum: '<S6>/Add4' */
-    t15_2_B.Add4_j = t15_2_B.e2[3] - t15_2_B.g4_ref;
+      /* Lookup: '<S25>/g3_ref_term' */
+      t15_2_B.g3_ref_term = rt_Lookup((const real_T *)
+        (&t15_2_P.g3_ref_term_XData[0]), 5, t15_2_B.Add2_iv, (const real_T *)
+        (&t15_2_P.g3_ref_term_YData[0]));
+      t15_2_B.c_eob_kv = t15_2_B.g3_ref_term;
+    }
 
-    /* Lookup: '<S6>/Lookup Table3' */
+    /* Sum: '<S8>/Add3' */
+    t15_2_B.Add3_b = t15_2_B.e2[2] - t15_2_B.c_eob_kv;
+
+    /* Memory: '<S26>/Memory1' */
+    t15_2_B.Memory1_dh = t15_2_DWork.Memory1_PreviousInput_p;
+
+    /* Switch: '<S26>/c_eob  ' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_mj) {
+      t15_2_B.c_eob_i = t15_2_Y.Time;
+    } else {
+      t15_2_B.c_eob_i = t15_2_B.Memory1_dh;
+    }
+
+    /* Switch: '<S26>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_dc) {
+      /* Lookup: '<S26>/g4_ref' */
+      t15_2_B.g4_ref = rt_Lookup((const real_T *)(&t15_2_P.g4_ref_XData[0]), 7,
+        t15_2_Y.Time, (const real_T *)(&t15_2_P.g4_ref_YData[0]));
+      t15_2_B.c_eob_ij = t15_2_B.g4_ref;
+    } else {
+      /* Sum: '<S26>/Add2' */
+      t15_2_B.Add2_o = t15_2_Y.Time - t15_2_B.c_eob_i;
+
+      /* Lookup: '<S26>/g4_ref_term' */
+      t15_2_B.g4_ref_term = rt_Lookup((const real_T *)
+        (&t15_2_P.g4_ref_term_XData[0]), 6, t15_2_B.Add2_o, (const real_T *)
+        (&t15_2_P.g4_ref_term_YData[0]));
+      t15_2_B.c_eob_ij = t15_2_B.g4_ref_term;
+    }
+
+    /* Sum: '<S8>/Add4' */
+    t15_2_B.Add4_j = t15_2_B.e2[3] - t15_2_B.c_eob_ij;
+
+    /* Lookup: '<S8>/Lookup Table3' */
     t15_2_B.LookupTable3 = rt_Lookup((const real_T *)
-      (&t15_2_P.LookupTable3_XData[0]), 4, t15_2_B.e3, (const real_T *)
+      (&t15_2_P.LookupTable3_XData[0]), 4, t15_2_Y.Time, (const real_T *)
       (&t15_2_P.LookupTable3_YData[0]));
 
-    /* Product: '<S6>/Divide2' */
-    t15_2_B.Divide2_c = t15_2_B.Add4_j * t15_2_B.LookupTable3;
+    /* Product: '<S8>/Divide2' */
+    t15_2_B.Divide2 = t15_2_B.Add4_j * t15_2_B.LookupTable3;
 
-    /* Lookup: '<S6>/g5_ref' */
-    t15_2_B.g5_ref = rt_Lookup((const real_T *)(&t15_2_P.g5_ref_XData[0]), 8,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.g5_ref_YData[0]));
+    /* Memory: '<S27>/Memory1' */
+    t15_2_B.Memory1_g = t15_2_DWork.Memory1_PreviousInput_i;
 
-    /* Sum: '<S6>/Add5' */
-    t15_2_B.Add5_k = t15_2_B.e2[4] - t15_2_B.g5_ref;
+    /* Switch: '<S27>/c_eob  ' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_ll) {
+      t15_2_B.c_eob_e1 = t15_2_Y.Time;
+    } else {
+      t15_2_B.c_eob_e1 = t15_2_B.Memory1_g;
+    }
 
-    /* Lookup: '<S6>/g6_ref' */
-    t15_2_B.g6_ref = rt_Lookup((const real_T *)(&t15_2_P.g6_ref_XData[0]), 10,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.g6_ref_YData[0]));
+    /* Switch: '<S27>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_ps) {
+      /* Lookup: '<S27>/g5_ref' */
+      t15_2_B.g5_ref = rt_Lookup((const real_T *)(&t15_2_P.g5_ref_XData[0]), 7,
+        t15_2_Y.Time, (const real_T *)(&t15_2_P.g5_ref_YData[0]));
+      t15_2_B.c_eob_bo = t15_2_B.g5_ref;
+    } else {
+      /* Sum: '<S27>/Add2' */
+      t15_2_B.Add2_g = t15_2_Y.Time - t15_2_B.c_eob_e1;
 
-    /* Sum: '<S6>/Add6' */
-    t15_2_B.Add6_g = t15_2_B.e2[5] - t15_2_B.g6_ref;
+      /* Lookup: '<S27>/g5_ref_term' */
+      t15_2_B.g5_ref_term = rt_Lookup((const real_T *)
+        (&t15_2_P.g5_ref_term_XData[0]), 5, t15_2_B.Add2_g, (const real_T *)
+        (&t15_2_P.g5_ref_term_YData[0]));
+      t15_2_B.c_eob_bo = t15_2_B.g5_ref_term;
+    }
 
-    /* Gain: '<S6>/1e-2' */
-    t15_2_B.e2_g[0] = t15_2_P.e2_Gain_h * t15_2_B.Divide6_id;
+    /* Sum: '<S8>/Add5' */
+    t15_2_B.Add5_k = t15_2_B.e2[4] - t15_2_B.c_eob_bo;
+
+    /* Lookup: '<S28>/g6_ref' */
+    t15_2_B.g6_ref = rt_Lookup((const real_T *)(&t15_2_P.g6_ref_XData[0]), 7,
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.g6_ref_YData[0]));
+
+    /* Memory: '<S28>/Memory2' */
+    t15_2_B.Memory2_m4 = t15_2_DWork.Memory2_PreviousInput_o;
+
+    /* Switch: '<S28>/c_eob  1' */
+    if (t15_2_B.u > t15_2_P.c_eob1_Threshold) {
+      t15_2_B.c_eob1 = t15_2_B.g6_ref;
+    } else {
+      t15_2_B.c_eob1 = t15_2_B.Memory2_m4;
+    }
+
+    /* Memory: '<S28>/Memory1' */
+    t15_2_B.Memory1_dn = t15_2_DWork.Memory1_PreviousInput_c;
+
+    /* Switch: '<S28>/c_eob  ' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_h) {
+      t15_2_B.c_eob_lg = t15_2_Y.Time;
+    } else {
+      t15_2_B.c_eob_lg = t15_2_B.Memory1_dn;
+    }
+
+    /* Switch: '<S28>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_jz) {
+      t15_2_B.c_eob_fd = t15_2_B.g6_ref;
+    } else {
+      /* Sum: '<S28>/Add2' */
+      t15_2_B.Add2_ft = t15_2_Y.Time - t15_2_B.c_eob_lg;
+
+      /* Lookup: '<S28>/g6_ref_term' */
+      t15_2_B.g6_ref_term = rt_Lookup((const real_T *)
+        (&t15_2_P.g6_ref_term_XData[0]), 6, t15_2_B.Add2_ft, (const real_T *)
+        (&t15_2_P.g6_ref_term_YData[0]));
+
+      /* Sum: '<S28>/Add1' */
+      t15_2_B.Add1_f = t15_2_B.c_eob1 - t15_2_B.g6_ref_term;
+      t15_2_B.c_eob_fd = t15_2_B.Add1_f;
+    }
+
+    /* Sum: '<S8>/Add6' */
+    t15_2_B.Add6_g = t15_2_B.e2[5] - t15_2_B.c_eob_fd;
+
+    /* Gain: '<S8>/1e-2' */
+    t15_2_B.e2_g[0] = t15_2_P.e2_Gain_h * t15_2_B.Divide6_i;
     t15_2_B.e2_g[1] = t15_2_P.e2_Gain_h * t15_2_B.Divide1_k;
     t15_2_B.e2_g[2] = t15_2_P.e2_Gain_h * t15_2_B.Add3_b;
-    t15_2_B.e2_g[3] = t15_2_P.e2_Gain_h * t15_2_B.Divide2_c;
+    t15_2_B.e2_g[3] = t15_2_P.e2_Gain_h * t15_2_B.Divide2;
     t15_2_B.e2_g[4] = t15_2_P.e2_Gain_h * t15_2_B.Add5_k;
     t15_2_B.e2_g[5] = t15_2_P.e2_Gain_h * t15_2_B.Add6_g;
 
-    /* Memory: '<S8>/Memory2' */
-    t15_2_B.Memory2 = t15_2_DWork.Memory2_PreviousInput;
+    /* Gain: '<S9>/1e6' */
+    t15_2_B.e6_e = t15_2_P.e6_Gain_d * t15_2_B.Add2;
 
-    /* Switch: '<S8>/Switch' */
-    if (t15_2_B.e6_c > t15_2_P.Switch_Threshold) {
-      t15_2_B.Switch = t15_2_B.e3;
-    } else {
-      t15_2_B.Switch = t15_2_B.Memory2;
-    }
-
-    /* RelationalOperator: '<S8>/Relational Operator' incorporates:
-     *  Constant: '<S8>/1e-6'
+    /* RelationalOperator: '<S29>/Compare' incorporates:
+     *  Constant: '<S29>/Constant'
      */
-    t15_2_B.RelationalOperator_k = (real_T)(t15_2_B.Switch > t15_2_P.e6_Value);
+    t15_2_B.Compare_l = (t15_2_B.e6 > t15_2_P.Constant_Value_o);
 
-    /* Switch: '<S8>/0.99' incorporates:
+    /* RelationalOperator: '<S30>/Compare' incorporates:
+     *  Constant: '<S30>/Constant'
+     */
+    t15_2_B.Compare_h = (t15_2_Y.Time > t15_2_P.Constant_Value_e);
+
+    /* Logic: '<S10>/Logical Operator1' */
+    t15_2_B.LogicalOperator1_a = (real_T)((t15_2_B.Compare_l != 0) ||
+      (t15_2_B.Compare_h != 0));
+
+    /* Switch: '<S10>/0.99' incorporates:
      *  Constant: '<S1>/Constant4'
      */
-    if (t15_2_B.RelationalOperator_k >= t15_2_P.u9_Threshold_k) {
+    if (t15_2_B.LogicalOperator1_a >= t15_2_P.u9_Threshold_k) {
       for (i = 0; i < 6; i++) {
         t15_2_B.u9_a[i] = t15_2_B.e2_g[i];
       }
 
-      t15_2_B.u9_a[6] = t15_2_P.Constant4_Value;
+      t15_2_B.u9_a[6] = t15_2_P.Constant4_Value_h;
       t15_2_B.u9_a[7] = t15_2_B.Add1_o;
-      t15_2_B.u9_a[8] = t15_2_B.Add3;
+      t15_2_B.u9_a[8] = t15_2_B.Add3_a;
       t15_2_B.u9_a[9] = t15_2_B.Add1_oq;
-      t15_2_B.u9_a[10] = t15_2_B.Add2;
+      t15_2_B.u9_a[10] = t15_2_B.Add2_d;
       t15_2_B.u9_a[11] = t15_2_B.Add4;
-      t15_2_B.u9_a[12] = t15_2_B.Divide6_lh;
+      t15_2_B.u9_a[12] = t15_2_B.Divide6_l;
       t15_2_B.u9_a[13] = t15_2_B.Add6;
       t15_2_B.u9_a[14] = t15_2_B.Add7;
       t15_2_B.u9_a[15] = t15_2_B.Add8;
       t15_2_B.u9_a[16] = t15_2_B.Add9;
       t15_2_B.u9_a[17] = t15_2_B.Add10;
       t15_2_B.u9_a[18] = t15_2_B.Add11;
-      t15_2_B.u9_a[19] = t15_2_P.Constant4_Value;
+      t15_2_B.u9_a[19] = t15_2_P.Constant4_Value_h;
     } else {
       /* Lookup: '<S1>/elong_ref' */
       t15_2_B.elong_ref = rt_Lookup((const real_T *)(&t15_2_P.elong_ref_XData[0]),
-        7, t15_2_B.e3, (const real_T *)(&t15_2_P.elong_ref_YData[0]));
+        7, t15_2_Y.Time, (const real_T *)(&t15_2_P.elong_ref_YData[0]));
 
       /* Sum: '<S1>/Add2' incorporates:
        *  Inport: '<Root>/In1'
        */
       t15_2_B.Add2_f = t15_2_U.In1[2] - t15_2_B.elong_ref;
       t15_2_B.u9_a[0] = t15_2_B.Add2_f;
-      t15_2_B.u9_a[1] = t15_2_P.Constant4_Value;
-      t15_2_B.u9_a[2] = t15_2_B.e2_g[2];
-      t15_2_B.u9_a[3] = t15_2_B.e2_g[3];
-      t15_2_B.u9_a[4] = t15_2_B.e2_g[4];
-      t15_2_B.u9_a[5] = t15_2_B.e2_g[5];
-      t15_2_B.u9_a[6] = t15_2_P.Constant4_Value;
+      t15_2_B.u9_a[1] = t15_2_P.Constant4_Value_h;
+
+      /* Gain: '<S1>/k_gaplim' */
+      t15_2_B.k_gaplim[0] = t15_2_P.k_gaplim_Gain[0] * t15_2_B.e2_g[2];
+      t15_2_B.u9_a[2] = t15_2_B.k_gaplim[0];
+
+      /* Gain: '<S1>/k_gaplim' */
+      t15_2_B.k_gaplim[1] = t15_2_P.k_gaplim_Gain[1] * t15_2_B.e2_g[3];
+      t15_2_B.u9_a[3] = t15_2_B.k_gaplim[1];
+
+      /* Gain: '<S1>/k_gaplim' */
+      t15_2_B.k_gaplim[2] = t15_2_P.k_gaplim_Gain[2] * t15_2_B.e2_g[4];
+      t15_2_B.u9_a[4] = t15_2_B.k_gaplim[2];
+
+      /* Gain: '<S1>/k_gaplim' */
+      t15_2_B.k_gaplim[3] = t15_2_P.k_gaplim_Gain[3] * t15_2_B.e2_g[5];
+      t15_2_B.u9_a[5] = t15_2_B.k_gaplim[3];
+      t15_2_B.u9_a[6] = t15_2_P.Constant4_Value_h;
       t15_2_B.u9_a[7] = t15_2_B.Add1_o;
-      t15_2_B.u9_a[8] = t15_2_B.Add3;
+      t15_2_B.u9_a[8] = t15_2_B.Add3_a;
       t15_2_B.u9_a[9] = t15_2_B.Add1_oq;
-      t15_2_B.u9_a[10] = t15_2_B.Add2;
+      t15_2_B.u9_a[10] = t15_2_B.Add2_d;
       t15_2_B.u9_a[11] = t15_2_B.Add4;
-      t15_2_B.u9_a[12] = t15_2_B.Divide6_lh;
+      t15_2_B.u9_a[12] = t15_2_B.Divide6_l;
       t15_2_B.u9_a[13] = t15_2_B.Add6;
       t15_2_B.u9_a[14] = t15_2_B.Add7;
       t15_2_B.u9_a[15] = t15_2_B.Add8;
       t15_2_B.u9_a[16] = t15_2_B.Add9;
       t15_2_B.u9_a[17] = t15_2_B.Add10;
       t15_2_B.u9_a[18] = t15_2_B.Add11;
-      t15_2_B.u9_a[19] = t15_2_P.Constant4_Value;
+      t15_2_B.u9_a[19] = t15_2_P.Constant4_Value_h;
     }
 
-    /* DiscreteStateSpace: '<S2>/Curr. term. contr' */
-    {
-      t15_2_B.Currtermcontr[0] = (t15_2_P.Currtermcontr_C[0])*
-        t15_2_DWork.Currtermcontr_DSTATE[0];
-      t15_2_B.Currtermcontr[1] = (t15_2_P.Currtermcontr_C[1])*
-        t15_2_DWork.Currtermcontr_DSTATE[1];
-      t15_2_B.Currtermcontr[2] = (t15_2_P.Currtermcontr_C[2])*
-        t15_2_DWork.Currtermcontr_DSTATE[2];
-      t15_2_B.Currtermcontr[3] = (t15_2_P.Currtermcontr_C[3])*
-        t15_2_DWork.Currtermcontr_DSTATE[3];
-      t15_2_B.Currtermcontr[4] = (t15_2_P.Currtermcontr_C[4])*
-        t15_2_DWork.Currtermcontr_DSTATE[4];
-      t15_2_B.Currtermcontr[5] = (t15_2_P.Currtermcontr_C[5])*
-        t15_2_DWork.Currtermcontr_DSTATE[5];
-      t15_2_B.Currtermcontr[6] = (t15_2_P.Currtermcontr_C[6])*
-        t15_2_DWork.Currtermcontr_DSTATE[6];
-      t15_2_B.Currtermcontr[7] = (t15_2_P.Currtermcontr_C[7])*
-        t15_2_DWork.Currtermcontr_DSTATE[7];
-      t15_2_B.Currtermcontr[8] = (t15_2_P.Currtermcontr_C[8])*
-        t15_2_DWork.Currtermcontr_DSTATE[8];
-      t15_2_B.Currtermcontr[9] = (t15_2_P.Currtermcontr_C[9])*
-        t15_2_DWork.Currtermcontr_DSTATE[9];
-      t15_2_B.Currtermcontr[10] = (t15_2_P.Currtermcontr_C[10])*
-        t15_2_DWork.Currtermcontr_DSTATE[10];
-    }
-
-    /* Memory: '<S25>/Memory2' */
-    t15_2_B.Memory2_e = t15_2_DWork.Memory2_PreviousInput_j;
-
-    /* Switch: '<S25>/Switch' */
-    if (t15_2_B.e6_c > t15_2_P.Switch_Threshold_p) {
-      t15_2_B.Switch_d = t15_2_B.e3;
-    } else {
-      t15_2_B.Switch_d = t15_2_B.Memory2_e;
-    }
-
-    /* RelationalOperator: '<S25>/Relational Operator' incorporates:
-     *  Constant: '<S25>/1e-6'
+    /* RelationalOperator: '<S47>/Compare' incorporates:
+     *  Constant: '<S47>/Constant'
      */
-    t15_2_B.RelationalOperator_j = (real_T)(t15_2_B.Switch_d >
-      t15_2_P.e6_Value_j);
+    t15_2_B.Compare_hj = (t15_2_B.e6 < t15_2_P.Constant_Value_e4);
+
+    /* RelationalOperator: '<S48>/Compare' incorporates:
+     *  Constant: '<S48>/Constant'
+     */
+    t15_2_B.Compare_m = (t15_2_Y.Time > t15_2_P.Constant_Value_hc);
+
+    /* Logic: '<S34>/Logical Operator2' */
+    t15_2_B.LogicalOperator2_o = (real_T)((t15_2_B.Compare_hj != 0) &&
+      (t15_2_B.Compare_m != 0));
+    for (i = 0; i < 11; i++) {
+      /* Gain: '<S33>/1e3' */
+      t15_2_B.e3_m[i] = t15_2_P.e3_Gain_m * t15_2_B.e6_l[i];
+
+      /* Abs: '<S33>/Abs' */
+      t15_2_B.Abs[i] = fabs(t15_2_B.e3_m[i]);
+
+      /* Gain: '<S33>/ntur' incorporates:
+       *  Constant: '<S2>/Imax'
+       */
+      t15_2_B.ntur[i] = t15_2_P.ntur_Gain[i] * t15_2_P.Imax_Value[i];
+
+      /* Sum: '<S33>/Sum2' */
+      t15_2_B.Sum2_p[i] = t15_2_B.ntur[i] - t15_2_B.Abs[i];
+
+      /* Gain: '<S33>/c_cur_max' */
+      t15_2_B.c_cur_max[i] = t15_2_P.c_cur_max_Gain * t15_2_B.ntur[i];
+
+      /* Sum: '<S33>/Sum1' */
+      t15_2_B.Sum1[i] = t15_2_B.ntur[i] - t15_2_B.c_cur_max[i];
+
+      /* Product: '<S33>/Divide4' */
+      t15_2_B.Divide4_j[i] = t15_2_B.Sum2_p[i] / t15_2_B.Sum1[i];
+
+      /* Product: '<S33>/Divide1' */
+      t15_2_B.Divide1_j[i] = t15_2_B.Divide4_j[i] * t15_2_B.Divide4_j[i] *
+        t15_2_B.Divide4_j[i];
+      tmin = t15_2_B.Divide1_j[i];
+      t15_2_B.Saturation[i] = rt_SATURATE(tmin, t15_2_P.Saturation_LowerSat,
+        t15_2_P.Saturation_UpperSat);
+
+      /* RelationalOperator: '<S45>/Compare' incorporates:
+       *  Constant: '<S45>/Constant'
+       */
+      t15_2_B.Compare_lm[i] = (t15_2_B.Saturation[i] < t15_2_P.Constant_Value_m);
+
+      /* Memory: '<S34>/Memory1' */
+      t15_2_B.Memory1_eo[i] = t15_2_DWork.Memory1_PreviousInput_er[i];
+
+      /* Memory: '<S36>/Memory' */
+      t15_2_B.Memory_m[i] = t15_2_DWork.Memory_PreviousInput_i[i];
+    }
+
+    /* RelationalOperator: '<S49>/Compare' incorporates:
+     *  Constant: '<S49>/Constant'
+     */
+    t15_2_B.Compare_i = (t15_2_B.e6 < t15_2_P.Constant_Value_g);
+
+    /* RelationalOperator: '<S50>/Compare' incorporates:
+     *  Constant: '<S50>/Constant'
+     */
+    t15_2_B.Compare_iq = (t15_2_Y.Time > t15_2_P.Constant_Value_eb);
+
+    /* RelationalOperator: '<S51>/Compare' incorporates:
+     *  Constant: '<S51>/Constant'
+     */
+    t15_2_B.Compare_c = (t15_2_B.e6 > t15_2_P.Constant_Value_bi);
+
+    /* Logic: '<S36>/Logical Operator1' */
+    t15_2_B.LogicalOperator1_h = (real_T)((t15_2_B.Compare_i != 0) &&
+      (t15_2_B.Compare_iq != 0) && (t15_2_B.Compare_c != 0));
+
+    /* Memory: '<S44>/Memory3' */
+    t15_2_B.Memory3 = t15_2_DWork.Memory3_PreviousInput;
+
+    /* RelationalOperator: '<S59>/Compare' incorporates:
+     *  Constant: '<S59>/Constant'
+     */
+    t15_2_B.Compare_eq = (t15_2_B.e6 > t15_2_P.Constant_Value_a);
+
+    /* RelationalOperator: '<S60>/Compare' incorporates:
+     *  Constant: '<S60>/Constant'
+     */
+    t15_2_B.Compare_ec = (t15_2_Y.Time > t15_2_P.Constant_Value_od);
+
+    /* Logic: '<S44>/Logical Operator1' */
+    t15_2_B.LogicalOperator1_c = (real_T)((t15_2_B.Compare_eq != 0) ||
+      (t15_2_B.Compare_ec != 0));
+
+    /* Switch: '<S44>/0.9999' */
+    if (t15_2_B.LogicalOperator1_c > t15_2_P.u999_Threshold) {
+      t15_2_B.u999 = t15_2_B.Memory3;
+    } else {
+      t15_2_B.u999 = t15_2_Y.Time;
+    }
+
+    /* Sum: '<S44>/Subtract2' */
+    t15_2_B.Subtract2 = t15_2_Y.Time - t15_2_B.u999;
+
+    /* Gain: '<S44>/Gain1' */
+    t15_2_B.Gain1 = t15_2_P.Gain1_Gain * t15_2_B.Subtract2;
+
+    /* Sum: '<S44>/Subtract1' incorporates:
+     *  Constant: '<S44>/1'
+     */
+    t15_2_B.Subtract1 = t15_2_B.Gain1 + t15_2_P._Value;
+
+    /* Saturate: '<S44>/Saturation1' */
+    tmin = t15_2_B.Subtract1;
+    t15_2_B.Saturation1 = rt_SATURATE(tmin, t15_2_P.Saturation1_LowerSat,
+      t15_2_P.Saturation1_UpperSat);
 
     /* Product: '<S2>/Divide2' */
     for (i = 0; i < 20; i++) {
-      t15_2_B.Divide2_j[i] = t15_2_B.RelationalOperator_j * t15_2_B.u9_a[i];
+      t15_2_B.Divide2_j[i] = t15_2_B.LogicalOperator1_c * t15_2_B.u9_a[i];
     }
 
     /* DiscreteStateSpace: '<S2>/Div. contr.' */
@@ -1516,28 +1548,49 @@ void t15_2_step(void)
       }
     }
 
-    /* RelationalOperator: '<S43>/Compare' incorporates:
-     *  Constant: '<S43>/Constant'
-     */
-    t15_2_B.Compare_b = (t15_2_B.e6_c < t15_2_P.Constant_Value_ou);
+    /* Switch: '<S36>/0.99' */
+    if (t15_2_B.LogicalOperator1_h >= t15_2_P.u9_Threshold_a) {
+      memcpy((void *)(&t15_2_B.u9_d[0]), (void *)(&t15_2_B.Memory_m[0]), 11U *
+             sizeof(real_T));
+    } else {
+      /* Sum: '<S44>/Subtract3' incorporates:
+       *  Constant: '<S44>/1 '
+       */
+      t15_2_B.Subtract3_a = t15_2_P._Value_i - t15_2_B.Saturation1;
+      for (i = 0; i < 11; i++) {
+        /* Product: '<S2>/Divide' */
+        t15_2_B.Divide_e[i] = t15_2_B.Subtract3_a * t15_2_B.Divcontr[i];
+        t15_2_B.u9_d[i] = t15_2_B.Divide_e[i];
+      }
+    }
 
-    /* RelationalOperator: '<S44>/Compare' incorporates:
-     *  Constant: '<S44>/Constant'
-     */
-    t15_2_B.Compare_m = (t15_2_B.e3 > t15_2_P.Constant_Value_bv);
+    /* Memory: '<S42>/Memory1' */
+    t15_2_B.Memory1_n = t15_2_DWork.Memory1_PreviousInput_a;
 
-    /* RelationalOperator: '<S45>/Compare' incorporates:
-     *  Constant: '<S45>/Constant'
+    /* RelationalOperator: '<S57>/Compare' incorporates:
+     *  Constant: '<S57>/Constant'
      */
-    t15_2_B.Compare_h = (t15_2_B.e6_c > t15_2_P.Constant_Value_p5);
+    t15_2_B.Compare_ej = (t15_2_B.e6 < t15_2_P.Constant_Value_i);
 
-    /* Logic: '<S27>/Logical Operator1' */
-    t15_2_B.LogicalOperator1_j = (real_T)((t15_2_B.Compare_b != 0) &&
-      (t15_2_B.Compare_m != 0) && (t15_2_B.Compare_h != 0));
+    /* RelationalOperator: '<S58>/Compare' incorporates:
+     *  Constant: '<S58>/Constant'
+     */
+    t15_2_B.Compare_in = (t15_2_Y.Time > t15_2_P.Constant_Value_d);
+
+    /* Logic: '<S42>/Logical Operator1' */
+    t15_2_B.LogicalOperator1_d = (real_T)((t15_2_B.Compare_ej != 0) &&
+      (t15_2_B.Compare_in != 0));
+
+    /* Switch: '<S42>/0.9999' */
+    if (t15_2_B.LogicalOperator1_d > t15_2_P.u999_Threshold_a) {
+      t15_2_B.u999_b = t15_2_B.Memory1_n;
+    } else {
+      t15_2_B.u999_b = t15_2_Y.Time;
+    }
 
     /* Product: '<S2>/Divide13' */
     for (i = 0; i < 20; i++) {
-      t15_2_B.Divide13[i] = t15_2_B.Divide2_j[i] * t15_2_B.LogicalOperator1_j;
+      t15_2_B.Divide13[i] = t15_2_B.Divide2_j[i] * t15_2_B.LogicalOperator1_d;
     }
 
     /* DiscreteStateSpace: '<S2>/Div_rd contr' */
@@ -1862,54 +1915,179 @@ void t15_2_step(void)
       }
     }
 
-    /* UnitDelay: '<S41>/UD' */
-    t15_2_B.Uk1_o = t15_2_DWork.UD_DSTATE_hh;
+    /* Memory: '<S40>/Memory1' */
+    t15_2_B.Memory1_b = t15_2_DWork.Memory1_PreviousInput_ek;
 
-    /* Sum: '<S41>/Diff' */
-    t15_2_B.Diff_b = t15_2_B.e3 - t15_2_B.Uk1_o;
-
-    /* Product: '<S25>/Divide' incorporates:
-     *  Constant: '<S25>/SimStep'
-     */
-    t15_2_B.Divide_d = t15_2_B.RelationalOperator_j * t15_2_P.SimStep_Value_a /
-      t15_2_B.Diff_b;
-
-    /* RateLimiter: '<S25>/Rate Limiter' */
-    if (t15_2_DWork.LastMajorTime_d == (rtInf)) {
-      t15_2_B.RateLimiter_m = t15_2_B.Divide_d;
+    /* Switch: '<S40>/c_eob' */
+    if (t15_2_B.u > t15_2_P.c_eob_Threshold_n3) {
+      /* Lookup: '<S40>/Ipl_ref' */
+      t15_2_B.Ipl_ref = rt_Lookup((const real_T *)(&t15_2_P.Ipl_ref_XData_o[0]),
+        78, t15_2_Y.Time, (const real_T *)(&t15_2_P.Ipl_ref_YData_p[0]));
+      t15_2_B.c_eob_fp = t15_2_B.Ipl_ref;
     } else {
-      deltaT = t15_2_M->Timing.t[0] - t15_2_DWork.LastMajorTime_d;
-      riseValLimit_0 = deltaT * t15_2_P.RateLimiter_RisingLim_p;
-      rateLimiterRate_0 = t15_2_B.Divide_d - t15_2_DWork.PrevY_e;
-      if (rateLimiterRate_0 > riseValLimit_0) {
-        t15_2_B.RateLimiter_m = t15_2_DWork.PrevY_e + riseValLimit_0;
+      t15_2_B.c_eob_fp = t15_2_B.Memory1_b;
+    }
+
+    /* Switch: '<S34>/0.999' */
+    if (t15_2_B.LogicalOperator2_o > t15_2_P.u99_Threshold) {
+      memcpy((void *)(&t15_2_B.u99[0]), (void *)(&t15_2_B.Memory1_eo[0]), 11U *
+             sizeof(real_T));
+    } else {
+      /* Sum: '<S42>/Subtract2' */
+      t15_2_B.Subtract2_b = t15_2_Y.Time - t15_2_B.u999_b;
+
+      /* Gain: '<S42>/Gain1' */
+      t15_2_B.Gain1_n = t15_2_P.Gain1_Gain_o * t15_2_B.Subtract2_b;
+
+      /* Sum: '<S42>/Subtract3' incorporates:
+       *  Constant: '<S42>/1'
+       */
+      t15_2_B.Subtract3_k = t15_2_B.Gain1_n + t15_2_P._Value_m;
+
+      /* Saturate: '<S42>/Saturation' */
+      tmin = t15_2_B.Subtract3_k;
+      t15_2_B.Saturation_i = rt_SATURATE(tmin, t15_2_P.Saturation_LowerSat_c,
+        t15_2_P.Saturation_UpperSat_g);
+
+      /* Sum: '<S42>/Subtract1' incorporates:
+       *  Constant: '<S42>/1 '
+       */
+      t15_2_B.Subtract1_f = t15_2_P._Value_g - t15_2_B.Saturation_i;
+
+      /* Switch: '<S2>/c_eob' */
+      if (t15_2_B.u > t15_2_P.c_eob_Threshold_cl) {
+        /* Gain: '<S2>/atpl2' */
+        t15_2_B.atpl2 = t15_2_P.atpl2_Gain * t15_2_B.e6;
+
+        /* Saturate: '<S2>/Saturation' */
+        tmin = t15_2_B.atpl2;
+        t15_2_B.Saturation_a1 = rt_SATURATE(tmin, t15_2_P.Saturation_LowerSat_g,
+          t15_2_P.Saturation_UpperSat_n);
+        t15_2_B.c_eob_j = t15_2_B.Saturation_a1;
       } else {
-        deltaT *= t15_2_P.RateLimiter_FallingLim_p;
-        if (rateLimiterRate_0 < deltaT) {
-          t15_2_B.RateLimiter_m = t15_2_DWork.PrevY_e + deltaT;
-        } else {
-          t15_2_B.RateLimiter_m = t15_2_B.Divide_d;
-        }
+        /* Product: '<S40>/Divide6' */
+        t15_2_B.Divide6_o = t15_2_B.c_eob_fp * t15_2_B.u;
+
+        /* Sum: '<S40>/Sum' incorporates:
+         *  Constant: '<S40>/c1_y0'
+         */
+        t15_2_B.Sum = t15_2_B.Divide6_o - t15_2_P.c1_y0_Value;
+
+        /* Product: '<S40>/Divide2' incorporates:
+         *  Constant: '<S40>/(1-y0)//...'
+         */
+        t15_2_B.Divide2_h = t15_2_B.Sum * t15_2_P.uy0_Value;
+
+        /* Sum: '<S40>/Sum1' incorporates:
+         *  Constant: '<S40>/y0'
+         */
+        t15_2_B.Sum1_k = t15_2_B.Divide2_h + t15_2_P.y0_Value;
+
+        /* Saturate: '<S40>/[1 y0]' */
+        tmin = t15_2_B.Sum1_k;
+        t15_2_B.uy0 = rt_SATURATE(tmin, t15_2_P.uy0_LowerSat,
+          t15_2_P.uy0_UpperSat);
+        t15_2_B.c_eob_j = t15_2_B.uy0;
+      }
+
+      for (i = 0; i < 11; i++) {
+        /* Product: '<S2>/Divide3' */
+        t15_2_B.Divide3_g[i] = t15_2_B.Div_rdcontr[i] * t15_2_B.c_eob_j *
+          t15_2_B.Subtract1_f;
+
+        /* Product: '<S2>/Divide1' */
+        t15_2_B.Divide1_b[i] = t15_2_B.u9_d[i] * t15_2_B.Saturation_i;
+
+        /* Sum: '<S2>/Sum2' */
+        t15_2_B.Sum2_i[i] = t15_2_B.Divide1_b[i] + t15_2_B.Divide3_g[i];
+        t15_2_B.u99[i] = t15_2_B.Sum2_i[i];
       }
     }
 
-    /* Gain: '<S25>/Gain' */
-    t15_2_B.Gain_m = t15_2_P.Gain_Gain_d * t15_2_B.Diff_b;
+    /* Memory: '<S41>/Memory1' */
+    t15_2_B.Memory1_k = t15_2_DWork.Memory1_PreviousInput_j;
 
-    /* Product: '<S25>/Divide1' */
-    t15_2_B.Divide1_b = t15_2_B.RateLimiter_m * t15_2_B.Gain_m;
-
-    /* Saturate: '<S25>/Saturation' */
-    deltaT = t15_2_B.Divide1_b;
-    t15_2_B.Saturation_f = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat_h,
-      t15_2_P.Saturation_UpperSat_m);
-
-    /* Product: '<S2>/Divide' */
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide_e[i] = t15_2_B.Saturation_f * t15_2_B.Divcontr[i];
+    /* Switch: '<S41>/0.9999' */
+    if (t15_2_B.LogicalOperator2 > t15_2_P.u999_Threshold_g) {
+      t15_2_B.u999_l = t15_2_B.Memory1_k;
+    } else {
+      t15_2_B.u999_l = t15_2_Y.Time;
     }
 
-    /* DiscreteStateSpace: '<S2>/Lim. contr.' */
+    /* Sum: '<S41>/Subtract2' */
+    t15_2_B.Subtract2_k = t15_2_Y.Time - t15_2_B.u999_l;
+
+    /* Gain: '<S41>/Gain1' */
+    t15_2_B.Gain1_g = t15_2_P.Gain1_Gain_j * t15_2_B.Subtract2_k;
+
+    /* Sum: '<S41>/Subtract3' incorporates:
+     *  Constant: '<S41>/1'
+     */
+    t15_2_B.Subtract3 = t15_2_B.Gain1_g + t15_2_P._Value_a;
+
+    /* Saturate: '<S41>/Saturation' */
+    tmin = t15_2_B.Subtract3;
+    t15_2_B.Saturation_a = rt_SATURATE(tmin, t15_2_P.Saturation_LowerSat_a,
+      t15_2_P.Saturation_UpperSat_m);
+
+    /* Product: '<S2>/Divide4' */
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide4_a[i] = t15_2_B.u99[i] * t15_2_B.Saturation_a;
+    }
+
+    /* DiscreteStateSpace: '<S2>/Curr. term. contr' */
+    {
+      t15_2_B.Currtermcontr[0] = (t15_2_P.Currtermcontr_C[0])*
+        t15_2_DWork.Currtermcontr_DSTATE[0];
+      t15_2_B.Currtermcontr[1] = (t15_2_P.Currtermcontr_C[1])*
+        t15_2_DWork.Currtermcontr_DSTATE[1];
+      t15_2_B.Currtermcontr[2] = (t15_2_P.Currtermcontr_C[2])*
+        t15_2_DWork.Currtermcontr_DSTATE[2];
+      t15_2_B.Currtermcontr[3] = (t15_2_P.Currtermcontr_C[3])*
+        t15_2_DWork.Currtermcontr_DSTATE[3];
+      t15_2_B.Currtermcontr[4] = (t15_2_P.Currtermcontr_C[4])*
+        t15_2_DWork.Currtermcontr_DSTATE[4];
+      t15_2_B.Currtermcontr[5] = (t15_2_P.Currtermcontr_C[5])*
+        t15_2_DWork.Currtermcontr_DSTATE[5];
+      t15_2_B.Currtermcontr[6] = (t15_2_P.Currtermcontr_C[6])*
+        t15_2_DWork.Currtermcontr_DSTATE[6];
+      t15_2_B.Currtermcontr[7] = (t15_2_P.Currtermcontr_C[7])*
+        t15_2_DWork.Currtermcontr_DSTATE[7];
+      t15_2_B.Currtermcontr[8] = (t15_2_P.Currtermcontr_C[8])*
+        t15_2_DWork.Currtermcontr_DSTATE[8];
+      t15_2_B.Currtermcontr[9] = (t15_2_P.Currtermcontr_C[9])*
+        t15_2_DWork.Currtermcontr_DSTATE[9];
+      t15_2_B.Currtermcontr[10] = (t15_2_P.Currtermcontr_C[10])*
+        t15_2_DWork.Currtermcontr_DSTATE[10];
+    }
+
+    /* Gain: '<S41>/Gain2' */
+    t15_2_B.Gain2 = t15_2_P.Gain2_Gain * t15_2_B.Saturation_a;
+
+    /* Sum: '<S41>/Subtract1' incorporates:
+     *  Constant: '<S41>/2'
+     */
+    t15_2_B.Subtract1_k = t15_2_P._Value_o + t15_2_B.Gain2;
+    for (i = 0; i < 11; i++) {
+      /* Product: '<S2>/Divide5' */
+      t15_2_B.Divide5[i] = t15_2_B.Currtermcontr[i] * t15_2_B.Subtract1_k;
+
+      /* Memory: '<S2>/Memory2' */
+      t15_2_B.Memory2_fo[i] = t15_2_DWork.Memory2_PreviousInput_j[i];
+    }
+
+    /* Switch: '<S35>/tcont2 ' incorporates:
+     *  Constant: '<S35>/zeros(20,1)'
+     */
+    for (i = 0; i < 20; i++) {
+      if (t15_2_Y.Time > t15_2_P.tcont2_Threshold) {
+        t15_2_B.tcont2[i] = t15_2_B.u9_a[i];
+      } else {
+        t15_2_B.tcont2[i] = t15_2_P.zeros201_Value[i];
+      }
+    }
+
+    /* DiscreteStateSpace: '<S35>/Lim. contr.' */
     {
       {
         static const int_T colCidxRow0[47] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -1934,7 +2112,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow0[0];
         const real_T *pD0 = &t15_2_P.Limcontr_D[0];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y0 = &t15_2_B.Limcontr[0];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -1965,7 +2143,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow1[0];
         const real_T *pD17 = &t15_2_P.Limcontr_D[17];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y1 = &t15_2_B.Limcontr[1];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -1996,7 +2174,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow2[0];
         const real_T *pD34 = &t15_2_P.Limcontr_D[34];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y2 = &t15_2_B.Limcontr[2];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2027,7 +2205,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow3[0];
         const real_T *pD51 = &t15_2_P.Limcontr_D[51];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y3 = &t15_2_B.Limcontr[3];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2058,7 +2236,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow4[0];
         const real_T *pD68 = &t15_2_P.Limcontr_D[68];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y4 = &t15_2_B.Limcontr[4];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2089,7 +2267,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow5[0];
         const real_T *pD85 = &t15_2_P.Limcontr_D[85];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y5 = &t15_2_B.Limcontr[5];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2120,7 +2298,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow6[0];
         const real_T *pD102 = &t15_2_P.Limcontr_D[102];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y6 = &t15_2_B.Limcontr[6];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2151,7 +2329,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow7[0];
         const real_T *pD119 = &t15_2_P.Limcontr_D[119];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y7 = &t15_2_B.Limcontr[7];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2182,7 +2360,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow8[0];
         const real_T *pD136 = &t15_2_P.Limcontr_D[136];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y8 = &t15_2_B.Limcontr[8];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2213,7 +2391,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow9[0];
         const real_T *pD153 = &t15_2_P.Limcontr_D[153];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y9 = &t15_2_B.Limcontr[9];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2244,7 +2422,7 @@ void t15_2_step(void)
 
         const int_T *pDidx = &colDidxRow10[0];
         const real_T *pD170 = &t15_2_P.Limcontr_D[170];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *y10 = &t15_2_B.Limcontr[10];
         int_T numNonZero = 17;
         while (numNonZero--) {
@@ -2253,699 +2431,334 @@ void t15_2_step(void)
       }
     }
 
-    /* Memory: '<S30>/Memory' */
-    memcpy((void *)(&t15_2_B.Memory[0]), (void *)
-           (&t15_2_DWork.Memory_PreviousInput[0]), 11U * sizeof(real_T));
-
-    /* RelationalOperator: '<S52>/Compare' incorporates:
-     *  Constant: '<S52>/Constant'
-     */
-    t15_2_B.Compare_i = (t15_2_B.e6_c < t15_2_P.Constant_Value_g4);
-
-    /* RelationalOperator: '<S53>/Compare' incorporates:
-     *  Constant: '<S53>/Constant'
-     */
-    t15_2_B.Compare_iq = (t15_2_B.e3 > t15_2_P.Constant_Value_e);
-
-    /* RelationalOperator: '<S54>/Compare' incorporates:
-     *  Constant: '<S54>/Constant'
-     */
-    t15_2_B.Compare_c = (t15_2_B.e6_c > t15_2_P.Constant_Value_bi);
-
-    /* Logic: '<S30>/Logical Operator1' */
-    t15_2_B.LogicalOperator1_h = (real_T)((t15_2_B.Compare_i != 0) &&
-      (t15_2_B.Compare_iq != 0) && (t15_2_B.Compare_c != 0));
-
-    /* RelationalOperator: '<S48>/Compare' incorporates:
-     *  Constant: '<S48>/Constant'
-     */
-    t15_2_B.Compare_jl = (t15_2_B.e6_c < t15_2_P.Constant_Value_ak);
-
-    /* RelationalOperator: '<S49>/Compare' incorporates:
-     *  Constant: '<S49>/Constant'
-     */
-    t15_2_B.Compare_l = (t15_2_B.e3 > t15_2_P.Constant_Value_ex);
-
-    /* RelationalOperator: '<S50>/Compare' incorporates:
-     *  Constant: '<S50>/Constant'
-     */
-    t15_2_B.Compare_at = (t15_2_B.e6_c > t15_2_P.Constant_Value_nx);
-
-    /* Logic: '<S29>/Logical Operator1' */
-    t15_2_B.LogicalOperator1_i = (real_T)!((t15_2_B.Compare_jl != 0) &&
-      (t15_2_B.Compare_l != 0) && (t15_2_B.Compare_at != 0));
-
-    /* Sum: '<S29>/Subtract' incorporates:
-     *  Constant: '<S29>/1'
-     */
-    t15_2_B.Subtract = t15_2_B.LogicalOperator1_i - t15_2_P._Value_g;
-
-    /* UnitDelay: '<S51>/UD' */
-    t15_2_B.Uk1_n = t15_2_DWork.UD_DSTATE_l;
-
-    /* Sum: '<S51>/Diff' */
-    t15_2_B.Diff_e = t15_2_B.e3 - t15_2_B.Uk1_n;
-
-    /* Product: '<S29>/Divide' incorporates:
-     *  Constant: '<S29>/SimStep'
-     */
-    t15_2_B.Divide_b = t15_2_B.Subtract * t15_2_P.SimStep_Value_i /
-      t15_2_B.Diff_e;
-
-    /* RateLimiter: '<S29>/Rate Limiter' */
-    if (t15_2_DWork.LastMajorTime_h == (rtInf)) {
-      t15_2_B.RateLimiter_g = t15_2_B.Divide_b;
-    } else {
-      deltaT = t15_2_M->Timing.t[0] - t15_2_DWork.LastMajorTime_h;
-      riseValLimit_0 = deltaT * t15_2_P.RateLimiter_RisingLim_a;
-      rateLimiterRate_0 = t15_2_B.Divide_b - t15_2_DWork.PrevY_h;
-      if (rateLimiterRate_0 > riseValLimit_0) {
-        t15_2_B.RateLimiter_g = t15_2_DWork.PrevY_h + riseValLimit_0;
-      } else {
-        deltaT *= t15_2_P.RateLimiter_FallingLim_c;
-        if (rateLimiterRate_0 < deltaT) {
-          t15_2_B.RateLimiter_g = t15_2_DWork.PrevY_h + deltaT;
-        } else {
-          t15_2_B.RateLimiter_g = t15_2_B.Divide_b;
-        }
-      }
-    }
-
-    /* RelationalOperator: '<S28>/Relational Operator' incorporates:
-     *  Constant: '<S28>/2'
-     */
-    t15_2_B.RelationalOperator_g = (real_T)(t15_2_B.e6_c < t15_2_P._Value_m);
-
-    /* Product: '<S2>/Divide12' */
-    for (i = 0; i < 20; i++) {
-      t15_2_B.Divide12[i] = t15_2_B.Divide2_j[i] * t15_2_B.RelationalOperator_g;
-    }
-
-    /* FromWorkspace: '<S34>/From Workspace2' */
+    /* DiscreteStateSpace: '<S35>/Curr. contr.' */
     {
-      real_T *pDataValues = (real_T *) t15_2_DWork.FromWorkspace2_PWORK.DataPtr;
-      real_T *pTimeValues = (real_T *) t15_2_DWork.FromWorkspace2_PWORK.TimePtr;
-      int_T currTimeIndex = t15_2_DWork.FromWorkspace2_IWORK.PrevIndex;
-      real_T t = t15_2_M->Timing.t[0];
-
-      /* get index */
-      if (t <= pTimeValues[0]) {
-        currTimeIndex = 0;
-      } else if (t >= pTimeValues[10]) {
-        currTimeIndex = 9;
-      } else {
-        if (t < pTimeValues[currTimeIndex]) {
-          while (t < pTimeValues[currTimeIndex]) {
-            currTimeIndex--;
-          }
-        } else {
-          while (t >= pTimeValues[currTimeIndex + 1]) {
-            currTimeIndex++;
-          }
-        }
-      }
-
-      t15_2_DWork.FromWorkspace2_IWORK.PrevIndex = currTimeIndex;
-
-      /* post output */
       {
-        real_T t1 = pTimeValues[currTimeIndex];
-        real_T t2 = pTimeValues[currTimeIndex + 1];
-        if (t1 == t2) {
-          if (t < t1) {
-            t15_2_B.FromWorkspace2 = pDataValues[currTimeIndex];
-          } else {
-            t15_2_B.FromWorkspace2 = pDataValues[currTimeIndex + 1];
-          }
-        } else {
-          real_T f1 = (t2 - t) / (t2 - t1);
-          real_T f2 = 1.0 - f1;
-          real_T d1;
-          real_T d2;
-          int_T TimeIndex= currTimeIndex;
-          d1 = pDataValues[TimeIndex];
-          d2 = pDataValues[TimeIndex + 1];
-          t15_2_B.FromWorkspace2 = (real_T) rtInterpolate(d1, d2, f1, f2);
-          pDataValues += 11;
+        static const int_T colCidxRow0[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow0[0];
+        const real_T *pC0 = &t15_2_P.Currcontr_C[0];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y0 = &t15_2_B.Currcontr[0];
+        int_T numNonZero = 10;
+        *y0 = (*pC0++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y0 += (*pC0++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow1[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow1[0];
+        const real_T *pC11 = &t15_2_P.Currcontr_C[11];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y1 = &t15_2_B.Currcontr[1];
+        int_T numNonZero = 10;
+        *y1 = (*pC11++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y1 += (*pC11++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow2[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow2[0];
+        const real_T *pC22 = &t15_2_P.Currcontr_C[22];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y2 = &t15_2_B.Currcontr[2];
+        int_T numNonZero = 10;
+        *y2 = (*pC22++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y2 += (*pC22++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow3[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow3[0];
+        const real_T *pC33 = &t15_2_P.Currcontr_C[33];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y3 = &t15_2_B.Currcontr[3];
+        int_T numNonZero = 10;
+        *y3 = (*pC33++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y3 += (*pC33++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow4[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow4[0];
+        const real_T *pC44 = &t15_2_P.Currcontr_C[44];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y4 = &t15_2_B.Currcontr[4];
+        int_T numNonZero = 10;
+        *y4 = (*pC44++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y4 += (*pC44++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow5[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow5[0];
+        const real_T *pC55 = &t15_2_P.Currcontr_C[55];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y5 = &t15_2_B.Currcontr[5];
+        int_T numNonZero = 10;
+        *y5 = (*pC55++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y5 += (*pC55++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow6[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow6[0];
+        const real_T *pC66 = &t15_2_P.Currcontr_C[66];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y6 = &t15_2_B.Currcontr[6];
+        int_T numNonZero = 10;
+        *y6 = (*pC66++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y6 += (*pC66++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow7[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow7[0];
+        const real_T *pC77 = &t15_2_P.Currcontr_C[77];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y7 = &t15_2_B.Currcontr[7];
+        int_T numNonZero = 10;
+        *y7 = (*pC77++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y7 += (*pC77++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow8[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow8[0];
+        const real_T *pC88 = &t15_2_P.Currcontr_C[88];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y8 = &t15_2_B.Currcontr[8];
+        int_T numNonZero = 10;
+        *y8 = (*pC88++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y8 += (*pC88++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow9[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow9[0];
+        const real_T *pC99 = &t15_2_P.Currcontr_C[99];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y9 = &t15_2_B.Currcontr[9];
+        int_T numNonZero = 10;
+        *y9 = (*pC99++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y9 += (*pC99++) * xd[*pCidx++];
+        }
+      }
+
+      {
+        static const int_T colCidxRow10[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pCidx = &colCidxRow10[0];
+        const real_T *pC110 = &t15_2_P.Currcontr_C[110];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *y10 = &t15_2_B.Currcontr[10];
+        int_T numNonZero = 10;
+        *y10 = (*pC110++) * xd[*pCidx++];
+        while (numNonZero--) {
+          *y10 += (*pC110++) * xd[*pCidx++];
         }
       }
     }
 
-    /* UnitDelay: '<S46>/UD' */
-    t15_2_B.Uk1_hj = t15_2_DWork.UD_DSTATE_ak;
-
-    /* Sum: '<S46>/Diff' */
-    t15_2_B.Diff_k = t15_2_B.e3 - t15_2_B.Uk1_hj;
-
-    /* Product: '<S27>/Divide' incorporates:
-     *  Constant: '<S27>/SimStep'
-     */
-    t15_2_B.Divide_n = t15_2_B.LogicalOperator1_j * t15_2_P.SimStep_Value_j /
-      t15_2_B.Diff_k;
-
-    /* RateLimiter: '<S27>/Rate Limiter' */
-    if (t15_2_DWork.LastMajorTime_e == (rtInf)) {
-      t15_2_B.RateLimiter_n = t15_2_B.Divide_n;
+    /* Switch: '<S2>/Ip>Ip_div ' */
+    if (t15_2_B.e6 > t15_2_P.IpIp_div_Threshold) {
+      memcpy((void *)(&t15_2_B.IpIp_div[0]), (void *)(&t15_2_B.Memory2_fo[0]),
+             11U * sizeof(real_T));
     } else {
-      deltaT = t15_2_M->Timing.t[0] - t15_2_DWork.LastMajorTime_e;
-      riseValLimit_0 = deltaT * t15_2_P.RateLimiter_RisingLim_j;
-      rateLimiterRate_0 = t15_2_B.Divide_n - t15_2_DWork.PrevY_o;
-      if (rateLimiterRate_0 > riseValLimit_0) {
-        t15_2_B.RateLimiter_n = t15_2_DWork.PrevY_o + riseValLimit_0;
+      /* Switch: '<S35>/tcont2' */
+      if (t15_2_Y.Time > t15_2_P.tcont2_Threshold_e) {
+        /* Lookup: '<S35>/gain_cont2' */
+        t15_2_B.gain_cont2 = rt_Lookup((const real_T *)
+          (&t15_2_P.gain_cont2_XData[0]), 4, t15_2_Y.Time, (const real_T *)
+          (&t15_2_P.gain_cont2_YData[0]));
+        for (i = 0; i < 11; i++) {
+          /* Product: '<S35>/Divide ' */
+          t15_2_B.Divide_d[i] = t15_2_B.Limcontr[i] * t15_2_B.gain_cont2;
+          t15_2_B.tcont2_b[i] = t15_2_B.Divide_d[i];
+        }
       } else {
-        deltaT *= t15_2_P.RateLimiter_FallingLim_l;
-        if (rateLimiterRate_0 < deltaT) {
-          t15_2_B.RateLimiter_n = t15_2_DWork.PrevY_o + deltaT;
-        } else {
-          t15_2_B.RateLimiter_n = t15_2_B.Divide_n;
+        for (i = 0; i < 11; i++) {
+          /* Gain: '<S35>/1//ntur ' */
+          t15_2_B.ntur_d[i] = t15_2_P.ntur_Gain_p[i] * t15_2_B.Currcontr[i];
+          t15_2_B.tcont2_b[i] = t15_2_B.ntur_d[i];
         }
       }
-    }
 
-    /* Memory: '<S2>/Memory1' */
-    memcpy((void *)(&t15_2_B.Memory1_h[0]), (void *)
-           (&t15_2_DWork.Memory1_PreviousInput_lt[0]), 11U * sizeof(real_T));
-
-    /* Switch: '<S2>/Ip>0' */
-    if (t15_2_B.e6_c > t15_2_P.Ip0_Threshold_gz) {
-      /* Gain: '<S27>/Gain' */
-      t15_2_B.Gain_jx = t15_2_P.Gain_Gain_k1 * t15_2_B.Diff_k;
-
-      /* Product: '<S27>/Divide1' */
-      t15_2_B.Divide1_o = t15_2_B.RateLimiter_n * t15_2_B.Gain_jx;
-
-      /* Saturate: '<S27>/Saturation' */
-      deltaT = t15_2_B.Divide1_o;
-      t15_2_B.Saturation_o = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat_c,
-        t15_2_P.Saturation_UpperSat_f);
-
-      /* Switch: '<S2>/t>t_eob' */
-      if (t15_2_B.e3 > t15_2_P.tt_eob_Threshold_c) {
-        /* Lookup: '<S34>/Lookup Table1' */
-        t15_2_B.LookupTable1_bj = rt_Lookup((const real_T *)
-          (&t15_2_P.LookupTable1_XData_c[0]), 4, t15_2_B.e3, (const real_T *)
-          (&t15_2_P.LookupTable1_YData_i[0]));
-
-        /* Product: '<S34>/Divide1' */
-        t15_2_B.Divide1_db = t15_2_B.FromWorkspace2 * t15_2_B.LookupTable1_bj;
-
-        /* Sum: '<S34>/Sum' incorporates:
-         *  Constant: '<S34>/c1_y0'
-         */
-        t15_2_B.Sum = t15_2_B.Divide1_db - t15_2_P.c1_y0_Value;
-
-        /* Product: '<S34>/Divide2' incorporates:
-         *  Constant: '<S34>/(1-y0)//...'
-         */
-        t15_2_B.Divide2_h = t15_2_B.Sum * t15_2_P.uy0_Value;
-
-        /* Sum: '<S34>/Sum1' incorporates:
-         *  Constant: '<S34>/y0'
-         */
-        t15_2_B.Sum1_m = t15_2_B.Divide2_h + t15_2_P.y0_Value;
-
-        /* Saturate: '<S34>/Saturation1' */
-        deltaT = t15_2_B.Sum1_m;
-        t15_2_B.Saturation1_b = rt_SATURATE(deltaT,
-          t15_2_P.Saturation1_LowerSat_j, t15_2_P.Saturation1_UpperSat_g);
-        t15_2_B.tt_eob_e4 = t15_2_B.Saturation1_b;
-      } else {
-        /* Gain: '<S2>/atpl2' */
-        t15_2_B.atpl2 = t15_2_P.atpl2_Gain * t15_2_B.e6_c;
-
-        /* Saturate: '<S2>/Saturation' */
-        deltaT = t15_2_B.atpl2;
-        t15_2_B.Saturation_a = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat_g,
-          t15_2_P.Saturation_UpperSat_n);
-        t15_2_B.tt_eob_e4 = t15_2_B.Saturation_a;
-      }
-
-      /* Gain: '<S29>/Gain' */
-      t15_2_B.Gain_nj = t15_2_P.Gain_Gain_m * t15_2_B.Diff_e;
-
-      /* Product: '<S29>/Divide1' */
-      t15_2_B.Divide1_e = t15_2_B.RateLimiter_g * t15_2_B.Gain_nj;
-
-      /* Sum: '<S29>/Subtract1' incorporates:
-       *  Constant: '<S29>/1'
-       */
-      t15_2_B.Subtract1_m = t15_2_B.Divide1_e + t15_2_P._Value_g;
-
-      /* Saturate: '<S29>/Saturation' */
-      deltaT = t15_2_B.Subtract1_m;
-      t15_2_B.Saturation_l = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat_gl,
-        t15_2_P.Saturation_UpperSat_pf);
-      for (i = 0; i < 11; i++) {
-        /* Product: '<S2>/Divide3' */
-        t15_2_B.Divide3[i] = t15_2_B.Div_rdcontr[i] * t15_2_B.tt_eob_e4 *
-          t15_2_B.Saturation_o;
-
-        /* Switch: '<S30>/0.99' */
-        if (t15_2_B.LogicalOperator1_h >= t15_2_P.u9_Threshold_a) {
-          t15_2_B.u9_d[i] = t15_2_B.Memory[i];
-        } else {
-          t15_2_B.u9_d[i] = t15_2_B.Divide_e[i];
-        }
-
-        /* Product: '<S2>/Divide1' */
-        t15_2_B.Divide1_b4[i] = t15_2_B.u9_d[i] * t15_2_B.Saturation_l;
-
-        /* Sum: '<S2>/Sum2' */
-        t15_2_B.Sum2_i[i] = t15_2_B.Divide1_b4[i] + t15_2_B.Divide3[i];
-        t15_2_B.Ip0_bw0[i] = t15_2_B.Sum2_i[i];
-      }
-    } else {
-      memcpy((void *)(&t15_2_B.Ip0_bw0[0]), (void *)(&t15_2_B.Memory1_h[0]), 11U
+      memcpy((void *)(&t15_2_B.IpIp_div[0]), (void *)(&t15_2_B.tcont2_b[0]), 11U
              * sizeof(real_T));
     }
 
-    /* Sum: '<S26>/Subtract' incorporates:
-     *  Constant: '<S26>/1'
-     */
-    t15_2_B.Subtract_b = t15_2_B.RelationalOperator - t15_2_P._Value_mg;
-
-    /* UnitDelay: '<S42>/UD' */
-    t15_2_B.Uk1_j = t15_2_DWork.UD_DSTATE_aq;
-
-    /* Sum: '<S42>/Diff' */
-    t15_2_B.Diff_a = t15_2_B.e3 - t15_2_B.Uk1_j;
-
-    /* Product: '<S26>/Divide' incorporates:
-     *  Constant: '<S26>/SimStep'
-     */
-    t15_2_B.Divide_i = t15_2_B.Subtract_b * t15_2_P.SimStep_Value_e /
-      t15_2_B.Diff_a;
-
-    /* RateLimiter: '<S26>/Rate Limiter' */
-    if (t15_2_DWork.LastMajorTime_i == (rtInf)) {
-      t15_2_B.RateLimiter_ny = t15_2_B.Divide_i;
-    } else {
-      deltaT = t15_2_M->Timing.t[0] - t15_2_DWork.LastMajorTime_i;
-      riseValLimit_0 = deltaT * t15_2_P.RateLimiter_RisingLim_k;
-      rateLimiterRate_0 = t15_2_B.Divide_i - t15_2_DWork.PrevY_i;
-      if (rateLimiterRate_0 > riseValLimit_0) {
-        t15_2_B.RateLimiter_ny = t15_2_DWork.PrevY_i + riseValLimit_0;
-      } else {
-        deltaT *= t15_2_P.RateLimiter_FallingLim_o;
-        if (rateLimiterRate_0 < deltaT) {
-          t15_2_B.RateLimiter_ny = t15_2_DWork.PrevY_i + deltaT;
-        } else {
-          t15_2_B.RateLimiter_ny = t15_2_B.Divide_i;
-        }
-      }
-    }
-
-    /* Gain: '<S26>/Gain' */
-    t15_2_B.Gain_j = t15_2_P.Gain_Gain_p * t15_2_B.Diff_a;
-
-    /* Product: '<S26>/Divide1' */
-    t15_2_B.Divide1_c = t15_2_B.RateLimiter_ny * t15_2_B.Gain_j;
-
-    /* Sum: '<S26>/Subtract1' incorporates:
-     *  Constant: '<S26>/1'
-     */
-    t15_2_B.Subtract1 = t15_2_B.Divide1_c + t15_2_P._Value_mg;
-
-    /* Saturate: '<S26>/Saturation' */
-    deltaT = t15_2_B.Subtract1;
-    t15_2_B.Saturation_m = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat_l,
-      t15_2_P.Saturation_UpperSat_g);
-
-    /* Product: '<S2>/Divide4' */
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide4_a[i] = t15_2_B.Ip0_bw0[i] * t15_2_B.Saturation_m;
-    }
-
-    /* UnitDelay: '<S47>/UD' */
-    t15_2_B.Uk1_f = t15_2_DWork.UD_DSTATE_g;
-
-    /* Sum: '<S47>/Diff' */
-    t15_2_B.Diff_d = t15_2_B.e3 - t15_2_B.Uk1_f;
-
-    /* Product: '<S28>/Divide' incorporates:
-     *  Constant: '<S28>/SimStep'
-     */
-    t15_2_B.Divide_m = t15_2_B.RelationalOperator_g * t15_2_P.SimStep_Value_c /
-      t15_2_B.Diff_d;
-
-    /* RateLimiter: '<S28>/Rate Limiter' */
-    if (t15_2_DWork.LastMajorTime_o == (rtInf)) {
-      t15_2_B.RateLimiter_h = t15_2_B.Divide_m;
-    } else {
-      deltaT = t15_2_M->Timing.t[0] - t15_2_DWork.LastMajorTime_o;
-      riseValLimit_0 = deltaT * t15_2_P.RateLimiter_RisingLim_j2;
-      rateLimiterRate_0 = t15_2_B.Divide_m - t15_2_DWork.PrevY_n;
-      if (rateLimiterRate_0 > riseValLimit_0) {
-        t15_2_B.RateLimiter_h = t15_2_DWork.PrevY_n + riseValLimit_0;
-      } else {
-        deltaT *= t15_2_P.RateLimiter_FallingLim_e;
-        if (rateLimiterRate_0 < deltaT) {
-          t15_2_B.RateLimiter_h = t15_2_DWork.PrevY_n + deltaT;
-        } else {
-          t15_2_B.RateLimiter_h = t15_2_B.Divide_m;
-        }
-      }
-    }
-
-    /* Gain: '<S28>/Gain' */
-    t15_2_B.Gain_n = t15_2_P.Gain_Gain_k * t15_2_B.Diff_d;
-
-    /* Product: '<S28>/Divide1' */
-    t15_2_B.Divide1_j = t15_2_B.RateLimiter_h * t15_2_B.Gain_n;
-
-    /* Saturate: '<S28>/Saturation' */
-    deltaT = t15_2_B.Divide1_j;
-    t15_2_B.Saturation_c = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat_hy,
-      t15_2_P.Saturation_UpperSat_a);
-
-    /* Product: '<S2>/Divide5' */
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide5[i] = t15_2_B.Currtermcontr[i] * t15_2_B.Saturation_c;
-    }
-
-    /* Memory: '<S24>/Memory2' */
-    t15_2_B.Memory2_o = t15_2_DWork.Memory2_PreviousInput_l;
-
-    /* Switch: '<S24>/Switch' */
-    if (t15_2_B.e6_c > t15_2_P.Switch_Threshold_g) {
-      t15_2_B.Switch_m = t15_2_B.e3;
-    } else {
-      t15_2_B.Switch_m = t15_2_B.Memory2_o;
-    }
-
-    /* RelationalOperator: '<S39>/Compare' incorporates:
-     *  Constant: '<S39>/Constant'
-     */
-    t15_2_B.Compare_k = (t15_2_B.Switch_m <= t15_2_P.Constant_Value_k);
-
-    /* Sum: '<S24>/Subtract' incorporates:
-     *  Constant: '<S24>/1'
-     */
-    t15_2_B.Subtract_h = (real_T)t15_2_B.Compare_k - t15_2_P._Value_a;
-
-    /* UnitDelay: '<S40>/UD' */
-    t15_2_B.Uk1_om = t15_2_DWork.UD_DSTATE_gc;
-
-    /* Sum: '<S40>/Diff' */
-    t15_2_B.Diff_o = t15_2_B.e3 - t15_2_B.Uk1_om;
-
-    /* Product: '<S24>/Divide' incorporates:
-     *  Constant: '<S24>/SimStep'
-     */
-    t15_2_B.Divide_l = t15_2_B.Subtract_h * t15_2_P.SimStep_Value_l /
-      t15_2_B.Diff_o;
-
-    /* RateLimiter: '<S24>/Rate Limiter' */
-    if (t15_2_DWork.LastMajorTime_j == (rtInf)) {
-      t15_2_B.RateLimiter_k = t15_2_B.Divide_l;
-    } else {
-      deltaT = t15_2_M->Timing.t[0] - t15_2_DWork.LastMajorTime_j;
-      riseValLimit_0 = deltaT * t15_2_P.RateLimiter_RisingLim_f;
-      rateLimiterRate_0 = t15_2_B.Divide_l - t15_2_DWork.PrevY_j;
-      if (rateLimiterRate_0 > riseValLimit_0) {
-        t15_2_B.RateLimiter_k = t15_2_DWork.PrevY_j + riseValLimit_0;
-      } else {
-        deltaT *= t15_2_P.RateLimiter_FallingLim_oi;
-        if (rateLimiterRate_0 < deltaT) {
-          t15_2_B.RateLimiter_k = t15_2_DWork.PrevY_j + deltaT;
-        } else {
-          t15_2_B.RateLimiter_k = t15_2_B.Divide_l;
-        }
-      }
-    }
-
-    /* Gain: '<S24>/Gain' */
-    t15_2_B.Gain_a = t15_2_P.Gain_Gain_a * t15_2_B.Diff_o;
-
-    /* Product: '<S24>/Divide1' */
-    t15_2_B.Divide1_cl = t15_2_B.RateLimiter_k * t15_2_B.Gain_a;
-
-    /* Sum: '<S24>/Subtract1' incorporates:
-     *  Constant: '<S24>/1'
-     */
-    t15_2_B.Subtract1_n = t15_2_B.Divide1_cl + t15_2_P._Value_a;
-
-    /* Saturate: '<S24>/Saturation' */
-    deltaT = t15_2_B.Subtract1_n;
-    t15_2_B.Saturation_e = rt_SATURATE(deltaT, t15_2_P.Saturation_LowerSat_hf,
-      t15_2_P.Saturation_UpperSat_p);
-
-    /* Memory: '<S2>/Memory2' */
-    memcpy((void *)(&t15_2_B.Memory2_f[0]), (void *)
-           (&t15_2_DWork.Memory2_PreviousInput_jb[0]), 11U * sizeof(real_T));
-
-    /* Switch: '<S2>/Ip>Ip_div ' */
-    if (t15_2_B.e6_c > t15_2_P.IpIp_div_Threshold) {
-      memcpy((void *)(&t15_2_B.IpIp_div[0]), (void *)(&t15_2_B.Memory2_f[0]),
-             11U * sizeof(real_T));
-    } else {
-      /* Lookup: '<S2>/gain_cont2' */
-      t15_2_B.gain_cont2 = rt_Lookup((const real_T *)(&t15_2_P.gain_cont2_XData
-        [0]), 4, t15_2_B.e3, (const real_T *)(&t15_2_P.gain_cont2_YData[0]));
-      for (i = 0; i < 11; i++) {
-        /* Product: '<S2>/Divide ' */
-        t15_2_B.Divide_nh[i] = t15_2_B.Limcontr[i] * t15_2_B.gain_cont2;
-        t15_2_B.IpIp_div[i] = t15_2_B.Divide_nh[i];
-      }
-    }
-
-    /* Lookup: '<S33>/volt1' */
+    /* Lookup: '<S39>/volt1' */
     t15_2_B.volt1 = rt_Lookup((const real_T *)(&t15_2_P.volt1_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt1_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt1_YData[0]));
 
-    /* Lookup: '<S33>/volt2' */
+    /* Lookup: '<S39>/volt2' */
     t15_2_B.volt2 = rt_Lookup((const real_T *)(&t15_2_P.volt2_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt2_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt2_YData[0]));
 
-    /* Lookup: '<S33>/volt3' */
+    /* Lookup: '<S39>/volt3' */
     t15_2_B.volt3 = rt_Lookup((const real_T *)(&t15_2_P.volt3_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt3_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt3_YData[0]));
 
-    /* Lookup: '<S33>/volt4' */
+    /* Lookup: '<S39>/volt4' */
     t15_2_B.volt4 = rt_Lookup((const real_T *)(&t15_2_P.volt4_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt4_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt4_YData[0]));
 
-    /* Lookup: '<S33>/volt5' */
+    /* Lookup: '<S39>/volt5' */
     t15_2_B.volt5 = rt_Lookup((const real_T *)(&t15_2_P.volt5_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt5_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt5_YData[0]));
 
-    /* Lookup: '<S33>/volt6' */
+    /* Lookup: '<S39>/volt6' */
     t15_2_B.volt6 = rt_Lookup((const real_T *)(&t15_2_P.volt6_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt6_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt6_YData[0]));
 
-    /* Lookup: '<S33>/volt7' */
+    /* Lookup: '<S39>/volt7' */
     t15_2_B.volt7 = rt_Lookup((const real_T *)(&t15_2_P.volt7_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt7_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt7_YData[0]));
 
-    /* Lookup: '<S33>/volt8' */
+    /* Lookup: '<S39>/volt8' */
     t15_2_B.volt8 = rt_Lookup((const real_T *)(&t15_2_P.volt8_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt8_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt8_YData[0]));
 
-    /* Lookup: '<S33>/volt9' */
+    /* Lookup: '<S39>/volt9' */
     t15_2_B.volt9 = rt_Lookup((const real_T *)(&t15_2_P.volt9_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt9_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt9_YData[0]));
 
-    /* Lookup: '<S33>/volt10' */
+    /* Lookup: '<S39>/volt10' */
     t15_2_B.volt10 = rt_Lookup((const real_T *)(&t15_2_P.volt10_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt10_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt10_YData[0]));
 
-    /* Lookup: '<S33>/volt11' */
+    /* Lookup: '<S39>/volt11' */
     t15_2_B.volt11 = rt_Lookup((const real_T *)(&t15_2_P.volt11_XData[0]), 19,
-      t15_2_B.e3, (const real_T *)(&t15_2_P.volt11_YData[0]));
+      t15_2_Y.Time, (const real_T *)(&t15_2_P.volt11_YData[0]));
 
     /* Product: '<S2>/Divide7' */
-    t15_2_B.Divide7[0] = t15_2_B.volt1 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[1] = t15_2_B.volt2 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[2] = t15_2_B.volt3 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[3] = t15_2_B.volt4 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[4] = t15_2_B.volt5 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[5] = t15_2_B.volt6 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[6] = t15_2_B.volt7 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[7] = t15_2_B.volt8 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[8] = t15_2_B.volt9 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[9] = t15_2_B.volt10 * t15_2_B.RelationalOperator;
-    t15_2_B.Divide7[10] = t15_2_B.volt11 * t15_2_B.RelationalOperator;
+    t15_2_B.Divide7[0] = t15_2_B.volt1 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[1] = t15_2_B.volt2 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[2] = t15_2_B.volt3 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[3] = t15_2_B.volt4 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[4] = t15_2_B.volt5 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[5] = t15_2_B.volt6 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[6] = t15_2_B.volt7 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[7] = t15_2_B.volt8 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[8] = t15_2_B.volt9 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[9] = t15_2_B.volt10 * t15_2_B.LogicalOperator1;
+    t15_2_B.Divide7[10] = t15_2_B.volt11 * t15_2_B.LogicalOperator1;
     for (i = 0; i < 11; i++) {
       /* Product: '<S2>/Divide6' */
-      t15_2_B.Divide6_iz[i] = t15_2_B.Saturation_e * t15_2_B.IpIp_div[i];
+      t15_2_B.Divide6_iz[i] = t15_2_B.Saturation1 * t15_2_B.IpIp_div[i];
 
       /* Sum: '<S2>/Sum3' */
-      t15_2_B.Sum3_h[i] = ((t15_2_B.Divide4_a[i] + t15_2_B.Divide5[i]) +
-                           t15_2_B.Divide6_iz[i]) + t15_2_B.Divide7[i];
-    }
-  }
+      t15_2_B.Sum3[i] = ((t15_2_B.Divide4_a[i] + t15_2_B.Divide5[i]) +
+                         t15_2_B.Divide6_iz[i]) + t15_2_B.Divide7[i];
 
-  {
-    real_T tmin;
-    int32_T i;
+      /* Product: '<S33>/Divide2' */
+      t15_2_B.Divide2_e[i] = t15_2_B.e6_l[i] * t15_2_B.Sum3[i];
 
-    /* Update for DiscreteStateSpace: '<S22>/Power Supply' */
-    {
-      static real_T xnew[11];
-      xnew[0] = (t15_2_P.PowerSupply_A[0])*t15_2_DWork.PowerSupply_DSTATE[0];
-      xnew[0] += (t15_2_P.PowerSupply_B[0])*t15_2_B.Sum3_h[0];
-      xnew[1] = (t15_2_P.PowerSupply_A[1])*t15_2_DWork.PowerSupply_DSTATE[1];
-      xnew[1] += (t15_2_P.PowerSupply_B[1])*t15_2_B.Sum3_h[1];
-      xnew[2] = (t15_2_P.PowerSupply_A[2])*t15_2_DWork.PowerSupply_DSTATE[2];
-      xnew[2] += (t15_2_P.PowerSupply_B[2])*t15_2_B.Sum3_h[2];
-      xnew[3] = (t15_2_P.PowerSupply_A[3])*t15_2_DWork.PowerSupply_DSTATE[3];
-      xnew[3] += (t15_2_P.PowerSupply_B[3])*t15_2_B.Sum3_h[3];
-      xnew[4] = (t15_2_P.PowerSupply_A[4])*t15_2_DWork.PowerSupply_DSTATE[4];
-      xnew[4] += (t15_2_P.PowerSupply_B[4])*t15_2_B.Sum3_h[4];
-      xnew[5] = (t15_2_P.PowerSupply_A[5])*t15_2_DWork.PowerSupply_DSTATE[5];
-      xnew[5] += (t15_2_P.PowerSupply_B[5])*t15_2_B.Sum3_h[5];
-      xnew[6] = (t15_2_P.PowerSupply_A[6])*t15_2_DWork.PowerSupply_DSTATE[6];
-      xnew[6] += (t15_2_P.PowerSupply_B[6])*t15_2_B.Sum3_h[6];
-      xnew[7] = (t15_2_P.PowerSupply_A[7])*t15_2_DWork.PowerSupply_DSTATE[7];
-      xnew[7] += (t15_2_P.PowerSupply_B[7])*t15_2_B.Sum3_h[7];
-      xnew[8] = (t15_2_P.PowerSupply_A[8])*t15_2_DWork.PowerSupply_DSTATE[8];
-      xnew[8] += (t15_2_P.PowerSupply_B[8])*t15_2_B.Sum3_h[8];
-      xnew[9] = (t15_2_P.PowerSupply_A[9])*t15_2_DWork.PowerSupply_DSTATE[9];
-      xnew[9] += (t15_2_P.PowerSupply_B[9])*t15_2_B.Sum3_h[9];
-      xnew[10] = (t15_2_P.PowerSupply_A[10])*t15_2_DWork.PowerSupply_DSTATE[10];
-      xnew[10] += (t15_2_P.PowerSupply_B[10])*t15_2_B.Sum3_h[10];
-      (void) memcpy(&t15_2_DWork.PowerSupply_DSTATE[0],xnew,
-                    sizeof(real_T)*11);
+      /* RelationalOperator: '<S46>/Compare' */
+      t15_2_B.Compare_k[i] = (t15_2_B.Divide2_e[i] < 0.0);
+
+      /* Logic: '<S33>/Logical Operator' */
+      t15_2_B.LogicalOperator[i] = ((t15_2_B.Compare_lm[i] != 0) &&
+        (t15_2_B.Compare_k[i] != 0));
+
+      /* Sum: '<S33>/Sum3' */
+      t15_2_B.Sum3_f[i] = t15_2_B.Saturation[i] + (real_T)
+        t15_2_B.LogicalOperator[i];
+      tmin = t15_2_B.Sum3_f[i];
+      t15_2_B.Saturation1_m[i] = rt_SATURATE(tmin,
+        t15_2_P.Saturation1_LowerSat_g, t15_2_P.Saturation1_UpperSat_i);
+
+      /* Product: '<S33>/Divide6' */
+      t15_2_B.Divide6_p[i] = t15_2_B.Sum3[i] * t15_2_B.Saturation1_m[i];
     }
 
-    /* Update for UnitDelay: '<S36>/UD' */
-    t15_2_DWork.UD_DSTATE = t15_2_B.e3;
+    /* Product: '<S2>/Divide12' */
+    for (i = 0; i < 20; i++) {
+      t15_2_B.Divide12[i] = t15_2_B.Divide2_j[i] * t15_2_B.LogicalOperator2;
+    }
 
-    /* Update for RateLimiter: '<S22>/Rate Limiter' */
-    memcpy((void *)(&t15_2_DWork.PrevY[0]), (void *)(&t15_2_B.RateLimiter[0]),
-           11U * sizeof(real_T));
-    t15_2_DWork.LastMajorTime = t15_2_M->Timing.t[0];
+    /* Sum: '<S3>/Add' incorporates:
+     *  Constant: '<S3>/Tfmc'
+     */
+    t15_2_B.Add = t15_2_B.Diff + t15_2_P.Tfmc_Value;
+    for (i = 0; i < 11; i++) {
+      /* Gain: '<S35>/1//ntur' */
+      t15_2_B.ntur_n[i] = t15_2_B.u9_a[i + 8] * t15_2_P.ntur_Gain_c[i];
 
-    /* Update for UniformRandomNumber: '<S35>/Uniform Random Number' */
+      /* Product: '<S3>/Divide2' */
+      t15_2_B.Divide2_d[i] = t15_2_B.Diff * t15_2_B.Divide6_p[i];
+
+      /* Gain: '<S3>/Tfmc ' */
+      t15_2_B.Tfmc[i] = t15_2_P.Tfmc_Gain * t15_2_B.Memory[i];
+
+      /* Sum: '<S3>/Add1' */
+      t15_2_B.Add1_e[i] = t15_2_B.Divide2_d[i] + t15_2_B.Tfmc[i];
+
+      /* Product: '<S3>/Divide3' */
+      t15_2_B.Divide3[i] = t15_2_B.Add1_e[i] / t15_2_B.Add;
+
+      /* Update for Memory: '<S3>/Memory' */
+      t15_2_DWork.Memory_PreviousInput[i] = t15_2_B.Divide3[i];
+    }
+
+    /* Update for UnitDelay: '<S61>/UD' */
+    t15_2_DWork.UD_DSTATE = t15_2_Y.Time;
+
+    /* Update for UniformRandomNumber: '<S43>/Uniform Random Number' */
     tmin = t15_2_P.UniformRandomNumber_Minimum;
     t15_2_DWork.UniformRandomNumber_NextOutput =
       (t15_2_P.UniformRandomNumber_Maximum - tmin) * rt_Urand
       (&t15_2_DWork.RandSeed) + tmin;
 
-    /* Update for UnitDelay: '<S20>/UD' incorporates:
+    /* Update for UnitDelay: '<S31>/UD' incorporates:
      *  Update for Inport: '<Root>/In1'
      */
-    t15_2_DWork.UD_DSTATE_a = t15_2_U.In1[1];
+    t15_2_DWork.UD_DSTATE_n = t15_2_U.In1[1];
 
-    /* Update for UnitDelay: '<S21>/UD' */
-    t15_2_DWork.UD_DSTATE_h = t15_2_B.e3;
+    /* Update for UnitDelay: '<S32>/UD' */
+    t15_2_DWork.UD_DSTATE_h = t15_2_Y.Time;
 
-    /* Update for Derivative: '<S7>/Derivative' */
-    {
-      real_T timeStampA = t15_2_DWork.Derivative_RWORK.TimeStampA;
-      real_T timeStampB = t15_2_DWork.Derivative_RWORK.TimeStampB;
-      real_T* lastTime = &t15_2_DWork.Derivative_RWORK.TimeStampA;
-      real_T* lastU = &t15_2_DWork.Derivative_RWORK.LastUAtTimeA;
-      if (timeStampA != rtInf) {
-        if (timeStampB == rtInf) {
-          lastTime = &t15_2_DWork.Derivative_RWORK.TimeStampB;
-          lastU = &t15_2_DWork.Derivative_RWORK.LastUAtTimeB;
-        } else if (timeStampA >= timeStampB) {
-          lastTime = &t15_2_DWork.Derivative_RWORK.TimeStampB;
-          lastU = &t15_2_DWork.Derivative_RWORK.LastUAtTimeB;
-        }
-      }
-
-      *lastTime = t15_2_M->Timing.t[0];
-      *lastU++ = t15_2_U.In1[1];
-    }
-
-    /* Update for DiscreteStateSpace: '<S32>/VS. contr hl' */
-    {
-      static real_T xnew[8];
-      xnew[0] = (t15_2_P.VScontrhl_A[0])*t15_2_DWork.VScontrhl_DSTATE[0] +
-        (t15_2_P.VScontrhl_A[1])*t15_2_DWork.VScontrhl_DSTATE[1]
-        + (t15_2_P.VScontrhl_A[2])*t15_2_DWork.VScontrhl_DSTATE[2]
-        + (t15_2_P.VScontrhl_A[3])*t15_2_DWork.VScontrhl_DSTATE[7];
-      xnew[0] += (t15_2_P.VScontrhl_B[0])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_B[1])*t15_2_B.Divide4_l[1];
-      xnew[1] = (t15_2_P.VScontrhl_A[4])*t15_2_DWork.VScontrhl_DSTATE[0] +
-        (t15_2_P.VScontrhl_A[5])*t15_2_DWork.VScontrhl_DSTATE[1]
-        + (t15_2_P.VScontrhl_A[6])*t15_2_DWork.VScontrhl_DSTATE[2]
-        + (t15_2_P.VScontrhl_A[7])*t15_2_DWork.VScontrhl_DSTATE[7];
-      xnew[1] += (t15_2_P.VScontrhl_B[2])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_B[3])*t15_2_B.Divide4_l[1];
-      xnew[2] = (t15_2_P.VScontrhl_A[8])*t15_2_DWork.VScontrhl_DSTATE[0] +
-        (t15_2_P.VScontrhl_A[9])*t15_2_DWork.VScontrhl_DSTATE[1]
-        + (t15_2_P.VScontrhl_A[10])*t15_2_DWork.VScontrhl_DSTATE[2]
-        + (t15_2_P.VScontrhl_A[11])*t15_2_DWork.VScontrhl_DSTATE[7];
-      xnew[2] += (t15_2_P.VScontrhl_B[4])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_B[5])*t15_2_B.Divide4_l[1];
-
-      {
-        static const int_T colAidxRow3[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pAidx = &colAidxRow3[0];
-        const real_T *pA12 = &t15_2_P.VScontrhl_A[12];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *pxnew3 = &xnew[3];
-        int_T numNonZero = 4;
-        *pxnew3 = (*pA12++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew3 += (*pA12++) * xd[*pAidx++];
-        }
-      }
-
-      xnew[3] += (t15_2_P.VScontrhl_B[6])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_B[7])*t15_2_B.Divide4_l[1];
-
-      {
-        static const int_T colAidxRow4[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pAidx = &colAidxRow4[0];
-        const real_T *pA17 = &t15_2_P.VScontrhl_A[17];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *pxnew4 = &xnew[4];
-        int_T numNonZero = 4;
-        *pxnew4 = (*pA17++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew4 += (*pA17++) * xd[*pAidx++];
-        }
-      }
-
-      xnew[4] += (t15_2_P.VScontrhl_B[8])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_B[9])*t15_2_B.Divide4_l[1];
-
-      {
-        static const int_T colAidxRow5[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pAidx = &colAidxRow5[0];
-        const real_T *pA22 = &t15_2_P.VScontrhl_A[22];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *pxnew5 = &xnew[5];
-        int_T numNonZero = 4;
-        *pxnew5 = (*pA22++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew5 += (*pA22++) * xd[*pAidx++];
-        }
-      }
-
-      xnew[5] += (t15_2_P.VScontrhl_B[10])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_B[11])*t15_2_B.Divide4_l[1];
-
-      {
-        static const int_T colAidxRow6[5] = { 3, 4, 5, 6, 7 };
-
-        const int_T *pAidx = &colAidxRow6[0];
-        const real_T *pA27 = &t15_2_P.VScontrhl_A[27];
-        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
-        real_T *pxnew6 = &xnew[6];
-        int_T numNonZero = 4;
-        *pxnew6 = (*pA27++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew6 += (*pA27++) * xd[*pAidx++];
-        }
-      }
-
-      xnew[6] += (t15_2_P.VScontrhl_B[12])*t15_2_B.Divide4_l[0] +
-        (t15_2_P.VScontrhl_B[13])*t15_2_B.Divide4_l[1];
-      xnew[7] = (t15_2_P.VScontrhl_A[32])*t15_2_DWork.VScontrhl_DSTATE[7];
-      xnew[7] += (t15_2_P.VScontrhl_B[14])*t15_2_B.Divide4_l[0];
-      (void) memcpy(&t15_2_DWork.VScontrhl_DSTATE[0],xnew,
-                    sizeof(real_T)*8);
-    }
-
-    /* Update for DiscreteStateSpace: '<S32>/VS. contr' */
+    /* Update for DiscreteStateSpace: '<S38>/VS. contr' */
     {
       static real_T xnew[9];
       xnew[0] = (t15_2_P.VScontr_A[0])*t15_2_DWork.VScontr_DSTATE[0] +
@@ -3042,554 +2855,176 @@ void t15_2_step(void)
                     sizeof(real_T)*9);
     }
 
-    /* Update for Memory: '<S12>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput = t15_2_B.tt_eob;
-
-    /* Update for Memory: '<S10>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_e = t15_2_B.tt_eob_j;
-
-    /* Update for Memory: '<S11>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_l = t15_2_B.tt_eob_p;
-
-    /* Update for Memory: '<S13>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_b = t15_2_B.tt_eob_m;
+    /* Update for Memory: '<S9>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput = t15_2_B.e6_e;
 
     /* Update for Memory: '<S9>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_j = t15_2_B.tt_eob_g;
+    t15_2_DWork.Memory1_PreviousInput = t15_2_B.Ics1_eob;
 
-    /* Update for Memory: '<S14>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_ei = t15_2_B.tt_eob_b;
-
-    /* Update for Memory: '<S15>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_m = t15_2_B.tt_eob_ge;
-
-    /* Update for Memory: '<S16>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_g = t15_2_B.tt_eob_m1;
-
-    /* Update for Memory: '<S17>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_o = t15_2_B.tt_eob_a;
-
-    /* Update for Memory: '<S18>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_e2 = t15_2_B.tt_eob_e;
-
-    /* Update for Memory: '<S19>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_be = t15_2_B.tt_eob_bz;
-
-    /* Update for Memory: '<S8>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput = t15_2_B.Switch;
-
-    /* Update for DiscreteStateSpace: '<S2>/Curr. term. contr' */
+    /* Update for DiscreteStateSpace: '<S38>/VS. contr hl' */
     {
-      static real_T xnew[40];
+      static real_T xnew[8];
+      xnew[0] = (t15_2_P.VScontrhl_A[0])*t15_2_DWork.VScontrhl_DSTATE[0] +
+        (t15_2_P.VScontrhl_A[1])*t15_2_DWork.VScontrhl_DSTATE[1]
+        + (t15_2_P.VScontrhl_A[2])*t15_2_DWork.VScontrhl_DSTATE[2]
+        + (t15_2_P.VScontrhl_A[3])*t15_2_DWork.VScontrhl_DSTATE[7];
+      xnew[0] += (t15_2_P.VScontrhl_B[0])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_B[1])*t15_2_B.Divide4[1];
+      xnew[1] = (t15_2_P.VScontrhl_A[4])*t15_2_DWork.VScontrhl_DSTATE[0] +
+        (t15_2_P.VScontrhl_A[5])*t15_2_DWork.VScontrhl_DSTATE[1]
+        + (t15_2_P.VScontrhl_A[6])*t15_2_DWork.VScontrhl_DSTATE[2]
+        + (t15_2_P.VScontrhl_A[7])*t15_2_DWork.VScontrhl_DSTATE[7];
+      xnew[1] += (t15_2_P.VScontrhl_B[2])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_B[3])*t15_2_B.Divide4[1];
+      xnew[2] = (t15_2_P.VScontrhl_A[8])*t15_2_DWork.VScontrhl_DSTATE[0] +
+        (t15_2_P.VScontrhl_A[9])*t15_2_DWork.VScontrhl_DSTATE[1]
+        + (t15_2_P.VScontrhl_A[10])*t15_2_DWork.VScontrhl_DSTATE[2]
+        + (t15_2_P.VScontrhl_A[11])*t15_2_DWork.VScontrhl_DSTATE[7];
+      xnew[2] += (t15_2_P.VScontrhl_B[4])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_B[5])*t15_2_B.Divide4[1];
 
       {
-        static const int_T colAidxRow0[12] = { 0, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow0[0];
-        const real_T *pA0 = &t15_2_P.Currtermcontr_A[0];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew0 = &xnew[0];
-        int_T numNonZero = 11;
-        *pxnew0 = (*pA0++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew0 += (*pA0++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow1[12] = { 1, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow1[0];
-        const real_T *pA12 = &t15_2_P.Currtermcontr_A[12];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew1 = &xnew[1];
-        int_T numNonZero = 11;
-        *pxnew1 = (*pA12++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew1 += (*pA12++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow2[12] = { 2, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow2[0];
-        const real_T *pA24 = &t15_2_P.Currtermcontr_A[24];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew2 = &xnew[2];
-        int_T numNonZero = 11;
-        *pxnew2 = (*pA24++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew2 += (*pA24++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow3[12] = { 3, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
+        static const int_T colAidxRow3[5] = { 3, 4, 5, 6, 7 };
 
         const int_T *pAidx = &colAidxRow3[0];
-        const real_T *pA36 = &t15_2_P.Currtermcontr_A[36];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        const real_T *pA12 = &t15_2_P.VScontrhl_A[12];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
         real_T *pxnew3 = &xnew[3];
-        int_T numNonZero = 11;
-        *pxnew3 = (*pA36++) * xd[*pAidx++];
+        int_T numNonZero = 4;
+        *pxnew3 = (*pA12++) * xd[*pAidx++];
         while (numNonZero--) {
-          *pxnew3 += (*pA36++) * xd[*pAidx++];
+          *pxnew3 += (*pA12++) * xd[*pAidx++];
         }
       }
 
+      xnew[3] += (t15_2_P.VScontrhl_B[6])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_B[7])*t15_2_B.Divide4[1];
+
       {
-        static const int_T colAidxRow4[12] = { 4, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
+        static const int_T colAidxRow4[5] = { 3, 4, 5, 6, 7 };
 
         const int_T *pAidx = &colAidxRow4[0];
-        const real_T *pA48 = &t15_2_P.Currtermcontr_A[48];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        const real_T *pA17 = &t15_2_P.VScontrhl_A[17];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
         real_T *pxnew4 = &xnew[4];
-        int_T numNonZero = 11;
-        *pxnew4 = (*pA48++) * xd[*pAidx++];
+        int_T numNonZero = 4;
+        *pxnew4 = (*pA17++) * xd[*pAidx++];
         while (numNonZero--) {
-          *pxnew4 += (*pA48++) * xd[*pAidx++];
+          *pxnew4 += (*pA17++) * xd[*pAidx++];
         }
       }
 
+      xnew[4] += (t15_2_P.VScontrhl_B[8])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_B[9])*t15_2_B.Divide4[1];
+
       {
-        static const int_T colAidxRow5[12] = { 5, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
+        static const int_T colAidxRow5[5] = { 3, 4, 5, 6, 7 };
 
         const int_T *pAidx = &colAidxRow5[0];
-        const real_T *pA60 = &t15_2_P.Currtermcontr_A[60];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        const real_T *pA22 = &t15_2_P.VScontrhl_A[22];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
         real_T *pxnew5 = &xnew[5];
-        int_T numNonZero = 11;
-        *pxnew5 = (*pA60++) * xd[*pAidx++];
+        int_T numNonZero = 4;
+        *pxnew5 = (*pA22++) * xd[*pAidx++];
         while (numNonZero--) {
-          *pxnew5 += (*pA60++) * xd[*pAidx++];
+          *pxnew5 += (*pA22++) * xd[*pAidx++];
         }
       }
 
+      xnew[5] += (t15_2_P.VScontrhl_B[10])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_B[11])*t15_2_B.Divide4[1];
+
       {
-        static const int_T colAidxRow6[12] = { 6, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
+        static const int_T colAidxRow6[5] = { 3, 4, 5, 6, 7 };
 
         const int_T *pAidx = &colAidxRow6[0];
-        const real_T *pA72 = &t15_2_P.Currtermcontr_A[72];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        const real_T *pA27 = &t15_2_P.VScontrhl_A[27];
+        const real_T *xd = &t15_2_DWork.VScontrhl_DSTATE[0];
         real_T *pxnew6 = &xnew[6];
-        int_T numNonZero = 11;
-        *pxnew6 = (*pA72++) * xd[*pAidx++];
+        int_T numNonZero = 4;
+        *pxnew6 = (*pA27++) * xd[*pAidx++];
         while (numNonZero--) {
-          *pxnew6 += (*pA72++) * xd[*pAidx++];
+          *pxnew6 += (*pA27++) * xd[*pAidx++];
         }
       }
 
-      {
-        static const int_T colAidxRow7[12] = { 7, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow7[0];
-        const real_T *pA84 = &t15_2_P.Currtermcontr_A[84];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew7 = &xnew[7];
-        int_T numNonZero = 11;
-        *pxnew7 = (*pA84++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew7 += (*pA84++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow8[12] = { 8, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow8[0];
-        const real_T *pA96 = &t15_2_P.Currtermcontr_A[96];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew8 = &xnew[8];
-        int_T numNonZero = 11;
-        *pxnew8 = (*pA96++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew8 += (*pA96++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow9[12] = { 9, 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow9[0];
-        const real_T *pA108 = &t15_2_P.Currtermcontr_A[108];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew9 = &xnew[9];
-        int_T numNonZero = 11;
-        *pxnew9 = (*pA108++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew9 += (*pA108++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow10[12] = { 10, 11, 12, 13, 14, 15, 16, 17,
-          18, 19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow10[0];
-        const real_T *pA120 = &t15_2_P.Currtermcontr_A[120];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew10 = &xnew[10];
-        int_T numNonZero = 11;
-        *pxnew10 = (*pA120++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew10 += (*pA120++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow11[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow11[0];
-        const real_T *pA132 = &t15_2_P.Currtermcontr_A[132];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew11 = &xnew[11];
-        int_T numNonZero = 10;
-        *pxnew11 = (*pA132++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew11 += (*pA132++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow11[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow11[0];
-        const real_T *pB0 = &t15_2_P.Currtermcontr_B[0];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew11 = &xnew[11];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew11 += (*pB0++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow12[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow12[0];
-        const real_T *pA143 = &t15_2_P.Currtermcontr_A[143];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew12 = &xnew[12];
-        int_T numNonZero = 10;
-        *pxnew12 = (*pA143++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew12 += (*pA143++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow12[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow12[0];
-        const real_T *pB11 = &t15_2_P.Currtermcontr_B[11];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew12 = &xnew[12];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew12 += (*pB11++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow13[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow13[0];
-        const real_T *pA154 = &t15_2_P.Currtermcontr_A[154];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew13 = &xnew[13];
-        int_T numNonZero = 10;
-        *pxnew13 = (*pA154++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew13 += (*pA154++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow13[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow13[0];
-        const real_T *pB22 = &t15_2_P.Currtermcontr_B[22];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew13 = &xnew[13];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew13 += (*pB22++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow14[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow14[0];
-        const real_T *pA165 = &t15_2_P.Currtermcontr_A[165];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew14 = &xnew[14];
-        int_T numNonZero = 10;
-        *pxnew14 = (*pA165++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew14 += (*pA165++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow14[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow14[0];
-        const real_T *pB33 = &t15_2_P.Currtermcontr_B[33];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew14 = &xnew[14];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew14 += (*pB33++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow15[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow15[0];
-        const real_T *pA176 = &t15_2_P.Currtermcontr_A[176];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew15 = &xnew[15];
-        int_T numNonZero = 10;
-        *pxnew15 = (*pA176++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew15 += (*pA176++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow15[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow15[0];
-        const real_T *pB44 = &t15_2_P.Currtermcontr_B[44];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew15 = &xnew[15];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew15 += (*pB44++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow16[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow16[0];
-        const real_T *pA187 = &t15_2_P.Currtermcontr_A[187];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew16 = &xnew[16];
-        int_T numNonZero = 10;
-        *pxnew16 = (*pA187++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew16 += (*pA187++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow16[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow16[0];
-        const real_T *pB55 = &t15_2_P.Currtermcontr_B[55];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew16 = &xnew[16];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew16 += (*pB55++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow17[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow17[0];
-        const real_T *pA198 = &t15_2_P.Currtermcontr_A[198];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew17 = &xnew[17];
-        int_T numNonZero = 10;
-        *pxnew17 = (*pA198++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew17 += (*pA198++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow17[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow17[0];
-        const real_T *pB66 = &t15_2_P.Currtermcontr_B[66];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew17 = &xnew[17];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew17 += (*pB66++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow18[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow18[0];
-        const real_T *pA209 = &t15_2_P.Currtermcontr_A[209];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew18 = &xnew[18];
-        int_T numNonZero = 10;
-        *pxnew18 = (*pA209++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew18 += (*pA209++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow18[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow18[0];
-        const real_T *pB77 = &t15_2_P.Currtermcontr_B[77];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew18 = &xnew[18];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew18 += (*pB77++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow19[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow19[0];
-        const real_T *pA220 = &t15_2_P.Currtermcontr_A[220];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew19 = &xnew[19];
-        int_T numNonZero = 10;
-        *pxnew19 = (*pA220++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew19 += (*pA220++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow19[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow19[0];
-        const real_T *pB88 = &t15_2_P.Currtermcontr_B[88];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew19 = &xnew[19];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew19 += (*pB88++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow20[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow20[0];
-        const real_T *pA231 = &t15_2_P.Currtermcontr_A[231];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew20 = &xnew[20];
-        int_T numNonZero = 10;
-        *pxnew20 = (*pA231++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew20 += (*pA231++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow20[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow20[0];
-        const real_T *pB99 = &t15_2_P.Currtermcontr_B[99];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew20 = &xnew[20];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew20 += (*pB99++) * u[*pBidx++];
-        }
-      }
-
-      {
-        static const int_T colAidxRow21[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
-          19, 20, 21 };
-
-        const int_T *pAidx = &colAidxRow21[0];
-        const real_T *pA242 = &t15_2_P.Currtermcontr_A[242];
-        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
-        real_T *pxnew21 = &xnew[21];
-        int_T numNonZero = 10;
-        *pxnew21 = (*pA242++) * xd[*pAidx++];
-        while (numNonZero--) {
-          *pxnew21 += (*pA242++) * xd[*pAidx++];
-        }
-      }
-
-      {
-        static const int_T colBidxRow21[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
-          17, 18 };
-
-        const int_T *pBidx = &colBidxRow21[0];
-        const real_T *pB110 = &t15_2_P.Currtermcontr_B[110];
-        const real_T *u = t15_2_B.Divide12;
-        real_T *pxnew21 = &xnew[21];
-        int_T numNonZero = 11;
-        while (numNonZero--) {
-          *pxnew21 += (*pB110++) * u[*pBidx++];
-        }
-      }
-
-      xnew[22] = 0.0;
-      xnew[23] = 0.0;
-      xnew[24] = 0.0;
-      xnew[25] = 0.0;
-      xnew[26] = 0.0;
-      xnew[27] = 0.0;
-      xnew[28] = 0.0;
-      xnew[29] = 0.0;
-      xnew[30] = 0.0;
-      xnew[31] = 0.0;
-      xnew[32] = 0.0;
-      xnew[33] = 0.0;
-      xnew[34] = 0.0;
-      xnew[35] = 0.0;
-      xnew[36] = 0.0;
-      xnew[37] = 0.0;
-      xnew[38] = 0.0;
-      xnew[39] = 0.0;
-      (void) memcpy(&t15_2_DWork.Currtermcontr_DSTATE[0],xnew,
-                    sizeof(real_T)*40);
+      xnew[6] += (t15_2_P.VScontrhl_B[12])*t15_2_B.Divide4[0] +
+        (t15_2_P.VScontrhl_B[13])*t15_2_B.Divide4[1];
+      xnew[7] = (t15_2_P.VScontrhl_A[32])*t15_2_DWork.VScontrhl_DSTATE[7];
+      xnew[7] += (t15_2_P.VScontrhl_B[14])*t15_2_B.Divide4[0];
+      (void) memcpy(&t15_2_DWork.VScontrhl_DSTATE[0],xnew,
+                    sizeof(real_T)*8);
     }
 
-    /* Update for Memory: '<S25>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_j = t15_2_B.Switch_d;
+    /* Update for Memory: '<Root>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_g = t15_2_B.IpIp_0;
+
+    /* Update for Memory: '<S7>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_n = t15_2_B.c_eob_f;
+
+    /* Update for Memory: '<S15>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_b = t15_2_B.c_eob_c;
+
+    /* Update for Memory: '<S13>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_a = t15_2_B.c_eob_p;
+
+    /* Update for Memory: '<S14>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_n = t15_2_B.c_eob_o;
+
+    /* Update for Memory: '<S16>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_bt = t15_2_B.c_eob_k;
+
+    /* Update for Memory: '<S12>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_c = t15_2_B.c_eob_kq;
+
+    /* Update for Memory: '<S17>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_i = t15_2_B.c_eob_p1;
+
+    /* Update for Memory: '<S18>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_bh = t15_2_B.c_eob_l;
+
+    /* Update for Memory: '<S19>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_m = t15_2_B.c_eob_b;
+
+    /* Update for Memory: '<S20>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_ns = t15_2_B.c_eob_g;
+
+    /* Update for Memory: '<S21>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_gb = t15_2_B.c_eob_d;
+
+    /* Update for Memory: '<S22>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_gn = t15_2_B.c_eob_fg;
+
+    /* Update for Memory: '<S23>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_e = t15_2_B.c_eob_gq;
+
+    /* Update for Memory: '<S24>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_h = t15_2_B.c_eob_o2;
+
+    /* Update for Memory: '<S25>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_f = t15_2_B.c_eob_k5;
+
+    /* Update for Memory: '<S26>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_p = t15_2_B.c_eob_i;
+
+    /* Update for Memory: '<S27>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_i = t15_2_B.c_eob_e1;
+
+    /* Update for Memory: '<S28>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_o = t15_2_B.c_eob1;
+
+    /* Update for Memory: '<S28>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_c = t15_2_B.c_eob_lg;
+    for (i = 0; i < 11; i++) {
+      /* Update for Memory: '<S34>/Memory1' */
+      t15_2_DWork.Memory1_PreviousInput_er[i] = t15_2_B.u99[i];
+
+      /* Update for Memory: '<S36>/Memory' */
+      t15_2_DWork.Memory_PreviousInput_i[i] = t15_2_B.u9_d[i];
+    }
+
+    /* Update for Memory: '<S44>/Memory3' */
+    t15_2_DWork.Memory3_PreviousInput = t15_2_B.u999;
 
     /* Update for DiscreteStateSpace: '<S2>/Div. contr.' */
     {
@@ -4290,6 +3725,9 @@ void t15_2_step(void)
                     sizeof(real_T)*50);
     }
 
+    /* Update for Memory: '<S42>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_a = t15_2_B.u999_b;
+
     /* Update for DiscreteStateSpace: '<S2>/Div_rd contr' */
     {
       static real_T xnew[40];
@@ -4765,14 +4203,527 @@ void t15_2_step(void)
                     sizeof(real_T)*40);
     }
 
-    /* Update for UnitDelay: '<S41>/UD' */
-    t15_2_DWork.UD_DSTATE_hh = t15_2_B.e3;
+    /* Update for Memory: '<S40>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_ek = t15_2_B.c_eob_fp;
 
-    /* Update for RateLimiter: '<S25>/Rate Limiter' */
-    t15_2_DWork.PrevY_e = t15_2_B.RateLimiter_m;
-    t15_2_DWork.LastMajorTime_d = t15_2_M->Timing.t[0];
+    /* Update for Memory: '<S41>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_j = t15_2_B.u999_l;
 
-    /* Update for DiscreteStateSpace: '<S2>/Lim. contr.' */
+    /* Update for DiscreteStateSpace: '<S2>/Curr. term. contr' */
+    {
+      static real_T xnew[40];
+
+      {
+        static const int_T colAidxRow0[12] = { 0, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow0[0];
+        const real_T *pA0 = &t15_2_P.Currtermcontr_A[0];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew0 = &xnew[0];
+        int_T numNonZero = 11;
+        *pxnew0 = (*pA0++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew0 += (*pA0++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow1[12] = { 1, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow1[0];
+        const real_T *pA12 = &t15_2_P.Currtermcontr_A[12];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew1 = &xnew[1];
+        int_T numNonZero = 11;
+        *pxnew1 = (*pA12++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew1 += (*pA12++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow2[12] = { 2, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow2[0];
+        const real_T *pA24 = &t15_2_P.Currtermcontr_A[24];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew2 = &xnew[2];
+        int_T numNonZero = 11;
+        *pxnew2 = (*pA24++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew2 += (*pA24++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow3[12] = { 3, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow3[0];
+        const real_T *pA36 = &t15_2_P.Currtermcontr_A[36];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew3 = &xnew[3];
+        int_T numNonZero = 11;
+        *pxnew3 = (*pA36++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew3 += (*pA36++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow4[12] = { 4, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow4[0];
+        const real_T *pA48 = &t15_2_P.Currtermcontr_A[48];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew4 = &xnew[4];
+        int_T numNonZero = 11;
+        *pxnew4 = (*pA48++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew4 += (*pA48++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow5[12] = { 5, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow5[0];
+        const real_T *pA60 = &t15_2_P.Currtermcontr_A[60];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew5 = &xnew[5];
+        int_T numNonZero = 11;
+        *pxnew5 = (*pA60++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew5 += (*pA60++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow6[12] = { 6, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow6[0];
+        const real_T *pA72 = &t15_2_P.Currtermcontr_A[72];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew6 = &xnew[6];
+        int_T numNonZero = 11;
+        *pxnew6 = (*pA72++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew6 += (*pA72++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow7[12] = { 7, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow7[0];
+        const real_T *pA84 = &t15_2_P.Currtermcontr_A[84];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew7 = &xnew[7];
+        int_T numNonZero = 11;
+        *pxnew7 = (*pA84++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew7 += (*pA84++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow8[12] = { 8, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow8[0];
+        const real_T *pA96 = &t15_2_P.Currtermcontr_A[96];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew8 = &xnew[8];
+        int_T numNonZero = 11;
+        *pxnew8 = (*pA96++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew8 += (*pA96++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow9[12] = { 9, 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow9[0];
+        const real_T *pA108 = &t15_2_P.Currtermcontr_A[108];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew9 = &xnew[9];
+        int_T numNonZero = 11;
+        *pxnew9 = (*pA108++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew9 += (*pA108++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow10[12] = { 10, 11, 12, 13, 14, 15, 16, 17,
+          18, 19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow10[0];
+        const real_T *pA120 = &t15_2_P.Currtermcontr_A[120];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew10 = &xnew[10];
+        int_T numNonZero = 11;
+        *pxnew10 = (*pA120++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew10 += (*pA120++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow11[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow11[0];
+        const real_T *pA132 = &t15_2_P.Currtermcontr_A[132];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew11 = &xnew[11];
+        int_T numNonZero = 10;
+        *pxnew11 = (*pA132++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew11 += (*pA132++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow11[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow11[0];
+        const real_T *pB0 = &t15_2_P.Currtermcontr_B[0];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew11 = &xnew[11];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew11 += (*pB0++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow12[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow12[0];
+        const real_T *pA143 = &t15_2_P.Currtermcontr_A[143];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew12 = &xnew[12];
+        int_T numNonZero = 10;
+        *pxnew12 = (*pA143++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew12 += (*pA143++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow12[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow12[0];
+        const real_T *pB11 = &t15_2_P.Currtermcontr_B[11];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew12 = &xnew[12];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew12 += (*pB11++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow13[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow13[0];
+        const real_T *pA154 = &t15_2_P.Currtermcontr_A[154];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew13 = &xnew[13];
+        int_T numNonZero = 10;
+        *pxnew13 = (*pA154++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew13 += (*pA154++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow13[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow13[0];
+        const real_T *pB22 = &t15_2_P.Currtermcontr_B[22];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew13 = &xnew[13];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew13 += (*pB22++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow14[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow14[0];
+        const real_T *pA165 = &t15_2_P.Currtermcontr_A[165];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew14 = &xnew[14];
+        int_T numNonZero = 10;
+        *pxnew14 = (*pA165++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew14 += (*pA165++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow14[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow14[0];
+        const real_T *pB33 = &t15_2_P.Currtermcontr_B[33];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew14 = &xnew[14];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew14 += (*pB33++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow15[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow15[0];
+        const real_T *pA176 = &t15_2_P.Currtermcontr_A[176];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew15 = &xnew[15];
+        int_T numNonZero = 10;
+        *pxnew15 = (*pA176++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew15 += (*pA176++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow15[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow15[0];
+        const real_T *pB44 = &t15_2_P.Currtermcontr_B[44];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew15 = &xnew[15];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew15 += (*pB44++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow16[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow16[0];
+        const real_T *pA187 = &t15_2_P.Currtermcontr_A[187];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew16 = &xnew[16];
+        int_T numNonZero = 10;
+        *pxnew16 = (*pA187++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew16 += (*pA187++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow16[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow16[0];
+        const real_T *pB55 = &t15_2_P.Currtermcontr_B[55];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew16 = &xnew[16];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew16 += (*pB55++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow17[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow17[0];
+        const real_T *pA198 = &t15_2_P.Currtermcontr_A[198];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew17 = &xnew[17];
+        int_T numNonZero = 10;
+        *pxnew17 = (*pA198++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew17 += (*pA198++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow17[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow17[0];
+        const real_T *pB66 = &t15_2_P.Currtermcontr_B[66];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew17 = &xnew[17];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew17 += (*pB66++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow18[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow18[0];
+        const real_T *pA209 = &t15_2_P.Currtermcontr_A[209];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew18 = &xnew[18];
+        int_T numNonZero = 10;
+        *pxnew18 = (*pA209++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew18 += (*pA209++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow18[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow18[0];
+        const real_T *pB77 = &t15_2_P.Currtermcontr_B[77];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew18 = &xnew[18];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew18 += (*pB77++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow19[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow19[0];
+        const real_T *pA220 = &t15_2_P.Currtermcontr_A[220];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew19 = &xnew[19];
+        int_T numNonZero = 10;
+        *pxnew19 = (*pA220++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew19 += (*pA220++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow19[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow19[0];
+        const real_T *pB88 = &t15_2_P.Currtermcontr_B[88];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew19 = &xnew[19];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew19 += (*pB88++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow20[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow20[0];
+        const real_T *pA231 = &t15_2_P.Currtermcontr_A[231];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew20 = &xnew[20];
+        int_T numNonZero = 10;
+        *pxnew20 = (*pA231++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew20 += (*pA231++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow20[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow20[0];
+        const real_T *pB99 = &t15_2_P.Currtermcontr_B[99];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew20 = &xnew[20];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew20 += (*pB99++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow21[11] = { 11, 12, 13, 14, 15, 16, 17, 18,
+          19, 20, 21 };
+
+        const int_T *pAidx = &colAidxRow21[0];
+        const real_T *pA242 = &t15_2_P.Currtermcontr_A[242];
+        const real_T *xd = &t15_2_DWork.Currtermcontr_DSTATE[0];
+        real_T *pxnew21 = &xnew[21];
+        int_T numNonZero = 10;
+        *pxnew21 = (*pA242++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew21 += (*pA242++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow21[11] = { 8, 9, 10, 11, 12, 13, 14, 15, 16,
+          17, 18 };
+
+        const int_T *pBidx = &colBidxRow21[0];
+        const real_T *pB110 = &t15_2_P.Currtermcontr_B[110];
+        const real_T *u = t15_2_B.Divide12;
+        real_T *pxnew21 = &xnew[21];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew21 += (*pB110++) * u[*pBidx++];
+        }
+      }
+
+      xnew[22] = 0.0;
+      xnew[23] = 0.0;
+      xnew[24] = 0.0;
+      xnew[25] = 0.0;
+      xnew[26] = 0.0;
+      xnew[27] = 0.0;
+      xnew[28] = 0.0;
+      xnew[29] = 0.0;
+      xnew[30] = 0.0;
+      xnew[31] = 0.0;
+      xnew[32] = 0.0;
+      xnew[33] = 0.0;
+      xnew[34] = 0.0;
+      xnew[35] = 0.0;
+      xnew[36] = 0.0;
+      xnew[37] = 0.0;
+      xnew[38] = 0.0;
+      xnew[39] = 0.0;
+      (void) memcpy(&t15_2_DWork.Currtermcontr_DSTATE[0],xnew,
+                    sizeof(real_T)*40);
+    }
+
+    /* Update for Memory: '<S2>/Memory2' */
+    memcpy((void *)(&t15_2_DWork.Memory2_PreviousInput_j[0]), (void *)
+           (&t15_2_B.IpIp_div[0]), 11U * sizeof(real_T));
+
+    /* Update for DiscreteStateSpace: '<S35>/Lim. contr.' */
     {
       static real_T xnew[50];
 
@@ -4797,7 +4748,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow0[0];
         const real_T *pB0 = &t15_2_P.Limcontr_B[0];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew0 = &xnew[0];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -4826,7 +4777,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow1[0];
         const real_T *pB16 = &t15_2_P.Limcontr_B[16];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew1 = &xnew[1];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -4855,7 +4806,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow2[0];
         const real_T *pB32 = &t15_2_P.Limcontr_B[32];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew2 = &xnew[2];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -4884,7 +4835,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow3[0];
         const real_T *pB48 = &t15_2_P.Limcontr_B[48];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew3 = &xnew[3];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -4913,7 +4864,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow4[0];
         const real_T *pB64 = &t15_2_P.Limcontr_B[64];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew4 = &xnew[4];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -4942,7 +4893,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow5[0];
         const real_T *pB80 = &t15_2_P.Limcontr_B[80];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew5 = &xnew[5];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -4971,7 +4922,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow6[0];
         const real_T *pB96 = &t15_2_P.Limcontr_B[96];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew6 = &xnew[6];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5000,7 +4951,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow7[0];
         const real_T *pB112 = &t15_2_P.Limcontr_B[112];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew7 = &xnew[7];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5029,7 +4980,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow8[0];
         const real_T *pB128 = &t15_2_P.Limcontr_B[128];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew8 = &xnew[8];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5058,7 +5009,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow9[0];
         const real_T *pB144 = &t15_2_P.Limcontr_B[144];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew9 = &xnew[9];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5087,7 +5038,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow10[0];
         const real_T *pB160 = &t15_2_P.Limcontr_B[160];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew10 = &xnew[10];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5116,7 +5067,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow11[0];
         const real_T *pB176 = &t15_2_P.Limcontr_B[176];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew11 = &xnew[11];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5145,7 +5096,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow12[0];
         const real_T *pB192 = &t15_2_P.Limcontr_B[192];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew12 = &xnew[12];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5174,7 +5125,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow13[0];
         const real_T *pB208 = &t15_2_P.Limcontr_B[208];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew13 = &xnew[13];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5203,7 +5154,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow14[0];
         const real_T *pB224 = &t15_2_P.Limcontr_B[224];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew14 = &xnew[14];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5232,7 +5183,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow15[0];
         const real_T *pB240 = &t15_2_P.Limcontr_B[240];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew15 = &xnew[15];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5261,7 +5212,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow16[0];
         const real_T *pB256 = &t15_2_P.Limcontr_B[256];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew16 = &xnew[16];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5290,7 +5241,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow17[0];
         const real_T *pB272 = &t15_2_P.Limcontr_B[272];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew17 = &xnew[17];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5319,7 +5270,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow18[0];
         const real_T *pB288 = &t15_2_P.Limcontr_B[288];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew18 = &xnew[18];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5348,7 +5299,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow19[0];
         const real_T *pB304 = &t15_2_P.Limcontr_B[304];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew19 = &xnew[19];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5376,7 +5327,7 @@ void t15_2_step(void)
 
         const int_T *pBidx = &colBidxRow20[0];
         const real_T *pB320 = &t15_2_P.Limcontr_B[320];
-        const real_T *u = t15_2_B.u9_a;
+        const real_T *u = t15_2_B.tcont2;
         real_T *pxnew20 = &xnew[20];
         int_T numNonZero = 16;
         while (numNonZero--) {
@@ -5385,19 +5336,19 @@ void t15_2_step(void)
       }
 
       xnew[21] = (t15_2_P.Limcontr_A[506])*t15_2_DWork.Limcontr_DSTATE[21];
-      xnew[21] += (t15_2_P.Limcontr_B[336])*t15_2_B.u9_a[0];
+      xnew[21] += (t15_2_P.Limcontr_B[336])*t15_2_B.tcont2[0];
       xnew[22] = (t15_2_P.Limcontr_A[507])*t15_2_DWork.Limcontr_DSTATE[22];
-      xnew[22] += (t15_2_P.Limcontr_B[337])*t15_2_B.u9_a[1];
+      xnew[22] += (t15_2_P.Limcontr_B[337])*t15_2_B.tcont2[1];
       xnew[23] = (t15_2_P.Limcontr_A[508])*t15_2_DWork.Limcontr_DSTATE[23];
-      xnew[23] += (t15_2_P.Limcontr_B[338])*t15_2_B.u9_a[2];
+      xnew[23] += (t15_2_P.Limcontr_B[338])*t15_2_B.tcont2[2];
       xnew[24] = (t15_2_P.Limcontr_A[509])*t15_2_DWork.Limcontr_DSTATE[24];
-      xnew[24] += (t15_2_P.Limcontr_B[339])*t15_2_B.u9_a[3];
+      xnew[24] += (t15_2_P.Limcontr_B[339])*t15_2_B.tcont2[3];
       xnew[25] = (t15_2_P.Limcontr_A[510])*t15_2_DWork.Limcontr_DSTATE[25];
-      xnew[25] += (t15_2_P.Limcontr_B[340])*t15_2_B.u9_a[4];
+      xnew[25] += (t15_2_P.Limcontr_B[340])*t15_2_B.tcont2[4];
       xnew[26] = (t15_2_P.Limcontr_A[511])*t15_2_DWork.Limcontr_DSTATE[26];
-      xnew[26] += (t15_2_P.Limcontr_B[341])*t15_2_B.u9_a[5];
+      xnew[26] += (t15_2_P.Limcontr_B[341])*t15_2_B.tcont2[5];
       xnew[27] = (t15_2_P.Limcontr_A[512])*t15_2_DWork.Limcontr_DSTATE[27];
-      xnew[27] += (t15_2_P.Limcontr_B[342])*t15_2_B.u9_a[7];
+      xnew[27] += (t15_2_P.Limcontr_B[342])*t15_2_B.tcont2[7];
 
       {
         static const int_T colAidxRow28[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5414,7 +5365,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[28] += (t15_2_P.Limcontr_B[343])*t15_2_B.u9_a[5];
+      xnew[28] += (t15_2_P.Limcontr_B[343])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow29[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5431,7 +5382,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[29] += (t15_2_P.Limcontr_B[344])*t15_2_B.u9_a[5];
+      xnew[29] += (t15_2_P.Limcontr_B[344])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow30[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5448,7 +5399,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[30] += (t15_2_P.Limcontr_B[345])*t15_2_B.u9_a[5];
+      xnew[30] += (t15_2_P.Limcontr_B[345])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow31[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5465,7 +5416,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[31] += (t15_2_P.Limcontr_B[346])*t15_2_B.u9_a[5];
+      xnew[31] += (t15_2_P.Limcontr_B[346])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow32[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5482,7 +5433,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[32] += (t15_2_P.Limcontr_B[347])*t15_2_B.u9_a[5];
+      xnew[32] += (t15_2_P.Limcontr_B[347])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow33[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5499,7 +5450,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[33] += (t15_2_P.Limcontr_B[348])*t15_2_B.u9_a[5];
+      xnew[33] += (t15_2_P.Limcontr_B[348])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow34[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5516,7 +5467,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[34] += (t15_2_P.Limcontr_B[349])*t15_2_B.u9_a[5];
+      xnew[34] += (t15_2_P.Limcontr_B[349])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow35[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5533,7 +5484,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[35] += (t15_2_P.Limcontr_B[350])*t15_2_B.u9_a[5];
+      xnew[35] += (t15_2_P.Limcontr_B[350])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow36[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5550,7 +5501,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[36] += (t15_2_P.Limcontr_B[351])*t15_2_B.u9_a[5];
+      xnew[36] += (t15_2_P.Limcontr_B[351])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow37[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5567,7 +5518,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[37] += (t15_2_P.Limcontr_B[352])*t15_2_B.u9_a[5];
+      xnew[37] += (t15_2_P.Limcontr_B[352])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow38[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5584,7 +5535,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[38] += (t15_2_P.Limcontr_B[353])*t15_2_B.u9_a[5];
+      xnew[38] += (t15_2_P.Limcontr_B[353])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow39[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5601,7 +5552,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[39] += (t15_2_P.Limcontr_B[354])*t15_2_B.u9_a[5];
+      xnew[39] += (t15_2_P.Limcontr_B[354])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow40[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5618,7 +5569,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[40] += (t15_2_P.Limcontr_B[355])*t15_2_B.u9_a[5];
+      xnew[40] += (t15_2_P.Limcontr_B[355])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow41[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5635,7 +5586,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[41] += (t15_2_P.Limcontr_B[356])*t15_2_B.u9_a[5];
+      xnew[41] += (t15_2_P.Limcontr_B[356])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow42[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5652,7 +5603,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[42] += (t15_2_P.Limcontr_B[357])*t15_2_B.u9_a[5];
+      xnew[42] += (t15_2_P.Limcontr_B[357])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow43[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5669,7 +5620,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[43] += (t15_2_P.Limcontr_B[358])*t15_2_B.u9_a[5];
+      xnew[43] += (t15_2_P.Limcontr_B[358])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow44[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5686,7 +5637,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[44] += (t15_2_P.Limcontr_B[359])*t15_2_B.u9_a[5];
+      xnew[44] += (t15_2_P.Limcontr_B[359])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow45[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5703,7 +5654,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[45] += (t15_2_P.Limcontr_B[360])*t15_2_B.u9_a[5];
+      xnew[45] += (t15_2_P.Limcontr_B[360])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow46[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5720,7 +5671,7 @@ void t15_2_step(void)
         }
       }
 
-      xnew[46] += (t15_2_P.Limcontr_B[361])*t15_2_B.u9_a[5];
+      xnew[46] += (t15_2_P.Limcontr_B[361])*t15_2_B.tcont2[5];
 
       {
         static const int_T colAidxRow47[20] = { 28, 29, 30, 31, 32, 33, 34, 35,
@@ -5737,91 +5688,355 @@ void t15_2_step(void)
         }
       }
 
-      xnew[47] += (t15_2_P.Limcontr_B[362])*t15_2_B.u9_a[5];
+      xnew[47] += (t15_2_P.Limcontr_B[362])*t15_2_B.tcont2[5];
       xnew[48] = (t15_2_P.Limcontr_A[913])*t15_2_DWork.Limcontr_DSTATE[48];
-      xnew[48] += (t15_2_P.Limcontr_B[363])*t15_2_B.u9_a[5];
+      xnew[48] += (t15_2_P.Limcontr_B[363])*t15_2_B.tcont2[5];
       xnew[49] = 0.0;
       (void) memcpy(&t15_2_DWork.Limcontr_DSTATE[0],xnew,
                     sizeof(real_T)*50);
     }
 
-    /* Update for UnitDelay: '<S51>/UD' */
-    t15_2_DWork.UD_DSTATE_l = t15_2_B.e3;
+    /* Update for DiscreteStateSpace: '<S35>/Curr. contr.' */
+    {
+      static real_T xnew[11];
 
-    /* Update for RateLimiter: '<S29>/Rate Limiter' */
-    t15_2_DWork.PrevY_h = t15_2_B.RateLimiter_g;
-    t15_2_DWork.LastMajorTime_h = t15_2_M->Timing.t[0];
+      {
+        static const int_T colAidxRow0[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
 
-    /* Update for UnitDelay: '<S46>/UD' */
-    t15_2_DWork.UD_DSTATE_ak = t15_2_B.e3;
+        const int_T *pAidx = &colAidxRow0[0];
+        const real_T *pA0 = &t15_2_P.Currcontr_A[0];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew0 = &xnew[0];
+        int_T numNonZero = 10;
+        *pxnew0 = (*pA0++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew0 += (*pA0++) * xd[*pAidx++];
+        }
+      }
 
-    /* Update for RateLimiter: '<S27>/Rate Limiter' */
-    t15_2_DWork.PrevY_o = t15_2_B.RateLimiter_n;
-    t15_2_DWork.LastMajorTime_e = t15_2_M->Timing.t[0];
+      {
+        static const int_T colBidxRow0[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
 
-    /* Update for UnitDelay: '<S42>/UD' */
-    t15_2_DWork.UD_DSTATE_aq = t15_2_B.e3;
+        const int_T *pBidx = &colBidxRow0[0];
+        const real_T *pB0 = &t15_2_P.Currcontr_B[0];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew0 = &xnew[0];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew0 += (*pB0++) * u[*pBidx++];
+        }
+      }
 
-    /* Update for RateLimiter: '<S26>/Rate Limiter' */
-    t15_2_DWork.PrevY_i = t15_2_B.RateLimiter_ny;
-    t15_2_DWork.LastMajorTime_i = t15_2_M->Timing.t[0];
+      {
+        static const int_T colAidxRow1[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
 
-    /* Update for UnitDelay: '<S47>/UD' */
-    t15_2_DWork.UD_DSTATE_g = t15_2_B.e3;
+        const int_T *pAidx = &colAidxRow1[0];
+        const real_T *pA11 = &t15_2_P.Currcontr_A[11];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew1 = &xnew[1];
+        int_T numNonZero = 10;
+        *pxnew1 = (*pA11++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew1 += (*pA11++) * xd[*pAidx++];
+        }
+      }
 
-    /* Update for RateLimiter: '<S28>/Rate Limiter' */
-    t15_2_DWork.PrevY_n = t15_2_B.RateLimiter_h;
-    t15_2_DWork.LastMajorTime_o = t15_2_M->Timing.t[0];
+      {
+        static const int_T colBidxRow1[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
 
-    /* Update for Memory: '<S24>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_l = t15_2_B.Switch_m;
+        const int_T *pBidx = &colBidxRow1[0];
+        const real_T *pB11 = &t15_2_P.Currcontr_B[11];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew1 = &xnew[1];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew1 += (*pB11++) * u[*pBidx++];
+        }
+      }
 
-    /* Update for UnitDelay: '<S40>/UD' */
-    t15_2_DWork.UD_DSTATE_gc = t15_2_B.e3;
+      {
+        static const int_T colAidxRow2[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
 
-    /* Update for RateLimiter: '<S24>/Rate Limiter' */
-    t15_2_DWork.PrevY_j = t15_2_B.RateLimiter_k;
-    t15_2_DWork.LastMajorTime_j = t15_2_M->Timing.t[0];
-    for (i = 0; i < 11; i++) {
-      /* Update for Memory: '<S30>/Memory' */
-      t15_2_DWork.Memory_PreviousInput[i] = t15_2_B.Divide_e[i];
+        const int_T *pAidx = &colAidxRow2[0];
+        const real_T *pA22 = &t15_2_P.Currcontr_A[22];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew2 = &xnew[2];
+        int_T numNonZero = 10;
+        *pxnew2 = (*pA22++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew2 += (*pA22++) * xd[*pAidx++];
+        }
+      }
 
-      /* Update for Memory: '<S2>/Memory1' */
-      t15_2_DWork.Memory1_PreviousInput_lt[i] = t15_2_B.Ip0_bw0[i];
+      {
+        static const int_T colBidxRow2[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
 
-      /* Update for Memory: '<S2>/Memory2' */
-      t15_2_DWork.Memory2_PreviousInput_jb[i] = t15_2_B.IpIp_div[i];
+        const int_T *pBidx = &colBidxRow2[0];
+        const real_T *pB22 = &t15_2_P.Currcontr_B[22];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew2 = &xnew[2];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew2 += (*pB22++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow3[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow3[0];
+        const real_T *pA33 = &t15_2_P.Currcontr_A[33];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew3 = &xnew[3];
+        int_T numNonZero = 10;
+        *pxnew3 = (*pA33++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew3 += (*pA33++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow3[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow3[0];
+        const real_T *pB33 = &t15_2_P.Currcontr_B[33];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew3 = &xnew[3];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew3 += (*pB33++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow4[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow4[0];
+        const real_T *pA44 = &t15_2_P.Currcontr_A[44];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew4 = &xnew[4];
+        int_T numNonZero = 10;
+        *pxnew4 = (*pA44++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew4 += (*pA44++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow4[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow4[0];
+        const real_T *pB44 = &t15_2_P.Currcontr_B[44];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew4 = &xnew[4];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew4 += (*pB44++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow5[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow5[0];
+        const real_T *pA55 = &t15_2_P.Currcontr_A[55];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew5 = &xnew[5];
+        int_T numNonZero = 10;
+        *pxnew5 = (*pA55++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew5 += (*pA55++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow5[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow5[0];
+        const real_T *pB55 = &t15_2_P.Currcontr_B[55];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew5 = &xnew[5];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew5 += (*pB55++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow6[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow6[0];
+        const real_T *pA66 = &t15_2_P.Currcontr_A[66];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew6 = &xnew[6];
+        int_T numNonZero = 10;
+        *pxnew6 = (*pA66++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew6 += (*pA66++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow6[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow6[0];
+        const real_T *pB66 = &t15_2_P.Currcontr_B[66];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew6 = &xnew[6];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew6 += (*pB66++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow7[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow7[0];
+        const real_T *pA77 = &t15_2_P.Currcontr_A[77];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew7 = &xnew[7];
+        int_T numNonZero = 10;
+        *pxnew7 = (*pA77++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew7 += (*pA77++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow7[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow7[0];
+        const real_T *pB77 = &t15_2_P.Currcontr_B[77];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew7 = &xnew[7];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew7 += (*pB77++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow8[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow8[0];
+        const real_T *pA88 = &t15_2_P.Currcontr_A[88];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew8 = &xnew[8];
+        int_T numNonZero = 10;
+        *pxnew8 = (*pA88++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew8 += (*pA88++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow8[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow8[0];
+        const real_T *pB88 = &t15_2_P.Currcontr_B[88];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew8 = &xnew[8];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew8 += (*pB88++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow9[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow9[0];
+        const real_T *pA99 = &t15_2_P.Currcontr_A[99];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew9 = &xnew[9];
+        int_T numNonZero = 10;
+        *pxnew9 = (*pA99++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew9 += (*pA99++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow9[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow9[0];
+        const real_T *pB99 = &t15_2_P.Currcontr_B[99];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew9 = &xnew[9];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew9 += (*pB99++) * u[*pBidx++];
+        }
+      }
+
+      {
+        static const int_T colAidxRow10[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pAidx = &colAidxRow10[0];
+        const real_T *pA110 = &t15_2_P.Currcontr_A[110];
+        const real_T *xd = &t15_2_DWork.Currcontr_DSTATE[0];
+        real_T *pxnew10 = &xnew[10];
+        int_T numNonZero = 10;
+        *pxnew10 = (*pA110++) * xd[*pAidx++];
+        while (numNonZero--) {
+          *pxnew10 += (*pA110++) * xd[*pAidx++];
+        }
+      }
+
+      {
+        static const int_T colBidxRow10[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        };
+
+        const int_T *pBidx = &colBidxRow10[0];
+        const real_T *pB110 = &t15_2_P.Currcontr_B[110];
+        const real_T *u = t15_2_B.ntur_n;
+        real_T *pxnew10 = &xnew[10];
+        int_T numNonZero = 11;
+        while (numNonZero--) {
+          *pxnew10 += (*pB110++) * u[*pBidx++];
+        }
+      }
+
+      (void) memcpy(&t15_2_DWork.Currcontr_DSTATE[0],xnew,
+                    sizeof(real_T)*11);
     }
   }
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
-   * been executed. The absolute time is the multiplication of "clockTick0"
-   * and "Timing.stepSize0". Size of "clockTick0" ensures timer will not
-   * overflow during the application lifespan selected.
+   * been executed. The resolution of this integer timer is 0.002, which is the step size
+   * of the task. Size of "clockTick0" ensures timer will not overflow during the
+   * application lifespan selected.
    */
-  t15_2_M->Timing.t[0] =
-    (++t15_2_M->Timing.clockTick0) * t15_2_M->Timing.stepSize0;
-
-  {
-    /* Update absolute timer for sample time: [0.002s, 0.0s] */
-    /* The "clockTick1" counts the number of times the code of this task has
-     * been executed. The resolution of this integer timer is 0.002, which is the step size
-     * of the task. Size of "clockTick1" ensures timer will not overflow during the
-     * application lifespan selected.
-     */
-    t15_2_M->Timing.clockTick1++;
-  }
+  t15_2_M->Timing.clockTick0++;
 }
 
 /* Model initialize function */
 void t15_2_initialize(boolean_T firstTime)
 {
- 
-		 int ki;
-
-
-	//(void)firstTime;
+//  (void)firstTime;
 
   /* Registration code */
 
@@ -5832,51 +6047,14 @@ void t15_2_initialize(boolean_T firstTime)
   (void) memset((void *)t15_2_M,0,
                 sizeof(RT_MODEL_t15_2));
 
-	ki=1;
-
-	if( kpr == 1){
-	  printf("---initialize real-time model"
-         " and ki "
-		 " .  %d  \n",ki);}
-
-
-  {
-    /* Setup solver object */
-    rtsiSetSimTimeStepPtr(&t15_2_M->solverInfo, &t15_2_M->Timing.simTimeStep);
-    rtsiSetTPtr(&t15_2_M->solverInfo, &rtmGetTPtr(t15_2_M));
-    rtsiSetStepSizePtr(&t15_2_M->solverInfo, &t15_2_M->Timing.stepSize0);
-    rtsiSetErrorStatusPtr(&t15_2_M->solverInfo, ((const char_T **)
-      (&rtmGetErrorStatus(t15_2_M))));
-    rtsiSetRTModelPtr(&t15_2_M->solverInfo, t15_2_M);
-  }
-
-	ki=2;
-if( kpr == 1){
-	printf("---initialize real-time model"
-         " and ki "
-		 " .  %d  \n",ki);}
-
-
-  rtsiSetSimTimeStep(&t15_2_M->solverInfo, MAJOR_TIME_STEP);
-  rtsiSetSolverName(&t15_2_M->solverInfo,"FixedStepDiscrete");
-  rtmSetTPtr(t15_2_M, &t15_2_M->Timing.tArray[0]);
-  t15_2_M->Timing.stepSize0 = 0.002;
-
   /* block I/O */
   (void) memset(((void *) &t15_2_B),0,
                 sizeof(BlockIO_t15_2));
 
-	ki=3;
-	if( kpr == 1){
-	  printf("---initialize real-time model"
-         " and ki "
-		 " .  %d  \n",ki);}
-
-
   {
     int_T i;
     for (i = 0; i < 11; i++) {
-      t15_2_B.PowerSupply[i] = 0.0;
+      t15_2_B.Memory[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -5896,63 +6074,7 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 15; i++) {
-      t15_2_B.e6[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.e3_l[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Abs[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.ntur[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Sum2[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.c_cur_max[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Sum1[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide4[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide1_d[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Saturation[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide2[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Sum3[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Saturation1[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide6[i] = 0.0;
-    }
-
-    for (i = 0; i < 12; i++) {
-      t15_2_B.VScontrhl[i] = 0.0;
+      t15_2_B.e6_l[i] = 0.0;
     }
 
     for (i = 0; i < 12; i++) {
@@ -5960,7 +6082,11 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 12; i++) {
-      t15_2_B.tt_eobdt_contr_hl[i] = 0.0;
+      t15_2_B.VScontrhl[i] = 0.0;
+    }
+
+    for (i = 0; i < 12; i++) {
+      t15_2_B.c_eob[i] = 0.0;
     }
 
     for (i = 0; i < 12; i++) {
@@ -5972,11 +6098,11 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 12; i++) {
-      t15_2_B.Saturation5[i] = 0.0;
+      t15_2_B.SaturationVS[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Add1[i] = 0.0;
+      t15_2_B.Add1_b[i] = 0.0;
     }
 
     for (i = 0; i < 12; i++) {
@@ -6000,7 +6126,47 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Currtermcontr[i] = 0.0;
+      t15_2_B.e3_m[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Abs[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.ntur[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Sum2_p[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.c_cur_max[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Sum1[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide4_j[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide1_j[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Saturation[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Memory1_eo[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Memory_m[i] = 0.0;
     }
 
     for (i = 0; i < 20; i++) {
@@ -6009,6 +6175,10 @@ if( kpr == 1){
 
     for (i = 0; i < 11; i++) {
       t15_2_B.Divcontr[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.u9_d[i] = 0.0;
     }
 
     for (i = 0; i < 20; i++) {
@@ -6020,27 +6190,7 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide_e[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Limcontr[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Memory[i] = 0.0;
-    }
-
-    for (i = 0; i < 20; i++) {
-      t15_2_B.Divide12[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Memory1_h[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Ip0_bw0[i] = 0.0;
+      t15_2_B.u99[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -6048,11 +6198,27 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 11; i++) {
+      t15_2_B.Currtermcontr[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
       t15_2_B.Divide5[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Memory2_f[i] = 0.0;
+      t15_2_B.Memory2_fo[i] = 0.0;
+    }
+
+    for (i = 0; i < 20; i++) {
+      t15_2_B.tcont2[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Limcontr[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Currcontr[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -6068,7 +6234,47 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Sum3_h[i] = 0.0;
+      t15_2_B.Sum3[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide2_e[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Sum3_f[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Saturation1_m[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide6_p[i] = 0.0;
+    }
+
+    for (i = 0; i < 20; i++) {
+      t15_2_B.Divide12[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.ntur_n[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide2_d[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Tfmc[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Add1_e[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide3[i] = 0.0;
     }
 
     for (i = 0; i < 12; i++) {
@@ -6076,27 +6282,27 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 12; i++) {
-      t15_2_B.tt_eob1[i] = 0.0;
-    }
-
-    for (i = 0; i < 12; i++) {
-      t15_2_B.Divide9[i] = 0.0;
+      t15_2_B.c_eob_pt[i] = 0.0;
     }
 
     for (i = 0; i < 12; i++) {
       t15_2_B.Divide8[i] = 0.0;
     }
 
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide3[i] = 0.0;
+    for (i = 0; i < 12; i++) {
+      t15_2_B.Divide9[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.u9_d[i] = 0.0;
+      t15_2_B.Divide_e[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide1_b4[i] = 0.0;
+      t15_2_B.Divide3_g[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide1_b[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -6104,160 +6310,153 @@ if( kpr == 1){
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide_nh[i] = 0.0;
+      t15_2_B.tcont2_b[i] = 0.0;
     }
 
-    t15_2_B.e3 = 0.0;
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide_d[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.ntur_d[i] = 0.0;
+    }
+
     t15_2_B.Uk1 = 0.0;
     t15_2_B.Diff = 0.0;
     t15_2_B.Gain = 0.0;
-    t15_2_B.e6_c = 0.0;
-    t15_2_B.RelationalOperator = 0.0;
-    t15_2_B.RelationalOperator_p = 0.0;
+    t15_2_B.e6 = 0.0;
+    t15_2_B.LogicalOperator2 = 0.0;
+    t15_2_B.LogicalOperator1 = 0.0;
     t15_2_B.UniformRandomNumber = 0.0;
-    t15_2_B.Uk1_h = 0.0;
     t15_2_B.Uk1_a = 0.0;
-    t15_2_B.Derivative = 0.0;
+    t15_2_B.Uk1_g = 0.0;
     t15_2_B.tt_tran2d[0] = 0.0;
     t15_2_B.tt_tran2d[1] = 0.0;
-    t15_2_B.Divide4_l[0] = 0.0;
-    t15_2_B.Divide4_l[1] = 0.0;
-    t15_2_B.LogicalOperator1 = 0.0;
-    t15_2_B.Ipl_ref = 0.0;
-    t15_2_B.LookupTable1 = 0.0;
-    t15_2_B.Divide6_o = 0.0;
-    t15_2_B.Add1_o = 0.0;
-    t15_2_B.Memory1 = 0.0;
-    t15_2_B.tt_eob = 0.0;
-    t15_2_B.Ip0 = 0.0;
-    t15_2_B.Divide6_e = 0.0;
-    t15_2_B.Add1_oq = 0.0;
-    t15_2_B.Memory1_d = 0.0;
-    t15_2_B.tt_eob_j = 0.0;
-    t15_2_B.Ip0_l = 0.0;
-    t15_2_B.Divide6_h = 0.0;
-    t15_2_B.Add10 = 0.0;
-    t15_2_B.Memory1_n = 0.0;
-    t15_2_B.tt_eob_p = 0.0;
-    t15_2_B.Ip0_i = 0.0;
-    t15_2_B.Divide6_f = 0.0;
-    t15_2_B.Add11 = 0.0;
-    t15_2_B.Memory1_c = 0.0;
-    t15_2_B.tt_eob_m = 0.0;
-    t15_2_B.Ip0_b = 0.0;
-    t15_2_B.Divide6_h5 = 0.0;
-    t15_2_B.Add2 = 0.0;
-    t15_2_B.Memory1_o = 0.0;
-    t15_2_B.tt_eob_g = 0.0;
-    t15_2_B.Ip0_j = 0.0;
-    t15_2_B.Divide6_b = 0.0;
+    t15_2_B.Memory2 = 0.0;
     t15_2_B.Add3 = 0.0;
-    t15_2_B.Memory1_l = 0.0;
-    t15_2_B.tt_eob_b = 0.0;
-    t15_2_B.Ip0_h = 0.0;
-    t15_2_B.Divide6_d = 0.0;
-    t15_2_B.Add4 = 0.0;
-    t15_2_B.Memory1_g = 0.0;
-    t15_2_B.tt_eob_ge = 0.0;
-    t15_2_B.Ip0_hc = 0.0;
-    t15_2_B.Divide6_di = 0.0;
-    t15_2_B.Add5 = 0.0;
-    t15_2_B.Memory1_k = 0.0;
-    t15_2_B.tt_eob_m1 = 0.0;
-    t15_2_B.Ip0_jj = 0.0;
-    t15_2_B.Divide6_a = 0.0;
-    t15_2_B.Add6 = 0.0;
-    t15_2_B.Memory1_f = 0.0;
-    t15_2_B.tt_eob_a = 0.0;
-    t15_2_B.Ip0_ji = 0.0;
-    t15_2_B.Divide6_i = 0.0;
-    t15_2_B.Add7 = 0.0;
-    t15_2_B.Memory1_gs = 0.0;
-    t15_2_B.tt_eob_e = 0.0;
-    t15_2_B.Ip0_bw = 0.0;
-    t15_2_B.Divide6_l = 0.0;
-    t15_2_B.Add8 = 0.0;
-    t15_2_B.Memory1_dr = 0.0;
-    t15_2_B.tt_eob_bz = 0.0;
-    t15_2_B.Ip0_k = 0.0;
-    t15_2_B.Divide6_c = 0.0;
-    t15_2_B.Add9 = 0.0;
-    t15_2_B.LookupTable1_a = 0.0;
-    t15_2_B.Divide6_lh = 0.0;
-    t15_2_B.Sum2_f = 0.0;
+    t15_2_B.Memory1 = 0.0;
+    t15_2_B.Ics1_eob = 0.0;
+    t15_2_B.Add2 = 0.0;
+    t15_2_B.dtpl_term_l = 0.0;
+    t15_2_B.Add1 = 0.0;
     t15_2_B.u = 0.0;
-    t15_2_B.g1_ref = 0.0;
+    t15_2_B.RelationalOperator = 0.0;
+    t15_2_B.Divide4[0] = 0.0;
+    t15_2_B.Divide4[1] = 0.0;
+    t15_2_B.LogicalOperator1_m = 0.0;
+    t15_2_B.Memory2_f = 0.0;
+    t15_2_B.u_o = 0.0;
+    t15_2_B.IpIp_0 = 0.0;
+    t15_2_B.Sum2 = 0.0;
+    t15_2_B.Memory1_h = 0.0;
+    t15_2_B.c_eob_f = 0.0;
+    t15_2_B.Divide6 = 0.0;
+    t15_2_B.Add1_o = 0.0;
+    t15_2_B.Memory2_l = 0.0;
+    t15_2_B.c_eob_c = 0.0;
+    t15_2_B.Divide1_l = 0.0;
+    t15_2_B.Add1_oq = 0.0;
+    t15_2_B.Memory2_k = 0.0;
+    t15_2_B.c_eob_p = 0.0;
+    t15_2_B.Divide1_h = 0.0;
+    t15_2_B.Add10 = 0.0;
+    t15_2_B.Memory2_e = 0.0;
+    t15_2_B.c_eob_o = 0.0;
+    t15_2_B.Divide1_i = 0.0;
+    t15_2_B.Add11 = 0.0;
+    t15_2_B.Memory2_l4 = 0.0;
+    t15_2_B.c_eob_k = 0.0;
+    t15_2_B.Divide1_e = 0.0;
+    t15_2_B.Add2_d = 0.0;
+    t15_2_B.Memory2_o = 0.0;
+    t15_2_B.c_eob_kq = 0.0;
+    t15_2_B.Divide1_g = 0.0;
+    t15_2_B.Add3_a = 0.0;
+    t15_2_B.Memory2_h = 0.0;
+    t15_2_B.c_eob_p1 = 0.0;
+    t15_2_B.Divide1_la = 0.0;
+    t15_2_B.Add4 = 0.0;
+    t15_2_B.Memory2_a = 0.0;
+    t15_2_B.c_eob_l = 0.0;
+    t15_2_B.Divide1_hp = 0.0;
+    t15_2_B.Add5 = 0.0;
+    t15_2_B.Memory2_m = 0.0;
+    t15_2_B.c_eob_b = 0.0;
+    t15_2_B.Divide1_f = 0.0;
+    t15_2_B.Add6 = 0.0;
+    t15_2_B.Memory2_o2 = 0.0;
+    t15_2_B.c_eob_g = 0.0;
+    t15_2_B.Divide1_a = 0.0;
+    t15_2_B.Add7 = 0.0;
+    t15_2_B.Memory2_b = 0.0;
+    t15_2_B.c_eob_d = 0.0;
+    t15_2_B.Divide1_fa = 0.0;
+    t15_2_B.Add8 = 0.0;
+    t15_2_B.Memory2_o5 = 0.0;
+    t15_2_B.c_eob_fg = 0.0;
+    t15_2_B.Divide1_ap = 0.0;
+    t15_2_B.Add9 = 0.0;
+    t15_2_B.LookupTable1 = 0.0;
+    t15_2_B.Divide6_l = 0.0;
+    t15_2_B.Sum2_f = 0.0;
+    t15_2_B.u_a = 0.0;
+    t15_2_B.Memory1_d = 0.0;
+    t15_2_B.c_eob_gq = 0.0;
+    t15_2_B.c_eob_d1 = 0.0;
     t15_2_B.Add2_i = 0.0;
     t15_2_B.LookupTable1_b = 0.0;
-    t15_2_B.Divide6_id = 0.0;
-    t15_2_B.g2_ref = 0.0;
+    t15_2_B.Divide6_i = 0.0;
+    t15_2_B.Memory1_e = 0.0;
+    t15_2_B.c_eob_o2 = 0.0;
+    t15_2_B.c_eob_e = 0.0;
     t15_2_B.Add1_j = 0.0;
     t15_2_B.LookupTable2 = 0.0;
     t15_2_B.Divide1_k = 0.0;
-    t15_2_B.g3_ref = 0.0;
+    t15_2_B.Memory1_f = 0.0;
+    t15_2_B.c_eob_k5 = 0.0;
+    t15_2_B.c_eob_kv = 0.0;
     t15_2_B.Add3_b = 0.0;
-    t15_2_B.g4_ref = 0.0;
+    t15_2_B.Memory1_dh = 0.0;
+    t15_2_B.c_eob_i = 0.0;
+    t15_2_B.c_eob_ij = 0.0;
     t15_2_B.Add4_j = 0.0;
     t15_2_B.LookupTable3 = 0.0;
-    t15_2_B.Divide2_c = 0.0;
-    t15_2_B.g5_ref = 0.0;
+    t15_2_B.Divide2 = 0.0;
+    t15_2_B.Memory1_g = 0.0;
+    t15_2_B.c_eob_e1 = 0.0;
+    t15_2_B.c_eob_bo = 0.0;
     t15_2_B.Add5_k = 0.0;
     t15_2_B.g6_ref = 0.0;
+    t15_2_B.Memory2_m4 = 0.0;
+    t15_2_B.c_eob1 = 0.0;
+    t15_2_B.Memory1_dn = 0.0;
+    t15_2_B.c_eob_lg = 0.0;
+    t15_2_B.c_eob_fd = 0.0;
     t15_2_B.Add6_g = 0.0;
-    t15_2_B.Memory2 = 0.0;
-    t15_2_B.Switch = 0.0;
-    t15_2_B.RelationalOperator_k = 0.0;
-    t15_2_B.Memory2_e = 0.0;
-    t15_2_B.Switch_d = 0.0;
-    t15_2_B.RelationalOperator_j = 0.0;
-    t15_2_B.LogicalOperator1_j = 0.0;
-    t15_2_B.Uk1_o = 0.0;
-    t15_2_B.Diff_b = 0.0;
-    t15_2_B.Divide_d = 0.0;
-    t15_2_B.RateLimiter_m = 0.0;
-    t15_2_B.Gain_m = 0.0;
-    t15_2_B.Divide1_b = 0.0;
-    t15_2_B.Saturation_f = 0.0;
+    t15_2_B.e6_e = 0.0;
+    t15_2_B.LogicalOperator1_a = 0.0;
+    t15_2_B.LogicalOperator2_o = 0.0;
     t15_2_B.LogicalOperator1_h = 0.0;
-    t15_2_B.LogicalOperator1_i = 0.0;
-    t15_2_B.Subtract = 0.0;
-    t15_2_B.Uk1_n = 0.0;
-    t15_2_B.Diff_e = 0.0;
-    t15_2_B.Divide_b = 0.0;
-    t15_2_B.RateLimiter_g = 0.0;
-    t15_2_B.RelationalOperator_g = 0.0;
-    t15_2_B.FromWorkspace2 = 0.0;
-    t15_2_B.Uk1_hj = 0.0;
-    t15_2_B.Diff_k = 0.0;
-    t15_2_B.Divide_n = 0.0;
-    t15_2_B.RateLimiter_n = 0.0;
-    t15_2_B.Subtract_b = 0.0;
-    t15_2_B.Uk1_j = 0.0;
-    t15_2_B.Diff_a = 0.0;
-    t15_2_B.Divide_i = 0.0;
-    t15_2_B.RateLimiter_ny = 0.0;
-    t15_2_B.Gain_j = 0.0;
-    t15_2_B.Divide1_c = 0.0;
+    t15_2_B.Memory3 = 0.0;
+    t15_2_B.LogicalOperator1_c = 0.0;
+    t15_2_B.u999 = 0.0;
+    t15_2_B.Subtract2 = 0.0;
+    t15_2_B.Gain1 = 0.0;
     t15_2_B.Subtract1 = 0.0;
-    t15_2_B.Saturation_m = 0.0;
-    t15_2_B.Uk1_f = 0.0;
-    t15_2_B.Diff_d = 0.0;
-    t15_2_B.Divide_m = 0.0;
-    t15_2_B.RateLimiter_h = 0.0;
-    t15_2_B.Gain_n = 0.0;
-    t15_2_B.Divide1_j = 0.0;
-    t15_2_B.Saturation_c = 0.0;
-    t15_2_B.Memory2_o = 0.0;
-    t15_2_B.Switch_m = 0.0;
-    t15_2_B.Subtract_h = 0.0;
-    t15_2_B.Uk1_om = 0.0;
-    t15_2_B.Diff_o = 0.0;
-    t15_2_B.Divide_l = 0.0;
-    t15_2_B.RateLimiter_k = 0.0;
-    t15_2_B.Gain_a = 0.0;
-    t15_2_B.Divide1_cl = 0.0;
-    t15_2_B.Subtract1_n = 0.0;
-    t15_2_B.Saturation_e = 0.0;
+    t15_2_B.Saturation1 = 0.0;
+    t15_2_B.Memory1_n = 0.0;
+    t15_2_B.LogicalOperator1_d = 0.0;
+    t15_2_B.u999_b = 0.0;
+    t15_2_B.Memory1_b = 0.0;
+    t15_2_B.c_eob_fp = 0.0;
+    t15_2_B.Memory1_k = 0.0;
+    t15_2_B.u999_l = 0.0;
+    t15_2_B.Subtract2_k = 0.0;
+    t15_2_B.Gain1_g = 0.0;
+    t15_2_B.Subtract3 = 0.0;
+    t15_2_B.Saturation_a = 0.0;
+    t15_2_B.Gain2 = 0.0;
+    t15_2_B.Subtract1_k = 0.0;
     t15_2_B.volt1 = 0.0;
     t15_2_B.volt2 = 0.0;
     t15_2_B.volt3 = 0.0;
@@ -6269,91 +6468,79 @@ if( kpr == 1){
     t15_2_B.volt9 = 0.0;
     t15_2_B.volt10 = 0.0;
     t15_2_B.volt11 = 0.0;
+    t15_2_B.Add = 0.0;
+    t15_2_B.Ipl_ref = 0.0;
     t15_2_B.c_a_tpl1_eob15 = 0.0;
     t15_2_B.Saturation4 = 0.0;
-    t15_2_B.u5 = 0.0;
-    t15_2_B.Saturation3 = 0.0;
     t15_2_B.IpIp_div_l = 0.0;
     t15_2_B.Saturation2 = 0.0;
     t15_2_B.atpl1 = 0.0;
     t15_2_B.c_a_tpl1_eob15_l = 0.0;
-    t15_2_B.Gain_jx = 0.0;
-    t15_2_B.Divide1_o = 0.0;
-    t15_2_B.Saturation_o = 0.0;
-    t15_2_B.tt_eob_e4 = 0.0;
-    t15_2_B.Gain_nj = 0.0;
-    t15_2_B.Divide1_e = 0.0;
-    t15_2_B.Subtract1_m = 0.0;
-    t15_2_B.Saturation_l = 0.0;
-    t15_2_B.LookupTable1_bj = 0.0;
-    t15_2_B.Divide1_db = 0.0;
+    t15_2_B.u5 = 0.0;
+    t15_2_B.Saturation3 = 0.0;
+    t15_2_B.Subtract3_a = 0.0;
+    t15_2_B.Subtract2_b = 0.0;
+    t15_2_B.Gain1_n = 0.0;
+    t15_2_B.Subtract3_k = 0.0;
+    t15_2_B.Saturation_i = 0.0;
+    t15_2_B.Subtract1_f = 0.0;
+    t15_2_B.c_eob_j = 0.0;
+    t15_2_B.atpl2 = 0.0;
+    t15_2_B.Saturation_a1 = 0.0;
+    t15_2_B.Divide6_o = 0.0;
     t15_2_B.Sum = 0.0;
     t15_2_B.Divide2_h = 0.0;
-    t15_2_B.Sum1_m = 0.0;
-    t15_2_B.Saturation1_b = 0.0;
-    t15_2_B.atpl2 = 0.0;
-    t15_2_B.Saturation_a = 0.0;
+    t15_2_B.Sum1_k = 0.0;
+    t15_2_B.uy0 = 0.0;
     t15_2_B.gain_cont2 = 0.0;
-    t15_2_B.EqTime005 = 0.0;
+    t15_2_B.Diff_b = 0.0;
+    t15_2_B.Diff_n = 0.0;
+    t15_2_B.Divide_i = 0.0;
     t15_2_B.Sum2_d = 0.0;
-    t15_2_B.Diff_g = 0.0;
-    t15_2_B.Diff_c = 0.0;
-    t15_2_B.Divide_na = 0.0;
     t15_2_B.elong_ref = 0.0;
     t15_2_B.Add2_f = 0.0;
-    t15_2_B.LookupTable1_o = 0.0;
+    t15_2_B.k_gaplim[0] = 0.0;
+    t15_2_B.k_gaplim[1] = 0.0;
+    t15_2_B.k_gaplim[2] = 0.0;
+    t15_2_B.k_gaplim[3] = 0.0;
+    t15_2_B.Add2_ft = 0.0;
+    t15_2_B.g6_ref_term = 0.0;
+    t15_2_B.Add1_f = 0.0;
+    t15_2_B.g5_ref = 0.0;
+    t15_2_B.Add2_g = 0.0;
+    t15_2_B.g5_ref_term = 0.0;
+    t15_2_B.g4_ref = 0.0;
+    t15_2_B.Add2_o = 0.0;
+    t15_2_B.g4_ref_term = 0.0;
+    t15_2_B.g3_ref = 0.0;
+    t15_2_B.Add2_iv = 0.0;
+    t15_2_B.g3_ref_term = 0.0;
+    t15_2_B.g2_ref = 0.0;
+    t15_2_B.Add2_e = 0.0;
+    t15_2_B.g2_ref_term = 0.0;
+    t15_2_B.g1_ref = 0.0;
+    t15_2_B.Add2_a = 0.0;
+    t15_2_B.g1_ref_term = 0.0;
+    t15_2_B.Ipl_ref_g = 0.0;
     t15_2_B.Icoil9_ref = 0.0;
-    t15_2_B.LookupTable1_g = 0.0;
     t15_2_B.Icoil8_ref = 0.0;
-    t15_2_B.LookupTable1_on = 0.0;
-    t15_2_B.Icoil7_ref = 0.0;
-    t15_2_B.LookupTable1_h = 0.0;
-    t15_2_B.Icoil6_ref = 0.0;
-    t15_2_B.LookupTable1_m = 0.0;
-    t15_2_B.Icoil5_ref = 0.0;
-    t15_2_B.LookupTable1_c = 0.0;
-    t15_2_B.Icoil4_ref = 0.0;
-    t15_2_B.LookupTable1_gu = 0.0;
-    t15_2_B.Icoil3_ref = 0.0;
-    t15_2_B.LookupTable1_j = 0.0;
-    t15_2_B.Icoil2_ref = 0.0;
-    t15_2_B.LookupTable1_p = 0.0;
-    t15_2_B.Icoil11_ref = 0.0;
-    t15_2_B.LookupTable1_mg = 0.0;
-    t15_2_B.Icoil10_ref = 0.0;
-    t15_2_B.LookupTable1_ma = 0.0;
     t15_2_B.Icoil1_ref = 0.0;
+    t15_2_B.Icoil6_ref = 0.0;
+    t15_2_B.Icoil5_ref = 0.0;
+    t15_2_B.Icoil4_ref = 0.0;
+    t15_2_B.Icoil3_ref = 0.0;
+    t15_2_B.Icoil2_ref = 0.0;
+    t15_2_B.Icoil11_ref = 0.0;
+    t15_2_B.Icoil10_ref = 0.0;
+    t15_2_B.Icoil1_ref_k = 0.0;
   }
 
   /* states (dwork) */
   (void) memset((void *)&t15_2_DWork, 0,
                 sizeof(D_Work_t15_2));
-
-
-	ki=3;
-	if( kpr == 1){
-	  printf("---initialize real-time model"
-         " and ki "
-		 " .  %d  \n",ki);}
-
-
-  {
-    int_T i;
-    for (i = 0; i < 11; i++) {
-      t15_2_DWork.PowerSupply_DSTATE[i] = 0.0;
-    }
-  }
-
   t15_2_DWork.UD_DSTATE = 0.0;
-  t15_2_DWork.UD_DSTATE_a = 0.0;
+  t15_2_DWork.UD_DSTATE_n = 0.0;
   t15_2_DWork.UD_DSTATE_h = 0.0;
-
-  {
-    int_T i;
-    for (i = 0; i < 8; i++) {
-      t15_2_DWork.VScontrhl_DSTATE[i] = 0.0;
-    }
-  }
 
   {
     int_T i;
@@ -6364,8 +6551,8 @@ if( kpr == 1){
 
   {
     int_T i;
-    for (i = 0; i < 40; i++) {
-      t15_2_DWork.Currtermcontr_DSTATE[i] = 0.0;
+    for (i = 0; i < 8; i++) {
+      t15_2_DWork.VScontrhl_DSTATE[i] = 0.0;
     }
   }
 
@@ -6383,7 +6570,12 @@ if( kpr == 1){
     }
   }
 
-  t15_2_DWork.UD_DSTATE_hh = 0.0;
+  {
+    int_T i;
+    for (i = 0; i < 40; i++) {
+      t15_2_DWork.Currtermcontr_DSTATE[i] = 0.0;
+    }
+  }
 
   {
     int_T i;
@@ -6392,44 +6584,12 @@ if( kpr == 1){
     }
   }
 
-  t15_2_DWork.UD_DSTATE_l = 0.0;
-  t15_2_DWork.UD_DSTATE_ak = 0.0;
-  t15_2_DWork.UD_DSTATE_aq = 0.0;
-  t15_2_DWork.UD_DSTATE_g = 0.0;
-  t15_2_DWork.UD_DSTATE_gc = 0.0;
-
   {
     int_T i;
     for (i = 0; i < 11; i++) {
-      t15_2_DWork.PrevY[i] = 0.0;
+      t15_2_DWork.Currcontr_DSTATE[i] = 0.0;
     }
   }
-
-  t15_2_DWork.LastMajorTime = 0.0;
-
-  {
-    int_T i;
-    for (i = 0; i < 11; i++) {
-      t15_2_DWork.Sum3_DWORK1[i] = 0.0;
-    }
-  }
-
-  t15_2_DWork.UniformRandomNumber_NextOutput = 0.0;
-  t15_2_DWork.Memory1_PreviousInput = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_e = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_l = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_b = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_j = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_ei = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_m = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_g = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_o = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_e2 = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_be = 0.0;
-  t15_2_DWork.Memory2_PreviousInput = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_j = 0.0;
-  t15_2_DWork.PrevY_e = 0.0;
-  t15_2_DWork.LastMajorTime_d = 0.0;
 
   {
     int_T i;
@@ -6438,38 +6598,69 @@ if( kpr == 1){
     }
   }
 
-  t15_2_DWork.PrevY_h = 0.0;
-  t15_2_DWork.LastMajorTime_h = 0.0;
-  t15_2_DWork.PrevY_o = 0.0;
-  t15_2_DWork.LastMajorTime_e = 0.0;
+  {
+    int_T i;
+    for (i = 0; i < 11; i++) {
+      t15_2_DWork.PrevY[i] = 0.0;
+    }
+  }
+
+  t15_2_DWork.UniformRandomNumber_NextOutput = 0.0;
+  t15_2_DWork.Memory2_PreviousInput = 0.0;
+  t15_2_DWork.Memory1_PreviousInput = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_g = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_n = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_b = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_a = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_n = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_bt = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_c = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_i = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_bh = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_m = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_ns = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_gb = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_gn = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_e = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_h = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_f = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_p = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_i = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_o = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_c = 0.0;
 
   {
     int_T i;
     for (i = 0; i < 11; i++) {
-      t15_2_DWork.Memory1_PreviousInput_lt[i] = 0.0;
+      t15_2_DWork.Memory1_PreviousInput_er[i] = 0.0;
     }
   }
-
-  t15_2_DWork.PrevY_i = 0.0;
-  t15_2_DWork.LastMajorTime_i = 0.0;
-  t15_2_DWork.PrevY_n = 0.0;
-  t15_2_DWork.LastMajorTime_o = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_l = 0.0;
-  t15_2_DWork.Subtract_DWORK1 = 0.0;
-  t15_2_DWork.PrevY_j = 0.0;
-  t15_2_DWork.LastMajorTime_j = 0.0;
 
   {
     int_T i;
     for (i = 0; i < 11; i++) {
-      t15_2_DWork.Memory2_PreviousInput_jb[i] = 0.0;
+      t15_2_DWork.Memory_PreviousInput_i[i] = 0.0;
     }
   }
 
-  t15_2_DWork.Derivative_RWORK.TimeStampA = 0.0;
-  t15_2_DWork.Derivative_RWORK.LastUAtTimeA = 0.0;
-  t15_2_DWork.Derivative_RWORK.TimeStampB = 0.0;
-  t15_2_DWork.Derivative_RWORK.LastUAtTimeB = 0.0;
+  t15_2_DWork.Memory3_PreviousInput = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_a = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_ek = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_j = 0.0;
+
+  {
+    int_T i;
+    for (i = 0; i < 11; i++) {
+      t15_2_DWork.Memory2_PreviousInput_j[i] = 0.0;
+    }
+  }
+
+  {
+    int_T i;
+    for (i = 0; i < 11; i++) {
+      t15_2_DWork.Sum3_DWORK1[i] = 0.0;
+    }
+  }
 
   /* external inputs */
   {
@@ -6489,7 +6680,7 @@ if( kpr == 1){
   /* external outputs */
   {
     int_T i;
-    for (i = 0; i < 15; i++) {
+    for (i = 0; i < 38; i++) {
       t15_2_Y.Out1[i] = 0.0;
     }
   }
@@ -6502,7 +6693,7 @@ if( kpr == 1){
     uint32_T t;
     real_T tmin;
 
-    /* Start for UniformRandomNumber: '<S35>/Uniform Random Number' */
+    /* Start for UniformRandomNumber: '<S43>/Uniform Random Number' */
     tmin = t15_2_P.UniformRandomNumber_Seed;
     if (rtIsNaN(tmin) || rtIsInf(tmin)) {
       tmin = 0.0;
@@ -6528,59 +6719,28 @@ if( kpr == 1){
     t15_2_DWork.UniformRandomNumber_NextOutput =
       (t15_2_P.UniformRandomNumber_Maximum - tmin) * rt_Urand
       (&t15_2_DWork.RandSeed) + tmin;
-
-    /* Start for FromWorkspace: '<S34>/From Workspace2' */
-    {
-      static real_T pTimeValues[] = { 0.0, 1.75, 2.5, 3.5, 7.5, 12.0, 18.0, 50.0,
-        580.0, 660.0, 6600.0 } ;
-
-      static real_T pDataValues[] = { 0.0, 0.66, 1.2, 1.6, 2.5, 3.5, 5.4, 15.0,
-        15.0, 15.0, 15.0 } ;
-
-      t15_2_DWork.FromWorkspace2_PWORK.TimePtr = (void *) pTimeValues;
-      t15_2_DWork.FromWorkspace2_PWORK.DataPtr = (void *) pDataValues;
-      t15_2_DWork.FromWorkspace2_IWORK.PrevIndex = 0;
-    }
   }
 
   {
     int32_T i;
 
-    /* InitializeConditions for DiscreteStateSpace: '<S22>/Power Supply' */
-    {
-      int_T i1;
-      real_T *dw_DSTATE = &t15_2_DWork.PowerSupply_DSTATE[0];
-      for (i1=0; i1 < 11; i1++) {
-        dw_DSTATE[i1] = t15_2_P.PowerSupply_X0;
-      }
-    }
-
-    /* InitializeConditions for UnitDelay: '<S36>/UD' */
+    /* InitializeConditions for UnitDelay: '<S61>/UD' */
     t15_2_DWork.UD_DSTATE = t15_2_P.UD_X0;
+    for (i = 0; i < 11; i++) {
+      /* InitializeConditions for Memory: '<S3>/Memory' */
+      t15_2_DWork.Memory_PreviousInput[i] = t15_2_P.Memory_X0;
 
-    /* InitializeConditions for RateLimiter: '<S22>/Rate Limiter' */
-    t15_2_DWork.LastMajorTime = (rtInf);
-
-    /* InitializeConditions for UnitDelay: '<S20>/UD' */
-    t15_2_DWork.UD_DSTATE_a = t15_2_P.UD_X0_c;
-
-    /* InitializeConditions for UnitDelay: '<S21>/UD' */
-    t15_2_DWork.UD_DSTATE_h = t15_2_P.UD_X0_e;
-
-    /* InitializeConditions for Derivative: '<S7>/Derivative' */
-    t15_2_DWork.Derivative_RWORK.TimeStampA = rtInf;
-    t15_2_DWork.Derivative_RWORK.TimeStampB = rtInf;
-
-    /* InitializeConditions for DiscreteStateSpace: '<S32>/VS. contr hl' */
-    {
-      int_T i1;
-      real_T *dw_DSTATE = &t15_2_DWork.VScontrhl_DSTATE[0];
-      for (i1=0; i1 < 8; i1++) {
-        dw_DSTATE[i1] = t15_2_P.VScontrhl_X0;
-      }
+      /* InitializeConditions for RateLimiter: '<S3>/Rate Limiter' */
+      t15_2_DWork.PrevY[i] = t15_2_P.RateLimiter_IC;
     }
 
-    /* InitializeConditions for DiscreteStateSpace: '<S32>/VS. contr' */
+    /* InitializeConditions for UnitDelay: '<S31>/UD' */
+    t15_2_DWork.UD_DSTATE_n = t15_2_P.UD_X0_e;
+
+    /* InitializeConditions for UnitDelay: '<S32>/UD' */
+    t15_2_DWork.UD_DSTATE_h = t15_2_P.UD_X0_h;
+
+    /* InitializeConditions for DiscreteStateSpace: '<S38>/VS. contr' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.VScontr_DSTATE[0];
@@ -6589,53 +6749,90 @@ if( kpr == 1){
       }
     }
 
-    /* InitializeConditions for Memory: '<S12>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput = t15_2_P.Memory1_X0;
-
-    /* InitializeConditions for Memory: '<S10>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_e = t15_2_P.Memory1_X0_g;
-
-    /* InitializeConditions for Memory: '<S11>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_l = t15_2_P.Memory1_X0_o;
-
-    /* InitializeConditions for Memory: '<S13>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_b = t15_2_P.Memory1_X0_j;
-
-    /* InitializeConditions for Memory: '<S9>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_j = t15_2_P.Memory1_X0_od;
-
-    /* InitializeConditions for Memory: '<S14>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_ei = t15_2_P.Memory1_X0_l;
-
-    /* InitializeConditions for Memory: '<S15>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_m = t15_2_P.Memory1_X0_i;
-
-    /* InitializeConditions for Memory: '<S16>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_g = t15_2_P.Memory1_X0_h;
-
-    /* InitializeConditions for Memory: '<S17>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_o = t15_2_P.Memory1_X0_jl;
-
-    /* InitializeConditions for Memory: '<S18>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_e2 = t15_2_P.Memory1_X0_a;
-
-    /* InitializeConditions for Memory: '<S19>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_be = t15_2_P.Memory1_X0_lr;
-
-    /* InitializeConditions for Memory: '<S8>/Memory2' */
+    /* InitializeConditions for Memory: '<S9>/Memory2' */
     t15_2_DWork.Memory2_PreviousInput = t15_2_P.Memory2_X0;
 
-    /* InitializeConditions for DiscreteStateSpace: '<S2>/Curr. term. contr' */
+    /* InitializeConditions for Memory: '<S9>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput = t15_2_P.Memory1_X0;
+
+    /* InitializeConditions for DiscreteStateSpace: '<S38>/VS. contr hl' */
     {
       int_T i1;
-      real_T *dw_DSTATE = &t15_2_DWork.Currtermcontr_DSTATE[0];
-      for (i1=0; i1 < 40; i1++) {
-        dw_DSTATE[i1] = t15_2_P.Currtermcontr_X0;
+      real_T *dw_DSTATE = &t15_2_DWork.VScontrhl_DSTATE[0];
+      for (i1=0; i1 < 8; i1++) {
+        dw_DSTATE[i1] = t15_2_P.VScontrhl_X0;
       }
     }
 
-    /* InitializeConditions for Memory: '<S25>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_j = t15_2_P.Memory2_X0_f;
+    /* InitializeConditions for Memory: '<Root>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_g = t15_2_P.Memory2_X0_k;
+
+    /* InitializeConditions for Memory: '<S7>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_n = t15_2_P.Memory1_X0_f;
+
+    /* InitializeConditions for Memory: '<S15>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_b = t15_2_P.Memory2_X0_o;
+
+    /* InitializeConditions for Memory: '<S13>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_a = t15_2_P.Memory2_X0_n;
+
+    /* InitializeConditions for Memory: '<S14>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_n = t15_2_P.Memory2_X0_g;
+
+    /* InitializeConditions for Memory: '<S16>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_bt = t15_2_P.Memory2_X0_b;
+
+    /* InitializeConditions for Memory: '<S12>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_c = t15_2_P.Memory2_X0_i;
+
+    /* InitializeConditions for Memory: '<S17>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_i = t15_2_P.Memory2_X0_l;
+
+    /* InitializeConditions for Memory: '<S18>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_bh = t15_2_P.Memory2_X0_d;
+
+    /* InitializeConditions for Memory: '<S19>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_m = t15_2_P.Memory2_X0_n4;
+
+    /* InitializeConditions for Memory: '<S20>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_ns = t15_2_P.Memory2_X0_m;
+
+    /* InitializeConditions for Memory: '<S21>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_gb = t15_2_P.Memory2_X0_a;
+
+    /* InitializeConditions for Memory: '<S22>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_gn = t15_2_P.Memory2_X0_dl;
+
+    /* InitializeConditions for Memory: '<S23>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_e = t15_2_P.Memory1_X0_p;
+
+    /* InitializeConditions for Memory: '<S24>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_h = t15_2_P.Memory1_X0_h;
+
+    /* InitializeConditions for Memory: '<S25>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_f = t15_2_P.Memory1_X0_i;
+
+    /* InitializeConditions for Memory: '<S26>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_p = t15_2_P.Memory1_X0_k;
+
+    /* InitializeConditions for Memory: '<S27>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_i = t15_2_P.Memory1_X0_m;
+
+    /* InitializeConditions for Memory: '<S28>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_o = t15_2_P.Memory2_X0_e;
+
+    /* InitializeConditions for Memory: '<S28>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_c = t15_2_P.Memory1_X0_iy;
+    for (i = 0; i < 11; i++) {
+      /* InitializeConditions for Memory: '<S34>/Memory1' */
+      t15_2_DWork.Memory1_PreviousInput_er[i] = t15_2_P.Memory1_X0_d;
+
+      /* InitializeConditions for Memory: '<S36>/Memory' */
+      t15_2_DWork.Memory_PreviousInput_i[i] = t15_2_P.Memory_X0_a;
+    }
+
+    /* InitializeConditions for Memory: '<S44>/Memory3' */
+    t15_2_DWork.Memory3_PreviousInput = t15_2_P.Memory3_X0;
 
     /* InitializeConditions for DiscreteStateSpace: '<S2>/Div. contr.' */
     {
@@ -6646,6 +6843,9 @@ if( kpr == 1){
       }
     }
 
+    /* InitializeConditions for Memory: '<S42>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_a = t15_2_P.Memory1_X0_e;
+
     /* InitializeConditions for DiscreteStateSpace: '<S2>/Div_rd contr' */
     {
       int_T i1;
@@ -6655,13 +6855,27 @@ if( kpr == 1){
       }
     }
 
-    /* InitializeConditions for UnitDelay: '<S41>/UD' */
-    t15_2_DWork.UD_DSTATE_hh = t15_2_P.UD_X0_m;
+    /* InitializeConditions for Memory: '<S40>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_ek = t15_2_P.Memory1_X0_kl;
 
-    /* InitializeConditions for RateLimiter: '<S25>/Rate Limiter' */
-    t15_2_DWork.LastMajorTime_d = (rtInf);
+    /* InitializeConditions for Memory: '<S41>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_j = t15_2_P.Memory1_X0_e1;
 
-    /* InitializeConditions for DiscreteStateSpace: '<S2>/Lim. contr.' */
+    /* InitializeConditions for DiscreteStateSpace: '<S2>/Curr. term. contr' */
+    {
+      int_T i1;
+      real_T *dw_DSTATE = &t15_2_DWork.Currtermcontr_DSTATE[0];
+      for (i1=0; i1 < 40; i1++) {
+        dw_DSTATE[i1] = t15_2_P.Currtermcontr_X0;
+      }
+    }
+
+    /* InitializeConditions for Memory: '<S2>/Memory2' */
+    for (i = 0; i < 11; i++) {
+      t15_2_DWork.Memory2_PreviousInput_j[i] = t15_2_P.Memory2_X0_j;
+    }
+
+    /* InitializeConditions for DiscreteStateSpace: '<S35>/Lim. contr.' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.Limcontr_DSTATE[0];
@@ -6670,47 +6884,13 @@ if( kpr == 1){
       }
     }
 
-    /* InitializeConditions for UnitDelay: '<S51>/UD' */
-    t15_2_DWork.UD_DSTATE_l = t15_2_P.UD_X0_b;
-
-    /* InitializeConditions for RateLimiter: '<S29>/Rate Limiter' */
-    t15_2_DWork.LastMajorTime_h = (rtInf);
-
-    /* InitializeConditions for UnitDelay: '<S46>/UD' */
-    t15_2_DWork.UD_DSTATE_ak = t15_2_P.UD_X0_l;
-
-    /* InitializeConditions for RateLimiter: '<S27>/Rate Limiter' */
-    t15_2_DWork.LastMajorTime_e = (rtInf);
-
-    /* InitializeConditions for UnitDelay: '<S42>/UD' */
-    t15_2_DWork.UD_DSTATE_aq = t15_2_P.UD_X0_a;
-
-    /* InitializeConditions for RateLimiter: '<S26>/Rate Limiter' */
-    t15_2_DWork.LastMajorTime_i = (rtInf);
-
-    /* InitializeConditions for UnitDelay: '<S47>/UD' */
-    t15_2_DWork.UD_DSTATE_g = t15_2_P.UD_X0_f;
-
-    /* InitializeConditions for RateLimiter: '<S28>/Rate Limiter' */
-    t15_2_DWork.LastMajorTime_o = (rtInf);
-
-    /* InitializeConditions for Memory: '<S24>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_l = t15_2_P.Memory2_X0_o;
-
-    /* InitializeConditions for UnitDelay: '<S40>/UD' */
-    t15_2_DWork.UD_DSTATE_gc = t15_2_P.UD_X0_am;
-
-    /* InitializeConditions for RateLimiter: '<S24>/Rate Limiter' */
-    t15_2_DWork.LastMajorTime_j = (rtInf);
-    for (i = 0; i < 11; i++) {
-      /* InitializeConditions for Memory: '<S30>/Memory' */
-      t15_2_DWork.Memory_PreviousInput[i] = t15_2_P.Memory_X0;
-
-      /* InitializeConditions for Memory: '<S2>/Memory1' */
-      t15_2_DWork.Memory1_PreviousInput_lt[i] = t15_2_P.Memory1_X0_av;
-
-      /* InitializeConditions for Memory: '<S2>/Memory2' */
-      t15_2_DWork.Memory2_PreviousInput_jb[i] = t15_2_P.Memory2_X0_j;
+    /* InitializeConditions for DiscreteStateSpace: '<S35>/Curr. contr.' */
+    {
+      int_T i1;
+      real_T *dw_DSTATE = &t15_2_DWork.Currcontr_DSTATE[0];
+      for (i1=0; i1 < 11; i1++) {
+        dw_DSTATE[i1] = t15_2_P.Currcontr_X0;
+      }
     }
   }
 }
@@ -6726,12 +6906,6 @@ void t15_2_terminate(void)
  *
  * [EOF]
  */
-
-
-//real_T In1[15];                      /* '<Root>/In1' */
-//real_T In2[123];                     /* '<Root>/In2' */
-
-
 void t15_2_output(int  nbrInputArgs, double* input,
 int *nbrOutputArgs, double* output) 
 {
@@ -6792,19 +6966,21 @@ if( kpr == 1){
 	  ki=k;
 
       for (i = 0; i < 11; i++) 
-	  { output[i+ki]=t15_2_B.Divide6[i] ;
+	  { output[i+ki]=t15_2_B.Saturation6[i] ;
 	  k=k+1;
       }
-	
+
+//t15_2_B.Saturation6[i] + t15_2_B.SaturationVS[i];
+
 	  ki=k;
 
       for (i = 0; i < 11; i++) 
-	  { output[i+ki]=t15_2_B.Saturation5[i] ;
+	  { output[i+ki]=t15_2_B.SaturationVS[i] ;
 	  k=k+1;
       }
 
 	  i=11;
-	  output[i+ki]=t15_2_B.Saturation5[i] ;
+	  output[i+ki]=t15_2_B.SaturationVS[i] ;
 
 	  ki=k;
 
@@ -6827,3 +7003,5 @@ if( kpr == 1){
 	  }
 
 }
+
+
