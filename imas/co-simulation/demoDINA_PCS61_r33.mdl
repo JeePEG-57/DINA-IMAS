@@ -1,5 +1,5 @@
 Model {
-  Name			  "demoDINA_PCS61_r33_S"
+  Name			  "demoDINA_PCS61_r33"
   Version		  8.0
   MdlSubVersion		  0
   GraphicalInterface {
@@ -10,7 +10,7 @@ Model {
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
-  SavedCharacterEncoding  "windows-1251"
+  SavedCharacterEncoding  "UTF-8"
   SaveDefaultBlockParams  on
   ScopeRefreshTime	  0.035000
   OverrideScopeRefreshTime on
@@ -31,7 +31,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [178.0, 62.0, 958.0, 706.0]
+      Location		      [546.0, 49.0, 968.0, 735.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -56,7 +56,7 @@ Model {
 	  IsActive		  [1]
 	  ViewObjType		  "SimulinkTopLevel"
 	  LoadSaveID		  "0"
-	  Extents		  [914.0, 519.0]
+	  Extents		  [922.0, 558.0]
 	  ZoomFactor		  [1.0]
 	  Offset		  [23.0, 51.0]
 	}
@@ -65,7 +65,7 @@ Model {
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "3534"
-	  Extents		  [914.0, 519.0]
+	  Extents		  [922.0, 558.0]
 	  ZoomFactor		  [1.0]
 	  Offset		  [0.0, 0.0]
 	}
@@ -74,7 +74,7 @@ Model {
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "4641"
-	  Extents		  [914.0, 519.0]
+	  Extents		  [922.0, 558.0]
 	  ZoomFactor		  [0.8]
 	  Offset		  [-75.400000000000091, -122.64999999999998]
 	}
@@ -83,7 +83,7 @@ Model {
 	  IsActive		  [0]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "4118"
-	  Extents		  [914.0, 519.0]
+	  Extents		  [922.0, 558.0]
 	  ZoomFactor		  [1.0]
 	  Offset		  [121.0, 122.0]
 	}
@@ -95,9 +95,9 @@ Model {
   Creator		  "invite"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "vera"
+  LastModifiedBy	  "medveds"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Apr 01 14:06:32 2016"
+  LastModifiedDate	  "Wed Apr 20 20:55:21 2016"
   RTWModifiedTimeStamp	  381420277
   ModelVersionFormat	  "1.%<AutoIncrement:189>"
   ConfigurationManager	  "none"
@@ -136,11 +136,11 @@ Model {
     $PropName		    "DataLoggingOverride"
     $ObjectID		    9
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
-    model_		    "demoDINA_PCS61_r33_S"
+    model_		    "demoDINA_PCS61_r33"
     Array {
       Type		      "Cell"
       Dimension		      1
-      Cell		      "demoDINA_PCS61_r33_S"
+      Cell		      "demoDINA_PCS61_r33"
       PropName		      "logAsSpecifiedByModels_"
     }
     Array {
@@ -1000,8 +1000,8 @@ Model {
     }
   }
   System {
-    Name		    "demoDINA_PCS61_r33_S"
-    Location		    [178, 62, 1136, 768]
+    Name		    "demoDINA_PCS61_r33"
+    Location		    [546, 49, 1514, 784]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -1035,7 +1035,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Actuators"
-	Location		[178, 62, 1136, 768]
+	Location		[173, 38, 1141, 773]
 	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -2150,7 +2150,7 @@ Model {
 	  MaskHideContents	  off
 	  System {
 	    Name		    "kavin_contr"
-	    Location		    [178, 62, 1136, 768]
+	    Location		    [173, 38, 1141, 773]
 	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -8965,7 +8965,7 @@ Model {
       }
       System {
 	Name			"Tokamak Plant Simulator"
-	Location		[178, 62, 1136, 768]
+	Location		[173, 38, 1141, 773]
 	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -9035,14 +9035,14 @@ Model {
 }
 # Finite State Machines
 #
-#    Stateflow Version 7.6 (R2012b) dated Jul 26 2012, 22:31:44
+#    Stateflow Version 7.6 (R2012b) dated Jul 26 2012, 17:33:50
 #
 #
 
 Stateflow {
   machine {
     id			    1
-    name		    "demoDINA_PCS61_r33_S"
+    name		    "demoDINA_PCS61_r33"
     created		    "12-Sep-2012 14:40:24"
     isLibrary		    0
     firstTarget		    2
