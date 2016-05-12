@@ -15,7 +15,7 @@ call "C:\Program Files (x86)\MATLAB\R2009b\toolbox\rtw\rtw\private\vcvars32_900.
 
 :make
 cd .
-nmake -f t15_2.mk  GENERATE_REPORT=0 GENERATE_ASAP2=0 OPTS="-DTID01EQ=1"
+nmake -f t15_2.mk  GENERATE_REPORT=0 GENERATE_ASAP2=0
 @if errorlevel 1 goto error_exit
 exit /B 0
 

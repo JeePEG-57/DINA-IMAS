@@ -26,6 +26,7 @@
 
 	
       i_en=i_en+1
+
       
       if(i_en.eq.1)then
            open (unit=41,file='tt_kavin.dat',form='formatted') 
@@ -34,7 +35,7 @@
   		  close (41)
       end if
       
-      if(i_en.eq.1)then
+      if(i_en.eq.1.and.kpr.eq.1)then
 !           Iopen=0
 !      call OpenCloseConsole(Iopen) 
       end if
@@ -70,8 +71,10 @@
 
       
       if(tt.le.tt_kavin)then
+      omega=1.d0
  	call equil()
  	else
+ 	omega=0.33d0
  	call equil2()
  	end if
  	

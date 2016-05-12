@@ -45,13 +45,16 @@ integer,save :: i1=11, i2=8, ke=57
 INTEGER :: clock_start,clock_end,clock_rate
 
 
-print *,' Enter shot number'
+print *,' Enter pulse number'
 !read (*,*)prescribedpulse
-prescribedpulse = 170
+prescribedpulse=170
+print *,' pulse number',prescribedpulse
+
 
 print *,' Enter run number'
 !read (*,*)prescribedrun
-prescribedrun = 1
+prescribedrun=1
+print *,' run number',prescribedrun
 
 
 call imas_create('ids',prescribedpulse,prescribedrun,1,1,idx0)

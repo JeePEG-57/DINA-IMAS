@@ -1,0 +1,2 @@
+/opt/zeromq/2.2/jzmq/lib/
+/work/imas/projects/ual/DD3.0.3_PUAL3.0.4/lib

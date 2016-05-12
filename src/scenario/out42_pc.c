@@ -1,18 +1,7 @@
 #include <stdio.h>
-#ifdef   MATLAB_MEX_FILE
-#include "mex.h"
-#endif
-#if defined (_MSC_VER)
-
-#define out42_ out42
-
-#endif
-
-
-OUT42(ng,ygr,num,name)
+out42(ng,ygr,num,name)
 
 int *num,*ng;
-
 /*float ygr[];*/
 double ygr[];
 
@@ -27,11 +16,11 @@ char uname[30];
 
 for (i=0;i< *num; i++){
 
-mexPrintf("%c",name[i]); 
+mexPrintf ("%c",name[i]); 
 }
 
 
-mexPrintf("  "); 
+mexPrintf ("  "); 
 
 /* return; */
 
@@ -48,23 +37,18 @@ mexPrintf ("\n");
 }
 
 
+
 #include <stdio.h>
-#if defined (_MSC_VER)
+PAU1()
 
-#define pau_ PAU
-
-#endif
-
-pau_()
  
 { 
 
 char uname;
 
-mexPrintf (" PAUSE \n"); 
+mexPrintf (" PAUSE1 \n"); 
   mexCallMATLAB(0, NULL, 0, NULL, "pause");
 uname= getchar();
 
 
 }
-

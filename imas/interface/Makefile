@@ -32,6 +32,9 @@ test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
+n_dina_imas4.o: n_dina_imas4.f 
+	$(F90_gfortran) $(COPTS_gfortran) -c n_dina_imas4.f
+
 n_dina_imas3.o: n_dina_imas3.f 
 	$(F90_gfortran) $(COPTS_gfortran) -c n_dina_imas3.f
 

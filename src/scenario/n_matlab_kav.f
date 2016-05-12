@@ -177,6 +177,7 @@
 
      *  /fluxc18/alf_tok,int_tok                                        
 
+
 	common /c_data_in_time2/i_c_data,i_c_data1       
 
 	dimension df_help(npo),dm_help(npo),uk_help(ntet),
@@ -317,9 +318,9 @@ c	print *,' HYU!!!!'
 
 c	stop
 
-      i_flat_ext=0
+!      i_flat_ext=1
       
-      print *,' i_flat==',i_flat_ext
+!      print *,' i_flat==',i_flat_ext
       
       
       if(i_flat_ext.eq.1)then
@@ -889,7 +890,7 @@ c	call transf_data_new()
 c-----------------
 
 	call ppx_pffx()
-!	call ppx_pffx_corr2
+	call ppx_pffx_corr2
 
 	call ppx_pffx_tab()         
 
@@ -930,11 +931,11 @@ c-----------------
 	call map_tor()
 	call eq_res_ps()
 !      call pl_bound()  
-	call transf_b_tor()
+!	call transf_b_tor()
 
       CALL BTA(n,mp,RS0)
 
-      if(int.eq.1)goto 66
+!      if(int.eq.1)goto 66
 
 
       call kpl_out()
@@ -1271,7 +1272,7 @@ c        if(kmaj.eq.0)call vde()
 	eps2=eps20               
 
 	
-	if(ntay.gt.next2+5.and.i_con.ne.3)then     
+	if(ntay.gt.next2+1.and.i_con.ne.3)then     
                                                                         
 	kzref=0
 	krref=0
@@ -1286,7 +1287,7 @@ c      bvert=0.d0
       end if
       
 !	if(ntay.ge.10)then     
-	if(ntay.ge.next2+5)then     
+	if(ntay.ge.next2+1)then     
 
 !	   kzref=0                                                             
 
@@ -1382,17 +1383,13 @@ c	call print3(' brad bvert Ip==',brad,bvert,tpl)
 
       ntay1=ntay+1
 
-      if(ntay.le.10)then 
+!      if(ntay.le.10)then 
      	call ppx_pffx()
-      call ppx_pffx_save(1)
-      end if
+	call ppx_pffx_corr2
+	
+!      call ppx_pffx_save(1)
+!      end if
 
-      if(ntay1.eq.5*(ntay1/5).and.ntay.gt.10)then 
-     	call ppx_pffx()
-      call ppx_pffx_save(1)
-      else
-      call ppx_pffx_save(0)   
-      end if
                                                                         
 
 	zvel_0=zvel                                                            
@@ -1541,11 +1538,7 @@ c----------------
 
 	tpl=tpl_help
 
-c	  call pp_pff_save()
-
-
-
-
+      call ppx_pffx_save(1)
 
 
 	if(next.eq.9998)then
@@ -1713,7 +1706,6 @@ c           print *,' j uk vk  ',j,uk(j),vk(j)
       
 
 !	call dfmax_calc()
-!      call pl_bound()  
 	call transf_b_tor()
 
 !	udd=-(fdd-fdd0)/(tay*100.)
@@ -1747,6 +1739,10 @@ c           print *,' j uk vk  ',j,uk(j),vk(j)
                                                                         
 	if(it1.ne.0)go to 2000                                                 
 
+	call trian()
+
+
+      call dfmax_calc()
 
 	call index_calc()                                                     
 
@@ -1968,6 +1964,18 @@ c	a_print(i)=ajb(i)
 c	call out42(n_pr,a_print,num,apr)
 
       call write_fc()
+      call ppx_pffx_save(0)
+      call pet_tab_wr()
+      
+	do i=1,ncam
+	   tcam_help(i)=tcam(i)*1.d-3
+	end do
+	
+       open (unit=40,file='I_v3a.txt',form='formatted') 
+       write (40,*)(tcam_help(i),i=1,ncam)
+       close (40)
+
+      
 	call time_gen() 
 	                                                      
 	do i=1,n
@@ -2026,7 +2034,6 @@ c	a_print(i)=ajb(i)
 	apr='-HyI '
 c	call out42(n_pr,a_print,num,apr)
 
-	call trian()
 
 	a_print(1)=0
 	apr='-trian '

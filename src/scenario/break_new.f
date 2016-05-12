@@ -531,7 +531,8 @@ c	 print *,' tay1 tay2 ',tay_ee1,tay_ee2
 
 	if(i_min.eq.0)then
 !      tay_ee=dmax1(tay_ee1,tay_ee2)
-      q_10=10.d0
+!      q_10=10.d0
+      q_10=3.d0
 
       d_q=1.d0
 !      d_q=2.d0
@@ -3042,76 +3043,6 @@ c
 	 end do
 
       if(kpr.eq.1)print *,' tt gamma_z==',tt,gamma_z
-c	stop
-
-        
-	return
-	end
-
-      subroutine gamma_z2_read()
-	include 'double.inc'
-	include 'new_com.inc'
-      include 'br_com.inc'
-
-	call gamma_z2_read_c(
-     *       gamma_z2,tt,kpr)
-
-	return
-	end
-      subroutine gamma_z2_read_c(
-     *       gamma_z2,tt,kpr)
-
-	include 'double.inc'
- 	include 'parf_mike' 
-
-      include 'double_break1.inc'
-
-	dimension t_t(ntime),pn_d_t(ntime)
-	character *12 apr
-
-	i_sh=i_sh+1
-
-	if(i_sh.eq.1)then
-c-------
-           open (unit=41,file='gamma_z2.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
-           read (41,*) 
-           
-           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
-           
-           do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
-!!!              t_t(i)=t_t(i)*1000. 
-           if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
-           end do 
-           
-           apr='-t_t-' 
-           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
-
-           apr='-n_d_t-' 
-           if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
-
-
-           close (unit=41) 
-        end if
-
-
-71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
-
-        do i=2,n_t
-           if((tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
-c==================
-              t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
-
-              gamma_z2=pn_d_t(i-1)+t_coef*
-     *             (pn_d_t(i)-pn_d_t(i-1))
-c
-	 end if
-
-	 end do
-
-      if(kpr.eq.1)print *,' tt gamma_z2==n_t',tt,gamma_z2,n_t
 c	stop
 
         

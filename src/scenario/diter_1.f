@@ -153,9 +153,6 @@ C
 	if(kpr.eq.1)print *,'TK=TKP+TKF[kA]=',TK, 'kA'
 c----
 	r_avr=v/s
-	
-	 r_avr=rout
-
         bt=bt0*rs0/r_avr
 
 c-----------
@@ -169,7 +166,8 @@ c  internal inductance li*I**2/2.=epol*1.e-7   I is plasma c.[A]
 c----
 ccc	uli=2.*epol*100./(tk*1.e3)**2/r_avr
 
-	uli=2.*epol*100./(tpl*1.e3)**2/r_avr
+!!!	uli=2.*epol*100./(tpl*1.e3)**2/r_avr
+	uli=2.*epol*100./(tpl*1.e3)**2/r_m(n)
 
 	dli=dli*200./(tk*1.e3)**2/(8.*pi)
 	dlint1=dlint/bpbound1**2

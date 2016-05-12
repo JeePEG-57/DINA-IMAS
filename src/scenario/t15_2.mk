@@ -91,14 +91,14 @@ MAKEFILE                = t15_2.mk
 MATLAB_ROOT             = C:\Program Files (x86)\MATLAB\R2009b
 ALT_MATLAB_ROOT         = C:\PROGRA~2\MATLAB\R2009b
 MASTER_ANCHOR_DIR       = 
-START_DIR               = D:\ramp_2014_dec\matlab_6
+START_DIR               = D:\ramp_2014_dec\matlab7
 MATLAB_BIN              = C:\Program Files (x86)\MATLAB\R2009b\bin
 ALT_MATLAB_BIN          = C:\PROGRA~2\MATLAB\R2009b\bin
 S_FUNCTIONS             = 
 S_FUNCTIONS_LIB         = 
-NUMST                   = 2
+NUMST                   = 1
 NCSTATES                = 0
-BUILDARGS               =  GENERATE_REPORT=0 GENERATE_ASAP2=0 OPTS="-DTID01EQ=1"
+BUILDARGS               =  GENERATE_REPORT=0 GENERATE_ASAP2=0
 MULTITASKING            = 0
 INTEGER_CODE            = 0
 MAT_FILE                = 0
@@ -370,7 +370,7 @@ $(PRODUCT) : $(OBJS) $(SHARED_LIB) $(LIBS) $(MODELREF_LINK_LIBS)
     @$(CMD_FILE) @$(MODELREF_LINK_RSPFILE) -def:$(MODEL).def -out:$@
 	@del $(CMD_FILE)
 #--- Comment out the next line to retain .lib and .exp files ---
-#	@del $(RELATIVE_PATH_TO_ANCHOR)\$(MODEL)_win32.lib $(RELATIVE_PATH_TO_ANCHOR)\$(MODEL)_win32.exp
+#	@del $(RELATIVE_PATH_TO_ANCHOR)\$(MODEL)_win32.lib $(RELATIVE_PATH_TO_ANCHOR)\$(MODEL)#_win32.exp
 	@cmd /C "echo $(BUILD_SUCCESS) dynamically linked library $(PRODUCT)"
 !else
 !if $(MAKEFILEBUILDER_TGT)==1

@@ -1,5 +1,16 @@
 *~
 *.[oa]
+#*#
+machines/iter/cputime_dinaimas
+machines/iter/p_data1
+machines/iter/psi_data
+machines/iter/plasma_start.dat
+machines/iter/psi_data
+machines/iter/for042
+machines/iter/psi_data_imas0
+tools/IDS_Coordinates.mat
+tools/mexutilids.mod
+tools/mexLoadIDS.mex*
 imas/fc2k/*.xml
 !imas/fc2k/*-template.xml
 imas/interface/test_dina

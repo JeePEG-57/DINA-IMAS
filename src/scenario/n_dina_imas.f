@@ -59,8 +59,8 @@ c =================================================================
 !      if(i_en0.eq.1)then
 !      bret=AllocConsole() ;
 
-!      Iopen=1
-!      call OpenCloseConsole(Iopen) 
+      Iopen=1
+      call OpenCloseConsole(Iopen) 
           
       end if
 

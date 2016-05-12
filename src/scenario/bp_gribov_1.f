@@ -3,6 +3,9 @@ c
 	include 'double.inc'
       	include 'new_com.inc'
 
+
+!      print *,' xleft xright zmag=',xleft,xright,zmag
+      
       call bp_gribov_c(xleft,xright,zmag,bz_left_xx,bz_right_xx)
       
       return

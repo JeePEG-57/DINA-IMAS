@@ -382,7 +382,7 @@ c
 
 c###
 
-	if(ntay.le.ndisrup.and.kmaj.eq.1)udd=0.
+!	if(ntay.le.ndisrup.and.kmaj.eq.1)udd=0.
 
 c	if(ntay.gt.ndisrup.and.n_dif.eq.0.and.kmaj.eq.1)call udd_filter()
 c###
@@ -398,7 +398,7 @@ c	if(ntay.gt.li_drop)udd=udd_ex+udd_psval
 c	udd=udd_ex+udd_psval
 
         if(kpr.eq.1)
-     *       print *,' pll pll0 udd_ex udd_psval',pll,pll0,udd_ex,udd_psval
+     *    print *,' pll pll0 udd_ex udd_psval',pll,pll0,udd_ex,udd_psval
 
         if(kpr.eq.1)print *,' udd fdd fdd0 ',udd,fdd*1.e-5,fdd0*1.e-5
 
@@ -1535,7 +1535,10 @@ c
 	vv=0.
 	do i=2,n
       VV=VV+VI(I)*HA(I)
-      PPch=PPch+0.5*(PNE(I)+PNE(I-1))*VI(I)*HA(I)
+      p_ion=0.5*(Pd0(I)+Pd0(I-1))
+      p_ion=p_ion+0.5*(Pt0(I)+Pt0(I-1))
+!      PPch=PPch+0.5*(PNE(I)+PNE(I-1))*VI(I)*HA(I)
+      PPch=PPch+p_ion*VI(I)*HA(I)
 	end do
         PCch=PPch/VV
 	if(kpr.eq.1)print *,'===1 pcchp pcch=kcchp===',pcchp,pcch,kcchp
@@ -1547,14 +1550,16 @@ c
 	al1=pcchp/pcch
 	if(kpr.eq.1)print *,'===1 pcchp pcch=al1===',pcchp,pcch,al1
 	do i=1,n
-           pd0(i)=pd0(i)*al1
-           pt0(i)=pt0(i)*al1
+!	   pne(i)=pne(i)*al1
+         pd0(i)=pd0(i)*al1
+         pt0(i)=pt0(i)*al1
 	   pne(i)=pd0(i)+pt0(i)
         end do
 	end if
 
 	return
 	end
+
 
 	subroutine time_out()
 
@@ -1934,6 +1939,15 @@ c *** to do PTOKE
 
 	nrad=n
 
+ 	teta=1.d0
+        call inter_h0(pp,aiz,n,teta,val)
+	pp(n+1)=0.d0
+
+ 	teta=1.d0
+        call inter_h0(pff,aiz,n,teta,val)
+	pff(n+1)=0.d0
+	aiz(n+1)=1.d0
+
 	apr='ppz'
 c	if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nrad)
 	apr='pffz'
@@ -1951,8 +1965,14 @@ c	if(kpr.eq.1)print 71,apr,(poa(i),i=1,nrad)
 	if(kpr.eq.1)print 71,apr,(a(i),i=nrad-5,nrad)
 
 	do i=2,n-1
-	call feet_p(n,ppz,ppx(i),aiz,a(i))
-	call feet_p(n,pffz,pffx(i),aiz,a(i))
+
+	call feet_p(n+1,pp,ppx(i),aiz,a(i))
+	call feet_p(n+1,pff,pffx(i),aiz,a(i))
+
+!           call linear(n,pp,ppx(i),aiz,a(i))
+!           call linear(n,pff,pffx(i),aiz,a(i))
+
+
 	end do
 
 	apr='ppx'
@@ -4594,6 +4614,47 @@ c	   call feeti(nutab,fptab,pffx(i),pstab,psn)
 
 	apr=' pffx'
 	if(kpr.eq.1)print 71,apr,(pffx(i),i=1,n)
+
+	return
+	end
+
+	subroutine pet_tab_wr()
+	include 'double.inc'
+c	implicit real *8 (a-h,o-z)
+	include 'new_com.inc'
+
+         call pet_tab_wr_c(
+     *   nutab,rs0,
+     *   n,ppx,pffx,a,pi,kpr)
+
+         return
+         end
+
+         subroutine pet_tab_wr_c(
+     *   nutab,rs0,
+     *   n,ppx,pffx,a,pi,kpr)
+
+	include 'double.inc'
+c	 implicit real *8 (a-h,o-z)
+
+         dimension ppx(*),pffx(*),a(*)
+
+	character *20 apr
+
+71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
+
+      open (unit=41,file='tabppf.txt',form='formatted')
+      write (41,*)nutab
+
+      do i=1,nutab
+	   psn=a(i)**2
+	   pptabi=-ppx(i)/(rs0*1.e-2)*10.d0
+	   fptabi=-0.5d0*pffx(i)*(rs0*1.e-2)*10.d0
+      write (41,*)psn,pptabi,fptabi
+      enddo
+
+      write (41,*)'  '
+      close (41)
 
 	return
 	end

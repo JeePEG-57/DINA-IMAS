@@ -17,6 +17,7 @@ c     *  wdop,qtep,w_fusion,
 c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
 
 	include 'double.inc'
+        include 'parf0'
         include 'parf8'
 
         common
@@ -34,26 +35,128 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
      *  /vic_imp2/coef_imp2,nz_imp2
      *  /vic_imp3/coef_imp3,nz_imp3
      *  /vic_imp4/coef_imp4,nz_imp4
-     * /ge7/eu,rout,zout,elong
 
      *  /c_br4/wdh,p_oh
      *  /vic_psi_av/psipl_av,psiext_av
+	  common                                                                 
+     *  /ge2/NTAY,TAY,TT_com                                                  
      *  /ge5/kpr                                                        
+     *  /ge7/eu,rout,zout,elong
 
+        common
+     *  /graf1/tri,tri_up,tri_dw,el_up,el_dw
+     *  /dfm13/tokel,tokfi,tokbut
+     *  /dfm13e/tokuv
+     *  /dfm14/tokae,ajae(npo),ajae0(npo),enae
+
+	common
+     *  /c_grib2/rp1,zp1,dist1,rp2,zp2,dist2
+     *  /vic_018/r_lh_new
 
         dimension dNB_xx(24),wr(150)
+
+c******* Begin of Sign changing ******
+        tpl_imas=tpl*(-1)
+
+        pf1_imas=pf1*(-1)
+        pf2_imas=pf2*(-1)
+        pf3_imas=pf3*(-1)
+        pf4_imas=pf4*(-1)
+        pf5_imas=pf5*(-1)
+        pf6_imas=pf6*(-1)
+        pf7_imas=pf7*(-1)
+        pf8_imas=pf8*(-1)
+        pf9_imas=pf9*(-1)
+        pf10_imas=pf10*(-1)
+        pf11_imas=pf11*(-1)
+
+        zv1_imas=zv1*(-1)
+        zv2_imas=zv2*(-1)
+        zv3_imas=zv3*(-1)
+        zv4_imas=zv4*(-1)
+        zv5_imas=zv5*(-1)
+        zv6_imas=zv6*(-1)
+        zv7_imas=zv7*(-1)
+        zv8_imas=zv8*(-1)
+        zv9_imas=zv9*(-1)
+        zv10_imas=zv10*(-1)
+        zv11_imas=zv11*(-1)
+
+        Curr_vs1_imas=Curr_vs1*(-1)
+        Curr_vs2_imas=Curr_vs2*(-1)
+
+        U_vs1_imas=U_vs1*(-1)
+        U_vs2_imas=U_vs2*(-1)
+c******* End of Sign changing ******
+
+	  i_en=i_en+1
+
 
 c        if(kpr.eq.1)print*,'from write coef_imp1 coef_imp2',coef_imp1,coef_imp2
 c        if(kpr.eq.1)print*,'w_imp w_imp2 w_imp3',w_imp,w_imp2,w_imp3
 
+
+c--------------------
+
+        tpl_but=tokbut*1.e-3
+        tpl_beam=tokuv*1.e-3
+        tpl_ecd=tokae*1.e-3
+
+        tpl_ohm=tpl*1.e-3-( tpl_but+tpl_beam+tpl_ecd)
+        
+!        tpl_ohm=-tokel*1.e-3
+
+        r_lh_new=(wdop+w_alfa+Pohm-w_imp-wtor-qc)/p_hl
+        if(kpr.eq.1)print*,'r_lh_new=',r_lh_new
+        
+        if(kpr.eq.1)print*,'tpl_but tpl_beam tpl_ecd tpl_ohm ',
+     *  tpl_but,tpl_beam,tpl_ecd,tpl_ohm
+        
+        if(i_en.eq.1)then
+           open (unit=41,file='plasma1.dat',form='formatted')
+           write(41,*)'tt,tpl,tpl_ohm,tpl_but,tpl_ecd,tpl_beam'
+        else
+           open (unit=41,file='plasma1.dat',access='append',
+     *     form='formatted')           
+        end if
+           write (41,5002)tt*1.d-3,tpl*1.d-3,tpl_ohm,tpl_but,
+     *   tpl_ecd,tpl_beam
+           close (41)
+
+
+c-----------------
+
+
+	call tri_filter(tri)
+
+
 	t=tt/1.e3
 	p_cond=wel+wio
         coef_He=palf/pcch
+
+        if(wdop.lt.1.e-5)qtep=0.
         
         pohm=wdh
-        psi_ext=psiext_av
 
-        if(kpr.eq.1)print*,'from write_plasma ='
+c*** Begin of sign changing ***
+        psiext_av_imas=psiext_av*(-1)
+        psi_pf_imas=psi_pf*(-1)
+        psi_ax_imas=psi_ax*(-1)
+c*** End of sign changing ***
+
+cc        psi_ext=psiext_av
+        psi_ext=psiext_av_imas
+        
+        Emag=psipl_av*tpl/1000./2.
+
+        pl_inductance=2.*Emag/tpl**2
+
+c        print*,'emag  pl_inductance=',Emag,pl_inductance
+c        print*,'tri=',tri
+
+c        read(*,*)
+
+      
 
 !        if(kpr.eq.1)print*,'!!!w_imp2,w_imp3,w_imp4,w_imp5',
 !     *   w_imp2,w_imp3,w_imp4,w_imp5
@@ -68,12 +171,51 @@ c        if(kpr.eq.1)print*,'w_imp w_imp2 w_imp3',w_imp,w_imp2,w_imp3
         Ptotal=Pvs1+Pvs2+pf1*zv1+pf2*zv2+pf3*zv3+pf4*zv4+
      *  pf5*zv5+pf6*zv6+pf7*zv7+pf8*zv8+pf9*zv9+pf10*zv10+pf11*zv11
 
+
+        if(i_en.eq.1)then
+           open (unit=41,file='Pvs3.dat',form='formatted')
+           read(41,*)
+           read (41,*)Pvs3
+           close (41)
+        end if
+
+
+        if(kpr.eq.1)print*,'Curr_vs3 U_vs3 Pvs3',Curr_vs3,U_vs3,Pvs3
+c        read(*,*)
+
+
+      Pvs30= Pvs3
+ 
+      Tf=0.05
+
+      coef_t=Tf/(tay*1.e-3)
+
+ !     (Pvs3-Pvs30)*coef_t+Pvs3= Curr_vs3*U_vs3
+
+      Pvs3=(Pvs30*coef_t+ Curr_vs3*U_vs3)/(1.+coef_t)
+      
+      
+      Pvs3_rg=Pvs3
+      
+      if(Pvs3_rg .gt. 5.)Pvs3_rg=5.
+      if(Pvs3_rg .lt. 0.)Pvs3_rg=0.
+      
+        if(kpr.eq.1)print*,' Pvs3 Pvs3_rg=',Pvs3,Pvs3_rg
+
+      P_rg=Ptotal+Pvs3_rg
+
+c	open (unit=41,file='Pvs3.dat',
+c     *	form='formatted')
+c	write(41,*)'Pvs3 '
+c	write (41,*)Pvs3
+c	close (41)
+
+
 	call bp_gribov(bz_left,bz_right)
 
 	   open (unit=65,file='plasma.dat',
      *	access='append',form='formatted')
 
-	i_en=i_en+1
         if(i_en.eq.1)then
 
 	   write(65,*)
@@ -88,7 +230,7 @@ c        if(kpr.eq.1)print*,'w_imp w_imp2 w_imp3',w_imp,w_imp2,w_imp3
      *  bz_left,bz_right,
      *  dist_min_xx,Rdist_min_xx,Zdist_min_xx,
      *  coef_He,coef_imp1,coef_imp2,
-     *  dNB_xx'
+     *  dNB_xx,dist2,dist1'
 
 c     * wdop,qtep,w_fusion,pf2,pf6,cs2L,cs1,cs2U,volume 
 c     * tokc zvel'
@@ -100,11 +242,11 @@ c     * tokc zvel'
 		end do	
 					
 	wr(1)=t
-	wr(2)=tpl/1000.
+	wr(2)=tpl_imas/1000.
 	wr(3)=rout/100.
 	wr(4)=eu/100.
 	wr(5)=eksk
-	wr(6)=triangularity !! %%% one needs to do it 
+	wr(6)=tri   !! %%% one needs to do it 
 	wr(7)=v
 	wr(8)=s
 	wr(9)=s_plasma
@@ -131,38 +273,38 @@ c     * tokc zvel'
 	wr(30)=vs
 	wr(31)=c_e_old
 	wr(32)=psi_ext !!!! %%% one needs to need to add tcam to psi_pf 
-	wr(33)=psi_pf
-	wr(34)=psi_ax
-	wr(35)=pf1
-	wr(36)=pf2
-	wr(37)=pf3
-	wr(38)=pf4
-	wr(39)=pf5
-	wr(40)=pf6
-	wr(41)=pf7
-	wr(42)=pf8
-	wr(43)=pf9
-	wr(44)=pf10
-	wr(45)=pf11
-	wr(46)=zv1
-	wr(47)=zv2
-	wr(48)=zv3
-	wr(49)=zv4
-	wr(50)=zv5
-	wr(51)=zv6
-	wr(52)=zv7
-	wr(53)=zv8
-	wr(54)=zv9
-	wr(55)=zv10
-	wr(56)=zv11
-	wr(57)=Curr_vs1
-	wr(58)=Curr_vs2
+	wr(33)=psi_pf_imas
+	wr(34)=psi_ax_imas
+	wr(35)=pf1_imas
+	wr(36)=pf2_imas
+	wr(37)=pf3_imas
+	wr(38)=pf4_imas
+	wr(39)=pf5_imas
+	wr(40)=pf6_imas
+	wr(41)=pf7_imas
+	wr(42)=pf8_imas
+	wr(43)=pf9_imas
+	wr(44)=pf10_imas
+	wr(45)=pf11_imas
+	wr(46)=zv1_imas
+	wr(47)=zv2_imas
+	wr(48)=zv3_imas
+	wr(49)=zv4_imas
+	wr(50)=zv5_imas
+	wr(51)=zv6_imas
+	wr(52)=zv7_imas
+	wr(53)=zv8_imas
+	wr(54)=zv9_imas
+	wr(55)=zv10_imas
+	wr(56)=zv11_imas
+	wr(57)=Curr_vs1_imas
+	wr(58)=Curr_vs2_imas
 	wr(59)=Curr_vs3
-	wr(60)=U_vs1
-	wr(61)=U_vs2
+	wr(60)=U_vs1_imas
+	wr(61)=U_vs2_imas
 	wr(62)=U_vs3
 	wr(63)=Ptotal
-	wr(64)=Pgrid   !!!!! we will do it later
+	wr(64)=P_rg   !!!!! we will do it later
 	wr(65)=Pohm     !!!! %%% one needs to add Ohmic power in MW
 	wr(66)=wdop
 	wr(67)=w_alfa
@@ -171,37 +313,43 @@ c     * tokc zvel'
 	wr(70)=qtep
 	wr(71)=wdop+w_alfa+Pohm   !!! take care about Pohm !
 	wr(72)=p_hl
-	wr(73)=r_lh
+cccccc	wr(73)=r_lh
+	wr(73)=r_lh_new
 	wr(74)=Emag  !!! we will do it later
 	wr(75)=pl_inductance !!! we will do it later 
 	wr(76)=wen2/1000.
-	wr(77)=coef_He
-	wr(78)=coef_imp1
-	wr(79)=coef_imp2
-	wr(80)=coef_imp3
-	wr(81)=coef_imp4
-	wr(82)=wtor
-	wr(83)=qc
-	wr(84)=w_Be
-	wr(85)=w_W
-	wr(86)=w_Ar
-	wr(87)=w_Ne
-	wr(88)=w_imp
-	wr(89)=w_imp+wtor+qc
-	wr(90)=qtep
-	wr(91)=tene/1000.
-	wr(92)=rsep2/100.
-	wr(93)=zsep2/100.
-	wr(94)=gaps(n_ga+1)/100.
-	wr(95)=rsep2_r/100.
-	wr(96)=zsep2_r/100.
-	wr(97)=bz_left
-	wr(98)=bz_right
-	wr(99)=dist_min_xx/100.
-	wr(100)=Rdist_min_xx/100.
-	wr(101)=Zdist_min_xx/100.
+        wr(77)=-(uact+1.e-8)/wr(2)
+        wr(78)=wr(75)/wr(77)*1.e6
 
-        write(65,5002)(wr(i),i=1,101),dNB_xx
+	wr(79)=coef_He
+	wr(80)=coef_imp1
+	wr(81)=coef_imp2
+	wr(82)=coef_imp3
+	wr(83)=coef_imp4
+	wr(84)=wtor
+	wr(85)=qc
+	wr(86)=w_Be
+	wr(87)=w_W
+	wr(88)=w_Ar
+	wr(89)=w_Ne
+	wr(90)=w_imp
+	wr(91)=w_imp+wtor+qc
+	wr(92)=p_sep_tot
+	wr(93)=tene/1000.
+	wr(94)=rsep2/100.
+	wr(95)=zsep2/100.
+	wr(96)=gaps(n_ga+1)/100.
+	wr(97)=rsep2_r/100.
+	wr(98)=zsep2_r/100.
+	wr(99)=bz_left
+	wr(100)=bz_right
+	wr(101)=dist_min_xx/100.
+	wr(102)=Rdist_min_xx/100.
+	wr(103)=Zdist_min_xx/100.
+	wr(104)=dist2/100.
+	wr(105)=dist1/100.
+        
+        write(65,5002)(wr(i),i=1,105),dNB_xx
 
  5002   format (150(1pe14.6))
 

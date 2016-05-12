@@ -6,13 +6,15 @@ c!!!	common
 c!!!     *  /eq8/jbound,xbound(ntet),ybound(ntet),alfa0_xx
 
         call min_dist_c_pfw(jbound,xbound,ybound,
-     &       dNB_xx)
+     &       dNB_xx,psep,
+     *  rp1,zp1,dist1,rp2,zp2,dist2)
 
         return
         end
     
 
-        subroutine min_dist_c_pfw(NB,Rbound,Zbound,dNB)
+        subroutine min_dist_c_pfw(NB,Rbound,Zbound,dNB,psep,
+     *  rp1,zp1,dist1,rp2,zp2,dist2)
 	include 'double.inc'
 
 	dimension Rbound(NB),Zbound(NB),
@@ -41,6 +43,14 @@ c     &  -225.7,-265.2,-295./
      &	423.0,355.26,282.22,207.47,168.47,116.0,10.77,-87.86,-179.58,
      &  -225.44,-264.89,-304.34/
 
+
+      include 'parf2'                                                 
+      common /sep_points/n_sep,x_sep(mu1),y_sep(mu1)
+
+      dimension pdd(6),rpoints(mu1),zpoints(mu1),psip(mu1)
+
+
+
 5000	format(4(1x,1pe14.7))
 
 
@@ -56,7 +66,7 @@ c     &  -225.7,-265.2,-295./
            nd=d/ds
            pnd=float(nd)
            
-!           if(kpr.eq.1)print*,'!!!i nd d ds',i,nd,d,ds
+!           print*,'!!!i nd d ds',i,nd,d,ds
            
            do jj=1,nd
            Rbb=Rbound(i)+(Rbound(i+1)-Rbound(i))*float(jj-1)/pnd
@@ -74,15 +84,205 @@ c     &  -225.7,-265.2,-295./
         enddo  ! i
         
 
-!        if(kpr.eq.1)print *,' j jj_min ii_min dNB(j) rbb r rb zbb z zb',
+!        print *,' j jj_min ii_min dNB(j) rbb r rb zbb z zb',
 !     *  j,jj_min,ii_min,dNB(j),
 !     *  rbb_min,rlim2(j),rbound(ii_min),zbb_min,zlim2(j),zbound(ii_min)
 
 
         enddo  ! j
+
+      rp1=99999.
+      zp1=0.
+      d1=rp1
+      
+      rp2=99999.
+      zp2=0.
+      d2=rp2
+
+      R2=5.5642e2
+      Z2= -3.924e2
+      R1=5.5642e2
+      Z1=-4.5743e2           
+
+           d=sqrt((R2-R1)**2+(Z2-Z1)**2)
+           nd=d/ds
+           pnd=float(nd)
            
+c           print*,'!!!nd1 d1 ds',nd,d,ds
+           
+           do jj=1,nd
+           rpoints(jj)=R1+(R2-R1)*float(jj-1)/pnd
+           zpoints(jj)=Z1+(Z2-Z1)*float(jj-1)/pnd
+           urr=rpoints(jj)
+           vrr=zpoints(jj)
+           call boxd(urr,vrr,pdd,ier)
+           psip(jj)=pdd(1)	
+!           print*,'!!!jj psep  psip',jj,psep,psip(jj)
+           end do
 
+       ind_p=0
+       do jj=2,nd
+       
+       if( (psip(jj-1)-psep)*(psip(jj)-psep).le.0.d0)then
+       ind_p=ind_p+1
+       t_coef=(psep-psip(jj-1))/( psip(jj)-psip(jj-1) )       
+       rp=rpoints(jj-1)+t_coef*(rpoints(jj)-rpoints(jj-1))
+       zp=zpoints(jj-1)+t_coef*(zpoints(jj)-zpoints(jj-1))       
+       end if
+      end do
 
+c       print*,'!!!ind_p1',ind_p
+     
+      if(ind_p.ne.0)then
+      rp1=rp
+      zp1=zp
+      d1=sqrt((rp1-R1)**2+(zp1-Z1)**2)
+      end if
+      
+      if(ind_p.eq.0)then
+      
+      alf=100./d
+      
+      R3=R1+(R1-R2)*alf
+      Z3=Z1+(Z1-Z2)*alf
+      
+c      print*,'!!!R3 Z3',R3,Z3
 
+      R2=R3
+      Z2=Z3
+
+           d=sqrt((R2-R1)**2+(Z2-Z1)**2)
+           nd=d/ds
+           pnd=float(nd)
+           
+c           print*,'!!!nd1 d1 ds',nd,d,ds
+           
+           do jj=1,nd
+           rpoints(jj)=R1+(R2-R1)*float(jj-1)/pnd
+           zpoints(jj)=Z1+(Z2-Z1)*float(jj-1)/pnd
+           urr=rpoints(jj)
+           vrr=zpoints(jj)
+           call boxd(urr,vrr,pdd,ier)
+           psip(jj)=pdd(1)	
+!           print*,'!!!jj psep  psip',jj,psep,psip(jj)
+           end do
+
+       ind_p=0
+       do jj=2,nd
+       
+       if( (psip(jj-1)-psep)*(psip(jj)-psep).le.0.d0)then
+       ind_p=ind_p+1
+       t_coef=(psep-psip(jj-1))/( psip(jj)-psip(jj-1) )       
+       rp=rpoints(jj-1)+t_coef*(rpoints(jj)-rpoints(jj-1))
+       zp=zpoints(jj-1)+t_coef*(zpoints(jj)-zpoints(jj-1))       
+       end if
+      end do
+
+c      print*,'!!!ind_p2',ind_p
+      
+      if(ind_p.ne.0)then
+      rp1=rp
+      zp1=zp
+      d1=-sqrt((rp1-R1)**2+(zp1-Z1)**2)
+      end if
+            
+      end if ! ind_p =0
+
+        
+
+      R2=4.4745e2     
+      Z2=-3.2775e2
+      R1=4.1624e2
+      Z1=-3.9175e2
+
+           d=sqrt((R2-R1)**2+(Z2-Z1)**2)
+           nd=d/ds
+           pnd=float(nd)
+           
+c           print*,'!!!nd2 d2 ds',nd,d,ds
+           
+           do jj=1,nd
+           rpoints(jj)=R1+(R2-R1)*float(jj-1)/pnd
+           zpoints(jj)=Z1+(Z2-Z1)*float(jj-1)/pnd
+           urr=rpoints(jj)
+           vrr=zpoints(jj)
+           call boxd(urr,vrr,pdd,ier)
+           psip(jj)=pdd(1)	
+!           print*,'!!!jj psep  psip',jj,psep,psip(jj)
+           end do
+
+       ind_p=0
+       do jj=2,nd
+       
+       if( (psip(jj-1)-psep)*(psip(jj)-psep).le.0.d0)then
+       ind_p=ind_p+1
+       t_coef=(psep-psip(jj-1))/( psip(jj)-psip(jj-1) )       
+       rp=rpoints(jj-1)+t_coef*(rpoints(jj)-rpoints(jj-1))
+       zp=zpoints(jj-1)+t_coef*(zpoints(jj)-zpoints(jj-1))       
+       end if
+      end do
+
+c       print*,'!!!ind_p1',ind_p
+      if(ind_p.ne.0)then
+      rp2=rp
+      zp2=zp
+      d2=sqrt((rp2-R1)**2+(zp2-Z1)**2)
+      end if
+      
+      if(ind_p.eq.0)then
+
+       alf=100./d
+      
+      R3=R1+(R1-R2)*alf
+      Z3=Z1+(Z1-Z2)*alf
+      
+c      print*,'!!!R3 Z3',R3,Z3
+
+      R2=R3
+      Z2=Z3
+
+           d=sqrt((R2-R1)**2+(Z2-Z1)**2)
+           nd=d/ds
+           pnd=float(nd)
+           
+c           print*,'!!!nd2 d2 ds',nd,d,ds
+           
+           do jj=1,nd
+           rpoints(jj)=R1+(R2-R1)*float(jj-1)/pnd
+           zpoints(jj)=Z1+(Z2-Z1)*float(jj-1)/pnd
+           urr=rpoints(jj)
+           vrr=zpoints(jj)
+           call boxd(urr,vrr,pdd,ier)
+           psip(jj)=pdd(1)	
+!           print*,'!!!jj psep  psip',jj,psep,psip(jj)
+           end do
+
+        ind_p=0
+       do jj=2,nd
+       
+       if( (psip(jj-1)-psep)*(psip(jj)-psep).le.0.d0)then
+       ind_p=ind_p+1
+       t_coef=(psep-psip(jj-1))/( psip(jj)-psip(jj-1) )       
+       rp=rpoints(jj-1)+t_coef*(rpoints(jj)-rpoints(jj-1))
+       zp=zpoints(jj-1)+t_coef*(zpoints(jj)-zpoints(jj-1))       
+       end if
+       end do
+ 
+c       print*,'!!!ind_p2',ind_p
+      
+      if(ind_p.ne.0)then
+      rp2=rp
+      zp2=zp
+      d2=-sqrt((rp2-R1)**2+(zp2-Z1)**2)
+      end if
+      
+       end if ! ind_p=0
+      
+      dist1=d1
+      dist2=d2
+         
+c      print*,'!!!rp1 zp1 d1 ',rp1,zp1,dist1
+c      print*,'!!!rp2 zp2 d2',rp2,zp2,dist2
+          
         return
         end
