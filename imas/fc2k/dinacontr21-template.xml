@@ -324,7 +324,7 @@
     </TupleP>
   </tupleParams>
   <actor>dinacontr21</actor>
-  <actorFolder>eu/itm/dinacontr21</actorFolder>
+  <actorFolder>org/iter/imas/dina</actorFolder>
   <ualFolder>$IMAS_PREFIX</ualFolder>
   <returnType serialization="custom">
     <unserializable-parents/>
