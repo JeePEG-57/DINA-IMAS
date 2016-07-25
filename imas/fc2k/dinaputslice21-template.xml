@@ -680,7 +680,7 @@
     </TupleP>
   </returnType>
   <semantic>ITER</semantic>
-  <keplerFolder>$HOME/kepler</keplerFolder>
+  <keplerFolder>$KEPLER</keplerFolder>
   <ptFolder>empty</ptFolder>
   <homeFolder>$HOME</homeFolder>
   <compiler>gfortran</compiler>
