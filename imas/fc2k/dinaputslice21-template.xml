@@ -378,7 +378,7 @@
     </TupleP>
   </tupleParams>
   <actor>dinaputslice21</actor>
-  <actorFolder>org/iter/imas/dina</actorFolder>
+  <actorFolder>org/iter/imas/dinaputslice21</actorFolder>
   <ualFolder>$IMAS_PREFIX</ualFolder>
   <returnType serialization="custom">
     <unserializable-parents/>

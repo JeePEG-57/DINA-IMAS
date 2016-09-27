@@ -405,7 +405,7 @@
     </TupleP>
   </tupleParams>
   <actor>dinaimas21</actor>
-  <actorFolder>org/iter/imas/dina</actorFolder>
+  <actorFolder>org/iter/imas/dinaimas21</actorFolder>
   <ualFolder>$IMAS_PREFIX</ualFolder>
   <returnType serialization="custom">
     <unserializable-parents/>
