@@ -88,6 +88,25 @@ write(*,*)  'em_coupling is written'
 
 call ids_put(idx0,"pf_active",pf_active0)
 write(*,*)  'pf_active is written'
+!write(*,*)  '!!!ids_copy pf_active'
+!write(*,*)  size(pf_active0%coil)
+!do i=1,size(pf_active0%coil)
+!        allocate(pf_active0%coil(i)%current%data(1))
+!                allocate(pf_active0%coil(i)%voltage%data(1))
+!        allocate(pf_active0%coil(i)%current%time(1))
+!                allocate(pf_active0%coil(i)%voltage%time(1))
+!enddo
+!                allocate(pf_active0%time(1))
+!                pf_active0%ids_properties%homogeneous_time = 1
+!do i=1,size(pf_active0%coil)
+!                    pf_active0%coil(i)%current%data(1) = 0.5
+!                        !pf_active0%coil(i)%current%time(1) = 1.0
+!                    pf_active0%coil(i)%voltage%data(1) = 100.
+!                        !pf_active0%coil(i)%voltage%time(1) = 1.0
+!end do
+!                pf_active0%time(1) = 1.0
+!call ids_copy(pf_active0,pf_active)
+!write(*,*)  '!!!ids_copy pf_active done'
 
 call ids_put(idx0,"pf_passive",pf_passive0)
 write(*,*)  'pf_passive is written'
@@ -138,6 +157,24 @@ write(*,*) em_coupling1%mutual_passive_active(i1,i2)
 
 
 call ids_get(idx0,'pf_active',pf_active1)
+!write(*,*)  '!!!ids_copy pf_active'
+!write(*,*)  size(pf_active1%coil)
+!do i=1,size(pf_active1%coil)
+!        allocate(pf_active1%coil(i)%current%data(1))
+!                allocate(pf_active1%coil(i)%voltage%data(1))
+!        allocate(pf_active1%coil(i)%current%time(1))
+!                allocate(pf_active1%coil(i)%voltage%time(1))
+!enddo
+!                allocate(pf_active1%time(1))
+!                pf_active1%ids_properties%homogeneous_time = 1
+!do i=1,size(pf_active1%coil)
+!                    pf_active1%coil(i)%current%data(1) = 0.5
+!                        pf_active1%coil(i)%voltage%data(1) = 100.
+!end do
+!                pf_active1%time(1) = 1.0
+!write(*,*)  size(pf_active1%coil)
+!call ids_copy(pf_active1,pf_active)
+!write(*,*)  '!!!ids_copy pf_active done'
 call ids_get(idx0,'pf_passive',pf_passive1)
 
 write(*,*) 'pfs resistances'

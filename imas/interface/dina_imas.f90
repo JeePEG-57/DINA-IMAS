@@ -273,6 +273,7 @@ input_2(i)=arr_in1(n_input1+i)
 end do
 
 
+!write(*,*) '!!!dina0 enter'
 	call dina_0(time_8,tt_8,tay_8,key,vec, &
      &	input_1,input_2,input_3, &
      &	output_1,output_2,output_3,output_4,ng)
@@ -280,6 +281,7 @@ end do
 
 
 
+!write(*,*) '!!!dina_outp enter'
 	call dina_outp(n,  &
      & tpl,uli,v,s_plasma,psi_ax,rmag,zmag,  &
      & q_ax,q_95,rs0,bt0,wen2,tt,  &
@@ -326,8 +328,12 @@ end do
 	cpu_old = cpu_new
 
 
+!write(*,*) '!!!ids_copy pf_active0 enter'
 call ids_copy(pf_active0,pf_active)
+!write(*,*) '!!!ids_copy pf_active0 exit'
+!write(*,*) '!!!ids_copy pf_passive0 enter'
 call ids_copy(pf_passive0,pf_passive)
+!write(*,*) '!!!ids_copy pf_passive0 exit'
 
 
 
@@ -335,8 +341,10 @@ print *,' nact=',nact
 do i=1,nact
 
         allocate(pf_active%coil(i)%current%data(1))
+        allocate(pf_active%coil(i)%current%time(1))
 
         allocate(pf_active%coil(i)%voltage%data(1))
+        allocate(pf_active%coil(i)%voltage%time(1))
 enddo
 
 allocate(pf_active%time(1))
