@@ -1,1 +1,0 @@
-mex -v COMPFLAGS#"$COMPFLAGS /iface:cref" -c n_dina_90.f -f df60opts.bat

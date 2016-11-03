@@ -16,15 +16,20 @@
 
 	dimension vchopper_x2(kint),shape_out(kint)
 
-	character *30 apr                                                      
+	character *20 apr,filename
+
 	dimension a_print(200)
 
 	common /c_data_in_time2/i_c_data,i_c_data1       
 
+      common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
 !-----------------------------------  inputs---
 !     *  vchopper_x2,tpl_x2,tt_dw_x2)
 
 	
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+
       i_en=i_en+1
 
       
@@ -67,7 +72,138 @@
 
       if(i_en.eq.1)then
       call vic_read_gaps()
+
+        open (unit=1,file='tran_times.dat',form='formatted')
+        read (1,*)
+        read (1,*)tt_dina
+        read (1,*)
+        read (1,*)t_ret
+        close ( unit=1)       
+
       end if
+      
+!      tt_dina=1352.
+
+      print *,' tt== tt_dina==',tt,tt_dina
+
+
+
+      if(tt.gt.tt_dina)then
+!      if(tt.gt.2250.)then
+!      if(tt.gt.5250.)then
+      
+      k_ener_ext=1
+      k_dens_ext=1
+      k_ajb_ext=1
+      
+      nn2=n
+      
+!      if(tt.gt.tt_kavin)then
+
+      call transp500(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+ 	
+
+
+	do i=1,n
+	
+	qde0(I)=c_output1(i)
+	qdq0(I)=c_output2(i)
+	
+      end do
+
+      DO I=1,n
+    	c_input1(I)=qde0(i)
+    	c_input2(I)=qdq0(i)
+	end do
+
+      apr='QDE0-' 
+      if(kpr.eq.1)print 71,apr,(QDE0(i),i=1,nn2) 
+      apr='QDQ0-' 
+      if(kpr.eq.1)print 71,apr,(QDQ0(i),i=1,nn2) 
+      
+      call transp100(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+ 	
+	do i=1,n
+	
+	TE0(I)=c_output1(i)
+	Tq0(I)=c_output2(i)
+	
+      TE0_tran(I)=TE0(I)
+	TQ0_tran(I)=Tq0(I)
+      end do
+
+      apr='te0-' 
+      if(kpr.eq.1)print 71,apr,(te0(i),i=1,nn2) 
+      apr='tq0-' 
+      if(kpr.eq.1)print 71,apr,(tq0(i),i=1,nn2) 
+
+
+      call transp200(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!------------------------------------outputs
+     *  c_output1,c_output2,c_output3)
+ 	
+	do i=1,n
+	
+	pd0(I)=c_output1(i)
+	pt0(I)=c_output2(i)
+	pne(I)=c_output3(i)
+	
+      pd0_tran(I)=pd0(I)
+	pt0_tran(I)=pt0(I)
+	pne_tran(I)=pne(I)
+	
+      end do
+      apr='pd0-' 
+      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,nn2) 
+      apr='pt0-' 
+      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,nn2) 
+
+      call transp300(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+ 	
+	do i=1,n
+	
+	ajb(I)=c_output1(i)
+	sigk(I)=c_output2(i)
+	
+      ajb_tran(I)=ajb(I)
+	sigk_tran(I)=sigk(I)
+      end do
+
+      apr='ajb-' 
+      if(kpr.eq.1)print 71,apr,(ajb(i),i=1,nn2) 
+      apr='sigk-' 
+      if(kpr.eq.1)print 71,apr,(sigk(i),i=1,nn2) 
+
+
+      call transp400(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+ 	
+	do i=1,n
+		aj0(I)=c_output1(i)
+      end do
+      apr='-aj0-' 
+      if(kpr.eq.1)print 71,apr,(aj0(i),i=1,nn2) 
+
+ 	end if
+
+      print *,' tt==tt_kavin=',tt,tt_kavin
 
       
       if(tt.le.tt_kavin)then
@@ -77,9 +213,11 @@
  	omega=0.33d0
  	call equil2()
  	end if
+
  	
 !      if(tt.gt.4.e3)stop
 
+	if(kpr.eq.1)print*,'!!!tt tay t_end',tt,tay,t_end
  	
       if(tt.gt.t_end+tay)then 	
 c  i_fil=0  old case without reconstruction....
@@ -93,9 +231,13 @@ c  i_fil=0  old case without reconstruction....
 	tt=tt+tay
 
 
+      call write_tran1()
+
+
+
 	if(kpr.eq.1)print*,'!!!tt tay ntay',tt,tay,ntay
 
-	if(kpr.eq.1)print*,'@@@@@from main  next',next
+	if(kpr.eq.1)print*,'@@@@@from main  next n ',next,n
 
 	if(kpr.eq.1)print*,'put_signals'
 
@@ -480,3 +622,345 @@ c------------
 	return
       end
 
+
+	subroutine write_tran1()
+      
+      include 'double.inc'
+	include 'new_com.inc'                                                  
+
+	character * 20 apr,filename
+
+71	format(20x,a6/,(6(1pe10.3)))
+
+
+      filename='metric.dat'
+
+      nn2=n
+c-------
+           open (unit=41,file=filename,form='formatted')           
+           write (41,5000)(a(i),i=1,nn2)
+           write (41,5000)(te0(i),i=1,nn2)
+           write (41,5000)(tq0(i),i=1,nn2)
+           write (41,5000)(pd0(i),i=1,nn2)
+           write (41,5000)(pt0(i),i=1,nn2)
+           write (41,5000)(ph0(i),i=1,nn2)
+           write (41,5000)(pne(i),i=1,nn2)
+           write (41,5000)(q(i),i=1,nn2)
+           write (41,5000)(zeff(i),i=1,nn2)
+           write (41,5000)(dm0(i),i=1,nn2)
+           write (41,5000)(dfmax(i),i=1,nn2)
+           write (41,5000)(vi(i),i=1,nn2)
+           write (41,5000)(a_m(i),i=1,nn2)
+           write (41,5000)(r_m(i),i=1,nn2)
+           write (41,5000)(gra1(i),i=1,nn2)
+           write (41,5000)(gra2(i),i=1,nn2)
+           write (41,5000)(bsq(i),i=1,nn2)
+           write (41,5000)(fasp(i),i=1,nn2)
+           write (41,5000)(volt(i),i=1,nn2)
+           write (41,5000)(tok1(i),i=1,nn2)
+           write (41,5000)(f(i),i=1,nn2)
+           write (41,5000)(spo(i),i=1,nn2)
+
+           close (41)
+
+      kpr2=0
+      if(kpr2.eq.1)then
+      
+      apr='a-' 
+      if(kpr.eq.1)print 71,apr,(a(i),i=1,nn2) 
+      apr='te0-' 
+      if(kpr.eq.1)print 71,apr,(te0(i),i=1,nn2) 
+      apr='tq0-' 
+      if(kpr.eq.1)print 71,apr,(tq0(i),i=1,nn2) 
+      apr='pd0-' 
+      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,nn2) 
+      apr='pt0-' 
+      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,nn2) 
+      apr='ph0-' 
+      if(kpr.eq.1)print 71,apr,(ph0(i),i=1,nn2) 
+      apr='pne-' 
+      if(kpr.eq.1)print 71,apr,(pne(i),i=1,nn2) 
+      apr='q-' 
+      if(kpr.eq.1)print 71,apr,(q(i),i=1,nn2) 
+      apr='zeff-' 
+      if(kpr.eq.1)print 71,apr,(zeff(i),i=1,nn2) 
+      apr='dm0-' 
+      if(kpr.eq.1)print 71,apr,(dm0(i),i=1,nn2) 
+      apr='dfmax-' 
+      if(kpr.eq.1)print 71,apr,(dfmax(i),i=1,nn2) 
+      apr='vi-' 
+      if(kpr.eq.1)print 71,apr,(vi(i),i=1,nn2) 
+      apr='a_m-' 
+      if(kpr.eq.1)print 71,apr,(a_m(i),i=1,nn2) 
+      apr='r_m-' 
+      if(kpr.eq.1)print 71,apr,(r_m(i),i=1,nn2) 
+      apr='gra1-' 
+      if(kpr.eq.1)print 71,apr,(gra1(i),i=1,nn2) 
+      apr='gra2-' 
+      if(kpr.eq.1)print 71,apr,(gra2(i),i=1,nn2) 
+      apr='bsq-' 
+      if(kpr.eq.1)print 71,apr,(bsq(i),i=1,nn2) 
+      apr='fasp-' 
+      if(kpr.eq.1)print 71,apr,(fasp(i),i=1,nn2) 
+      apr='volt-' 
+      if(kpr.eq.1)print 71,apr,(volt(i),i=1,nn2) 
+      apr='tok1-' 
+      if(kpr.eq.1)print 71,apr,(tok1(i),i=1,nn2) 
+      apr='f-' 
+      if(kpr.eq.1)print 71,apr,(f(i),i=1,nn2) 
+      apr='spo-' 
+      if(kpr.eq.1)print 71,apr,(spo(i),i=1,nn2) 
+
+      end if
+
+
+ 5000 format (50(1pe14.5))
+
+      if(kpr.eq.1)print*,'END of writing tran1'
+
+	return
+      end
+	subroutine transp100(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+
+      include 'double.inc'
+
+      dimension c_input1(*),c_input2(*)
+      dimension c_output1(*),c_output2(*)
+
+      dimension te0(200),tq0(200)
+
+
+	character *20 apr,filename
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+!------------------------------------inputs
+
+      open (unit=61,file='dina_transp1.dat',form='formatted')
+
+      read (61,*)n
+
+      do i=1,n
+      read (61,*) aaa
+      enddo
+
+      do i=1,n
+      read (61,*) te0(i)
+      enddo
+      do i=1,n
+      read (61,*) tq0(i)
+      enddo
+
+      close (61)
+
+      DO I=1,n
+    	c_output1(I)=te0(i)
+    	c_output2(I)=tq0(i)
+	end do
+
+5000  format (50(1pe14.5))
+
+
+
+      return
+      end
+	subroutine transp200(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
+!------------------------------------outputs
+     *  c_output1,c_output2,c_output3)
+
+      include 'double.inc'
+
+      dimension c_input1(*),c_input2(*)
+      dimension c_output1(*),c_output2(*),c_output3(*)
+
+      dimension pd0(200),pt0(200),pne(200)
+
+
+	character *20 apr,filename
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+!------------------------------------inputs
+
+      open (unit=61,file='dina_transp2.dat',form='formatted')
+
+      read (61,*)n
+
+      do i=1,n
+      read (61,*) aaa
+      enddo
+      do i=1,n
+      read (61,*) pne(i)
+      enddo
+      do i=1,n
+      read (61,*) pd0(i)
+      enddo
+      do i=1,n
+      read (61,*) pt0(i)
+      enddo
+
+      close (61)
+
+      DO I=1,n
+    	c_output1(I)=pd0(i)
+    	c_output2(I)=pt0(i)
+   	c_output3(I)=pne(i)
+	end do
+
+5000  format (50(1pe14.5))
+
+      return
+      end
+	subroutine transp300(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+
+
+      include 'double.inc'
+
+      dimension c_input1(*),c_input2(*)
+      dimension c_output1(*),c_output2(*)
+
+      dimension ajb(200),sigk(200)
+
+
+	character *20 apr,filename
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+!------------------------------------inputs
+
+      open (unit=61,file='dina_transp3.dat',form='formatted')
+
+      read (61,*)n
+
+      do i=1,n
+      read (61,*) aaa
+      enddo
+
+      do i=1,n
+      read (61,*) ajb(i)
+      enddo
+      do i=1,n
+      read (61,*) sigk(i)
+      enddo
+
+      close (61)
+
+      DO I=1,n
+    	c_output1(I)=ajb(i)
+    	c_output2(I)=sigk(i)
+	end do
+
+5000  format (50(1pe14.5))
+
+
+
+      return
+      end
+	subroutine transp400(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+
+      include 'double.inc'
+
+      dimension c_input1(*),c_input2(*)
+      dimension c_output1(*),c_output2(*)
+
+      dimension aj0(200)
+
+
+	character *20 apr,filename
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+!------------------------------------inputs
+
+      open (unit=61,file='dina_transp4.dat',form='formatted')
+
+      read (61,*)n
+
+      do i=1,n
+      read (61,*) aaa
+      enddo
+
+      do i=1,n
+      read (61,*) aj0(i)
+      enddo
+
+      close (61)
+
+      DO I=1,n
+    	c_output1(I)=aj0(i)
+	end do
+
+5000  format (50(1pe14.5))
+
+
+
+      return
+      end
+	subroutine transp500(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
+!------------------------------------outputs
+     *  c_output1,c_output2)
+
+
+      include 'double.inc'
+
+      dimension c_input1(*),c_input2(*)
+      dimension c_output1(*),c_output2(*)
+
+      dimension qe0(200),qq0(200)
+
+
+	character *20 apr,filename
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+!------------------------------------inputs
+
+      open (unit=61,file='dina_transp5.dat',form='formatted')
+
+      read (61,*)n
+
+      do i=1,n
+      read (61,*) aaa
+      enddo
+
+      do i=1,n
+      read (61,*) qe0(i)
+      enddo
+      do i=1,n
+      read (61,*) qq0(i)
+      enddo
+
+      close (61)
+
+      DO I=1,n
+    	c_output1(I)=qe0(i)
+    	c_output2(I)=qq0(i)
+	end do
+
+5000  format (50(1pe14.5))
+
+
+
+      return
+      end

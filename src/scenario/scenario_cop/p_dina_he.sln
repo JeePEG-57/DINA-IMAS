@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "p_dina_he", "p_dina_he.vfproj", "{45884C5B-0AC8-4314-AEAF-E42D31CC4E46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{45884C5B-0AC8-4314-AEAF-E42D31CC4E46}.Debug|Win32.ActiveCfg = Debug|Win32
+		{45884C5B-0AC8-4314-AEAF-E42D31CC4E46}.Debug|Win32.Build.0 = Debug|Win32
+		{45884C5B-0AC8-4314-AEAF-E42D31CC4E46}.Release|Win32.ActiveCfg = Release|Win32
+		{45884C5B-0AC8-4314-AEAF-E42D31CC4E46}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

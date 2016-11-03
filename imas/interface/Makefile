@@ -1,11 +1,11 @@
 F90_gfortran=gfortran -w
-COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
+COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none -I$(UAL)/fortraninterface/amd64_gfortran -g  
 #LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
 LIBS_gfortran=`pkg-config imas-gfortran --libs`
 
 f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
 
-TARGETS += test_dina test_dina_to_imas dina_imas.a dina_contr.a dina_put_slice.a out42_for.o n_kav.o n_dina_imas3.o dina_put_slice.o main_1l.o
+TARGETS += dina_imas.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a
 
 LIB_SOURCE1 += dina_imas.o n_dina_imas3.o out42_for.o
 
@@ -33,22 +33,37 @@ test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
 n_dina_imas4.o: n_dina_imas4.f 
-	$(F90_gfortran) $(COPTS_gfortran) -c n_dina_imas4.f
+	$(f2c) -c n_dina_imas4.f
 
 n_dina_imas3.o: n_dina_imas3.f 
-	$(F90_gfortran) $(COPTS_gfortran) -c n_dina_imas3.f
-
-n_dina_imas4.o: n_dina_imas4.f
-	$(F90_gfortran) $(COPTS_gfortran) -c -w n_dina_imas4.f
+	$(f2c) -c n_dina_imas3.f
 
 main_1l.o: main_1l.f 
 	$(f2c) -c main_1l.f
 
 n_kav.o: n_kav.f
-	$(F90_gfortran) $(COPTS_gfortran) -c n_kav.f
+	$(f2c) -c n_kav.f
 
 out42_for.o: out42_for.f
-	$(F90_gfortran) $(COPTS_gfortran) -c out42_for.f
+	$(f2c) -c out42_for.f
+
+tran1.o: tran1.f 
+	$(f2c) -c tran1.f
+
+tran2.o: tran2.f 
+	$(f2c) -c tran2.f
+
+tran3.o: tran3.f 
+	$(f2c) -c tran3.f
+
+tran4.o: tran4.f 
+	$(f2c) -c tran4.f
+
+tran5.o: tran5.f 
+	$(f2c) -c tran5.f
+
+add_dll.o: add_dll.f 
+	$(f2c) -c add_dll.f
 
 dina_imas.a: $(LIB_SOURCE1)
 	@echo "   * $^ -> $@"
@@ -64,10 +79,29 @@ dina_contr.a: $(LIB_SOURCE2)
 	@cp $(DINADIR)/dina_kav.a dina_contr.a
 	ar -rcs dina_contr.a dina_contr.o main_1l.o n_kav.o out42_for.o
 
+dina_transp1.a: dina_transp1.o tran1.o add_dll.o
+	@echo "   * $^ -> $@"
+	ar -rcs dina_transp1.a dina_transp1.o tran1.o add_dll.o
+
+dina_transp2.a: dina_transp2.o tran2.o add_dll.o
+	@echo "   * $^ -> $@"
+	ar -rcs dina_transp2.a dina_transp2.o tran2.o add_dll.o
+
+dina_transp3.a: dina_transp3.o tran3.o add_dll.o
+	@echo "   * $^ -> $@"
+	ar -rcs dina_transp3.a dina_transp3.o tran3.o add_dll.o
+
+dina_transp4.a: dina_transp4.o tran4.o add_dll.o
+	@echo "   * $^ -> $@"
+	ar -rcs dina_transp4.a dina_transp4.o tran4.o add_dll.o
+
+dina_transp5.a: dina_transp5.o tran5.o add_dll.o
+	@echo "   * $^ -> $@"
+	ar -rcs dina_transp5.a dina_transp5.o tran5.o add_dll.o
+
 clean:
 	rm -f *.o
-	rm -f test_dina
-	rm -f test_dina_to_imas
 	rm -f dina_imas.a
 	rm -f dina_contr.a
 	rm -f dina_put_slice.a
+	rm -f dina_transp*.a

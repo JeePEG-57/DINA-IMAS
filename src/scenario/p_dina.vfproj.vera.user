@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<VisualStudioUserFile ProjectCreator="Intel Fortran" Keyword="Console Application - Converted from CVF" Version="11.0" ProjectIdGuid="{45884C5B-0AC8-4314-AEAF-E42D31CC4E46}">
-	<Configurations>
-		<Configuration Name="Debug|Win32" WorkingDirectory="..\matlab_6"/>
-		<Configuration Name="Release|Win32" WorkingDirectory="..\matlab_kav3_4"/></Configurations></VisualStudioUserFile>

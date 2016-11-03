@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application - Converted from CVF" Version="11.0" ProjectIdGuid="{45884C5B-0AC8-4314-AEAF-E42D31CC4E46}">
+	<Platforms>
+		<Platform Name="Win32"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" OutputDirectory="Debug" IntermediateDirectory="Debug" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Diagnostics="diagnosticsDisableAll" LocalVariableStorage="localStorageSave" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386" OutputFile="$(OUTDIR)/p_dina_he.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/p_dina_he.pdb" SubSystem="subSystemConsole" ImportLibrary="" AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib t15_2_win32.lib"/>
+				<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="_DEBUG" Culture="rcRussian" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="" DLLDataFileName="" TypeLibraryName="$(OUTDIR)/p_dina_he.tlb"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" OutputDirectory="Release" IntermediateDirectory="Release" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeDisabled" Diagnostics="diagnosticsDisableAll" LocalVariableStorage="localStorageSave" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/"/>
+				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386" OutputFile="$(OUTDIR)/p_dina_he.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" ProgramDatabaseFile="$(OUTDIR)/p_dina_he.pdb" SubSystem="subSystemConsole" ImportLibrary="" AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  t15_2_win32.lib release\tran1.lib release\tran2.lib release\tran3.lib release\tran4.lib release\tran5.lib"/>
+				<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="NDEBUG" Culture="rcRussian" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="" DLLDataFileName="" TypeLibraryName="$(OUTDIR)/p_dina_he.tlb"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="h;hpp;hxx;hm;inl;fi;fd"/>
+		<Filter Name="Resource Files" Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat;f90;for;f;fpp">
+		<File RelativePath=".\a_dina.f"/>
+		<File RelativePath=".\a_main_dina.f"/>
+		<File RelativePath=".\add.f"/>
+		<File RelativePath=".\atsv_kav.for"/>
+		<File RelativePath=".\bispl.f"/>
+		<File RelativePath=".\bispla.f"/>
+		<File RelativePath=".\bisplee.f"/>
+		<File RelativePath=".\Bohm_gyroBohm_L.f"/>
+		<File RelativePath=".\bound.f"/>
+		<File RelativePath=".\bp_gribov_1.f"/>
+		<File RelativePath=".\bpol3.f"/>
+		<File RelativePath=".\break_new_he.f"/>
+		<File RelativePath=".\brz.f"/>
+		<File RelativePath=".\bunema.f"/>
+		<File RelativePath=".\camloop.f"/>
+		<File RelativePath=".\camlxt.f"/>
+		<File RelativePath=".\con_fil.f"/>
+		<File RelativePath=".\con_mike.f"/>
+		<File RelativePath=".\cons_fun.f"/>
+		<File RelativePath=".\ddunew0.f"/>
+		<File RelativePath=".\dina_imas.c"/>
+		<File RelativePath=".\disr.f"/>
+		<File RelativePath=".\diter_1.f"/>
+		<File RelativePath=".\dop_imp_new.f"/>
+		<File RelativePath=".\dop_pet.f"/>
+		<File RelativePath=".\edf.f"/>
+		<File RelativePath=".\efi_fil.f"/>
+		<File RelativePath=".\efi_ves.f"/>
+		<File RelativePath=".\elem_i.f"/>
+		<File RelativePath=".\eni_ae.f"/>
+		<File RelativePath=".\eni_imp_He.f"/>
+		<File RelativePath=".\etspxhi2.f"/>
+		<File RelativePath=".\fit.f"/>
+		<File RelativePath=".\flux_pl.f"/>
+		<File RelativePath=".\forces_for_control.f"/>
+		<File RelativePath=".\g_gaps_rus.f"/>
+		<File RelativePath=".\gen.f"/>
+		<File RelativePath=".\gr_psi_d_pc.f"/>
+		<File RelativePath=".\green_br_N.f"/>
+		<File RelativePath=".\green_d.f"/>
+		<File RelativePath=".\inh.f"/>
+		<File RelativePath=".\main_1.f"/>
+		<File RelativePath=".\map.f"/>
+		<File RelativePath=".\min_distance_1cm_W.f"/>
+		<File RelativePath=".\min_distance_pfw_1cm.f"/>
+		<File RelativePath=".\move.f"/>
+		<File RelativePath=".\n_dina_imas.f"/>
+		<File RelativePath=".\n_matlab_kav2.f"/>
+		<File RelativePath=".\n_matlab_kav_he.f"/>
+		<File RelativePath=".\ndop1_new2_400.f"/>
+		<File RelativePath=".\ndop_4.f"/>
+		<File RelativePath=".\neq0_sep_lim_32.f"/>
+		<File RelativePath=".\neqm.f"/>
+		<File RelativePath=".\obrm.f"/>
+		<File RelativePath=".\oosep_4.f"/>
+		<File RelativePath=".\out42_for.f"/>
+		<File RelativePath=".\pet.f"/>
+		<File RelativePath=".\pf_t.f"/>
+		<File RelativePath=".\pfsvd11x.f"/>
+		<File RelativePath=".\pid.f"/>
+		<File RelativePath=".\pp0.f"/>
+		<File RelativePath=".\progonu.f"/>
+		<File RelativePath=".\read_por.f"/>
+		<File RelativePath=".\sh.f"/>
+		<File RelativePath=".\sh1_N2.f"/>
+		<File RelativePath=".\sh_astra_dt_beam.f"/>
+		<File RelativePath=".\sh_br.f"/>
+		<File RelativePath=".\sh_d3d.f"/>
+		<File RelativePath=".\solver.f"/>
+		<File RelativePath=".\spline.f"/>
+		<File RelativePath=".\svd.f"/>
+		<File RelativePath=".\svd0m.f"/>
+		<File RelativePath=".\svd2.f"/>
+		<File RelativePath=".\uuu.f"/>
+		<File RelativePath=".\victor_imp_new1_H.f"/>
+		<File RelativePath=".\write_eqdsk_scen_tok.f"/>
+		<File RelativePath=".\write_jetto.f"/>
+		<File RelativePath=".\write_plasma_W_imas.f"/>
+		<File RelativePath=".\zca_tsp.f"/>
+		<File RelativePath=".\zcam_d3d.f"/>
+		<File RelativePath=".\zcamit.f"/>
+		<File RelativePath=".\zu0_W.f"/>
+		<File RelativePath=".\zyb0_0.f"/></Filter></Files>
+	<Globals/></VisualStudioProject>

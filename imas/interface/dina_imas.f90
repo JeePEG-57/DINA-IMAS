@@ -66,6 +66,8 @@ real (DP),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(DP) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz)
 
     real(DP) :: ai(npo),te0(npo),tq0(npo),pne(npo),tok1(npo),q(npo)
+
+    real(DP) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),qe0(npo),qq0(npo)
     
     real(DP),parameter :: pi = 3.14159265358979323846
 
@@ -286,7 +288,8 @@ end do
      & tpl,uli,v,s_plasma,psi_ax,rmag,zmag,  &
      & q_ax,q_95,rs0,bt0,wen2,tt,  &
      & ai,te0,tq0,pne,tok1,q,  &
-     & x,y,psi,psi_bnd)
+     & x,y,psi,psi_bnd,  &
+     & pd0,pt0,sigk,jbut,aj0,qe0,qq0)
 
 
 
@@ -491,6 +494,8 @@ pf_passive%time(1) = dina_time
     allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
  
+allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(n))
+allocate(core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(n))
 ! Filling core_profiles  
 
     core_profiles%ids_properties%homogeneous_time = 1
@@ -502,6 +507,9 @@ pf_passive%time(1) = dina_time
 	core_profiles%profiles_1d(CurTimeStep)%electrons%density(1:n) = pne(1:n)
 	core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
 	core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
+
+    core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(1:n) = qe0(1:n)
+    core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(1:n) = qq0(1:n)
     
     core_profiles%profiles_1d(CurTimeStep)%time = tt
     core_profiles%time(CurTimeStep) = tt ![s]

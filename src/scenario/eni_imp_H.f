@@ -203,6 +203,9 @@ C^M
       if(kpr.eq.1)print*,'!!!tt=',ttb
       if(kpr.eq.1)print*,'emoe emoq',emoe/pnor,emoq/pnor
 
+      if(kpr.eq.1)print*,'nz_imp nz_imp1 nz_imp2',nz_imp,nz_imp1,nz_imp2
+      if(kpr.eq.1)print*,'nz_3 nz_4 ',nz_imp3,nz_imp4
+
       if(i_en.eq.1) then
                  open (unit=41,file='bohm_gbohm.dat',form='formatted')
                 read (41,*)

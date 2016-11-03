@@ -95,8 +95,11 @@
      *  WQ0(npo)
      *  /en2e/pd0_a,pt0_a,pd0_b,pt0_b,pw_p
      *  /en6/Vn(npo)
+     *  /en9/QE0(npo),QQ0(npo),QDG(npo)
+     *  /en12/pnal(npo),pnaln(npo),zalfa,talfa
      *  /en14e/t_dop
      *  /en14/EMOE,EMOQ,NDOP,QDE0(npo),QDQ0(npo)
+     *  /en25/zhib,tego
      *  /en33/anom_e,anom_i,key_t11,kcchp
 
 
@@ -240,7 +243,8 @@ c  here Gen subroutine common blocks
 
 	common
      *  /c_con4/vps(npfc),kvert(npfc)
-     *  /c_con7/volt(kf)
+     *  /c_con7/volt_c(kf)
+     *  /en9e/volt(npo)
 
 c  here we start D3D control keys------
 	common
@@ -409,6 +413,9 @@ c----------
      *  /mid2_0/vi0(npo),pfi0(npo)
      *  /mid2e/vol(npo),spov(npo),pcur(npo)
      *  /mid3/GRA1(npo),GRA2(npo)
+	common
+     *  /mid6/bp_0(npo),a_m(npo),r_m(npo)
+     *  /mid7/bsq(npo),bsqi(npo),fasp(npo)
 
 
 	common
@@ -644,3 +651,24 @@ c*** Victor's common blocks
 	common
      *  /c_grib2/rp1,zp1,dist1,rp2,zp2,dist2
 
+        common /c_imas1/dxe0(npo),dxq0(npo),ajb0(npo)
+
+        common /c_tran1/te0_tran(npo),tq0_tran(npo)
+        common /c_tran3/pd0_tran(npo),pt0_tran(npo),pne_tran(npo)
+        common /c_tran4/ajb_tran(npo),sigk_tran(npo)
+
+c  BEAM Commons...
+
+	common
+     *  /inj0/i_beam
+     *  /inj2/klz0,z_0,ab
+     *  /inj3/t_inj
+     *  /inj4/aj0_b(npo)
+     *  /inj5/b_shape(npo)
+     *  /inj6/pn_beam(npo)
+     *  /inj7/p_b_par(npo),p_b_per(npo)
+     *  /inj8/r_py
+     *  /inj9/i_null
+     *  /inj10/tpl_beam
+     *  /inj11/s_beam(npo)
+     *  /inj12/eee2,sb2(npo),s_beam2(npo)
