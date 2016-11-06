@@ -1,5 +1,5 @@
 F90_gfortran=gfortran -w
-COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none -I$(UAL)/fortraninterface/amd64_gfortran -g  
+COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
 #LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
 LIBS_gfortran=`pkg-config imas-gfortran --libs`
 
@@ -32,11 +32,11 @@ test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
-n_dina_imas4.o: n_dina_imas4.f 
-	$(f2c) -c n_dina_imas4.f
-
 n_dina_imas3.o: n_dina_imas3.f 
 	$(f2c) -c n_dina_imas3.f
+
+n_dina_imas4.o: n_dina_imas4.f
+	$(f2c) -c n_dina_imas4.f
 
 main_1l.o: main_1l.f 
 	$(f2c) -c main_1l.f

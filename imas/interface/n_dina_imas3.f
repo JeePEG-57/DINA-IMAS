@@ -3,7 +3,7 @@
      *	output_1,output_2,output_3,output_4,ng)
 
 
-!	include 'double.inc'
+	include 'double.inc'
 !	include 'new_com.inc'
 
       common
@@ -193,13 +193,17 @@ c ============ outputs ==============================================
      * tpl_xx,uli_xx,v_xx,s_plasma_xx,psi_ax_xx,rmag_xx,zmag_xx,
      * q_ax_xx,q_95_xx,rs0_xx,bt0_xx,wen2_xx,tt_xx,
      * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
-     * x_xx,y_xx,psi_xx,psi_bnd_xx)
+     * x_xx,y_xx,psi_xx,psi_bnd_xx,
+     * pd0_xx,pt0_xx,sigk_xx,jbut_xx,aj0_xx,qe0_xx,qq0_xx)
 
-!	include 'double.inc'
+
+	include 'double.inc'
 	include 'new_com.inc'
 
 	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
+	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),jbut_xx(*),
+     *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
      
 	dimension psi_xx(nr,nz)
 
@@ -238,6 +242,16 @@ c=================================================
 	   q_xx(i)=q(i)
 	end do
 	
+	do i=1,n
+	   pd0_xx(i)=pd0(i)
+	   pt0_xx(i)=pt0(i)
+	   sigk_xx(i)=sigk(i)
+	   jbut_xx(i)=ajb(i)
+	   aj0_xx(i)=aj0(i)
+	   qe0_xx(i)=qe0(i)
+	   qq0_xx(i)=qq0(i)
+	end do
+
 c=================================================
 
 	do i=1,nr
@@ -294,7 +308,7 @@ c=================================================
 
      *  pfprobe_mat,vesprobe_mat,ngrid2)
 
-!      	include 'double.inc'
+      	include 'double.inc'
 
 	include 'parf2'
 

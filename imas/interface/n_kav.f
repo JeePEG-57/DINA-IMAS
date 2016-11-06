@@ -3,7 +3,7 @@
      *	output_1,output_2,output_3,output_4,ng)
 
 
-!	include 'double.inc'
+	include 'double.inc'
 
       common
      *  /ge5/kpr

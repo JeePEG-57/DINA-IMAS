@@ -1,6 +1,6 @@
 
 	subroutine out42_c(ng,ygr,num,name)
-!	include 'double.inc'
+	include 'double.inc'
 
 	dimension ygr(*)
 	character name(*)
@@ -21,7 +21,7 @@
 
 
 	subroutine out42(n_pr,a_print,num,apr)
-!	include 'double.inc'
+	include 'double.inc'
 	dimension a_print(*)
 	character apr(*)    
       

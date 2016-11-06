@@ -67,30 +67,32 @@ n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
  !core_profiles%profiles_1d(1)%grid%rho_tor_norm(1:n) = ai(1:n)
 
 !Electrons
-allocate(core_profiles%profiles_1d(1)%n_e(n))
- core_profiles%profiles_1d(1)%n_e(1:n) = pne(1:n)
+allocate(core_profiles%profiles_1d(1)%electrons%density(n))
+ core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)
 
 !if (.not. allocated(core_profiles%profiles_1d(1)%ion)) then
    allocate(core_profiles%profiles_1d(1)%ion(2))
 !end if
 
 ! Deuterium
- core_profiles%profiles_1d(1)%ion(1)%a = 2
+allocate(core_profiles%profiles_1d(1)%ion(1)%element(1))
+ core_profiles%profiles_1d(1)%ion(1)%element(1)%a = 2
  core_profiles%profiles_1d(1)%ion(1)%z_ion = 1
- core_profiles%profiles_1d(1)%ion(1)%z_n = 1
+ core_profiles%profiles_1d(1)%ion(1)%element(1)%z_n = 1
 !core_profiles%profiles_1d(1)%ion(1)%label = 'D+'
 ! if (.not. allocated(core_profiles%profiles_1d(1)%ion(1)%n_i)) then
-allocate(core_profiles%profiles_1d(1)%ion(1)%n_i(n))
+allocate(core_profiles%profiles_1d(1)%ion(1)%density(n))
 ! end if
- core_profiles%profiles_1d(1)%ion(1)%n_i(1:n) = pd0(1:n)
+ core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)
 
 ! Tritium
- core_profiles%profiles_1d(1)%ion(2)%a = 3
+allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
+ core_profiles%profiles_1d(1)%ion(2)%element(1)%a = 3
  core_profiles%profiles_1d(1)%ion(2)%z_ion = 1
- core_profiles%profiles_1d(1)%ion(2)%z_n = 1
+ core_profiles%profiles_1d(1)%ion(2)%element(1)%z_n = 1
 !core_profiles%profiles_1d(1)%ion(2)%label = 'T+'
-allocate(core_profiles%profiles_1d(1)%ion(2)%n_i(n))
- core_profiles%profiles_1d(1)%ion(2)%n_i(1:n) = pt0(1:n)
+allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
+ core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)
 
 
 return
