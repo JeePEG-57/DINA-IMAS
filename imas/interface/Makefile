@@ -5,7 +5,7 @@ LIBS_gfortran=`pkg-config imas-gfortran --libs`
 
 f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
 
-TARGETS += dina_imas.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a
+TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a
 
 LIB_SOURCE1 += dina_imas.o n_dina_imas3.o out42_for.o
 
