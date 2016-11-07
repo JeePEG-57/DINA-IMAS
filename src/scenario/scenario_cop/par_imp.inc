@@ -1,2 +1,0 @@
-
-          parameter( nimp =10 )

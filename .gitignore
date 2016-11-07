@@ -16,3 +16,4 @@ imas/fc2k/*.xml
 !imas/fc2k/*-template.xml
 imas/fc2k/toto
 imas/interface/test_dina
+imas/interface/test_dina_to_imas
