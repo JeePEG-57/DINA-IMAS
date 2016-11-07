@@ -101,7 +101,5 @@ dina_transp5.a: dina_transp5.o tran5.o add_dll.o
 
 clean:
 	rm -f *.o
-	rm -f dina_imas.a
-	rm -f dina_contr.a
-	rm -f dina_put_slice.a
-	rm -f dina_transp*.a
+	rm -f *.a
+	rm -f test_dina_to_imas
