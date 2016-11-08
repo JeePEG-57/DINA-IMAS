@@ -95,13 +95,13 @@
 	&	cpo%profiles_1d(i)%time)
 
 	call SetFieldReal1D(h1_ptr, 't_e', &
-	&	cpo%profiles_1d(i)%t_e, 0)
+	&	cpo%profiles_1d(i)%electrons%temperature, 0)
 
 	call SetFieldReal1D(h1_ptr, 't_i_average', &
 	&	cpo%profiles_1d(i)%t_i_average, 0)
 
 	call SetFieldReal1D(h1_ptr, 'n_e', &
-	&	cpo%profiles_1d(i)%n_e, 0)
+	&	cpo%profiles_1d(i)%electrons%density, 0)
 
 	call SetFieldReal1D(h1_ptr, 'j_tor', &
 	&	cpo%profiles_1d(i)%j_tor, 0)
