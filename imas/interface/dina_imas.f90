@@ -1,5 +1,5 @@
-subroutine dina_imas(em_coupling0,equilibrium0, pf_active0, core_profiles0, &
-    & pf_passive0, equilibrium, magnetics,  pf_active, pf_passive , core_profiles, &
+subroutine dina_imas(em_coupling0, equilibrium0, pf_active0, pf_passive0, &
+    & core_profiles0, equilibrium, magnetics, pf_active, pf_passive, core_profiles, &
     & arr_in1,arr_out1)
 
 
