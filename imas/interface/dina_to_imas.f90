@@ -1,5 +1,5 @@
 subroutine dina_to_imas(em_coupling0,equilibrium0, pf_active0, &
-    & pf_passive0)
+    & pf_passive0, core_profiles0)
 
 
 use ids_schemas
@@ -11,6 +11,7 @@ type (ids_em_coupling)  :: em_coupling0
 type (ids_equilibrium) :: equilibrium0
 type (ids_pf_active)   :: pf_active0
 type (ids_pf_passive)   :: pf_passive0
+type (ids_core_profiles)   :: core_profiles0
 
 
 ! define local fixed size variables
@@ -272,6 +273,22 @@ pf_passive0%loop(1:npass)%resistance = rcam(1:npass)
 pf_active0%time(1) = 0.35
 pf_passive0%time(1) = 0.35
 
+
+do i=1,nact
+
+        allocate(pf_active0%coil(i)%current%data(1))
+        allocate(pf_active0%coil(i)%current%time(1))
+
+        allocate(pf_active0%coil(i)%voltage%data(1))
+        allocate(pf_active0%coil(i)%voltage%time(1))
+enddo
+
+do i=1,npass
+
+    allocate(pf_passive0%loop(i)%current(1))
+
+end do
+
 write(*,*) "pfs resistances"
 
     
@@ -324,10 +341,10 @@ equilibrium0%time(1) = equilibrium0%time_slice(1)%time
 ! 
 ! 
 ! 
-! write(*,*) 'DINAIMAS - CoreProfiles Elements: '
-! write(*,*) core_profiles%magnetic_shear(1,14)
-! write(*,*) core_profiles%magnetic_shear(2,14)
-
+ write(*,*) 'DINAIMAS - CoreProfiles Elements: '
+    allocate(core_profiles0%profiles_1d(1))
+    allocate(core_profiles0%time(1))
+    core_profiles0%ids_properties%homogeneous_time = 1
 
 
  write(*,*) "After limiter"

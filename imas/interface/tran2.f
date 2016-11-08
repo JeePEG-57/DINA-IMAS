@@ -157,26 +157,26 @@ c-------
 	end do
 
 
-!       open (unit=61,file='dina_transp2.dat',form='formatted')
-! 
-!       write (61,*)n
-! 
-!       write(*,*) 'dina_transp2, n=,', n
-! 
-!       do i=1,n
-!       write (61,*) ai(i)
-!       enddo
-!       do i=1,n
-!       write (61,*) pne(i)
-!       enddo
-!       do i=1,n
-!       write (61,*) pd0(i)
-!       enddo
-!       do i=1,n
-!       write (61,*) pt0(i)
-!       enddo
-! 
-!       close (61)
+      open (unit=61,file='dina_transp2.dat',form='formatted')
+
+      write (61,*)n
+
+      write(*,*) 'dina_transp2, n=,', n
+
+      do i=1,n
+      write (61,*) ai(i)
+      enddo
+      do i=1,n
+      write (61,*) pne(i)
+      enddo
+      do i=1,n
+      write (61,*) pd0(i)
+      enddo
+      do i=1,n
+      write (61,*) pt0(i)
+      enddo
+
+      close (61)
 
 
 

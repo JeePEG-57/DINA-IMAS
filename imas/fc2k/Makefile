@@ -11,7 +11,7 @@ all: dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp1.xml dinatrans
 	$< > $@
 
 clean:
-	rm dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp1.xml dinatransp2.xml dinatransp3.xml dinatransp4.xml dinatransp5.xml
+	rm -f dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp1.xml dinatransp2.xml dinatransp3.xml dinatransp4.xml dinatransp5.xml
 
 fc2k: dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp1.xml dinatransp2.xml dinatransp3.xml dinatransp4.xml dinatransp5.xml
 	$$FC2K/bin/fc2k dinaimas21.xml

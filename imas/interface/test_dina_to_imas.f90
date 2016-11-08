@@ -9,7 +9,7 @@ implicit none
 interface 
 ! Declaration of the dina_imas subroutine
     subroutine dina_to_imas( em_coupling0_in, equilibrium0_in,  &
- & pf_active0_in, pf_passive0_in)
+ & pf_active0_in, pf_passive0_in, core_profiles0_in)
  
      use ids_schemas
 ! note that IDS0 are all prescribed, the others are dynamic
@@ -17,6 +17,7 @@ interface
       type (ids_equilibrium) :: equilibrium0_in
       type (ids_pf_active) :: pf_active0_in
       type (ids_pf_passive) :: pf_passive0_in
+      type (ids_core_profiles)   :: core_profiles0_in
 
     end subroutine
 end interface
@@ -27,7 +28,7 @@ type (ids_equilibrium) :: equilibrium0, equilibrium,equilibrium1
 type (ids_magnetics) :: magnetics
 type (ids_pf_active) :: pf_active0, pf_active,pf_active1
 type (ids_pf_passive) :: pf_passive0, pf_passive, pf_passive1
-type (ids_core_profiles)   :: core_profiles,core_profiles1
+type (ids_core_profiles)   :: core_profiles0, core_profiles,core_profiles1
 
 
 ! define the pulse and run numbers to save initial data, will be done later outside
@@ -65,11 +66,11 @@ call ids_get(idx0,'em_coupling',em_coupling0)
 call ids_get(idx0,'equilibrium',equilibrium0)
 call ids_get(idx0,'pf_active',pf_active0)
 call ids_get(idx0,'pf_passive',pf_passive0)
-
+call ids_get(idx0,'pf_passive',core_profiles0)
 
 
 call dina_to_imas( em_coupling0, equilibrium0,   &
-  & pf_active0,  pf_passive0)
+  & pf_active0,  pf_passive0, core_profiles0)
 
 
 
@@ -124,6 +125,8 @@ write(*,*)  'pf_passive is written'
 call ids_put(idx0,"equilibrium",equilibrium0)
 write(*,*) 'ids_put OK!'
 
+call ids_put(idx0,"core_profiles",core_profiles0)
+
 call imas_close(idx0)
 
 write(*,*) 'Deallocate ids'
@@ -131,6 +134,7 @@ call ids_deallocate(em_coupling0)
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
 call ids_deallocate(equilibrium0)
+call ids_deallocate(core_profiles0)
 
 
 write(*,*) 'DINA_IMAS Exiting cleanly'

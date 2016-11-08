@@ -741,22 +741,6 @@ c-------
 
 !------------------------------------inputs
 
-      open (unit=61,file='dina_transp1.dat',form='formatted')
-
-      read (61,*)n
-
-      do i=1,n
-      read (61,*) aaa
-      enddo
-
-      do i=1,n
-      read (61,*) te0(i)
-      enddo
-      do i=1,n
-      read (61,*) tq0(i)
-      enddo
-
-      close (61)
 
       DO I=1,n
     	c_output1(I)=te0(i)
@@ -790,24 +774,6 @@ c-------
 
 !------------------------------------inputs
 
-      open (unit=61,file='dina_transp2.dat',form='formatted')
-
-      read (61,*)n
-
-      do i=1,n
-      read (61,*) aaa
-      enddo
-      do i=1,n
-      read (61,*) pne(i)
-      enddo
-      do i=1,n
-      read (61,*) pd0(i)
-      enddo
-      do i=1,n
-      read (61,*) pt0(i)
-      enddo
-
-      close (61)
 
       DO I=1,n
     	c_output1(I)=pd0(i)
@@ -841,23 +807,6 @@ c-------
 
 !------------------------------------inputs
 
-      open (unit=61,file='dina_transp3.dat',form='formatted')
-
-      read (61,*)n
-
-      do i=1,n
-      read (61,*) aaa
-      enddo
-
-      do i=1,n
-      read (61,*) ajb(i)
-      enddo
-      do i=1,n
-      read (61,*) sigk(i)
-      enddo
-
-      close (61)
-
       DO I=1,n
     	c_output1(I)=ajb(i)
     	c_output2(I)=sigk(i)
@@ -889,20 +838,6 @@ c-------
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
 !------------------------------------inputs
-
-      open (unit=61,file='dina_transp4.dat',form='formatted')
-
-      read (61,*)n
-
-      do i=1,n
-      read (61,*) aaa
-      enddo
-
-      do i=1,n
-      read (61,*) aj0(i)
-      enddo
-
-      close (61)
 
       DO I=1,n
     	c_output1(I)=aj0(i)
@@ -936,22 +871,6 @@ c-------
 
 !------------------------------------inputs
 
-      open (unit=61,file='dina_transp5.dat',form='formatted')
-
-      read (61,*)n
-
-      do i=1,n
-      read (61,*) aaa
-      enddo
-
-      do i=1,n
-      read (61,*) qe0(i)
-      enddo
-      do i=1,n
-      read (61,*) qq0(i)
-      enddo
-
-      close (61)
 
       DO I=1,n
     	c_output1(I)=qe0(i)

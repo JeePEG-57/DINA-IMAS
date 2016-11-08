@@ -283,6 +283,38 @@ c=================================================
       end
 
 
+	subroutine dina_input(te0_xx,tq0_xx,pne_xx,
+     * pd0_xx,pt0_xx,sigk_xx,jbut_xx,aj0_xx,qe0_xx,qq0_xx)
+
+	include 'double.inc'
+	include 'new_com.inc'
+
+	dimension te0_xx(*),tq0_xx(*),pne_xx(*)
+	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),jbut_xx(*),
+     *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
+     
+
+c=================================================
+
+	do i=1,n
+	   te0(i)=te0_xx(i)
+	   tq0(i)=tq0_xx(i)
+	   pne(i)=pne_xx(i)
+	end do
+	
+	do i=1,n
+	   pd0(i)=pd0_xx(i)
+	   pt0(i)=pt0_xx(i)
+	   sigk(i)=sigk_xx(i)
+	   ajb(i)=jbut_xx(i)
+	   aj0(i)=aj0_xx(i)
+	   qe0(i)=qe0_xx(i)
+	   qq0(i)=qq0_xx(i)
+	end do
+
+      return
+      end
+
 
 
 

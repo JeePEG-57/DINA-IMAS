@@ -1,5 +1,5 @@
 <ActorGenerator>
-  <version>V3.0</version>
+  <version>v3.2.8</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
@@ -29,6 +29,10 @@
       <default>
         <cHash>
           <entry>
+            <string>idstype</string>
+            <string>idsstruct</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>bool</string>
           </entry>
@@ -39,10 +43,6 @@
           <entry>
             <string>double</string>
             <string>double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>idsstruct</string>
           </entry>
           <entry>
             <string>character</string>
@@ -59,6 +59,10 @@
         </cHash>
         <cnvHash>
           <entry>
+            <string>idstype</string>
+            <string>stringValue()</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>booleanValue()</string>
           </entry>
@@ -69,10 +73,6 @@
           <entry>
             <string>double</string>
             <string>doubleValue()</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>stringValue()</string>
           </entry>
           <entry>
             <string>character</string>
@@ -89,6 +89,10 @@
         </cnvHash>
         <fHash>
           <entry>
+            <string>idstype</string>
+            <string>idsstruct</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>logical</string>
           </entry>
@@ -99,10 +103,6 @@
           <entry>
             <string>double</string>
             <string>real*8</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>idsstruct</string>
           </entry>
           <entry>
             <string>character</string>
@@ -119,6 +119,10 @@
         </fHash>
         <jHash>
           <entry>
+            <string>idstype</string>
+            <string>IDSClass</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>boolean</string>
           </entry>
@@ -129,10 +133,6 @@
           <entry>
             <string>double</string>
             <string>double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>idsClass</string>
           </entry>
           <entry>
             <string>character</string>
@@ -149,6 +149,10 @@
         </jHash>
         <kHash>
           <entry>
+            <string>idstype</string>
+            <string>_idstype</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>BaseType.BOOLEAN</string>
           </entry>
@@ -159,10 +163,6 @@
           <entry>
             <string>double</string>
             <string>BaseType.DOUBLE</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>_idstype</string>
           </entry>
           <entry>
             <string>character</string>
@@ -179,6 +179,10 @@
         </kHash>
         <nHash>
           <entry>
+            <string>idstype</string>
+            <string>jstring</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>jboolean</string>
           </entry>
@@ -189,10 +193,6 @@
           <entry>
             <string>double</string>
             <string>jdouble</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>jstring</string>
           </entry>
           <entry>
             <string>character</string>
@@ -209,6 +209,10 @@
         </nHash>
         <sHash>
           <entry>
+            <string>idstype</string>
+            <string>Ljava/lang/String;</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>Z</string>
           </entry>
@@ -219,10 +223,6 @@
           <entry>
             <string>double</string>
             <string>D</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>Ljava/lang/String;</string>
           </entry>
           <entry>
             <string>character</string>
@@ -239,6 +239,10 @@
         </sHash>
         <tHash>
           <entry>
+            <string>idstype</string>
+            <string>Record</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>Boolean</string>
           </entry>
@@ -249,10 +253,6 @@
           <entry>
             <string>double</string>
             <string>Double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>Record</string>
           </entry>
           <entry>
             <string>character</string>
@@ -268,7 +268,7 @@
           </entry>
         </tHash>
         <tc>
-          <ffile>$FC2K/scripts/TC_Types.py</ffile>
+	  <ffile>$FC2K/scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams>
           <vector>
@@ -300,6 +300,15 @@
           </vector>
           <vector>
             <string>pf_passive</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
+            <string>core_profiles</string>
             <string>0</string>
             <string>0</string>
             <string>0</string>
@@ -373,6 +382,10 @@
         </tupleParams>
         <uHash>
           <entry>
+            <string>idstype</string>
+            <string>Char</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>Boolean</string>
           </entry>
@@ -383,10 +396,6 @@
           <entry>
             <string>double</string>
             <string>Double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>Char</string>
           </entry>
           <entry>
             <string>character</string>
@@ -431,6 +440,10 @@
       <default>
         <cHash>
           <entry>
+            <string>idstype</string>
+            <string>idsstruct</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>bool</string>
           </entry>
@@ -441,10 +454,6 @@
           <entry>
             <string>double</string>
             <string>double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>idsstruct</string>
           </entry>
           <entry>
             <string>character</string>
@@ -461,6 +470,10 @@
         </cHash>
         <cnvHash>
           <entry>
+            <string>idstype</string>
+            <string>stringValue()</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>booleanValue()</string>
           </entry>
@@ -471,10 +484,6 @@
           <entry>
             <string>double</string>
             <string>doubleValue()</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>stringValue()</string>
           </entry>
           <entry>
             <string>character</string>
@@ -491,6 +500,10 @@
         </cnvHash>
         <fHash>
           <entry>
+            <string>idstype</string>
+            <string>idsstruct</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>logical</string>
           </entry>
@@ -501,10 +514,6 @@
           <entry>
             <string>double</string>
             <string>real*8</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>idsstruct</string>
           </entry>
           <entry>
             <string>character</string>
@@ -521,6 +530,10 @@
         </fHash>
         <jHash>
           <entry>
+            <string>idstype</string>
+            <string>IDSClass</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>boolean</string>
           </entry>
@@ -531,10 +544,6 @@
           <entry>
             <string>double</string>
             <string>double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>idsClass</string>
           </entry>
           <entry>
             <string>character</string>
@@ -551,6 +560,10 @@
         </jHash>
         <kHash>
           <entry>
+            <string>idstype</string>
+            <string>_idstype</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>BaseType.BOOLEAN</string>
           </entry>
@@ -561,10 +574,6 @@
           <entry>
             <string>double</string>
             <string>BaseType.DOUBLE</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>_idstype</string>
           </entry>
           <entry>
             <string>character</string>
@@ -581,6 +590,10 @@
         </kHash>
         <nHash>
           <entry>
+            <string>idstype</string>
+            <string>jstring</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>jboolean</string>
           </entry>
@@ -591,10 +604,6 @@
           <entry>
             <string>double</string>
             <string>jdouble</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>jstring</string>
           </entry>
           <entry>
             <string>character</string>
@@ -611,6 +620,10 @@
         </nHash>
         <sHash>
           <entry>
+            <string>idstype</string>
+            <string>Ljava/lang/String;</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>Z</string>
           </entry>
@@ -621,10 +634,6 @@
           <entry>
             <string>double</string>
             <string>D</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>Ljava/lang/String;</string>
           </entry>
           <entry>
             <string>character</string>
@@ -641,6 +650,10 @@
         </sHash>
         <tHash>
           <entry>
+            <string>idstype</string>
+            <string>Record</string>
+          </entry>
+          <entry>
             <string>boolean</string>
             <string>Boolean</string>
           </entry>
@@ -651,10 +664,6 @@
           <entry>
             <string>double</string>
             <string>Double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>Record</string>
           </entry>
           <entry>
             <string>character</string>
@@ -670,10 +679,14 @@
           </entry>
         </tHash>
         <tc>
-          <ffile>$FC2K/scripts/TC_Types.py</ffile>
+	  <ffile>$FC2K/scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams/>
         <uHash>
+          <entry>
+            <string>idstype</string>
+            <string>Char</string>
+          </entry>
           <entry>
             <string>boolean</string>
             <string>Boolean</string>
@@ -685,10 +698,6 @@
           <entry>
             <string>double</string>
             <string>Double</string>
-          </entry>
-          <entry>
-            <string>cpotype</string>
-            <string>Char</string>
           </entry>
           <entry>
             <string>character</string>

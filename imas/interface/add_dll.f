@@ -1810,7 +1810,7 @@ c	read (*,*)
         call enit2_c(
      *  n,k_ion,pow_el,pow_ion,q_e,q_i,
      *  i_lh,i_ech,r_lh,k_rlw,rs0,s_beam,
-     *  QNET_B,SAL_B,
+     *  QNET_B2,SAL_B2,
      *  eee2,sb2,s_beam2,ro_bar,alf_bar,kpr,tokbut,volt,tok1)
 
         return
@@ -1819,7 +1819,7 @@ c	read (*,*)
         SUBROUTINE ENIT2_c(
      *  n,k_ion,pow_el,pow_ion,q_e,q_ion,
      *  i_lh,i_ech,r_lh,k_rlw,rs0,s_beam,
-     *  QNET_B,SAL_B,
+     *  QNET_B2,SAL_B2,
      *  eee2,sb2,s_beam2,ro_bar,alf_bar,kpr,tokbut,volt,tok1)
 
 	include 'double.inc'
@@ -1831,7 +1831,7 @@ c--------------------------------------------------
 c        implicit real*8 (a-h,o-z)
 	include 'parf0'
 
-        dimension s_beam(*),QNET_B(*),SAL_B(*),sb2(*),
+        dimension s_beam(*),QNET_B(npo),SAL_B(npo),sb2(*),
      *  s_beam2(*),volt(*),tok1(*)
 
 
@@ -2050,7 +2050,7 @@ c	pbi(1)=pbi(2)
 
         DO 1 I=2,N
 
-!        print *,' 1 i',i
+        print *,' 1 i n',i,n
         
 	dpne=(pne(i)-pne(i-1))/( (pne(i)+pne(i-1))*0.5*ha(i) )
 	dpbe=(pbe(i)-pbe(i-1))/( (pbe(i)+pbe(i-1))*0.5*ha(i) )
@@ -2087,7 +2087,7 @@ cccc	zeff(i)=(pd0(i)+pt0(i)+zar**2*ppr(i)+4.*pnal(i))/pne(i)
       PG=0.5*(PNE(I)+PNE(I-1))
       TGE=0.5*(TE0(I)+TE0(I-1))
 
-        !print *,' 2 i',i
+!        print *,' 2 i',i
 
       if(tge.le.0.)tge=1.
       if(pg.le.0.)pg=1.
@@ -2121,7 +2121,7 @@ c
 
 	help1(i)=epi_m
 
-        !print *,' 3 i',i
+ !       print *,' 3 i',i
 
       EPI=epi_m
 c      print *,' i epi',i,epi
@@ -2166,7 +2166,7 @@ c	print *,' i epi_0 epi_m',i,epi_0,epi_m
 c	print *,' i bp0 bp0_d=bp_0(i)=',i,bp0,bp0_d,bp_0(i)
 c
 
-        !print *,' 4 i',i
+   !     print *,' 4 i',i
 
 	z=zeff(i)
 	fk0=fk1(z)
@@ -2205,7 +2205,7 @@ c-----------------------------------------------------------
 	xsi=0.58+0.2*zeff(i)
 	ale=3.4/zeff(i)*(1.13+zeff(i))/(2.67+zeff(i))
         
-        !print *,' 5 i',i
+  !      print *,' 5 i',i
 
 	sigk(i)=0.5*ale*(1.-ft/(1.+xsi*enu))
      *  *(1.-cr/(1.+xsi*enu))
@@ -2245,7 +2245,7 @@ c###	cinv=1./(zeff(i)*t_e/t_i)
 
 	cinv=p_i/p_e
 
-        !print *,' 6 i',i
+  !      print *,' 6 i',i
 
 c  F---f(i)*rs*1.e-3
 	pl310=pl31*(f(i)*rs*1.e-3)*p_e*xft
@@ -2306,7 +2306,7 @@ c      call BSCOEFF(pft,q(i),pR,epi,te0(i),pne(i),tq0(i),
 c     * pne(i),zeff(i),pzion, 
 c     * pl31,pl32,pl34,palfa)
 
-        !print *,' 7 i',i
+ !       print *,' 7 i',i
 
       call BSCOEFF2(pft,q(i),pR,epi,t_e,d_e,t_i,
      * d_i,zeff(i),pzion, 
@@ -2314,7 +2314,7 @@ c     * pl31,pl32,pl34,palfa)
 
       sigk(i)=signeo
 
-        !print *,' 8 i',i
+  !      print *,' 8 i',i
 
 	i_prinit=1
 	if(i_print.eq.1)then
@@ -3440,7 +3440,7 @@ c*** al*10**(-7)*Ne*10**13*N_imp*10**13*10**(-6) >>>>> MW/cm3
 
 	do i=2,n
 	p_prim=pne(i)*coef_prim
-	te=te0(i)/1.e3
+	te=te0(i)/1.d3
 	al2=al(te)
 	qpr(i)=al(te)*pne(i)*p_prim*1.e13*pnor
 c        print *,' i te pne qpr al2',i,te,pne(i),qpr(i),al2
@@ -3572,14 +3572,14 @@ c     * pl31_0,pl32_0,palfa_0,pl31,pl32,pl34,palfa)
 !     
 !     basic parameters
 !
-        !print *,' 1 '
+!        print *,' 1 '
 
       zlnlam_e = 17.
       IF (pne.gt.0. .AND. pte.gt.0.) THEN
          zlnlam_e = 31.3 - dlog(sqrt(1.e19*pne)/pte)
       ENDIF
 
-        !print *,' 2 '
+!        print *,' 2 '
 
       zlnlam_i = 17.
       IF (pni.gt.0. .AND. pti.gt.0.) THEN
@@ -3588,7 +3588,7 @@ c     * pl31_0,pl32_0,palfa_0,pl31,pl32,pl34,palfa)
       ENDIF
 
 c      print *,' zlnlam_e zlnlam_i=',zlnlam_e,zlnlam_i
-        !print *,' 3 '
+!        print *,' 3 '
 
       znuestar = 6.921E+1 * pq*pR*pne*pzeff*zlnlam_e 
      */ (pte*pte*peps**1.5)
@@ -3596,14 +3596,14 @@ c      print *,' zlnlam_e zlnlam_i=',zlnlam_e,zlnlam_i
 c      print *,' znuestar pq pr pne pzeff ',znuestar,pq,pr,pne,pzeff
 c      !print *,' pte peps',pte,peps
 
-        !print *,' 4 '
+!        print *,' 4 '
 
       znuistar = 4.900E+1 * pq*pR*pni*pzion**4*zlnlam_i 
      */ (pti*pti*peps**1.5)
 
 c      !print *,' znuestar=',znuestar
 c      !print *,' znuistar=',znuistar
-        !print *,' 5 '
+!        print *,' 5 '
 
 
 !     finite nustar

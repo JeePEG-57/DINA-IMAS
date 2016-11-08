@@ -1,4 +1,4 @@
-subroutine dina_imas(em_coupling0,equilibrium0, pf_active0, &
+subroutine dina_imas(em_coupling0,equilibrium0, pf_active0, core_profiles0, &
     & pf_passive0, equilibrium, magnetics,  pf_active, pf_passive , core_profiles, &
     & arr_in1,arr_out1)
 
@@ -14,7 +14,7 @@ type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
 type (ids_pf_passive)   :: pf_passive0, pf_passive
-type (ids_core_profiles)   :: core_profiles
+type (ids_core_profiles)   :: core_profiles0, core_profiles
 
 real (DP) :: arr_in1(*), arr_out1(*)
 
@@ -253,6 +253,34 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 
 !stop
 
+else
+
+write(*,*) 'dina_input prepare...'
+
+n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
+
+! Transp1
+ te0(1:n1) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n1)
+ tq0(1:n1) = core_profiles0%profiles_1d(1)%t_i_average(1:n1)
+!Transp2
+ pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)
+ pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)
+ pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)
+!Transp3
+ jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)
+ sigk(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
+!Transp4
+ aj0(1:n1) = core_profiles0%profiles_1d(1)%j_total(1:n1)
+!Transp5
+ qe0(1:n1) = core_profiles0%profiles_1d(1)%electrons%pressure(1:n1)
+ qq0(1:n1) = core_profiles0%profiles_1d(1)%pressure_ion_total(1:n1)
+
+write(*,*) 'dina_input enter...'
+
+	call dina_input(te0,tq0,pne, &
+     & pd0,pt0,sigk,jbut,aj0,qe0,qq0)
+
+
 end if ! end of first_call
 
 
@@ -260,6 +288,8 @@ end if ! end of first_call
 loop_count = loop_count + 1 ! number of times the iterative routine was entered
 
 write(*,*) 'dina_imas loop, first_call = ', first_call, loop_count
+
+
 
       n_input1=2
 !      n_input2=15
@@ -331,12 +361,12 @@ end do
 	cpu_old = cpu_new
 
 
-!write(*,*) '!!!ids_copy pf_active0 enter'
+write(*,*) '!!!ids_copy pf_active0 enter'
 call ids_copy(pf_active0,pf_active)
 !write(*,*) '!!!ids_copy pf_active0 exit'
-!write(*,*) '!!!ids_copy pf_passive0 enter'
+write(*,*) '!!!ids_copy pf_passive0 enter'
 call ids_copy(pf_passive0,pf_passive)
-!write(*,*) '!!!ids_copy pf_passive0 exit'
+write(*,*) '!!!ids_copy pf_passive0 exit'
 
 
 
@@ -484,6 +514,9 @@ pf_passive%time(1) = dina_time
     
 ! Allocations core_profiles    
 
+! call ids_copy(core_profiles0,core_profiles)
+
+
     allocate(core_profiles%profiles_1d(TimeSteps))
     allocate(core_profiles%time(TimeSteps))
 
@@ -585,7 +618,7 @@ end subroutine
 
 5000	format(4(1x,1pe14.7))
 	
-	write(*,*) 'Write Graph Enter...'
+	write(*,*) 'Write Graph Enter0...'
 
 	open (unit=61,file='psi_data_imas0',access='append',form='formatted')
 
@@ -626,7 +659,7 @@ end subroutine
 
 6000	format(4(1x,1pe14.7))
 	
-	write(*,*) 'Write Graph Enter...'
+	write(*,*) 'Write CPU time...'
 
 	if (flag_start.eq.1) call system("rm cputime_dinaimas")
 
