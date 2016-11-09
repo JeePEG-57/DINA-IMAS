@@ -361,12 +361,12 @@ end do
 	cpu_old = cpu_new
 
 
-write(*,*) '!!!ids_copy pf_active0 enter'
+!write(*,*) '!!!ids_copy pf_active0 enter'
 call ids_copy(pf_active0,pf_active)
 !write(*,*) '!!!ids_copy pf_active0 exit'
-write(*,*) '!!!ids_copy pf_passive0 enter'
+!write(*,*) '!!!ids_copy pf_passive0 enter'
 call ids_copy(pf_passive0,pf_passive)
-write(*,*) '!!!ids_copy pf_passive0 exit'
+!write(*,*) '!!!ids_copy pf_passive0 exit'
 
 
 
@@ -516,36 +516,85 @@ pf_passive%time(1) = dina_time
 
 ! call ids_copy(core_profiles0,core_profiles)
 
+write(*,*) 'Allocate core_profiles... '
 
     allocate(core_profiles%profiles_1d(TimeSteps))
     allocate(core_profiles%time(TimeSteps))
 
     allocate(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
-    allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
-    allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
-    allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%density(n))
+
     allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
  
-allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(n))
-allocate(core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(n))
+
 ! Filling core_profiles  
 
     core_profiles%ids_properties%homogeneous_time = 1
     
     
     core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
-	core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(1:n) = te0(1:n)
-	core_profiles%profiles_1d(CurTimeStep)%t_i_average(1:n) = tq0(1:n)
-	core_profiles%profiles_1d(CurTimeStep)%electrons%density(1:n) = pne(1:n)
+
+	
 	core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
 	core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
 
-    core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(1:n) = qe0(1:n)
-    core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(1:n) = qq0(1:n)
+
     
     core_profiles%profiles_1d(CurTimeStep)%time = tt
     core_profiles%time(CurTimeStep) = tt ![s]
+
+
+write(*,*) 'Write core_profiles transp '
+! Transp1
+allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
+allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
+ core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(1:n) = te0(1:n)
+ core_profiles%profiles_1d(CurTimeStep)%t_i_average(1:n) = tq0(1:n)
+
+!Transp2
+!Electrons
+allocate(core_profiles%profiles_1d(1)%electrons%density(n))
+ core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)
+
+!if (.not. allocated(core_profiles%profiles_1d(1)%ion)) then
+   allocate(core_profiles%profiles_1d(1)%ion(2))
+!end if
+
+! Deuterium
+allocate(core_profiles%profiles_1d(1)%ion(1)%element(1))
+ core_profiles%profiles_1d(1)%ion(1)%element(1)%a = 2
+ core_profiles%profiles_1d(1)%ion(1)%z_ion = 1
+ core_profiles%profiles_1d(1)%ion(1)%element(1)%z_n = 1
+!core_profiles%profiles_1d(1)%ion(1)%label = 'D+'
+! if (.not. allocated(core_profiles%profiles_1d(1)%ion(1)%n_i)) then
+allocate(core_profiles%profiles_1d(1)%ion(1)%density(n))
+! end if
+ core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)
+
+! Tritium
+allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
+ core_profiles%profiles_1d(1)%ion(2)%element(1)%a = 3
+ core_profiles%profiles_1d(1)%ion(2)%z_ion = 1
+ core_profiles%profiles_1d(1)%ion(2)%element(1)%z_n = 1
+!core_profiles%profiles_1d(1)%ion(2)%label = 'T+'
+allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
+ core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)
+
+!Transp3
+allocate(core_profiles%profiles_1d(1)%j_bootstrap(n))
+allocate(core_profiles%profiles_1d(1)%conductivity_parallel(n))
+ core_profiles%profiles_1d(1)%j_bootstrap(1:n) = jbut(1:n)
+ core_profiles%profiles_1d(1)%conductivity_parallel(1:n) = sigk(1:n)
+
+!Transp4
+allocate(core_profiles%profiles_1d(1)%j_total(n))
+ core_profiles%profiles_1d(1)%j_total(1:n) = aj0(1:n)
+
+!Transp5
+allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(n))
+allocate(core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(n))
+ core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(1:n) = qe0(1:n)
+ core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(1:n) = qq0(1:n)
     
     
   !  write(*,*) "psi = ", (equilibrium%profiles_2d(1)%psi(i,1:n2,CurTimeStep),i=1,n1)
