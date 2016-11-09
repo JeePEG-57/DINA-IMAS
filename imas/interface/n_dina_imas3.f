@@ -296,6 +296,32 @@ c=================================================
 
 c=================================================
 
+      i_en=i_en+1
+      if(i_en.eq.1)then
+
+        open (unit=1,file='kpr.dat',form='formatted')
+        read (1,*)
+        read (1,*)kpr
+        close ( unit=1)       
+
+        open (unit=1,file='tran_times.dat',form='formatted')
+        read (1,*)
+        read (1,*)tt_dina
+        read (1,*)
+        read (1,*)t_ret
+        close ( unit=1)       
+
+
+      end if
+
+      tt_1=tt_1+tay
+      
+      
+      print *,' CALL dina_input tt_1 tay=',tt_1,tay
+      
+      if(tt_1.le.t_ret)return
+
+
 	do i=1,n
 	   te0(i)=te0_xx(i)
 	   tq0(i)=tq0_xx(i)
