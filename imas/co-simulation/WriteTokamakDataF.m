@@ -1,6 +1,9 @@
 % The script writes tokamak data files from one *.mat file.  
 function [MatFile] = WriteTokamakDataF(varargin)
-%clear all
+% First argument is directory to unpac files
+% Second argument is mat-file name
+
+%%
 if length(varargin) < 2
     [MyPath,~,~] = fileparts(mfilename('fullpath'));
     MatFile = [MyPath '/../../machines/iter/ITER_7.5MA/' 'ITER.mat'];
@@ -18,15 +21,16 @@ if length(varargin) < 1
     end
 else
     FilesDir = varargin{1};
+    if ~exist(FilesDir,'dir')
+        disp(['Creation the new directory ' FilesDir]);
+        mkdir(FilesDir);
+    end
 end
-
 
 %% Loading *.mat
 load(MatFile);
 
 %% Writing to files
-
-%mkdir([FilesDir]);
 
 for i = 1:length(ITER.files)
     

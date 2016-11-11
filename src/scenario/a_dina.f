@@ -120,9 +120,9 @@
     	c_input2(I)=qdq0(i)
 	end do
 
-      apr='QDE0-' 
+      apr='+QDE0-' 
       if(kpr.eq.1)print 71,apr,(QDE0(i),i=1,nn2) 
-      apr='QDQ0-' 
+      apr='+QDQ0-' 
       if(kpr.eq.1)print 71,apr,(QDQ0(i),i=1,nn2) 
       
       call transp100(
@@ -140,9 +140,9 @@
 	TQ0_tran(I)=Tq0(I)
       end do
 
-      apr='te0-' 
+      apr='+te0-' 
       if(kpr.eq.1)print 71,apr,(te0(i),i=1,nn2) 
-      apr='tq0-' 
+      apr='+tq0-' 
       if(kpr.eq.1)print 71,apr,(tq0(i),i=1,nn2) 
 
 
@@ -163,9 +163,9 @@
 	pne_tran(I)=pne(I)
 	
       end do
-      apr='pd0-' 
+      apr='+pd0-' 
       if(kpr.eq.1)print 71,apr,(pd0(i),i=1,nn2) 
-      apr='pt0-' 
+      apr='+pt0-' 
       if(kpr.eq.1)print 71,apr,(pt0(i),i=1,nn2) 
 
       call transp300(
@@ -183,9 +183,9 @@
 	sigk_tran(I)=sigk(I)
       end do
 
-      apr='ajb-' 
+      apr='+ajb-' 
       if(kpr.eq.1)print 71,apr,(ajb(i),i=1,nn2) 
-      apr='sigk-' 
+      apr='+sigk-' 
       if(kpr.eq.1)print 71,apr,(sigk(i),i=1,nn2) 
 
 
@@ -198,7 +198,7 @@
 	do i=1,n
 		aj0(I)=c_output1(i)
       end do
-      apr='-aj0-' 
+      apr='+aj0-' 
       if(kpr.eq.1)print 71,apr,(aj0(i),i=1,nn2) 
 
  	end if
@@ -732,16 +732,20 @@ c-------
       dimension c_input1(*),c_input2(*)
       dimension c_output1(*),c_output2(*)
 
-      dimension te0(200),tq0(200)
+	include 'parf0'
+      common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
 
+	common
+     *	/n_m/n,m,mp
 
 	character *20 apr,filename
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
 !------------------------------------inputs
-
-
+      
       DO I=1,n
     	c_output1(I)=te0(i)
     	c_output2(I)=tq0(i)
@@ -765,8 +769,13 @@ c-------
       dimension c_input1(*),c_input2(*)
       dimension c_output1(*),c_output2(*),c_output3(*)
 
-      dimension pd0(200),pt0(200),pne(200)
+	include 'parf0'
+      common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
 
+	common
+     *	/n_m/n,m,mp
 
 	character *20 apr,filename
 
@@ -780,6 +789,15 @@ c-------
     	c_output2(I)=pt0(i)
    	c_output3(I)=pne(i)
 	end do
+
+
+      apr='++++pD0-' 
+      print 71,apr,(PD0(i),i=1,n) 
+      apr='++++PT0-' 
+      print 71,apr,(PT0(i),i=1,n) 
+      apr='++++PNE-' 
+      print 71,apr,(PNE(i),i=1,n) 
+
 
 5000  format (50(1pe14.5))
 
@@ -798,8 +816,13 @@ c-------
       dimension c_input1(*),c_input2(*)
       dimension c_output1(*),c_output2(*)
 
-      dimension ajb(200),sigk(200)
+	include 'parf0'
+      common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
 
+	common
+     *	/n_m/n,m,mp
 
 	character *20 apr,filename
 
@@ -830,7 +853,13 @@ c-------
       dimension c_input1(*),c_input2(*)
       dimension c_output1(*),c_output2(*)
 
-      dimension aj0(200)
+	include 'parf0'
+      common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
+
+	common
+     *	/n_m/n,m,mp
 
 
 	character *20 apr,filename
@@ -862,7 +891,13 @@ c-------
       dimension c_input1(*),c_input2(*)
       dimension c_output1(*),c_output2(*)
 
-      dimension qe0(200),qq0(200)
+	include 'parf0'
+      common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
+
+	common
+     *	/n_m/n,m,mp
 
 
 	character *20 apr,filename

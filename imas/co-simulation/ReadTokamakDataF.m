@@ -1,12 +1,13 @@
 % The script reads tokamak data files and save to one *.mat file
-function MatFile = ReadTokamakDataF(FilesDir,MatFile)
-%clear all
-%addpath(['TokamakData']);
-%FilesDir = '../read_maksim_datfiles';
-if nargin<2,
-    MatFile = 'ITER.mat';
+function [MatFile] = ReadTokamakDataF(FilesDir,varargin)
+% First argument is directory to collect included files
+% Second argument is mat-file name
+
+if length(varargin) < 1
+    [MyPath,~,~] = fileparts(mfilename('fullpath'));
+    MatFile = [MyPath '/../../machines/iter/ITER_7.5MA/' 'ITER.mat'];
 end
-if nargin<1,
+if nargin<1
     FilesDir = '.';
 end
 

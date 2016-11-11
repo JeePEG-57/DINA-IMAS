@@ -122,6 +122,8 @@
      *  /vic_015/dt_end
      *  /vic_016/tt_rampup
 
+      common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
+
 	dimension tcam(*),tcam0(*),ind(kf),pfhelp(kf)
 
 	dimension uk_help(ntet),vk_help(ntet)
@@ -165,6 +167,11 @@ c*** tt_rampup - SOF time
 !      tt_dw=1.e8
 
       i_en=i_en+1
+      
+!      k_ener_ext=1
+      
+      if(kp.eq.1)print *,'k_ener_ext=',k_ener_ext
+      
 
       	if(i_en2.eq.-1)then	
         open (unit=1,file='kpr.dat',form='formatted')
@@ -221,6 +228,7 @@ c---
 
 	call den_read()
       call dens_prof()
+         if(k_dens_ext.eq.1)call dens_corr()
 	call bet_li_dat()
 
 !	call read_data2()
@@ -259,11 +267,20 @@ c	call shape_d3d()
        call gamma_z2_read()
        call gamma_z3_read()
        call gamma_z4_read()
+!       call gamma_z5_read()
+
+!      print *,' YERE'
+!      read (*,*)
+      
 
 	if(k_ener.eq.1)call dens_prog()
+         if(k_dens_ext.eq.1)call dens_corr()
 	call pp_calc()
+     
 
 	if(k_ener.eq.1)CALL ENERGY(N)
+	if(k_ajb_ext.eq.1)CALL ajb_corr()
+	if(k_ener_ext.eq.1)CALL ENERGY_corr()
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
 	call pp_calc()
@@ -798,6 +815,8 @@ c  toroidal coordinates...
 	call den_read()
 c**** pcchp calculations with regards Greenwald limit
         call vic_dens()
+      
+         if(k_dens_ext.eq.1)call dens_corr()
 
 c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 !!!        call vic_t_edge()
@@ -819,9 +838,13 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
        call gamma_z4_read()
 
 	if(k_ener.eq.1)call dens_prog()
-	call pp_calc()
+      if(k_dens_ext.eq.1)call dens_corr()
+      call pp_calc()
 
 	if(k_ener.eq.1)CALL ENERGY(N)
+	if(k_ajb_ext.eq.1)CALL ajb_corr()
+	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
 	call pp_calc()
@@ -1187,6 +1210,7 @@ c$
 	call den_read()
 c**** pcchp calculations with regards Greenwald limit
         call vic_dens()
+         if(k_dens_ext.eq.1)call dens_corr()
 c*** Input of Zeff waveform and ***
         if(k_ener.eq.1)call vic_zeff_read()
 c$
@@ -1859,6 +1883,7 @@ c----------------------------
        call gamma_z4_read()
 
 	 call dens_prog()
+         if(k_dens_ext.eq.1)call dens_corr()
 
        end if
       
@@ -1876,6 +1901,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 
 
 	if(k_ener.eq.1)	CALL ENERGY(N)
+	if(k_ener_ext.eq.1)CALL ENERGY_corr()
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
 
@@ -2442,10 +2468,88 @@ c  calc. flux from plasma to vessel,PF loops and probes...
 	return
 	end
 
+	subroutine ENERGY_corr()
+        include 'double.inc'
+	include 'new_com.inc'
+
+	call ENERGY_corr_c(
+     *  n,te0,tq0,te0_tran,tq0_tran)
 
 
+	return
+	end
 
+	subroutine ENERGY_corr_c(
+     *  n,te0,tq0,te0_tran,tq0_tran)
+        include 'double.inc'
+
+      dimension te0(*),tq0(*),te0_tran(*),tq0_tran(*)
+      
+!      print *,' ENERGY_corr='      
+      
+	do i=1,n
+      TE0(I)=TE0_tran(I)
+	Tq0(I)=TQ0_tran(I)
+      end do
+
+	return
+	end
+
+	subroutine dens_corr()
+        include 'double.inc'
+	include 'new_com.inc'
+
+	call dens_corr_c(
+     *  n,pd0,pt0,pne,pd0_tran,pt0_tran,pne_tran)
+
+
+	return
+	end
+
+	subroutine dens_corr_c(
+     *  n,pd0,pt0,pne,pd0_tran,pt0_tran,pne_tran)
+        include 'double.inc'
+
+      dimension pd0(*),pt0(*),pne(*),pd0_tran(*),pt0_tran(*),pne_tran(*)
+      
+!      print *,' dens_corr='      
+      
+	do i=1,n
+      pd0(I)=pd0_tran(I)
+	pt0(I)=pt0_tran(I)
+	pne(I)=pne_tran(I)
+      end do
+
+	return
+	end
                                                                         
+
+	subroutine ajb_corr()
+        include 'double.inc'
+	include 'new_com.inc'
+
+	call ajb_corr_c(
+     *  n,ajb,sigk,ajb_tran,sigk_tran)
+
+
+	return
+	end
+
+	subroutine ajb_corr_c(
+     *  n,ajb,sigk,ajb_tran,sigk_tran)
+        include 'double.inc'
+
+      dimension ajb(*),sigk(*),ajb_tran(*),sigk_tran(*)
+      
+!      print *,' ajb_corr='      
+      
+	do i=1,n
+      ajb(I)=ajb_tran(I)
+	sigk(I)=sigk_tran(I)
+      end do
+
+	return
+	end
 
 
                                                                         

@@ -2050,7 +2050,7 @@ c	pbi(1)=pbi(2)
 
         DO 1 I=2,N
 
-        print *,' 1 i n',i,n
+!        print *,' 1 i n',i,n
         
 	dpne=(pne(i)-pne(i-1))/( (pne(i)+pne(i-1))*0.5*ha(i) )
 	dpbe=(pbe(i)-pbe(i-1))/( (pbe(i)+pbe(i-1))*0.5*ha(i) )

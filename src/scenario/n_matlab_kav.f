@@ -179,6 +179,7 @@
 
 
 	common /c_data_in_time2/i_c_data,i_c_data1       
+      common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
 
 	dimension df_help(npo),dm_help(npo),uk_help(ntet),
 
@@ -199,9 +200,11 @@
 
 c______________________________                                         
 
-      
 
 	n_graf=1
+	
+      if(kp.eq.1)print *,'k_ener_ext=',k_ener_ext
+
 
 	if(n_pas.ne.0)i_ktm=1
 
@@ -315,6 +318,12 @@ c	print *,' HYU!!!!'
 
 	if(kpr.eq.1)print *,' rmag eu elong vol==',
      *  rmag,eu,elong,vol
+
+
+!       call gamma_z1_read()
+!       call gamma_z2_read()
+!       call gamma_z3_read()
+!       call gamma_z4_read()
 
 c	stop
 
@@ -436,6 +445,7 @@ c         call alf_n_read()
 
 	   do kk=1,1
 
+!	   call en_01_he()
 	   call en_01()
 	   call en_01_min()
          call into_impu()
@@ -449,6 +459,9 @@ c         call alf_n_read()
 	   end do
 
          call into_imp_kav()
+         if(k_dens_ext.eq.1)call dens_corr()
+	if(k_ajb_ext.eq.1)CALL ajb_corr()
+	if(k_ener_ext.eq.1)CALL ENERGY_corr()
 
  		call dopp_00()
 
@@ -534,6 +547,7 @@ c	   call den_imp_0d()
 c	   call en_loss()
 c         call to_0d()
 
+!	   call en_01_he()
 	   call en_01()
 	   call en_01_min()
          call into_impu()
@@ -547,6 +561,9 @@ c         call to_0d()
 
 
       call into_imp_kav()
+         if(k_dens_ext.eq.1)call dens_corr()
+	if(k_ajb_ext.eq.1)CALL ajb_corr()
+	if(k_ener_ext.eq.1)CALL ENERGY_corr()
 
 c         call dif_s_imp_n()
 
@@ -1876,6 +1893,7 @@ c
 	   do kk=1,3
 
 	  
+!	   call en_01_he()
 	   call en_01()
 	   call en_01_min()
          call into_impu()
@@ -1889,7 +1907,10 @@ c
 	   end do
 
          call into_imp_kav()
-      
+         if(k_dens_ext.eq.1)call dens_corr()
+	if(k_ajb_ext.eq.1)CALL ajb_corr()
+      	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+
       tpl=tpl_help
       
  	call dopp_00()

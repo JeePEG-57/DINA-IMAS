@@ -237,7 +237,8 @@ c=================================================
 	   ai_xx(i)=ai(i)
 	   te0_xx(i)=te0(i)
 	   tq0_xx(i)=tq0(i)
-	   pne_xx(i)=pne(i)*1.e19
+!	   pne_xx(i)=pne(i)*1.e19
+	   pne_xx(i)=pne(i)
 	   tok1_xx(i)=tok1(i)*1.e7
 	   q_xx(i)=q(i)
 	end do
@@ -284,15 +285,25 @@ c=================================================
 
 
 	subroutine dina_input(te0_xx,tq0_xx,pne_xx,
-     * pd0_xx,pt0_xx,sigk_xx,jbut_xx,aj0_xx,qe0_xx,qq0_xx)
+     * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx)
 
 	include 'double.inc'
-	include 'new_com.inc'
 
 	dimension te0_xx(*),tq0_xx(*),pne_xx(*)
-	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),jbut_xx(*),
+	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
+
+	include 'parf0'
      
+      common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
+
+	common
+     *	/n_m/n,m,mp
+     */ge2/NTAY,TAY,TT
+
+	character *20 apr
 
 c=================================================
 
@@ -317,26 +328,41 @@ c=================================================
       tt_1=tt_1+tay
       
       
-      print *,' CALL dina_input tt_1 tay=',tt_1,tay
+      print *,' CALL dina_input tt_1 tay t_ret=',tt_1,tay,t_ret
       
       if(tt_1.le.t_ret)return
-
 
 	do i=1,n
 	   te0(i)=te0_xx(i)
 	   tq0(i)=tq0_xx(i)
 	   pne(i)=pne_xx(i)
 	end do
+
+      apr='--te0-' 
+      if(kpr.eq.1)print 71,apr,(te0(i),i=1,n) 
+      apr='--tq0-' 
+      if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n) 
+      apr='--pne-' 
+      if(kpr.eq.1)print 71,apr,(pne(i),i=1,n) 
+
+   71 FORMAT(20X,A20/,(6(1pE10.3)))
 	
 	do i=1,n
 	   pd0(i)=pd0_xx(i)
 	   pt0(i)=pt0_xx(i)
 	   sigk(i)=sigk_xx(i)
-	   ajb(i)=jbut_xx(i)
+	   ajb(i)=ajb_xx(i)
 	   aj0(i)=aj0_xx(i)
 	   qe0(i)=qe0_xx(i)
 	   qq0(i)=qq0_xx(i)
 	end do
+
+      apr='--pd0-' 
+      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n) 
+      apr='--qe0-' 
+      if(kpr.eq.1)print 71,apr,(qe0(i),i=1,n) 
+      apr='--ajb-' 
+      if(kpr.eq.1)print 71,apr,(ajb(i),i=1,n) 
 
       return
       end

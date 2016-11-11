@@ -132,7 +132,7 @@ c
 	do i=2,n
 	end do
 
-      tpl_uv=1.e3
+      tpl_uv=1.e2
 
 	summ=0.
 	do i=2,n
