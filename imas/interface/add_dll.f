@@ -1932,9 +1932,9 @@ c=======
 
       PNOR=6.25E8
 
-      kpr=1
+!      kpr=1
       
-      print *,' enit2 ENTER'
+      if(kpr.eq.1)print *,' enit2 ENTER'
 
 	if(kpr.eq.1)print *,' key_t11 anom_e anom_i===',
      * key_t11,anom_e,anom_i
@@ -2316,7 +2316,7 @@ c     * pl31,pl32,pl34,palfa)
 
   !      print *,' 8 i',i
 
-	i_prinit=1
+	i_prinit=0
 	if(i_print.eq.1)then
       print *,' i,pft,q(i),pR,epi,t_e,d_e,t_i,
      * d_i,zeff(i),pzion,

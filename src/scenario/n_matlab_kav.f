@@ -462,6 +462,7 @@ c         call alf_n_read()
          if(k_dens_ext.eq.1)call dens_corr()
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+      if(k_dens_ext.eq.1)call dens_corr()
 
  		call dopp_00()
 
@@ -564,6 +565,7 @@ c         call to_0d()
          if(k_dens_ext.eq.1)call dens_corr()
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+      if(k_dens_ext.eq.1)call dens_corr()
 
 c         call dif_s_imp_n()
 
@@ -1910,6 +1912,7 @@ c
          if(k_dens_ext.eq.1)call dens_corr()
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
       	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+         if(k_dens_ext.eq.1)call dens_corr()
 
       tpl=tpl_help
       

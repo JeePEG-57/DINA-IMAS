@@ -792,11 +792,11 @@ c-------
 
 
       apr='++++pD0-' 
-      print 71,apr,(PD0(i),i=1,n) 
+!      print 71,apr,(PD0(i),i=1,n) 
       apr='++++PT0-' 
-      print 71,apr,(PT0(i),i=1,n) 
+!      print 71,apr,(PT0(i),i=1,n) 
       apr='++++PNE-' 
-      print 71,apr,(PNE(i),i=1,n) 
+!      print 71,apr,(PNE(i),i=1,n) 
 
 
 5000  format (50(1pe14.5))

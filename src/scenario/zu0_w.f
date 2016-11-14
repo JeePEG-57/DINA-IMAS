@@ -380,14 +380,15 @@ c        if(TT(i,2).lt.10.)Tt(i,2)=10.
 	tee(i)=tt(i,1)
    16 CONTINUE
 c      print*,'ntay=',ntay
-      MTE='TE0'
-c      PRINT 71,MTE,(TE0(i),i=1,n)
+      MTE='%% TE0'
+      PRINT 71,MTE,(TE0(i),i=1,n)
       MTE='PNE'
 c      PRINT 71,MTE,(pne(i),i=1,n)
 c      pause 'from energy'
 c      print*,' **nn  **     ***',nn
-      MTQ='TQ0'
-c      PRINT 71,MTQ,(TQ0(i),i=1,n)
+      MTQ='%% TQ0'
+      PRINT 71,MTQ,(TQ0(i),i=1,n)
+      
       NN=NN+1
       IF(NN.GT.100.and.kpr.eq.1)print*,' **nn gt 100 **     ***'
       IF(NN.GT.200.and.kpr.eq.1)print*,' **nn gt 200 **'

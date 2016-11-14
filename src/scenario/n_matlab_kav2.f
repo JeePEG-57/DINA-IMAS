@@ -274,13 +274,14 @@ c	call shape_d3d()
       
 
 	if(k_ener.eq.1)call dens_prog()
-         if(k_dens_ext.eq.1)call dens_corr()
+      if(k_dens_ext.eq.1)call dens_corr()
 	call pp_calc()
      
-
 	if(k_ener.eq.1)CALL ENERGY(N)
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+      if(k_dens_ext.eq.1)call dens_corr()
+      
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
 	call pp_calc()
@@ -844,6 +845,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 	if(k_ener.eq.1)CALL ENERGY(N)
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+      if(k_dens_ext.eq.1)call dens_corr()
 
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
@@ -1904,6 +1906,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
+      if(k_dens_ext.eq.1)call dens_corr()
 
 c	if(q(2).le.0.7)call zyb(n,ires)
 c	if(q(2).le.0.8)call zyb(n,ires)
@@ -1947,8 +1950,13 @@ c	   call zyb(n,ires,q_test)
 
 c	      if(kpr.eq.1)print*,(q(ii),ii=1,n)
 c	      read(*,*)
+	if(k_ener_ext.eq.1)CALL ENERGY_corr()
+      if(k_dens_ext.eq.1)call dens_corr()
+
+
 	   call pp_calc()
 	   call pff_calc()
+
 	end if
 	end if
 c**********************************************
