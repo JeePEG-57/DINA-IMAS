@@ -16,7 +16,7 @@
 
 	dimension vchopper_x2(kint),shape_out(kint)
 
-	character *20 apr,filename
+	character *30 apr,filename
 
 	dimension a_print(200)
 

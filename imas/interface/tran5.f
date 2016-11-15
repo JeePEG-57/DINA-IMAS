@@ -51,7 +51,7 @@ c---  we think ....???
 
       print *,' CALL TRANSP5 tt_1 tay t_end=',tt_1,tay,t_end
       
-      if(tt_1.le.t_ret)return
+!      if(tt_1.le.t_ret)return
 
       nn2=n
       
