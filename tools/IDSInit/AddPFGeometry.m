@@ -1,4 +1,4 @@
-function AddToCPO(Shot, Run, Occurence)
+function AddPFGeometry(Shot, Run, Occurence)
 
 
 S = load('env_VS_coils1.mat');

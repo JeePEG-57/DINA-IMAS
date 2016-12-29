@@ -8,6 +8,7 @@ status
 
 result
 
-AddToCPO(170, 1, 0);
+AddPFGeometry(170, 1, 0);
+AddPulseSchedule(170, 1, 0);
 
 end

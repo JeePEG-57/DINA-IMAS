@@ -1,5 +1,5 @@
 <ActorGenerator>
-  <version>v3.2.8</version>
+  <version>v3.3.0</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
@@ -268,7 +268,7 @@
           </entry>
         </tHash>
         <tc>
-	  <ffile>$FC2K/scripts/TC_Types.py</ffile>
+          <ffile>/work/imas/extra/fc2k/3.3.0/scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams>
           <vector>
@@ -309,6 +309,15 @@
           </vector>
           <vector>
             <string>core_profiles</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
+            <string>pulse_schedule</string>
             <string>0</string>
             <string>0</string>
             <string>0</string>
@@ -414,7 +423,7 @@
     </TupleP>
   </tupleParams>
   <actor>dinaimas21</actor>
-  <actorFolder>org/iter/imas/dinaimas21</actorFolder>
+  <actorFolder>org/iter/dinaimas21</actorFolder>
   <ualFolder>$IMAS_PREFIX</ualFolder>
   <returnType serialization="custom">
     <unserializable-parents/>
@@ -679,7 +688,7 @@
           </entry>
         </tHash>
         <tc>
-	  <ffile>$FC2K/scripts/TC_Types.py</ffile>
+          <ffile>/work/imas/extra/fc2k/3.3.0/scripts/TC_Types.py</ffile>
         </tc>
         <tupleParams/>
         <uHash>
@@ -718,7 +727,7 @@
   <semantic>ITER</semantic>
   <keplerFolder>$KEPLER</keplerFolder>
   <ptFolder>empty</ptFolder>
-  <homeFolder>$HOME</homeFolder>
+  <homeFolder>/home/ITER/dubrovm</homeFolder>
   <compiler>gfortran</compiler>
   <libraries/>
   <lang>fortran</lang>
@@ -727,5 +736,5 @@
   <MPI>false</MPI>
   <BATCH>false</BATCH>
   <InitFunc>false</InitFunc>
-  <FC2Kpath>$FC2K</FC2Kpath>
+  <FC2Kpath>/work/imas/extra/fc2k/3.3.0</FC2Kpath>
 </ActorGenerator>

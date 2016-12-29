@@ -1,5 +1,5 @@
 subroutine dina_imas(em_coupling0, equilibrium0, pf_active0, pf_passive0, &
-    & core_profiles0, equilibrium, magnetics, pf_active, pf_passive, core_profiles, &
+    & core_profiles0, pulse_schedule, equilibrium, magnetics, pf_active, pf_passive, core_profiles, &
     & arr_in1,arr_out1)
 
 
@@ -15,6 +15,7 @@ type (ids_magnetics)   :: magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
 type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
+type (ids_pulse_schedule)   :: pulse_schedule
 
 real (DP) :: arr_in1(*), arr_out1(*)
 
@@ -102,6 +103,8 @@ call system(" ls -ll psi_data ")
 call system(" ls -ll p_data1 ")
 call system(" pwd")
 
+
+call schedulefiles(pulse_schedule,equilibrium0)
 
 
 nact=size(em_coupling0%mutual_grid_active,2)
@@ -726,3 +729,247 @@ end subroutine
         
 	return
 	end
+
+
+subroutine schedulefiles(schedule,equil)
+use ids_schemas
+use ids_routines
+implicit none
+type (ids_equilibrium) :: equil
+type (ids_pulse_schedule) :: schedule
+integer :: i,nt,io
+real(8) :: t, v, u
+
+integer :: n1,n2,n3,n4,n5,n6,n7,n8
+real(8) :: x1,x2,x3,x4,x5,x6,x7,x8
+
+7000	format(4(1x,1pe14.7))
+
+
+open(unit=44,file='ech.dat',action='write',access='sequential')
+nt=size(schedule%ec%antenna(1)%power%reference%time)
+write(44,*) 'Time points'
+write(44,*) nt
+write(44,*) 'Time  Power'
+do i=1,nt
+t = schedule%ec%antenna(1)%power%reference%time(i)
+v = schedule%ec%antenna(1)%power%reference%data(i)*1.d-6
+write(44,*) t, v
+enddo
+close(44)
+
+
+open(unit=44,file='emo.dat',action='write',access='sequential')
+nt=size(schedule%ec%antenna(2)%power%reference%time)
+write(44,*) 'Time points'
+write(44,*) nt
+write(44,*) 'Time  Power'
+do i=1,nt
+t = schedule%ec%antenna(2)%power%reference%time(i)
+v = schedule%ec%antenna(2)%power%reference%data(i)*1.d-6
+u = schedule%ec%antenna(3)%power%reference%data(i)*1.d-6
+write(44,*) t, v, u
+enddo
+close(44)
+
+
+open(unit=44,file='dens.dat',action='write',access='sequential')
+nt=size(schedule%density_control%valve(1)%flow_rate%reference%time)
+write(44,*) 'Time points'
+write(44,*) nt
+write(44,*) 'Time  Density'
+do i=1,nt
+t = schedule%density_control%valve(1)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(1)%flow_rate%reference%data(i)
+write(44,*) t, v
+enddo
+close(44)
+
+
+open(unit=44,file='n_d.dat',action='write',access='sequential')
+nt=size(schedule%density_control%valve(7)%flow_rate%reference%time)
+write(44,*) 'Time_points  t_bar'
+write(44,*) nt, 0.003
+write(44,*) 'Time  Density'
+do i=1,nt
+t = schedule%density_control%valve(7)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(7)%flow_rate%reference%data(i)
+write(44,*) t, v
+enddo
+close(44)
+
+
+open(unit=44,file='gamma_z.dat',action='write',access='sequential')
+nt=size(schedule%density_control%valve(2)%flow_rate%reference%time)
+write(44,*) 'Time_points  t_bar'
+write(44,*) nt, 0.003
+write(44,*) 'Time  Density'
+do i=1,nt
+t = schedule%density_control%valve(2)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(2)%flow_rate%reference%data(i)
+write(44,*) t, v
+enddo
+close(44)
+
+
+open(unit=44,file='gamma_z1.dat',action='write',access='sequential')
+nt=size(schedule%density_control%valve(3)%flow_rate%reference%time)
+write(44,*) 'Time_points  t_bar'
+write(44,*) nt, 0.003
+write(44,*) 'Time  Density'
+do i=1,nt
+t = schedule%density_control%valve(3)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(3)%flow_rate%reference%data(i)
+write(44,*) t, v
+enddo
+close(44)
+
+
+open(unit=44,file='gamma_z2.dat',action='write',access='sequential')
+nt=size(schedule%density_control%valve(4)%flow_rate%reference%time)
+write(44,*) 'Time_points  t_bar'
+write(44,*) nt, 0.003
+write(44,*) 'Time  Density'
+do i=1,nt
+t = schedule%density_control%valve(4)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(4)%flow_rate%reference%data(i)
+write(44,*) t, v
+enddo
+close(44)
+
+
+open(unit=44,file='gamma_z3.dat',action='write',access='sequential')
+nt=size(schedule%density_control%valve(5)%flow_rate%reference%time)
+write(44,*) 'Time_points  t_bar'
+write(44,*) nt, 0.003
+write(44,*) 'Time  Density'
+do i=1,nt
+t = schedule%density_control%valve(5)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(5)%flow_rate%reference%data(i)
+write(44,*) t, v
+enddo
+close(44)
+
+
+open(unit=44,file='gamma_z4.dat',action='write',access='sequential')
+nt=size(schedule%density_control%valve(6)%flow_rate%reference%time)
+write(44,*) 'Time_points  t_bar'
+write(44,*) nt, 0.003
+write(44,*) 'Time  Density'
+do i=1,nt
+t = schedule%density_control%valve(6)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(6)%flow_rate%reference%data(i)
+write(44,*) t, v
+enddo
+close(44)
+
+
+
+v = equil%vacuum_toroidal_field%r0*1.d2 !meters to sm
+u = equil%vacuum_toroidal_field%b0(1)*1.d1 !Tesla to kG
+
+     	open(unit=44,file='for002_tmp',action='write',access='sequential')
+
+	open(unit=2,file='for002',form='formatted',action='read')
+        print *,' begin for002 reading'
+
+	read (2,*) ; write(44,*) 'nrad(24)       mplasma    next(15)'
+	read (2,*)n1,n2,n3 ; write(44,*) n1,n2,n3
+	read (2,*) ; write(44,*) 'tt(2500.)    tay        t_end(900.)      RS0       psend'
+	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,v,x5 !x4 is R for toroidal field
+	read (2,*) ; write (44,*) 'i_graph'
+	read (2,*)n1 ; write (44,*) n1
+	read (2,*) ; write (44,*) 'ALFA0      BETA (0.01)     alfa1 (-1.3)  omega(0.33)'
+	read (2,*)x1,x2,x3,x4 ; write(44,*) x1,x2,x3,x4
+	read (2,*) ; write (44,*) 'iread      kzero      IWRITE     kEFIT'
+	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
+	read (2,*) ; write (44,*) 'alfax1     alfax2     betax1     betax2'
+	read (2,*)x1,x2,x3,x4 ; write(44,*) x1,x2,x3,x4
+	read (2,*) ; write (44,*) 'pw_1       pw_2'
+	read (2,*)x1,x2 ; write(44,*) x1,x2
+	read (2,*) ; write (44,*) 'te_a       ti_a       te_b      ti_b    pw_e'
+	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
+	read (2,*) ; write (44,*) 'pd0_a      pt0_a      pd0_b     pt0_b   pw_p'
+	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
+	read (2,*) ; write (44,*) 'zeff_a    zeff_b'
+	read (2,*)x1,x2 ; write(44,*) x1,x2
+	read (2,*) ; write (44,*) 'SIG0'
+	read (2,*)x1 ; write(44,*) x1
+	read (2,*) ; write (44,*) 'zhib,tego,zalfa,talfa,alp1'
+	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
+	read (2,*) ; write (44,*) 'ktp,kpin,ken,ken1,ken2,kd2,nal'
+	read (2,*)n1,n2,n3,n4,n5,n6,n7 ; write(44,*) n1,n2,n3,n4,n5,n6,n7
+	read (2,*) ; write (44,*) 'alpy,   ppp,    eee,    dd,     dt,     dh,     df'
+	read (2,*)x1,x2,x3,x4,x5,x6,x7 ; write(44,*) x1,x2,x3,x4,x5,x6,x7
+	read (2,*) ; write (44,*) 'lt,     ld,   lh,   ll, lm, it, id, ih'
+	read (2,*)n1,n2,n3,n4,n5,n6,n7,n8 ; write(44,*) n1,n2,n3,n4,n5,n6,n7,n8
+	read (2,*) ; write (44,*) 'eps0,eps1,eps2'
+	read (2,*)x1,x2,x3 ; write(44,*) x1,x2,x3
+	read (2,*) ; write (44,*) 'anom_e,anom_i,key_t11,kcchp'
+	read (2,*)x1,x2,n1,n2 ; write(44,*) x1,x2,n1,n2
+	read (2,*) ; write (44,*) 'edope   edopi'
+	read (2,*)x1,x2 ; write(44,*) x1,x2
+	read (2,*) ; write (44,*) 'udd'
+	read (2,*)x1 ; write(44,*) x1
+	read (2,*) ; write (44,*) 'k_ener    k_uv'
+	read (2,*)n1,n2 ; write(44,*) n1,n2
+	read (2,*) ; write (44,*) 't_dop'
+	read (2,*)x1 ; write(44,*) x1
+	read (2,*) ; write (44,*) 'r0,z0,zref'
+	read (2,*)x1,x2,x3 ; write(44,*) x1,x2,x3
+	read (2,*) ; write (44,*) 'kzref    krref(2)   key_b  i_pf'
+	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
+	read (2,*) ; write (44,*) 'i_c'
+	read (2,*)n1 ; write(44,*) n1
+	read (2,*) ; write (44,*) 'q_vde'
+	read (2,*)x1 ; write(44,*) x1
+	read (2,*) ; write (44,*) 'tay_00,tay_th,t_disr'
+	read (2,*)x1,x2,x3 ; write(44,*) x1,x2,x3
+	read (2,*) ; write (44,*) 'd_tpl,tpl_end'
+	read (2,*)x1,x2 ; write(44,*) x1,x2
+	read (2,*) ; write (44,*) 'c_h,d_halo'
+	read (2,*)x1,x2 ; write(44,*) x1,x2
+	read (2,*) ; write (44,*) 'kmaj,li_drop,ndisrup,n_dif,nmix'
+	read (2,*)n1,n2,n3,n4,n5 ; write(44,*) n1,n2,n3,n4,n5
+	read (2,*) ; write (44,*) 'hpart,te_h'
+	read (2,*)x1,x2 ; write(44,*) x1,x2
+	read (2,*) ; write (44,*) 'i_d3d,i_iter,i_smal'
+	read (2,*)n1,n2,n3 ; write(44,*) n1,n2,n3
+	read (2,*) ; write (44,*) 'ngra,i_ramp,i_v,i_con'
+	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
+	read (2,*) ; write (44,*) 'tpl     bt0    eu(200 or 50)  elong'
+	read (2,*)x1,x2,x3,x4 ; write(44,*) x1,u,x3,x4 !x2 is toroidal field
+	read (2,*) ; write (44,*) 'e_sep'
+	read (2,*)x1 ; write(44,*) x1
+	read (2,*) ; write (44,*) 'i_beta,i_gap5'
+	read (2,*)n1,n2 ; write(44,*) n1,n2
+	read (2,*) ; write (44,*) 'i_br'
+	read (2,*)n1 ; write(44,*) n1
+	read (2,*) ; write (44,*) 'ind_r1  ind_r2  ind_z1   ind_z2'
+	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
+	read (2,*) ; write (44,*) 'key_ef'
+	read (2,*)n1 ; write(44,*) n1
+	read (2,*) ; write (44,*) 'res_coef'
+	read (2,*)x1 ; write(44,*) x1
+	read (2,*) ; write (44,*) 'n_polar'
+	read (2,*)n1 ; write(44,*) n1
+
+io = 0
+do 
+	read (2,*,iostat=io)
+	if (io.eq.0) then
+		write(44,*)
+	else
+		exit
+	endif
+enddo
+	close(2)
+
+	close(44)
+
+call system("cp for002_tmp for002")
+call system("rm for002_tmp")
+
+
+return
+end

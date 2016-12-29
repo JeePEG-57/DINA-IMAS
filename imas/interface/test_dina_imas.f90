@@ -9,7 +9,7 @@ implicit none
 interface 
 ! Declaration of the dina_imas subroutine
     subroutine dina_imas ( em_coupling0_in, equilibrium0_in,  &
- & pf_active0_in, pf_passive0_in,  equilibrium_in, &
+ & pf_active0_in, pf_passive0_in, core_profiles0_in, pulse_schedule_in, equilibrium_in, &
  & magnetics_in, pf_active_in, pf_passive_in, core_profiles_in, &
  & arr_in1,arr_out1)
  
@@ -21,7 +21,8 @@ interface
       type (ids_magnetics) :: magnetics_in
       type (ids_pf_active) :: pf_active0_in, pf_active_in
       type (ids_pf_passive) :: pf_passive0_in, pf_passive_in
-      type (ids_core_profiles)   :: core_profiles_in
+      type (ids_core_profiles)   :: core_profiles0_in, core_profiles_in
+      type (ids_pulse_schedule)   :: pulse_schedule_in
 
     real (DP) :: arr_in1(501), arr_out1(501)
 
@@ -44,7 +45,8 @@ type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
 type (ids_pf_active) :: pf_active0, pf_active
 type (ids_pf_passive) :: pf_passive0, pf_passive
-type (ids_core_profiles)   :: core_profiles
+type (ids_core_profiles)   :: core_profiles0, core_profiles
+type (ids_pulse_schedule)   :: pulse_schedule0
 
 real (DP) :: arr_in1(501), arr_out1(501)
 
@@ -82,6 +84,8 @@ call ids_get(idx0,"em_coupling",em_coupling0)
 call ids_get(idx0,"equilibrium",equilibrium0)
 call ids_get(idx0,"pf_active",pf_active0)
 call ids_get(idx0,"pf_passive",pf_passive0)
+call ids_get(idx0,"core_profiles",core_profiles0)
+call ids_get(idx0,"pulse_schedule",pulse_schedule0)
 
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
@@ -95,7 +99,7 @@ do iloop=1,4000
 write(*,*) 'call DINA_IMAS i =',iloop
 
 call dina_imas( em_coupling0, equilibrium0,   &
- & pf_active0,  pf_passive0,  equilibrium, &
+ & pf_active0,  pf_passive0, core_profiles0, pulse_schedule0,  equilibrium, &
  & magnetics, pf_active, pf_passive, core_profiles, &
  & arr_in1,arr_out1)
 
@@ -144,12 +148,13 @@ call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
 call ids_deallocate(equilibrium0)
+call ids_deallocate(core_profiles0)
 
 
 call ids_copy(pf_active, pf_active0)
 call ids_copy(pf_passive, pf_passive0)
 call ids_copy(equilibrium, equilibrium0)
-
+call ids_copy(core_profiles, core_profiles0)
 
 end do
 
@@ -163,11 +168,14 @@ call ids_deallocate(em_coupling0)
 call ids_deallocate(equilibrium0)
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
+call ids_deallocate(pulse_schedule0)
+call ids_deallocate(core_profiles0)
 
 call ids_deallocate(pf_active)
 call ids_deallocate(pf_passive)
 call ids_deallocate(equilibrium)
 call ids_deallocate(magnetics)
+call ids_deallocate(core_profiles)
 
 ! write(*,*) 'Read back full dynamic IDS as a test'
 ! 
