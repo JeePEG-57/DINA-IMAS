@@ -78,7 +78,19 @@ if (ifirst.eq.1) then
   sdn%signal(i)%name(1) = 'Z coordinate of the separatrix point or plasma limiter touching point, m'
   i=11
   allocate(sdn%signal(i)%name(1))
-  sdn%signal(i)%name(1) = '5 inputs allocated for auxiliary parameters'
+  sdn%signal(i)%name(1) = 'number of PF coils including contours of VS3, triangular support, copper cladding and divertor inboard rail (= 15)'
+  i=12
+  allocate(sdn%signal(i)%name(1))
+  sdn%signal(i)%name(1) = 'number of controlled gaps between plasma boundary and first wall (= 6)'
+  i=13
+  allocate(sdn%signal(i)%name(1))
+  sdn%signal(i)%name(1) = 'current number of time step'
+  i=14
+  allocate(sdn%signal(i)%name(1))
+  sdn%signal(i)%name(1) = 'number of vacuum vessel filaments (= 100)'
+  i=15
+  allocate(sdn%signal(i)%name(1))
+  sdn%signal(i)%name(1) = 'internal flag'
   i=16
   allocate(sdn%signal(i)%name(1))
   sdn%signal(i)%name(1) = 'gaps between plasma and limiter (6 inputs), m'
