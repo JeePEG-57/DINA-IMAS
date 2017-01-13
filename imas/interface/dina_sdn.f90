@@ -29,7 +29,7 @@ if (ifirst.eq.1) then
   sdn%topic_list(1)%names(1) = 'Input SDN'
   do i=1,36 !indices in arrin
     sdn%topic_list(1)%indices(i)=i
-    sdn%signal(i)%ip_normalise = 0
+    !sdn%signal(i)%ip_normalise = 0
     sdn%signal(i)%allocated_position = sdn%topic_list(1)%indices(i)
     allocate(sdn%signal(i)%value(1))
   enddo
@@ -40,7 +40,7 @@ if (ifirst.eq.1) then
   do k=1,38 !indices in arrout
     sdn%topic_list(2)%indices(k)=k+2
     i = k+size(sdn%topic_list(1)%indices)
-    sdn%signal(i)%ip_normalise = 0
+    !sdn%signal(i)%ip_normalise = 0
     sdn%signal(i)%allocated_position = sdn%topic_list(2)%indices(k)
     allocate(sdn%signal(i)%value(1))
   enddo
