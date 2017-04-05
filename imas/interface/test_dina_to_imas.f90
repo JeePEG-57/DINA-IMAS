@@ -36,7 +36,8 @@ integer ::  prescribedpulse=170, prescribedrun=1
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
-real (DP) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
+!integer, parameter :: DP = kind(1.0d0)
+real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
 ! main test

@@ -13,9 +13,10 @@ integer :: i,n,npo
 
 parameter (npo=500)
 
-real(DP) :: ai(npo),jbut(npo),sigk(npo)
-real(DP) :: c_input1(npo),c_input2(npo)
-real(DP) :: c_output1(npo),c_output2(npo),c_output3(npo)
+!integer, parameter :: DP = kind(1.0d0)
+real(ids_real) :: ai(npo),jbut(npo),sigk(npo)
+real(ids_real) :: c_input1(npo),c_input2(npo)
+real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 
 
 

@@ -17,7 +17,8 @@ type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_pulse_schedule)   :: pulse_schedule
 
-real (DP) :: arr_in1(*), arr_out1(*)
+!integer, parameter :: DP = kind(1.0d0)
+real (ids_real) :: arr_in1(*), arr_out1(*)
 
 
 ! define local fixed size variables
@@ -38,51 +39,51 @@ integer,save ::  n_gaps=6
 integer,save :: key(27)=(/ (0,i=1,27) /)
 
 ! static and prescribed data expressed in DINA terms
-real (DP),save :: dina_time=0
-real (DP),save :: time_8,tt_8,tay_8
+real (ids_real),save :: dina_time=0
+real (ids_real),save :: time_8,tt_8,tay_8
 
 integer ::  npo
 
 parameter ( npo=500)
 
-real (DP),save :: vec(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: vec(npo) = (/ (0,i=1,npo) /)
 
 ! dynamic inputs and outputs groups
-real (DP),save :: input_1(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: input_2(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: input_3(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: input_1(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: input_2(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: input_3(npo) = (/ (0,i=1,npo) /)
 
-real (DP),save :: output_1(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: output_2(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: output_3(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: output_4(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_1(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_2(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_3(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
 
 ! DINA parameters
     integer,parameter :: nr = 65, nz = 129, ngrid=nr*nz
     
-    real(DP) :: tpl=1000.0,uli=1000.0,v=1000.0,s_plasma=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
+    real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,s_plasma=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
     ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0
 
-    real(DP) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz)
+    real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz)
 
-    real(DP) :: ai(npo),te0(npo),tq0(npo),pne(npo),tok1(npo),q(npo)
+    real(ids_real) :: ai(npo),te0(npo),tq0(npo),pne(npo),tok1(npo),q(npo)
 
-    real(DP) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),qe0(npo),qq0(npo)
+    real(ids_real) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),qe0(npo),qq0(npo)
     
-    real(DP),parameter :: pi = 3.14159265358979323846
+    real(ids_real),parameter :: pi = 3.14159265358979323846
 
 
   integer :: TimeSteps, CurTimeStep
   
   integer :: n1, n2, n ,i_wr
 
-real (DP),save ::  gridrange(4)
-real(DP), dimension(:,:), ALLOCATABLE,save :: fluxarr,vesarr,pslgreen,bprgreen,pfind,pmj
-real(DP), dimension(:,:), ALLOCATABLE,save :: pfc,pfgreen,vesgreen,pfprobe,vesprobe
-real(DP), dimension(:), ALLOCATABLE,save :: pfres, rcam, xu, yu
+real (ids_real),save ::  gridrange(4)
+real(ids_real), dimension(:,:), ALLOCATABLE,save :: fluxarr,vesarr,pslgreen,bprgreen,pfind,pmj
+real(ids_real), dimension(:,:), ALLOCATABLE,save :: pfc,pfgreen,vesgreen,pfprobe,vesprobe
+real(ids_real), dimension(:), ALLOCATABLE,save :: pfres, rcam, xu, yu
 
-real (DP),save :: cpu_old = 0.d0, cpu_new
+real (ids_real),save :: cpu_old = 0.d0, cpu_new
 
 
 

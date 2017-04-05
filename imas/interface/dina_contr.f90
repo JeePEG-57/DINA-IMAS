@@ -11,7 +11,8 @@ integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
 integer :: idx, idx0
 
-real (DP):: arr_in1(*), arr_out1(*)
+!integer, parameter :: DP = kind(1.0d0)
+real (ids_real):: arr_in1(*), arr_out1(*)
 
 integer,save :: n_input1, n_input2, ng
 integer,save :: n_output1, n_output2
@@ -22,24 +23,24 @@ integer,save ::  npf=15, n_gaps=6, ncam=100;
 integer,save :: key(27)=(/ (0,i=1,27) /)
 
 ! static and prescribed data expressed in DINA terms
-real (DP),save :: dina_time=0
-real (DP),save :: time_8,tt_8,tay_8
+real (ids_real),save :: dina_time=0
+real (ids_real),save :: time_8,tt_8,tay_8
 
 integer ::  npo
 
 parameter ( npo=500)
 
-real (DP),save :: vec(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: vec(npo) = (/ (0,i=1,npo) /)
 
 ! dynamic inputs and outputs groups
-real (DP),save :: input_1(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: input_2(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: input_3(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: input_1(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: input_2(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: input_3(npo) = (/ (0,i=1,npo) /)
 
-real (DP),save :: output_1(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: output_2(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: output_3(npo) = (/ (0,i=1,npo) /)
-real (DP),save :: output_4(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_1(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_2(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_3(npo) = (/ (0,i=1,npo) /)
+real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
 
 loop_count = loop_count + 1 ! number of times the iterative routine was entered

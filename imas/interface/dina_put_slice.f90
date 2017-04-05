@@ -21,6 +21,7 @@ integer :: nr, nz, n1, n2, ke, i_wr
 
 integer :: TimeSteps, CurTimeStep
 
+integer, parameter :: DP = kind(1.0d0)
 real(DP),dimension(:),allocatable :: xu, yu, x, y
 real(DP),dimension(:,:),allocatable :: psi
 
