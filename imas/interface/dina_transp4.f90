@@ -13,7 +13,7 @@ integer :: i,n,npo
 
 parameter (npo=500)
 
-integer, parameter :: DP = kind(1.0d0)
+!integer, parameter :: DP = kind(1.0d0)
 real(ids_real) :: ai(npo),aj0(npo)
 
 real(ids_real) :: c_input1(npo),c_input2(npo)
