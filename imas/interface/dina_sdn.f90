@@ -102,6 +102,7 @@ if (ifirst.eq.1) then
   ifirst = ifirst+1
 else
   write(*,*) 'before ids_copy(sdnin,sdn)'
+  call ids_deallocate(sdn)
   call ids_copy(sdnin,sdn)
   write(*,*) 'after ids_copy(sdnin,sdn)'
 endif
