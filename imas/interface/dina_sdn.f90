@@ -14,15 +14,13 @@ integer,save :: ifirst = 1
 
 write(*,*) 'dina_sdn ', ifirst, ioswitch
 if (ifirst.eq.1) then
-
-!if (ioswitch.eq.0) then
-!  if (ifirst.ne.1) then
-!    deallocate(sdn%signal)
-!    deallocate(sdn%topic_list)
-!    deallocate(sdn%time)
-!  endif 
-
   write(*,*) 'Static SDN setup'
+else
+  write(*,*) 'before ids_deallocate(sdn)'
+  call ids_deallocate(sdn)
+  write(*,*) 'after  ids_deallocate(sdn)'
+endif 
+
   !allocate(sdn%signal(74)) !36input+38output
   allocate(sdn%topic(2))
   allocate(sdn%topic(1)%name(1))
@@ -100,12 +98,14 @@ if (ifirst.eq.1) then
   allocate(sdn%ids_properties%comment(1))
   sdn%ids_properties%comment(1)='DINA SDN'
   ifirst = ifirst+1
-else
-  write(*,*) 'before ids_copy(sdnin,sdn)'
-  call ids_deallocate(sdn)
-  call ids_copy(sdnin,sdn)
-  write(*,*) 'after ids_copy(sdnin,sdn)'
-endif
+
+!else
+!  write(*,*) 'before ids_copy(sdnin,sdn)'
+!  call ids_deallocate(sdn)
+!  write(*,*) 'after ids_deallocate(sdn)'
+!  call ids_copy(sdnin,sdn)
+!  write(*,*) 'after ids_copy(sdnin,sdn)'
+!endif
 
 if (ioswitch.eq.0) then
 
