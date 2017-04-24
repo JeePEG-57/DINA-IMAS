@@ -6,7 +6,10 @@ function [MatFile] = ReadTokamakDataF(FilesDir,varargin)
 if length(varargin) < 1
     [MyPath,~,~] = fileparts(mfilename('fullpath'));
     MatFile = [MyPath '/../../machines/iter/ITER_7.5MA/' 'ITER.mat'];
+else
+    MatFile = varargin{1};
 end
+
 if nargin<1
     FilesDir = '.';
 end
