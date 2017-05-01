@@ -14,12 +14,13 @@ clean:
 	rm -f dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp1.xml dinatransp2.xml dinatransp3.xml dinatransp4.xml dinatransp5.xml dinasdn21.xml
 
 fc2k: dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp1.xml dinatransp2.xml dinatransp3.xml dinatransp4.xml dinatransp5.xml dinasdn21.xml
-	$$FC2K/bin/fc2k dinaimas21.xml
-	$$FC2K/bin/fc2k dinacontr21.xml
-	$$FC2K/bin/fc2k dinaputslice21.xml
-	$$FC2K/bin/fc2k dinatransp1.xml
-	$$FC2K/bin/fc2k dinatransp2.xml
-	$$FC2K/bin/fc2k dinatransp3.xml
-	$$FC2K/bin/fc2k dinatransp4.xml
-	$$FC2K/bin/fc2k dinatransp5.xml
-	$$FC2K/bin/fc2k dinasdn21.xml
+	$$FC2K/bin/fc2k -nocompile dinaimas21.xml
+	$$FC2K/bin/fc2k -nocompile dinacontr21.xml
+	$$FC2K/bin/fc2k -nocompile dinaputslice21.xml
+	$$FC2K/bin/fc2k -nocompile dinatransp1.xml
+	$$FC2K/bin/fc2k -nocompile dinatransp2.xml
+	$$FC2K/bin/fc2k -nocompile dinatransp3.xml
+	$$FC2K/bin/fc2k -nocompile dinatransp4.xml
+	$$FC2K/bin/fc2k -nocompile dinatransp5.xml
+	$$FC2K/bin/fc2k -nocompile dinasdn21.xml
+	cd $(KEPLER)/build-area && ant clean-cache && ant compile && ant make-kars
