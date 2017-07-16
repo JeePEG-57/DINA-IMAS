@@ -18,4 +18,5 @@ imas/fc2k/toto
 imas/interface/test_dina
 imas/interface/test_dina_to_imas
 imas/kepler_wf/log*
+imas/kepler_wf/*.kar
 

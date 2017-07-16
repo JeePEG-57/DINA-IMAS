@@ -94,6 +94,7 @@
      *  /en2/TE0(npo),TQ0(npo),TEN(npo),TQN(npo),WE0(npo),
      *  WQ0(npo)
      *  /en2e/pd0_a,pt0_a,pd0_b,pt0_b,pw_p
+     *  /en5/SD0(npo),ST0(npo),SH0(npo)
      *  /en6/Vn(npo)
      *  /en9/QE0(npo),QQ0(npo),QDG(npo)
      *  /en12/pnal(npo),pnaln(npo),zalfa,talfa
@@ -387,6 +388,7 @@ c---------------------------
      *  /vic_016/tt_rampup
      *  /vic_017/w_fusion
      *  /vic_018/r_lh_new
+     *  /vic_019/cIp_min
 
 c----------
 
@@ -453,7 +455,7 @@ c----------
      *  /efil_17/eu_fil
      *  /efil_18/x_b(ntet),y_b(ntet)
 
-!!!     *  /efil_19/n_rad,n_tet
+     *  /efil_19/n_rad_old,n_tet
 
      *  /efil_20/i_beta
 
@@ -571,6 +573,9 @@ c  additional  for runaways..
 	common /c_imp_out4/qe0_av_prim,qe0_av_plas,pd0_av,
      * pt0_av,pn_av,pn1_av,pn0_av,ppr_imp_av
 
+	common /c_imp_out5/pn0_av_imp,
+     *  vt0_imp,prog_n0_imp
+
 
 
 	common
@@ -581,6 +586,7 @@ c  additional  for runaways..
 
 
 	common /c_imp_out3/ratio_imp,ratio_imp2,gamma_z,gamma_z2
+
 
 	common
      *	/c_add1/omg_ppx

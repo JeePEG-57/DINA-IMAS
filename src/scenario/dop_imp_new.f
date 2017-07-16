@@ -212,6 +212,21 @@ c
      *  /halo5e/pshalo
      *  /halo6/thalo,thalo0
 c
+
+	common /c_temp1/v_neout
+	common /c_temp3/zhib_dif
+	common /c_temp4/wdrp
+!     *  /c_temp5/YTe,YTi,YGsep,Yne,YGsol
+!     *  /c_temp6/YPsol,Ycnim,YSeng,Yqpk,Yndt
+
+     *  /c_temp5/YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
+     .	YGdt,YGpuf,YGpel,YGhe,YGsol,YGsep,
+     .	Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi,
+     .	yGELM,yGLFS
+
+	common /c_temp6/wdr_d,wdr_t,WEL,wio
+
+
 4010    format(6e12.3)
 
 
@@ -225,7 +240,8 @@ c
       end if
 
 
-
+      wdr_d=WD0(N)*2.*PI
+      wdr_t=WT0(N)*2.*PI
 
 ccccc      WDR=(WD0(N)+WT0(N)+WH0(N))*2.5
 	wdre=0.
@@ -499,9 +515,14 @@ c==========================================================================
 
 c---->  ITER (Scaling L-mode,95) tay95=0.023*Ip**0.96*R**1.89*a**(-0.06)*
 c   n_e**0.4*B_t0**0.03*k**0.64*A_i**0.2*P**(-0.73)
+  	
+  	  p_sep_a=abs(p_sep)
+  	  
+        if(ntay.lt.3)then
+        p_sep_a=1.d0
+        end if
 
         if(ntay.gt.30)then
-	p_sep_a=abs(p_sep)
         teit_95=0.023*(tpl*1.e-3)**(0.96)*(rs*1.e-2)**(1.83)*
      *  (eu/rs)**(-0.06)*(pcch)**(0.4)*(bt*0.1)**(0.03)*
      *  eksk**(0.64)*pot**(0.2)/(p_sep_a)**0.73*1000.
@@ -747,6 +768,8 @@ ccc	include 'dop_smal.inc'
 c	include 'dop_tsp.inc'
 c	tmp='na_smal'
 c	include 'dop_ramp.inc'
+
+      YPsol=p_sep_a
 
 	include 'dop_vs_pfw_1.inc'
 

@@ -277,7 +277,14 @@ c	call shape_d3d()
       if(k_dens_ext.eq.1)call dens_corr()
 	call pp_calc()
      
-	if(k_ener.eq.1)CALL ENERGY(N)
+	if(k_ener.eq.1)then
+      if(kcchp.eq.0)then      
+       call srs_feed()
+!       call solpsza()
+!       call solpsz()
+      end if
+	CALL ENERGY(N)
+	end if
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
       if(k_dens_ext.eq.1)call dens_corr()
@@ -842,7 +849,16 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
       if(k_dens_ext.eq.1)call dens_corr()
       call pp_calc()
 
-	if(k_ener.eq.1)CALL ENERGY(N)
+
+	if(k_ener.eq.1)then
+      if(kcchp.eq.0)then      
+       call srs_feed()
+!       call solpsza()
+!       call solpsz()
+      end if
+	CALL ENERGY(N)
+	end if
+	
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
       if(k_dens_ext.eq.1)call dens_corr()
@@ -1871,6 +1887,8 @@ c   vessel cuurents taken after convergance of equilibrium---
 c----------------------------
 	if(k_ener.eq.1)then
 
+      if(kcchp.eq.1)then      
+
 	if(tt.gt.tt_h-500.)then
 	   call vic_prof_chg()
 	end if
@@ -1878,6 +1896,8 @@ c----------------------------
 	if(tt.gt.tt_h_to_l-500.)then
 	   call vic_prof_chg1()
 	end if
+
+      end if
 	
        call gamma_z1_read()
        call gamma_z2_read()
@@ -1899,10 +1919,19 @@ c
      *	print *,' -----k_ener t_dop-- q(2)',k_ener,t_dop,q(2)
 
 c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
+      if(kcchp.eq.1)then      
         call vic_t_edge()
+      end if
+      
 
-
-	if(k_ener.eq.1)	CALL ENERGY(N)
+	if(k_ener.eq.1)then
+      if(kcchp.eq.0)then      
+       call srs_feed()
+!       call solpsza()
+!       call solpsz()
+      end if
+	CALL ENERGY(N)
+	end if
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()

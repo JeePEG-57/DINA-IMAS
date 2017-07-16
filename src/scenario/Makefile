@@ -19,10 +19,10 @@ DINASRC = \
 		forces_for_control.f g_gaps_rus.f gen.f gr_psi_d_pc.f\
 		green_br_N.f green_d.f inh.f map.f\
 		min_distance_1cm_w.f min_distance_pfw_1cm.f\
-		move.f n_matlab_kav.f n_matlab_kav2.f ndop1_new2_400.f\
+		move.f n_matlab_kav.f n_matlab_kav2.f ndop1_new2_400.f neut_dif3.f\
 		ndop_4.f neq0_sep_lim_32.f neqm.f obrm.f oosep_4.f\
 		out42_for.f pet.f pf_t.f pfsvd11x.f pid.f pp0.f progonu.f\
-		read_por.f sh.f sh1_N2.f sh_astra_dt_beam.f\
+		read_por.f sh.f sh1_N2.f sh_astra_dt_beam.f  solpsz2_vic.f\
 		sh_br.f sh_d3d.f solver.f spline.f svd.f svd0m.f svd2.f uuu.f\
 		victor_imp_new1_H.f write_eqdsk_scen_tok.f write_jetto.f\
 		write_plasma_W_imas.f zca_tsp.f zcam_d3d.f zcamit.f\

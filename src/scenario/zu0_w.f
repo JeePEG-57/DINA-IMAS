@@ -1,4 +1,13 @@
-      SUBROUTINE TP(N)
+      SUBROUTINE TP(N_xx)
+	include 'double.inc'
+	include 'new_com.inc'
+
+      call TP_c(N_xx,pd0_av,pt0_av)
+
+      RETURN
+      END
+
+      SUBROUTINE TP_c(N,pd0_av,pt0_av)
 c----------------------------------------------
 c  particles transport
 c-----------------------------------
@@ -30,6 +39,12 @@ c
      *  /ge5/kpr
 	common
      *  /dfm3/dfmax(npo),dfmax0(npo)
+	character *70 apr
+
+
+        print *,' enter TP'
+
+
 	ntran=0
       N2=N-1
       ALFA=1.
@@ -44,14 +59,24 @@ c
 	aiu(i)=ai(i)
 	vu(i)=vi(i)
 	gg(i)=vi(i)
+	
+!	GGTN(I)=gg(i)
+	GGT(I)=gg(i)
+	
       fz(I)=1.
        VG(I)=0.
        HG(I)=0.
       TETA(I)=1./HA2(I)
     1 CONTINUE
+    
 	vu(2)=0.
 	aiu(2)=0.
 	gg(2)=0.
+	
+!	GGTN(2)=gg(2)
+	GGT(2)=gg(2)
+	
+	
       IF(NTAY.EQ.0)GO TO 99
       NN=0
       DO 51 I=2,N2
@@ -70,12 +95,19 @@ c--------------------------------------------
 	kd2=2
 	df=-(fmax1-fmax0)/(fmax1*tay)
 	end if
+	
 c--------------
 c	if(kcchp.eq.1)kd2=0
 c------------
 c----------------------------------------
       DO 3 I=2,N
     3 UG(I)=(VD(I)+0.5*kd2*aiu(i)*df)*Vu(I)
+    
+      do i=1,n
+!      ug(i)=0.
+      end do
+      
+    
       ALFA=1.
       BETA=1.
 c
@@ -108,6 +140,9 @@ c
      *(1.-VD(N)*VI(N)/(2.*GK(N)))
       UD=UT
       UH=UT
+      
+!      print *,' GGTN(2)=',GGTN(2)
+      
       DO 14 I=2,N2
       PKO=ALFA/TAY*(GGTN(I)*dh2(i)+GGTN(I+1)*dh1(i))
       FD(I)=SD0(I)*Vu(I)*dh2(i)+SD0(I+1)*Vu(I+1)*
@@ -160,11 +195,36 @@ c
 c
    99 CONTINUE
       DO 8 I=2,N
-      GGT(I)=Vu(I)
+!      GGT(I)=gg(I)
     8 CONTINUE
 	pd0(1)=pd0(2)
 	pt0(1)=pt0(2)
 	ph0(1)=ph0(2)
+	
+	pd0_av=0.d0
+	vv=0.d0
+	do i=1,n
+      pd0_av=pd0_av+pd(I)*vi(I)*ha(i)
+      vv=vv+vi(I)*ha(i)
+	end do
+	pd0_av=pd0_av/vv
+
+	pt0_av=0.d0
+	vv=0.d0
+	do i=1,n
+      pt0_av=pt0_av+pt(I)*vi(I)*ha(i)
+      vv=vv+vi(I)*ha(i)
+	end do
+	pt0_av=pt0_av/vv
+
+	apr='-pd0-'
+	if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n)
+
+	if(kpr.eq.1)print *,' id it==',id,it
+	if(kpr.eq.1)print *,' pd0_av pt0_av==',pd0_av,pt0_av
+
+	
+	
       RETURN
       END
       SUBROUTINE ENERGY(N)
@@ -265,6 +325,11 @@ c
       VI2(I)=VI(I)**PAW2
     1 fz(I)=1./VI2(I)
 
+      do i=1,n
+ !     GGEN(I)=GG(I)
+      end do
+
+
       DO 2 I=2,N1
       FES=FKO*(fz(I)*GGEN(I)*dh2(i)+fz(I+1)*
      *GGEN(I+1)*dh1(i))*ALFA/TAY
@@ -273,6 +338,9 @@ c
 c--------------------------
 
       CALL ENIT(N)
+
+      print *,' kcchp==',kcchp
+
       if(kcchp.eq.0)CALL TP(N)
 ccc      CALL TP(N)
 
@@ -296,6 +364,11 @@ cccc      PNE(I)=PD0(I)+PT0(I)+PH0(I)+zar*ppr(i)+zalfa*pnal(i)
       IF(NTAY.EQ.0)GO TO 99
       ALFA=1.5
       BETA=2.5
+
+      do i=1,n
+ !     ug(i)=0.d0
+ !     vg(i)=0.d0
+      end do
 
 c
       DO I=3,N1
@@ -375,23 +448,16 @@ c        if(TT(i,2).lt.10.)Tt(i,2)=10.
       GO TO 98
     7 CONTINUE
       DO 16 I=2,N
-      TE0(I)=TT(I,1)*0.75+tee(i)*0.25
+!      TE0(I)=TT(I,1)*0.75+tee(i)*0.25
+      TE0(I)=TT(I,1)
+      
       TQ0(I)=TT(I,2)
 	tee(i)=tt(i,1)
    16 CONTINUE
 c      print*,'ntay=',ntay
-      MTE='%% TE0'
-      PRINT 71,MTE,(TE0(i),i=1,n)
-      MTE='PNE'
-c      PRINT 71,MTE,(pne(i),i=1,n)
-c      pause 'from energy'
-c      print*,' **nn  **     ***',nn
-      MTQ='%% TQ0'
-      PRINT 71,MTQ,(TQ0(i),i=1,n)
-      
       NN=NN+1
-      IF(NN.GT.100.and.kpr.eq.1)print*,' **nn gt 100 **     ***'
-      IF(NN.GT.200.and.kpr.eq.1)print*,' **nn gt 200 **'
+      IF(NN.GT.100)print*,' **nn gt 100 **     ***'
+      IF(NN.GT.200)print*,' **nn gt 200 **'
 	if(nn.gt.200)stop
       GO TO 1000
    98 CONTINUE
@@ -410,6 +476,18 @@ c      print*,' **nn  **     ***',nn
 	te0(1)=te0(2)
 	tq0(1)=tq0(2)
 	pne(1)=pne(2)
+
+      MTE='TE0'
+!      PRINT 71,MTE,(TE0(i),i=1,n)
+      MTE='PNE'
+c      PRINT 71,MTE,(pne(i),i=1,n)
+c      pause 'from energy'
+c      print*,' **nn  **     ***',nn
+      MTQ='Qe0'
+!      PRINT 71,MTQ,(Qe0(i),i=1,n)
+
+
+
       RETURN
       END
       SUBROUTINE OITER(N)
@@ -420,6 +498,7 @@ c----------------------------------------------
 c       implicit real*8 (a-h,o-z)
 	include 'parf0'
         common
+     *  /ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)
      *  /ge5/kpr
       COMMON
      *  /en5/SD0(npo),ST0(npo),SH0(npo)
@@ -428,19 +507,53 @@ c       implicit real*8 (a-h,o-z)
      *  GGT(npo),GGTN(npo)
      *  /en17/QAE(npo),QAQ(npo),SAL(npo),NAL
      *  /en20/PJ(npo),SB(npo)
+
+	common /c_temp3/zhib_dif
+
+        character *20 apr
+
 	src=0.
       DIF(2)=0.
 	sd0(2)=-sal(2)+sb(2)
 	st0(2)=-sal(2)+sb(2)
-      DO 1 I=3,N
-	sd0(i)=-sal(i)+sb(i)
-	st0(i)=-sal(i)+sb(i)
+      i_en=i_en+1
+      
+      if(i_en.eq.1)zhib_dif=1.d0
+
+	src=0.
+
+      DO I=2,N
+!	sd0(i)=(1-ai(i)**2)*1.e-3
+      end do
+
+      xi_av=0.d0
+      pn=0.d0
+      DO I=2,N
+	xi_av=xi_av+xii(i)
+	pn=pn+1.d0
+      end do
+      xi_av=xi_av/pn
+
+      DO 1 I=2,N
+	sd0(i)=sd0(i)-sal(i)
+	st0(i)=st0(i)-sal(i)
 	src=src+sd0(i)+st0(i)
-        DIF(I)=0.4*XII(I)
+
+!        DIF(I)=4.d0*gra2(i)
+!        DIF(I)=40.d0*gra2(i)
+!        DIF(I)=xii(i)*zhib_dif
+        DIF(I)= 0.2d0*xi_av
+
     1 CONTINUE
-ccc	print *,' source============================',src
-ccc	pause
+      apr='sd0 TP'
+      if(kpr.eq.1)PRINT 71,apr,(sd0(i),i=1,n)
+      apr='dif'
+      if(kpr.eq.1)PRINT 71,apr,(dif(i),i=1,n)
+
    71 FORMAT(20X,A6/,(8E10.3))
+
+	if(kpr.eq.1)print *,' source=== xi_av===',src, xi_av
+	
       RETURN
       END
       SUBROUTINE FITER(N)
@@ -463,7 +576,7 @@ c       implicit real*8 (a-h,o-z)
 	common
      *  /mid3/GRA1(npo),GRA2(npo)
 c
-      if(kpr.eq.1)print *,' alp1 kpin================',alp1,kpin
+	if(kpr.eq.1)print *,' alp1 kpin================',alp1,kpin
       VD(2)=0.
       DO 1 I=3,N
       VP=ALP1*DIF(i)/(GRA2(I)*EU)*AI(I)

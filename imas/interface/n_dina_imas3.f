@@ -831,3 +831,182 @@ c	call out42(n_pr,a_print,num,apr)
         RETURN                                                          
 
         END                                                             
+      subroutine solpsza()
+	include 'double.inc'
+
+      include 'parf0'
+
+	common
+     *	/n_m/n,m,mp
+
+	common 
+     *  /c_temp4/wdrp
+!     *  /c_temp5/YTe,YTi,YGsep,Yne,YGsol
+!     *  /c_temp6/YPsol,Ycnim,YSeng,Yqpk,Yndt
+     *  /c_temp5/YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
+     .	YGdt,YGpuf,YGpel,YGhe,YGsol,YGsep,
+     .	Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi,
+     .	yGELM,yGLFS
+
+
+
+     */en2/TE0(npo),TQ0(npo),TEN(npo),TQN(npo),
+     *WE0(npo),WQ0(npo)
+
+
+        common
+     *	/v_surface/s,v
+
+	common /c_temp6/wdr_d,wdr_t,WEL,wio
+
+     			YMU=0.8d0
+!            YPsol=10.d0
+            YPalp=0.d0
+            YSeng=57.d0
+            YAim=20.d0
+            Ycnim=0.02d0
+            YPedPi=1.d0
+
+
+!            WDRp=(WD0(N)+WT0(N)+WH0(N))*2.*PI
+
+     			YGsol=wdrp*1.d3
+     			
+     			if(kpr.eq.1)print *,' YGsol YPsol=',YGsol,YPsol
+     			if(kpr.eq.1)print *,' wdr_d,wdr_t=',wdr_d,wdr_t
+     			if(kpr.eq.1)print *,' WEL,wio=',WEL,wio
+     			if(kpr.eq.1)print *,' Sp=',s
+     			
+     			yGELM=0.d0
+     			yGLFS=0.d0
+
+!     YMU, 	[a.u.], 0.2<mu<1 in SOLPS mu=1 corresponds to attachment - =0.8 - comment by Victor 
+!	YPsol, 	[MW] power to SOL 
+!	YPalp,	[MW] power in alpha particle -----comment by victor from Pacher 
+! 	YSeng, 	[m3/s] pumping speed - =57 - comment by Victor
+! 	YAIM,	[a.u.] sort of imp. in atomic units - =20 for Neon - comment by Victor
+!	Ycnim,	nim/ne fraction of impurity at sep.
+!	YPedPi, [a.u.]	Pe/Pi=1 by Polevoi - comment by Victor
+!	YGsol,	[10^19/s] sink of DT to the SOL by diffusion
+!	YGELM,  [10^19/s] sink of DT to the SOL with ELMs =0 still now - comment by Victor
+!	yGLFS,	[10^19/s] sink of DT to the SOL from LFS pellet drift (ideal) =0 - comment by Victor
+
+	call solpsz2(
+     .			YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
+     .			YGdt,YGpuf,YGpel,YGhe,YGsol,YGsep,
+     .			Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi
+     .		,yGELM,yGLFS)
+
+
+     			if(kpr.eq.1)print *,' YTe,YTi=',YTe,YTi
+     			if(kpr.eq.1)print *,' YGsep,Yne=',YGsep,Yne
+
+      te0(n)=YTe*1.d3
+      tq0(n)=YTi*1.d3
+
+	return
+	end
+
+
+      subroutine solpsza_example(
+     .			YMU_xx,YPsol_xx,YPalp_xx,YSeng_xx,YdNdt_xx,YAim_xx,
+     .          Ycnim_xx,YPedPi_xx,
+     .			YGdt_xx,YGpuf_xx,YGpel_xx,YGhe_xx,YGsol_xx,YGsep_xx,
+     .			Ypn_xx,Yqpk_xx,Yndt_xx,YnHe_xx,Yne_xx,YTe_xx,YTi_xx
+     .		,yGELM_xx,yGLFS_xx,
+     .       yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
+
+	include 'double.inc'
+
+      include 'parf0'
+
+	common
+     *	/n_m/n,m,mp
+
+	common 
+     *  /c_temp4/wdrp
+!     *  /c_temp5/YTe,YTi,YGsep,Yne,YGsol
+!     *  /c_temp6/YPsol,Ycnim,YSeng,Yqpk,Yndt
+     *  /c_temp5/YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
+     .	YGdt,YGpuf,YGpel,YGhe,YGsol,YGsep,
+     .	Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi,
+     .	yGELM,yGLFS
+
+
+     */en2/TE0(npo),TQ0(npo),TEN(npo),TQN(npo),
+     *WE0(npo),WQ0(npo)
+
+        common
+     *	/v_surface/s,v
+
+	common /c_temp6/wdr_d,wdr_t,WEL,wio
+
+
+     			YMU=0.8d0
+!            YPsol=10.d0
+            YPalp=0.d0
+            YSeng=57.d0
+            YAim=20.d0
+            Ycnim=0.02d0
+            YPedPi=1.d0
+
+!            WDRp=(WD0(N)+WT0(N)+WH0(N))*2.*PI
+     			YGsol=wdrp*1.d3
+
+    			yGELM=0.d0
+     			yGLFS=0.d0
+
+     			YMU_xx=YMU
+            YPalp_xx=YPalp
+            YSeng_xx=YSeng
+            YAim_xx=YAim
+            Ycnim_xx=Ycnim
+            YPedPi_xx=YPedPi
+     			YGsol_xx=YGsol
+     			
+     			if(kpr.eq.1)print *,' YGsol YPsol=',YGsol,YPsol
+     			if(kpr.eq.1)print *,' wdr_d,wdr_t=',wdr_d,wdr_t
+     			if(kpr.eq.1)print *,' WEL,wio=',WEL,wio
+     			if(kpr.eq.1)print *,' Sp=',s
+
+            yfluxd_xx=wdr_d
+            yfluxt_xx=wdr_t
+            yfluxe_xx=WEL
+            yfluxi_xx=wio
+            ysbound_xx=s
+
+  			
+     			yGELM_xx=yGELM
+     			yGLFS_xx=yGLFS
+
+!     YMU, 	[a.u.], 0.2<mu<1 in SOLPS mu=1 corresponds to attachment - =0.8 - comment by Victor 
+!	YPsol, 	[MW] power to SOL 
+!	YPalp,	[MW] power in alpha particle -----comment by victor from Pacher 
+! 	YSeng, 	[m3/s] pumping speed - =57 - comment by Victor
+! 	YAIM,	[a.u.] sort of imp. in atomic units - =20 for Neon - comment by Victor
+!	Ycnim,	nim/ne fraction of impurity at sep.
+!	YPedPi, [a.u.]	Pe/Pi=1 by Polevoi - comment by Victor
+!	YGsol,	[10^19/s] sink of DT to the SOL by diffusion
+!	YGELM,  [10^19/s] sink of DT to the SOL with ELMs =0 still now - comment by Victor
+!	yGLFS,	[10^19/s] sink of DT to the SOL from LFS pellet drift (ideal) =0 - comment by Victor
+
+!	call solpsz2(
+!     .			YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
+!     .			YGdt,YGpuf,YGpel,YGhe,YGsol,YGsep,
+!     .			Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi
+!     .		,yGELM,yGLFS)
+
+
+      YTe=YTe_xx
+      YTi=YTi_xx
+      YGsep=YGsep_xx
+      Yne=Yne_xx
+      
+     			if(kpr.eq.1)print *,' YTe,YTi=',YTe,YTi
+     			if(kpr.eq.1)print *,' YGsep,Yne=',YGsep,Yne
+
+      te0(n)=YTe*1.d3
+      tq0(n)=YTi*1.d3
+
+	return
+	end
