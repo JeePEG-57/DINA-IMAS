@@ -1,4 +1,4 @@
-subroutine dina_transp1(equilibrium0, core_profiles0, core_profiles)
+subroutine dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
 
 use ids_schemas
 use ids_routines
@@ -7,6 +7,7 @@ implicit none
 
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
+type (ids_core_sources) :: core_sources0, core_sources
 
 integer :: i,n,npo
 
@@ -21,6 +22,8 @@ real(ids_real) :: qe0(npo),qq0(npo)
 
 
 call ids_copy(core_profiles0,core_profiles)
+call ids_copy(core_sources0,core_sources)
+
 
 ! open (unit=61,file='dina_transp5.dat',action='read',form='formatted')
 ! 
@@ -40,10 +43,10 @@ call ids_copy(core_profiles0,core_profiles)
 ! 
 ! close (61)
 
-n = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
+n = size(core_sources0%source(1)%profiles_1d(1)%grid%rho_tor_norm)
 
- qe0(1:n) = core_profiles%profiles_1d(1)%electrons%pressure(1:n)
- qq0(1:n) = core_profiles%profiles_1d(1)%pressure_ion_total(1:n)
+ qe0(1:n) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n)
+ qq0(1:n) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n)
  c_input1(1:n)=qe0(1:n)
  c_input2(1:n)=qq0(1:n)
 

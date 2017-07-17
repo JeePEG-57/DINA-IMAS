@@ -1,4 +1,4 @@
-subroutine dina_transp5(equilibrium0, core_profiles0, core_profiles)
+subroutine dina_transp5(equilibrium0, core_sources0, core_sources)
 
 use ids_schemas
 use ids_routines
@@ -6,7 +6,7 @@ implicit none
 
 
 type (ids_equilibrium) :: equilibrium0
-type (ids_core_profiles) :: core_profiles0, core_profiles
+type (ids_core_sources) :: core_sources0, core_sources
 
 
 integer :: i,n,npo
@@ -20,7 +20,7 @@ real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 
 
-call ids_copy(core_profiles0,core_profiles)
+call ids_copy(core_sources0,core_sources)
 
       call transp50( &
 !-----------------------------------  inputs---
@@ -29,7 +29,7 @@ call ids_copy(core_profiles0,core_profiles)
      &  c_output1,c_output2)
 
 
-n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
+n = size(core_sources%source(1)%profiles_1d(1)%grid%rho_tor_norm)
 
 
     	qe0=c_output1
@@ -60,11 +60,11 @@ n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
 ! allocate(core_profiles%profiles_1d(1)%grid%rho_tor_norm(n))
 !  core_profiles%profiles_1d(1)%grid%rho_tor_norm(1:n) = ai(1:n)
 
-allocate(core_profiles%profiles_1d(1)%electrons%pressure(n))
- core_profiles%profiles_1d(1)%electrons%pressure(1:n) = qe0(1:n)
+allocate(core_sources%source(1)%profiles_1d(1)%electrons%energy(n))
+ core_sources%source(1)%profiles_1d(1)%electrons%energy(1:n) = qe0(1:n)
 
-allocate(core_profiles%profiles_1d(1)%pressure_ion_total(n))
- core_profiles%profiles_1d(1)%pressure_ion_total(1:n) = qq0(1:n)
+allocate(core_sources%source(1)%profiles_1d(1)%total_ion_energy(n))
+ core_sources%source(1)%profiles_1d(1)%total_ion_energy(1:n) = qq0(1:n)
 
 
 return

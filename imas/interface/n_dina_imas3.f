@@ -908,13 +908,7 @@ c	call out42(n_pr,a_print,num,apr)
 	end
 
 
-      subroutine solpsza_example(
-     .			YMU_xx,YPsol_xx,YPalp_xx,YSeng_xx,YdNdt_xx,YAim_xx,
-     .          Ycnim_xx,YPedPi_xx,
-     .			YGdt_xx,YGpuf_xx,YGpel_xx,YGhe_xx,YGsol_xx,YGsep_xx,
-     .			Ypn_xx,Yqpk_xx,Yndt_xx,YnHe_xx,Yne_xx,YTe_xx,YTi_xx
-     .		,yGELM_xx,yGLFS_xx,
-     .       yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
+      subroutine solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
 
 	include 'double.inc'
 

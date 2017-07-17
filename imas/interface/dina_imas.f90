@@ -1,6 +1,8 @@
-subroutine dina_imas(em_coupling0, equilibrium0, pf_active0, pf_passive0, &
-    & core_profiles0, pulse_schedule, equilibrium, magnetics, pf_active, pf_passive, core_profiles, &
-    & arr_in1,arr_out1)
+subroutine dina_imas(&
+  & em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0, &
+  & pulse_schedule, &
+  & equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, &
+  & arr_in1, arr_out1 )
 
 
 use ids_schemas
@@ -15,7 +17,10 @@ type (ids_magnetics)   :: magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
 type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
+type (ids_core_transport)   :: core_transport
+type (ids_core_sources)   :: core_sources0, core_sources
 type (ids_pulse_schedule)   :: pulse_schedule
+
 
 !integer, parameter :: DP = kind(1.0d0)
 real (ids_real) :: arr_in1(*), arr_out1(*)
@@ -83,8 +88,9 @@ real(ids_real), dimension(:,:), ALLOCATABLE,save :: fluxarr,vesarr,pslgreen,bprg
 real(ids_real), dimension(:,:), ALLOCATABLE,save :: pfc,pfgreen,vesgreen,pfprobe,vesprobe
 real(ids_real), dimension(:), ALLOCATABLE,save :: pfres, rcam, xu, yu
 
-real (ids_real),save :: cpu_old = 0.d0, cpu_new
+real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
+real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
 
 if (first_call == 1) then ! convert input trees to local variables before calling dina
@@ -275,9 +281,9 @@ n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
  sigk(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
 !Transp4
  aj0(1:n1) = core_profiles0%profiles_1d(1)%j_total(1:n1)
-!Transp5
- qe0(1:n1) = core_profiles0%profiles_1d(1)%electrons%pressure(1:n1)
- qq0(1:n1) = core_profiles0%profiles_1d(1)%pressure_ion_total(1:n1)
+!Sources
+ qe0(1:n1) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n1)
+ qq0(1:n1) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
 
 write(*,*) 'dina_input enter...'
 
@@ -325,6 +331,9 @@ end do
      & x,y,psi,psi_bnd,  &
      & pd0,pt0,sigk,jbut,aj0,qe0,qq0)
 
+
+
+      call solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
 
 
     dina_time=tt
@@ -440,6 +449,10 @@ pf_passive%time(1) = dina_time
     !allocate(equilibrium%coordinate_system%grid%dim2(n2,TimeSteps))
     allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%r(ke,1))
     allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%z(ke,1))
+
+
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(n))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n))
   
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(nz,nr))
@@ -453,6 +466,7 @@ pf_passive%time(1) = dina_time
 ! Filling equilibrium 
 
     equilibrium%ids_properties%homogeneous_time = 1
+    equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n) = ai(1:n)
     
     
     equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
@@ -466,6 +480,9 @@ pf_passive%time(1) = dina_time
 	equilibrium%time_slice(CurTimeStep)%global_quantities%q_axis = q_ax
 	equilibrium%time_slice(CurTimeStep)%global_quantities%q_95 = q_95
 	equilibrium%time_slice(CurTimeStep)%global_quantities%w_mhd = wen2 ![J]
+
+        equilibrium%time_slice(CurTimeStep)%global_quantities%surface = ysbound_xx
+        equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n) = ysbound_xx
 
 	equilibrium%vacuum_toroidal_field%r0 = rs0 ![m]
 	equilibrium%vacuum_toroidal_field%b0(CurTimeStep) = bt0 ![T]
@@ -548,7 +565,7 @@ write(*,*) 'Allocate core_profiles... '
     core_profiles%time(CurTimeStep) = tt ![s]
 
 
-write(*,*) 'Write core_profiles transp '
+write(*,*) 'Write core_profiles transp... '
 ! Transp1
 allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
 allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
@@ -594,14 +611,98 @@ allocate(core_profiles%profiles_1d(1)%conductivity_parallel(n))
 allocate(core_profiles%profiles_1d(1)%j_total(n))
  core_profiles%profiles_1d(1)%j_total(1:n) = aj0(1:n)
 
-!Transp5
-allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(n))
-allocate(core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(n))
- core_profiles%profiles_1d(CurTimeStep)%electrons%pressure(1:n) = qe0(1:n)
- core_profiles%profiles_1d(CurTimeStep)%pressure_ion_total(1:n) = qq0(1:n)
+!Sources
+
+
+write(*,*) 'Allocate core_sources... '
+allocate(core_sources%source(1))
+    allocate(core_sources%source(1)%profiles_1d(TimeSteps))
+    allocate(core_sources%time(TimeSteps))
+
+    allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
+
+
+    core_sources%ids_properties%homogeneous_time = 1
+    
+    
+    core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
+
+    
+    core_sources%source(1)%profiles_1d(CurTimeStep)%time = tt
+    core_sources%time(CurTimeStep) = tt ![s]
+
+write(*,*) 'Write core_sources...'
+
+allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%electrons%energy(n))
+allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(n))
+ core_sources%source(1)%profiles_1d(CurTimeStep)%electrons%energy(1:n) = qe0(1:n)
+ core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(1:n) = qq0(1:n)
+
+
+!SOLPS
+write(*,*) 'Allocate core_transport... '
+allocate(core_transport%model(1))
+    allocate(core_transport%model(1)%profiles_1d(TimeSteps))
+    allocate(core_transport%time(TimeSteps))
+
+    allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%grid_d%rho_tor_norm(n))
+    
+allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2))
+
+
+    core_transport%ids_properties%homogeneous_time = 1
+    
+    
+    core_transport%model(1)%profiles_1d(CurTimeStep)%grid_d%rho_tor_norm(1:n) = ai(1:n)
+
+    
+    core_transport%model(1)%profiles_1d(CurTimeStep)%time = tt
+    core_transport%time(CurTimeStep) = tt ![s]
+
+
+
+
+write(*,*) 'Write core_transport... '
+allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%electrons%energy%flux(n))
+allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%total_ion_energy%flux(n))
+ core_transport%model(1)%profiles_1d(CurTimeStep)%electrons%energy%flux(1:n-1) = 0.d0
+ core_transport%model(1)%profiles_1d(CurTimeStep)%electrons%energy%flux(n) = yfluxe_xx
+ core_transport%model(1)%profiles_1d(CurTimeStep)%total_ion_energy%flux(1:n-1) = 0.d0
+ core_transport%model(1)%profiles_1d(CurTimeStep)%total_ion_energy%flux(n) = yfluxi_xx
+
+
+! Deuterium
+allocate(core_transport%model(1)%profiles_1d(1)%ion(1)%element(1))
+ core_transport%model(1)%profiles_1d(1)%ion(1)%element(1)%a = 2
+ core_transport%model(1)%profiles_1d(1)%ion(1)%element(1)%z_n = 1
+
+ core_transport%model(1)%profiles_1d(1)%ion(1)%z_ion = 1
+!core_transport%model(1)%profiles_1d(1)%ion(1)%label = 'D+'
+! if (.not. allocated(core_transport%model(1)%profiles_1d(1)%ion(1)%n_i)) then
+allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(1)%particles%flux(n))
+! end if
+ core_transport%model(1)%profiles_1d(CurTimeStep)%ion(1)%particles%flux(1:n-1) = 0.d0
+ core_transport%model(1)%profiles_1d(CurTimeStep)%ion(1)%particles%flux(n) = yfluxd_xx
+
+
+! Tritium
+allocate(core_transport%model(1)%profiles_1d(1)%ion(2)%element(1))
+ core_transport%model(1)%profiles_1d(1)%ion(2)%element(1)%a = 3
+ core_transport%model(1)%profiles_1d(1)%ion(2)%element(1)%z_n = 1
+
+ core_transport%model(1)%profiles_1d(1)%ion(2)%z_ion = 1
+!core_transport%model(1)%profiles_1d(1)%ion(2)%label = 'T+'
+! if (.not. allocated(core_transport%model(1)%profiles_1d(1)%ion(2)%n_i)) then
+allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2)%particles%flux(n))
+! end if
+ core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2)%particles%flux(1:n-1) = 0.d0
+ core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2)%particles%flux(n) = yfluxt_xx
+
     
     
   !  write(*,*) "psi = ", (equilibrium%profiles_2d(1)%psi(i,1:n2,CurTimeStep),i=1,n1)
+
+
 
     
 
