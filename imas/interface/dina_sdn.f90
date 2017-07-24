@@ -13,13 +13,13 @@ integer :: i, k, j, idx
 integer,save :: ifirst = 1
 
 write(*,*) 'dina_sdn ', ifirst, ioswitch
-if (ifirst.eq.1) then
+if (ifirst.eq.1 .AND. ioswitch.eq.0) then
   write(*,*) 'Static SDN setup'
-else
-  write(*,*) 'before ids_deallocate(sdn)'
-  call ids_deallocate(sdn)
-  write(*,*) 'after  ids_deallocate(sdn)'
-endif 
+!else
+!  write(*,*) 'before ids_deallocate(sdn)'
+!  call ids_deallocate(sdn)
+!  write(*,*) 'after  ids_deallocate(sdn)'
+!endif 
 
   !allocate(sdn%signal(74)) !36input+38output
   allocate(sdn%topic(2))
@@ -30,6 +30,7 @@ endif
     sdn%topic(1)%signal(i)%allocated_position = i
     allocate(sdn%topic(1)%signal(i)%name(1))
     allocate(sdn%topic(1)%signal(i)%value%data(1))
+    allocate(sdn%topic(1)%signal(i)%value%time(1))
   enddo
   allocate(sdn%topic(2)%name(1))
   sdn%topic(2)%name(1) = 'Output SDN'
@@ -38,6 +39,7 @@ endif
     sdn%topic(2)%signal(k)%allocated_position = k+2
     allocate(sdn%topic(2)%signal(k)%name(1))
     allocate(sdn%topic(2)%signal(k)%value%data(1))
+    allocate(sdn%topic(2)%signal(k)%value%time(1))
   enddo
 
   !input names
@@ -99,13 +101,13 @@ endif
   sdn%ids_properties%comment(1)='DINA SDN'
   ifirst = ifirst+1
 
-!else
-!  write(*,*) 'before ids_copy(sdnin,sdn)'
-!  call ids_deallocate(sdn)
-!  write(*,*) 'after ids_deallocate(sdn)'
-!  call ids_copy(sdnin,sdn)
-!  write(*,*) 'after ids_copy(sdnin,sdn)'
-!endif
+else
+  write(*,*) 'before ids_copy(sdnin,sdn)'
+  !call ids_deallocate(sdn)
+  !write(*,*) 'after ids_deallocate(sdn)'
+  call ids_copy(sdnin,sdn)
+  write(*,*) 'after ids_copy(sdnin,sdn)'
+endif
 
 if (ioswitch.eq.0) then
 
