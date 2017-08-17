@@ -990,17 +990,11 @@ c	call out42(n_pr,a_print,num,apr)
 !     .			Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi
 !     .		,yGELM,yGLFS)
 
-
-      YTe=YTe_xx
-      YTi=YTi_xx
-      YGsep=YGsep_xx
-      Yne=Yne_xx
       
      			if(kpr.eq.1)print *,' YTe,YTi=',YTe,YTi
      			if(kpr.eq.1)print *,' YGsep,Yne=',YGsep,Yne
 
-      te0(n)=YTe*1.d3
-      tq0(n)=YTi*1.d3
+
 
 	return
 	end

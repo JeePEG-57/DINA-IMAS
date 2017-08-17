@@ -1,5 +1,6 @@
 subroutine dina_imas(&
   & em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0, &
+  & bndcond_in, &
   & pulse_schedule, &
   & equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, &
   & arr_in1, arr_out1 )
@@ -19,6 +20,7 @@ type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources0, core_sources
+type (ids_transport_solver_numerics) :: bndcond_in
 type (ids_pulse_schedule)   :: pulse_schedule
 
 
@@ -272,6 +274,14 @@ n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
 ! Transp1
  te0(1:n1) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n1)
  tq0(1:n1) = core_profiles0%profiles_1d(1)%t_i_average(1:n1)
+
+ !Boundary conditions
+if (associated(bndcond_in%profiles_1d)) then
+    write(*,*) 'dina_imas : boundary conditions are found'
+ te0(n) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
+ tq0(n) = bndcond_in%profiles_1d(1)%energy_ion_total%boundary_condition%value(1)
+end if
+
 !Transp2
  pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)

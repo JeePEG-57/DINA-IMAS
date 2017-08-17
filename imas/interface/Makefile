@@ -5,7 +5,7 @@ LIBS_gfortran=`pkg-config imas-gfortran --libs`
 
 f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
 
-TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a dina_sdn.a test_dina_to_imas
+TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a dina_sdn.a solps_imas.a test_dina_to_imas
 
 LIB_SOURCE1 += dina_imas.o n_dina_imas3.o out42_for.o
 
@@ -68,7 +68,7 @@ add_dll.o: add_dll.f
 dina_imas.a: $(LIB_SOURCE1)
 	@echo "   * $^ -> $@"
 	@cp $(DINADIR)/dina_99.a dina_imas.a
-	ar -rcs dina_imas.a n_dina_imas3.o dina_imas.o 
+	ar -rcs dina_imas.a n_dina_imas3.o dina_imas.o
 
 dina_put_slice.a: $(LIB_SOURCE3)
 	@echo "   * $^ -> $@"
@@ -102,6 +102,11 @@ dina_transp5.a: dina_transp5.o tran5.o add_dll.o
 dina_sdn.a: dina_sdn.o
 	@echo "   * $^ -> $@"
 	ar -rcs dina_sdn.a dina_sdn.o
+
+solps_imas.a: solps_imas.o
+	@echo "   * $^ -> $@"
+	@cp $(DINADIR)/solpsz2_vic.o solpsz2_vic.o
+	ar -rcs solps_imas.a solps_imas.o solpsz2_vic.o
 
 clean:
 	rm -f *.o

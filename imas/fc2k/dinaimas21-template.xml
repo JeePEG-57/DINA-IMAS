@@ -1,5 +1,5 @@
 <org.iter.imas.fc2k.ActorGenerator>
-  <version>4.1.0</version>
+  <version>4.2.1</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
@@ -77,6 +77,15 @@
           </vector>
           <vector>
             <string>core_sources</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
+            <string>transport_solver_numerics</string>
             <string>0</string>
             <string>0</string>
             <string>0</string>
@@ -182,9 +191,7 @@
   <actorVersion></actorVersion>
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/dinaimas21</actorFolder>
-  <ualFolder>/work/imas/core/imas/3.8.0/ual/3.5.0</ualFolder>
   <semantic>ITER</semantic>
-  <keplerFolder>/home/ITER/dubrovm/kepler/2.5-imas-3.8.0</keplerFolder>
   <compiler>gfortran</compiler>
   <libraries/>
   <systemLibraries/>
