@@ -7,15 +7,17 @@ f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic 
 
 TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a dina_sdn.a solps_imas.a test_dina_to_imas
 
-LIB_SOURCE1 += dina_imas.o n_dina_imas3.o out42_for.o
+DINADIR := ../../src/scenario
 
-LIB_SOURCE2 += dina_contr.o n_kav.o out42_for.o main_1l.o
+
+LIB_SOURCE1 += $(DINADIR)/dina_99.a dina_imas.o n_dina_imas3.o out42_for.o
+
+LIB_SOURCE2 += $(DINADIR)/dina_kav.a dina_contr.o n_kav.o out42_for.o main_1l.o
 
 LIB_SOURCE3 += dina_put_slice.o
 
 #SCHEMAS = $(UAL)/fortraninterface/ids_schemas.f90
 
-DINADIR := ../../src/scenario
 
 all: $(TARGETS)
 
@@ -67,6 +69,7 @@ add_dll.o: add_dll.f
 
 dina_imas.a: $(LIB_SOURCE1)
 	@echo "   * $^ -> $@"
+	@cp $(DINADIR)/dina_99.a dina_99.a
 	@cp $(DINADIR)/dina_99.a dina_imas.a
 	ar -rcs dina_imas.a n_dina_imas3.o dina_imas.o
 
