@@ -278,8 +278,15 @@ n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
  !Boundary conditions
 if (associated(bndcond_in%profiles_1d)) then
     write(*,*) 'dina_imas : boundary conditions are found'
- te0(n) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
- tq0(n) = bndcond_in%profiles_1d(1)%energy_ion_total%boundary_condition%value(1)
+ te0(n1) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
+ tq0(n1) = bndcond_in%profiles_1d(1)%energy_ion_total%boundary_condition%value(1)
+ 
+     write(*,*) 'te0(n1) tq0(n1)= ', &
+    & te0(n1),tq0(n1)
+
+      call solpsza_example_in(te0(n1),tq0(n1))
+
+
 end if
 
 !Transp2
@@ -345,6 +352,8 @@ end do
 
       call solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
 
+    write(*,*) 'yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx= ', &
+    & yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
     dina_time=tt
  

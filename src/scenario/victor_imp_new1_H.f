@@ -264,6 +264,9 @@ c******* H to L at tt_dw time moment!!!!
 	if(key_gamma.eq.1.and.tt.le.tt+dt_1)then
 cc	   pcchp=pcchp_help-(pcchp_help-4.)*(tt-tt_dw)/dt_1
 	   pcchp=pcchp_help-(pcchp_help-1.)*(tt-tt_dw)/dt_1
+
+	if(kpr.eq.1)print*,' pcchp_help pcchp',pcchp_help,pcchp
+
 	end if
 	if(tt.gt.tt_dw+dt_1.and.key_gamma.eq.1)then
 	   key_gamma=2
@@ -271,6 +274,7 @@ cc	   pcchp=pcchp_help-(pcchp_help-4.)*(tt-tt_dw)/dt_1
 	end if
 	if(key_gamma.eq.2)then
 	   pcchp=10.*gamma_mem*(tpl/1.e3)/(pi*eu**2*1.e-4)
+	if(kpr.eq.1)print*,' gamma_mem pcchp',gamma_mem,pcchp
 	end if
 
 	end if
@@ -283,11 +287,17 @@ c********** H to L at tt_dw+dt_term_h time moment !!!
 	   key_gamma=1
 	   gamma_end=0.6
 	   gamma_beg=(pcchp/10.)*pi*eu**2*1.e-4/(tpl/1.e3)
+
+	if(kpr.eq.1)print*,'key_gamma gamma1 gamma2',key_gamma,
+     *  gamma_end,gamma_beg
+
+
 	end if
 	if(key_gamma.eq.1)then
 	   gamma_mem=(tt_dw+dt-tt)*(gamma_beg-gamma_end)/dt+gamma_end
 c	if(gamma_mem.lt.gamma_end)gamma_mem=gamma_end
 	   pcchp=10.*gamma_mem*(tpl/1.e3)/(pi*eu**2*1.e-4)
+	if(kpr.eq.1)print*,' gamma_mem pcchp',gamma_mem,pcchp
 	end if
 c!!!	if(key_gamma.eq.1.and.tt.gt.tt_dw+dt)then
 	if(key_gamma.eq.1.and.key_h_to_l.eq.1)then
@@ -308,7 +318,9 @@ c	   gamma_mem=(tt_dw+dt+dt_1-tt)*
 	end if
 ccc end of H to L at tt_dw+dt_term_h time moment
 	
-           if(kpr.eq.1)print*,'tpl eu pcchp',tpl,eu,pcchp
+           if(kpr.eq.1)print*,'tpl eu pcchp dt_term_h',
+     *  tpl,eu,pcchp,dt_term_h
+     
 c        pause 'from vic_dens'
 
 	if(kpr.eq.1)

@@ -280,7 +280,7 @@ c	call shape_d3d()
 	if(k_ener.eq.1)then
       if(kcchp.eq.0)then      
        call srs_feed()
-!       call solpsza()
+       call solpszb()
 !       call solpsz()
       end if
 	CALL ENERGY(N)
@@ -853,7 +853,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 	if(k_ener.eq.1)then
       if(kcchp.eq.0)then      
        call srs_feed()
-!       call solpsza()
+       call solpszb()
 !       call solpsz()
       end if
 	CALL ENERGY(N)
@@ -1927,7 +1927,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 	if(k_ener.eq.1)then
       if(kcchp.eq.0)then      
        call srs_feed()
-!       call solpsza()
+       call solpszb()
 !       call solpsz()
       end if
 	CALL ENERGY(N)

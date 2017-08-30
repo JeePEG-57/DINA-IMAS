@@ -908,7 +908,8 @@ c	call out42(n_pr,a_print,num,apr)
 	end
 
 
-      subroutine solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
+      subroutine solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,
+     *  yfluxi_xx,ysbound_xx)
 
 	include 'double.inc'
 
@@ -995,6 +996,60 @@ c	call out42(n_pr,a_print,num,apr)
      			if(kpr.eq.1)print *,' YGsep,Yne=',YGsep,Yne
 
 
+
+	return
+	end
+      subroutine solpsza_example_in(YTe_xx,YTi_xx)
+
+	include 'double.inc'
+
+      include 'parf0'
+
+	common
+     *	/n_m/n,m,mp
+      common
+     *  /ge5/kpr
+
+	common 
+     *  /c_temp5/YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
+     .	YGdt,YGpuf,YGpel,YGhe,YGsol,YGsep,
+     .	Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi,
+     .	yGELM,yGLFS
+
+        YTe=YTe_xx
+        YTi=YTi_xx
+      
+   	if(kpr.eq.1)print *,' YTe,YTi In =',YTe_xx,YTi_xx
+
+	return
+	end
+      subroutine solpszb()
+
+	include 'double.inc'
+
+      include 'parf0'
+
+	common
+     *	/n_m/n,m,mp
+      common
+     *  /ge5/kpr
+
+	common 
+     *  /c_temp5/YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
+     .	YGdt,YGpuf,YGpel,YGhe,YGsol,YGsep,
+     .	Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi,
+     .	yGELM,yGLFS
+
+
+     */en2/TE0(npo),TQ0(npo),TEN(npo),TQN(npo),
+     *WE0(npo),WQ0(npo)
+
+
+
+      te0(n)=YTe
+      tq0(n)=YTi
+      
+   	if(kpr.eq.1)print *,' YTe,YTi B=',YTe,YTi
 
 	return
 	end

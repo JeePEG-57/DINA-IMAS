@@ -533,6 +533,9 @@ c       implicit real*8 (a-h,o-z)
 	pn=pn+1.d0
       end do
       xi_av=xi_av/pn
+      xi_av1=xi_av
+      
+      if(xi_av .le. 1.d-2) xi_av= 1.d-2
 
       DO 1 I=2,N
 	sd0(i)=sd0(i)-sal(i)
@@ -542,7 +545,8 @@ c       implicit real*8 (a-h,o-z)
 !        DIF(I)=4.d0*gra2(i)
 !        DIF(I)=40.d0*gra2(i)
 !        DIF(I)=xii(i)*zhib_dif
-        DIF(I)= 0.2d0*xi_av
+!        DIF(I)= 0.2d0*xi_av
+        DIF(I)=xii(i)
 
     1 CONTINUE
       apr='sd0 TP'
@@ -552,7 +556,7 @@ c       implicit real*8 (a-h,o-z)
 
    71 FORMAT(20X,A6/,(8E10.3))
 
-	if(kpr.eq.1)print *,' source=== xi_av===',src, xi_av
+	if(kpr.eq.1)print *,' source===xi_av1  xi_av===',src, xi_av1,xi_av
 	
       RETURN
       END
