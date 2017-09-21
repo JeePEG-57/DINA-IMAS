@@ -258,15 +258,15 @@ UserData.ProfileName = 'T_e';
 set(handles.Main_Axes1,'UserData',UserData);
 cla(handles.Main_Axes1);
 
-UserData.ProfileName = 'T_i average';
+UserData.ProfileName = 'T_i';
 set(handles.Main_Axes2,'UserData',UserData);
 cla(handles.Main_Axes2);
 
-UserData.ProfileName = 'j_t_o_r';
+UserData.ProfileName = 'n_e';
 set(handles.Main_Axes3,'UserData',UserData);
 cla(handles.Main_Axes3);
 
-UserData.ProfileName = 'q';
+UserData.ProfileName = 'j_t_o_r';
 set(handles.Main_Axes4,'UserData',UserData);
 cla(handles.Main_Axes4);
 
@@ -276,10 +276,13 @@ guidata(hObject,handles);
 
 set(handles.Main_TargetStep, 'String', num2str(handles.Frame));  
 
+
+
 DrawProfiles(hObject, handles.Main_Axes1);
 DrawProfiles(hObject, handles.Main_Axes2);
 DrawProfiles(hObject, handles.Main_Axes3);
 DrawProfiles(hObject, handles.Main_Axes4);
+
 
 
 
@@ -329,7 +332,7 @@ end
 
 function [GraphsInAxes] = GetGraphsInAxesAmount()
 % Not more than 6 because 6 colors are used.
-GraphsInAxes = 3;
+GraphsInAxes = 5;
 
 
 
@@ -383,16 +386,22 @@ for it = 1:length(Times)
     
     if strcmp(DataName,'n_e')
         y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.n_e;
+        Units = ', m^-^3';
     elseif strcmp(DataName,'T_e')
         y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.t_e;
-    elseif strcmp(DataName,'T_i average')
+        Units = ', eV';
+    elseif strcmp(DataName,'T_i')
         y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.t_i_average;
+        Units = ', eV';
     elseif strcmp(DataName,'j_t_o_r')
         y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.j_tor;
+        Units = ', A/m^2';
     elseif strcmp(DataName,'q')
-        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.q;  
+        y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.q; 
+        Units = '';
     else % if strcmp(DataName,'rho_t_o_r _n_o_r_m')
         y = handles.CoreProfiles.profiles_1d{1,Times(1,it)}.grid.rho_tor_norm;
+        Units = '';
         x = zeros(length(handles.CoreProfiles.profiles_1d{1,Times(1,it)}.grid.rho_tor_norm));
         for i=1:length(x)
             x(i) = (i-1)/(length(x)-1);
@@ -424,7 +433,7 @@ else
     xlabel('rho_t_o_r _n_o_r_m');
 end
 
-ylabel(DataName);
+ylabel([DataName Units]);
 title(DataName, 'Color','w');
 
 legend(LegendStrings);
@@ -457,10 +466,32 @@ set(hObject, 'String', num2str(NewFrame));
 handles.Frame = NewFrame;
 guidata(hObject,handles);
 
-DrawProfiles(hObject, handles.Main_Axes1);
-DrawProfiles(hObject, handles.Main_Axes2);
-DrawProfiles(hObject, handles.Main_Axes3);
-DrawProfiles(hObject, handles.Main_Axes4);
+%DrawProfiles(hObject, handles.Main_Axes1);
+%DrawProfiles(hObject, handles.Main_Axes2);
+%DrawProfiles(hObject, handles.Main_Axes3);
+%DrawProfiles(hObject, handles.Main_Axes4);
+
+figure(4);
+
+h1 = subplot(2,2,1);
+h1.UserData = get(handles.Main_Axes1, 'UserData');
+h1.UserData.Lines = -1;
+DrawProfiles(hObject, h1);
+
+h2 = subplot(2,2,2);
+h2.UserData = get(handles.Main_Axes2, 'UserData');
+h2.UserData.Lines = -1;
+DrawProfiles(hObject, h2);
+
+h3 = subplot(2,2,3);
+h3.UserData = get(handles.Main_Axes3, 'UserData');
+h3.UserData.Lines = -1;
+DrawProfiles(hObject, h3);
+
+h4 = subplot(2,2,4);
+h4.UserData = get(handles.Main_Axes4, 'UserData');
+h4.UserData.Lines = -1;
+DrawProfiles(hObject, h4);
 
 
 

@@ -24,11 +24,16 @@ else
     return
 end
 
+
+disp('Loading IDS...');
+
 pf_active = LoadIDS(Shot, Run, PFActiveString);
 pf_passive = LoadIDS(Shot, Run, PFPassiveString);
 
 assignin('base', 'pf_active', pf_active);
 assignin('base', 'pf_passive', pf_passive);
+
+disp('IDS loaded.');
 
 
 if length(pf_active.coil) ~= max(Coils.pf_num)
@@ -158,12 +163,12 @@ for i=1:length(Vessel.rc)
 end
 
 
+disp('Saving IDS...');
 
 SaveIDS(Shot, Run, PFActiveString, pf_active);
 SaveIDS(Shot, Run, PFPassiveString, pf_passive);
 
-
-disp('IDS Saved...');
+disp('IDS saved.');
 end
 
 

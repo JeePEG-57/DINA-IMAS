@@ -52,12 +52,16 @@ else
     return
 end
 
+
+disp('Loading IDS...');
+
 pulse_schedule = LoadIDS(Shot, Run, PSString);
 equilibrium = LoadIDS(Shot, Run, EQString);
 
 assignin('base', 'pulse_schedule', pulse_schedule);
 assignin('base', 'equilibrium', equilibrium);
 
+disp('IDS Loaded.');
 
 %% Vacuum toroidal field
 a = textscan(for002.data{4},'%f');
@@ -201,10 +205,12 @@ pulse_schedule.density_control.valve{7}.flow_rate.reference.time = time;
 pulse_schedule.density_control.valve{7}.flow_rate.reference.data = data;
 
 
+disp('Saving IDS...');
 
 SaveIDS(Shot, Run, PSString, pulse_schedule);
 SaveIDS(Shot, Run, EQString, equilibrium);
-disp('IDS Saved...');
+
+disp('IDS Saved.');
 
 end
 

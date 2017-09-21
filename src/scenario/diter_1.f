@@ -223,6 +223,7 @@ c       implicit real*8 (a-h,o-z)
      *  /ge7/eu,rs,zout,eksk
 	common
      *	/efit4/coef
+	common /c_temp7/s_bound
 
         dimension tok_b(ntet),r_b(ntet),z_b(ntet)
 
@@ -247,6 +248,9 @@ c
 	bav=0.
 	bpbound1=0.
       dl_b=0.
+      
+      s_bound=0.
+      
       xmin=1.e5
       xmax=-1.e5
 	bsq(i)=0.
@@ -294,6 +298,9 @@ c======================================
 c   bpol in kGgaus
       bpol=BP_j
       dl_b=dl_b+sqrt(g22)
+      
+      s_bound=s_bound+sqrt(g22)*UC
+      
 ccc	bpbound1=bpbound1+bpol*sqrt(g22)
 	bpbound1=bpbound1+bpol*sqrt(g22)*uc/rs
 
@@ -337,7 +344,12 @@ c==========================
       GRA2(I)=GRA2(I)*HA(I)/VI(I)
       GRA1(I)=GRA1(I)/VI(I)
       C3(I)=c3(i)/(ha(i)*2.*PI)
+      
+      s_bound=s_bound*(2.*PI)*1.d-4
+      
    30 CONTINUE
+   
+   
 	ba(1)=ba(2)
 
 	r_m(1)=xpl(1,1)
@@ -355,7 +367,8 @@ c----------------------------------------------------------
         end do
          fpl=fpl/(tok_p*k)
          pll_e=fpl
-        if(kpr.eq.1)print *,' pll pll_e tok_p=====',pll,pll_e,tok_p
+        if(kpr.eq.1)print *,' pll pll_e====',pll,pll_e
+        if(kpr.eq.1)print *,' s_bound tok_p=====',s_bound,tok_p
 c        read (*,*)
       RETURN
       END

@@ -60,6 +60,12 @@ q_axis = zeros(1);
 q_95 = zeros(1);
 w_mhd = zeros(1);
 
+ne = zeros(1);
+Te = zeros(1);
+Ti = zeros(1);
+Te_bnd = zeros(1);
+Ti_bnd = zeros(1);
+
 for i=1:Nslice
     
     ip(i) = equilibrium.time_slice{1,i}.global_quantities.ip;
@@ -75,59 +81,99 @@ for i=1:Nslice
     q_95(i) = equilibrium.time_slice{1,i}.global_quantities.q_95;
     w_mhd(i) = equilibrium.time_slice{1,i}.global_quantities.w_mhd;
     
+    %n = length(core_profiles.profiles_1d{1,i}.grid.rho_tor_norm);
+
+    ne(i) = core_profiles.profiles_1d{1,i}.n_e(2);
+    Te(i) = core_profiles.profiles_1d{1,i}.t_e(2);
+    Ti(i) = core_profiles.profiles_1d{1,i}.t_i_average(2);
+    
+    Te_bnd(i) = core_profiles.profiles_1d{1,i}.t_e(end);
+    Ti_bnd(i) = core_profiles.profiles_1d{1,i}.t_i_average(end);
+    
 end
 
 
 r0 = equilibrium.vacuum_toroidal_field.r0;
 b0 = equilibrium.vacuum_toroidal_field.b0';
 
+Time2 = 85.0;
+t1 = 1;
+t2 = Nslice;
+for i=t1:Nslice
+    if core_profiles.profiles_1d{1,i}.time > Time2
+       t2 = i;
+       break;
+    end
+end
 
 %---------------------------------------
 
 figure(1);
 
-subplot(2,2,1);
-PlotQuantity(X,ip,XName,XUnits,'I_p','A');
 
 
-subplot(2,2,2);
-PlotQuantity(X,li_3,XName,XUnits,'li 3','-');
+subplot(1,2,1);
+PlotQuantity(X,Te_bnd,XName,XUnits,'T_e _b_n_d','eV',t1,t2);
 
+subplot(1,2,2);
+PlotQuantity(X,Ti_bnd,XName,XUnits,'T_i _b_n_d','eV',t1,t2);
 
-subplot(2,2,3);
-PlotQuantity(X,volume,XName,XUnits,'Volume','m^3');
+%subplot(2,2,1);
+%PlotQuantity(X,Te,XName,XUnits,'T_e _a_x_i_s','eV',t1,t2);
 
+%subplot(2,2,3);
+%PlotQuantity(X,Ti,XName,XUnits,'T_i _a_x_i_s','eV',t1,t2);
 
-subplot(2,2,4);
-PlotQuantity(X,area,XName,XUnits,'Area','m^2');
-
-
-
-%-------------------------------------------------------
 
 figure(2);
 
 subplot(2,2,1);
-PlotQuantity(X,psi_axis,XName,XUnits,'psi_a_x_i_s','Wb');
+PlotQuantity(X,ip,XName,XUnits,'I_p','A',t1,t2);
 
 
 subplot(2,2,2);
-PlotQuantity(X,magnetic_axis_r,XName,XUnits,'r','m');
+PlotQuantity(X,ne,XName,XUnits,'N_e _a_x_i_s','m^-^3',t1,t2);
 
 
 subplot(2,2,3);
-PlotQuantity(X,magnetic_axis_z,XName,XUnits,'z','m');
+PlotQuantity(X,magnetic_axis_z,XName,XUnits,'Z','m',t1,t2);
+
 
 
 subplot(2,2,4);
-PlotQuantity(X,q_axis,XName,XUnits,'q_a_x_i_s','-');
+PlotQuantity(X,magnetic_axis_r,XName,XUnits,'R','m',t1,t2);
+
+
+
 
 %-------------------------------------------------------
 
-% figure(3);
+figure(3);
+
+subplot(2,2,1);
+PlotQuantity(X,li_3,XName,XUnits,'li 3','-',t1,t2);
+
+
+subplot(2,2,2);
+PlotQuantity(X,q_axis,XName,XUnits,'q_a_x_i_s','-',t1,t2);
+
+
+subplot(2,2,3);
+PlotQuantity(X,q_95,XName,XUnits,'q_9_5','-',t1,t2);
+
+
+subplot(2,2,4);
+PlotQuantity(X,area,XName,XUnits,'Area','m^2',t1,t2);
+
+
+
+
+%-------------------------------------------------------
+
+% figure(4);
 % 
 % subplot(2,2,1);
-% PlotQuantity(X,q_95,XName,XUnits,'q_9_5','-');
+% PlotQuantity(X,volume,XName,XUnits,'Volume','m^3');
 % 
 % 
 % subplot(2,2,2);
@@ -136,18 +182,21 @@ PlotQuantity(X,q_axis,XName,XUnits,'q_a_x_i_s','-');
 % 
 % subplot(2,2,3);
 % PlotQuantity(X,w_mhd,XName,XUnits,'W_M_H_D','J');
-
+%
+%
+% subplot(2,2,4);
+% PlotQuantity(X,psi_axis,XName,XUnits,'psi_a_x_i_s','Wb');
 end
 
 
-function PlotQuantity(x,y,Namex,Unitsx,Namey,Unitsy)
+function PlotQuantity(x,y,Namex,Unitsx,Namey,Unitsy,t1,t2)
 
 if size(x) ~= size(y)
     disp('Size of x != size of y');
     return 
 end
 
-plot(x,y);
+plot(x(t1:t2),y(t1:t2));
 title(Namey);
 if strcmp(Unitsx, '-') || isempty(Unitsx)
     xlabel(Namex);

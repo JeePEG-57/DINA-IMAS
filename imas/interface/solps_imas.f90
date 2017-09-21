@@ -62,6 +62,8 @@ yGLFS = 0.d0
     YPsol = (Pe + Pi)*1.0e-6    
     YGsol = (Dpflux + Tpflux)*1.0e-19
 
+    if(YPsol.le.1.d-5)YPsol=1.d-5  
+
      			
      if(kpr.eq.1)print *,'SOLPS-IMAS: YGsol YPsol=',YGsol,YPsol
      			
