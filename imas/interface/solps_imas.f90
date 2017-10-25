@@ -9,6 +9,7 @@ type (ids_equilibrium) :: equilibrium
 
 integer, parameter :: kpr = 1
 integer :: nrho_eq, nrho, flag
+integer,save :: i_en = 0
 
 real (ids_real) :: Pe,Pi,Dpflux,Tpflux,rho_tor_norm,time
 
@@ -96,6 +97,7 @@ yGLFS = 0.d0
 !Write boundary conditions to ids
 allocate(bndcond_out%profiles_1d(1))
 allocate(bndcond_out%time(1))
+allocate(bndcond_out%profiles_1d(1)%ion(2))
 
     bndcond_out%ids_properties%homogeneous_time = 1
     bndcond_out%profiles_1d(1)%time = tt
@@ -107,12 +109,48 @@ bndcond_out%profiles_1d(1)%electrons%energy%boundary_condition%rho_tor_norm = rh
     allocate(bndcond_out%profiles_1d(1)%electrons%energy%boundary_condition%value(1))
     bndcond_out%profiles_1d(1)%electrons%energy%boundary_condition%value(1) = YTe*1.d3
 
+bndcond_out%profiles_1d(1)%electrons%particles%boundary_condition%identifier%index = 1
+bndcond_out%profiles_1d(1)%electrons%particles%boundary_condition%rho_tor_norm = rho_tor_norm
+    allocate(bndcond_out%profiles_1d(1)%electrons%particles%boundary_condition%value(1))
+    bndcond_out%profiles_1d(1)%electrons%particles%boundary_condition%value(1) = Yne*1.d19
+
+
 
 bndcond_out%profiles_1d(1)%energy_ion_total%boundary_condition%identifier%index = 1
 bndcond_out%profiles_1d(1)%energy_ion_total%boundary_condition%rho_tor_norm = rho_tor_norm
     allocate(bndcond_out%profiles_1d(1)%energy_ion_total%boundary_condition%value(1))
     bndcond_out%profiles_1d(1)%energy_ion_total%boundary_condition%value(1) = YTi*1.d3
 
+
+bndcond_out%profiles_1d(1)%ion(1)%particles%boundary_condition%identifier%index = 1
+bndcond_out%profiles_1d(1)%ion(1)%particles%boundary_condition%rho_tor_norm = rho_tor_norm
+    allocate(bndcond_out%profiles_1d(1)%ion(1)%particles%boundary_condition%value(1))
+    bndcond_out%profiles_1d(1)%ion(1)%particles%boundary_condition%value(1) = Yndt*1.d19
+
+bndcond_out%profiles_1d(1)%ion(2)%particles%boundary_condition%identifier%index = 1
+bndcond_out%profiles_1d(1)%ion(2)%particles%boundary_condition%rho_tor_norm = rho_tor_norm
+    allocate(bndcond_out%profiles_1d(1)%ion(2)%particles%boundary_condition%value(1))
+    bndcond_out%profiles_1d(1)%ion(2)%particles%boundary_condition%value(1) = YnHe*1.d19
+
+
+!Write values to file
+5002    format (192(1x,1pe12.4e3))
+	i_en=i_en+1
+        if(i_en.eq.1)then
+	open (unit=65,file='solps.dat',form='formatted')
+
+	write(65,*) 'Time ', 'YPsol ','YGsol ', 'YdNdt ','YGdt ','YGpuf ','YGpel ' &
+& ,'YGhe ','YGsep ','Ypn ','Yqpk ','Yndt ','YnHe ','Yne ','YTe ','YTi '
+
+	else
+	open (unit=65,file='solps.dat',access='append',form='formatted')
+	end if
+
+        write(65,5002) tt, YPsol,YGsol, YdNdt,YGdt,YGpuf,YGpel &
+& ,YGhe,YGsep,Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi
+
+
+        close(65)
 
 return
 end

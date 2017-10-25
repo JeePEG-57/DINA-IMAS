@@ -96,15 +96,17 @@ end
 r0 = equilibrium.vacuum_toroidal_field.r0;
 b0 = equilibrium.vacuum_toroidal_field.b0';
 
-Time2 = 85.0;
+
 t1 = 1;
 t2 = Nslice;
-for i=t1:Nslice
-    if core_profiles.profiles_1d{1,i}.time > Time2
-       t2 = i;
-       break;
-    end
-end
+
+% Time2 = 85.0;
+% for i=t1:Nslice
+%     if core_profiles.profiles_1d{1,i}.time > Time2
+%        t2 = i;
+%        break;
+%     end
+% end
 
 %---------------------------------------
 
