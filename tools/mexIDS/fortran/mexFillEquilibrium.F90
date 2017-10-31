@@ -29,7 +29,7 @@
 
 !     Pointers to input/output mxArrays:
       mwPointer shot_ptr, run_ptr
-      mwPointer TimeSlice_ptr, Profiles2d_ptr, Grid_ptr
+      mwPointer TimeSlice_ptr, Profiles1d_ptr, Profiles2d_ptr, Grid_ptr
       mwPointer h_ptr, h1_ptr, h2_ptr, h3_ptr
 
 !     Array information:
@@ -85,8 +85,26 @@
       	h1_ptr = mxCreateStructMatrix(OneRow, OneCol, nfields, fieldnames)
 	call mxSetCell(TimeSlice_ptr, i, h1_ptr)
 	nfield = mxAddField(h1_ptr, 'global_quantities')
+        nfield = mxAddField(h1_ptr, 'profiles_1d')
       	nfield = mxAddField(h1_ptr, 'profiles_2d')
 	nfield = mxAddField(h1_ptr, 'coordinate_system')
+
+! Profiles_1d {
+	nfields = 1
+	fieldnames(1) = 'surface'
+      	Profiles1d_ptr = mxCreateStructMatrix(OneRow, OneCol, nfields, fieldnames)
+      	call mxSetField(h1_ptr, 1, 'profiles_1d', Profiles1d_ptr)
+
+
+! Profiles_1d.surface {
+!	nfields = 1
+!	fieldnames(1) = 'surface'
+!        h2_ptr = mxCreateStructMatrix(OneRow, OneCol, nfields, fieldnames)
+
+	call SetFieldReal1D(Profiles1d_ptr, 'surface', equilibrium%time_slice(i)%profiles_1d%surface, 0)
+! Profiles_1d.surface }
+
+! Profiles_1d }
 
 ! Profiles_2d {
       	tshape = shape(equilibrium%time_slice(i)%profiles_2d)

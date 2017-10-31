@@ -194,7 +194,8 @@ c ============ outputs ==============================================
      * q_ax_xx,q_95_xx,rs0_xx,bt0_xx,wen2_xx,tt_xx,
      * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
      * x_xx,y_xx,psi_xx,psi_bnd_xx,
-     * pd0_xx,pt0_xx,sigk_xx,jbut_xx,aj0_xx,qe0_xx,qq0_xx)
+     * pd0_xx,pt0_xx,sigk_xx,jbut_xx,aj0_xx,qe0_xx,qq0_xx,
+     * betap_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,tene_xx,wfus_xx,emag_xx)
 
 
 	include 'double.inc'
@@ -221,17 +222,27 @@ c ============ outputs ==============================================
 	uli_xx=uli
 	v_xx=volume
 	s_plasma_xx=s_plasma
-	psi_ax_xx=pmag*1.e-5*2.*pi
-	psi_bnd_xx=pbound*1.e-5*2.*pi
+	psi_ax_xx=pmag*1.d-5*2.*pi
+	psi_bnd_xx=pbound*1.d-5*2.*pi
 	rmag_xx=rmag/100.
 	zmag_xx=zmag/100.
 	q_ax_xx=q(2)
         q_95_xx=q_95
 	rs0_xx=rs0/100.
 	bt0_xx=bt0/10.
-	wen2_xx=wen2*1.e6
+	wen2_xx=wen2*1.d6
 	tt_xx=tt/1000.
 
+        betap_xx = betj
+        tec_xx = tec
+        tqc_xx = tqc
+        pec_xx = pcch*1.d19
+	pic_xx = pion*1.d19
+	zeff_xx = zeff_a
+	vloop_xx = vloop
+	tene_xx = tene
+	wfus_xx = w_fusion*1.d6
+	emag_xx = emag*1.d6
 c=================================================
 
 	do i=1,n

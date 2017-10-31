@@ -106,7 +106,8 @@ c
      *  /vic_016/tt_rampup
      *  /vic_017/w_fusion
      *  /vic_018/r_lh_new
-
+c************************************************
+     *  /maksim_01/tqc,emag
 
 	character *10 mgr(iy),mt(iy)
 	character *70 apr

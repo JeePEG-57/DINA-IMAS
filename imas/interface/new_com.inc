@@ -101,6 +101,7 @@
      *  /en14e/t_dop
      *  /en14/EMOE,EMOQ,NDOP,QDE0(npo),QDQ0(npo)
      *  /en25/zhib,tego
+     *  /en28/wen1,wen2
      *  /en33/anom_e,anom_i,key_t11,kcchp
 
 
@@ -678,3 +679,7 @@ c  BEAM Commons...
      *  /inj10/tpl_beam
      *  /inj11/s_beam(npo)
      *  /inj12/eee2,sb2(npo),s_beam2(npo)
+
+c************************************************
+	common
+     *  /maksim_01/tqc,emag

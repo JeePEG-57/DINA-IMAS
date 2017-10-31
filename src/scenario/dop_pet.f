@@ -50,7 +50,10 @@ c
 	common /c_data_in_time2/i_c_data,i_c_data1
      *  /vic_psi_av/psipl_av,psiext_av
      * /ge7/eu,rout,zout,elong
+
 	                                         
+
+
 	character *30 apr                                                      
 	character *12 yy(iy)                                                   
 	character *50 tmp                                                      
@@ -368,6 +371,8 @@ c
 	common
      *  /c_kav2/epol,vol_pl
      *  /c_vs3/Pvs3, P_rg
+c*********************************************************
+     *  /maksim_01/tqc,Emag
 
       dimension dNB_xx(24)
 

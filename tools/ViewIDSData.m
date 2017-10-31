@@ -261,6 +261,10 @@ set(handles.Main_LoadingStatus,'String', 'Loading core_profiles...');
 pause(0.01);
 IDSData.core_profiles = mexLoadIDS(handles.Shot, handles.Run, 'core_profiles');
 
+IDSData.Shot = handles.Shot;
+IDSData.Run = handles.Run;
+IDSData.TimeSteps = length(IDSData.equilibrium.time);
+
 %disp('All IDS`s loaded!');
 
 ViewIDSDataAccess(IDSData);

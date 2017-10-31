@@ -52,7 +52,9 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
 	common
      *  /c_grib2/rp1,zp1,dist1,rp2,zp2,dist2
      *  /vic_018/r_lh_new
-
+c*********************************************************
+     *  /maksim_01/tqc_xx,emag
+	
         dimension dNB_xx(24),wr(150)
 
 c******* Begin of Sign changing ******

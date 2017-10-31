@@ -1,5 +1,5 @@
 <org.iter.imas.fc2k.ActorGenerator>
-  <version>4.2.1</version>
+  <version>4.2.3</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
@@ -158,6 +158,15 @@
           </vector>
           <vector>
             <string>core_transport</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>null</string>
+          </vector>
+          <vector>
+            <string>summary</string>
             <string>0</string>
             <string>0</string>
             <string>0</string>

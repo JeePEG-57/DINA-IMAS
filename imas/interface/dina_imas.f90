@@ -1,9 +1,10 @@
 subroutine dina_imas(&
-  & em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0, &
-  & bndcond_in, &
-  & pulse_schedule, &
-  & equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, &
-  & arr_in1, arr_out1 )
+  &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+  & ,bndcond_in &
+  & ,pulse_schedule &
+  & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+  & ,summary &
+  & ,arr_in1, arr_out1 )
 
 
 use ids_schemas
@@ -22,6 +23,7 @@ type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources0, core_sources
 type (ids_transport_solver_numerics) :: bndcond_in
 type (ids_pulse_schedule)   :: pulse_schedule
+type (ids_summary) :: summary
 
 
 !integer, parameter :: DP = kind(1.0d0)
@@ -71,6 +73,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     
     real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,s_plasma=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
     ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0
+    real(ids_real) :: betap,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag
 
     real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz)
 
@@ -346,7 +349,8 @@ end do
      & q_ax,q_95,rs0,bt0,wen2,tt,  &
      & ai,te0,tq0,pne,tok1,q,  &
      & x,y,psi,psi_bnd,  &
-     & pd0,pt0,sigk,jbut,aj0,qe0,qq0)
+     & pd0,pt0,sigk,jbut,aj0,qe0,qq0, &
+     & betap,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag)
 
 
 
@@ -454,6 +458,48 @@ pf_passive%time(1) = dina_time
 
     TimeSteps = 1 ! One time step filled for put_slice function
     CurTimeStep = 1
+
+
+! Allocations summary
+allocate(summary%time(TimeSteps))
+
+allocate(summary%global_quantities%ip%value(TimeSteps))
+allocate(summary%global_quantities%li%value(TimeSteps))
+allocate(summary%global_quantities%beta_pol%value(TimeSteps))
+allocate(summary%global_quantities%v_loop%value(TimeSteps))
+allocate(summary%global_quantities%tau_energy%value(TimeSteps))
+allocate(summary%volume_average%n_e%value(TimeSteps))
+allocate(summary%volume_average%n_i_total%value(TimeSteps))
+allocate(summary%volume_average%t_e%value(TimeSteps))
+allocate(summary%volume_average%t_i_average%value(TimeSteps))
+allocate(summary%volume_average%zeff%value(TimeSteps))
+allocate(summary%global_quantities%energy_thermal%value(TimeSteps))
+allocate(summary%global_quantities%energy_b_field_pol%value(TimeSteps))
+allocate(summary%fusion%power%value(TimeSteps))
+allocate(summary%local%magnetic_axis%position%r(TimeSteps))
+allocate(summary%local%magnetic_axis%position%z(TimeSteps))
+
+! Filling summary
+summary%ids_properties%homogeneous_time = 1
+summary%time(CurTimeStep) = tt;
+
+summary%global_quantities%ip%value(CurTimeStep) = tpl
+summary%global_quantities%li%value(CurTimeStep) = uli
+summary%global_quantities%beta_pol%value(CurTimeStep) = betap
+summary%global_quantities%v_loop%value(CurTimeStep) = vloop
+summary%global_quantities%tau_energy%value(CurTimeStep) = tene
+summary%volume_average%n_e%value(CurTimeStep) = pec
+summary%volume_average%n_i_total%value(CurTimeStep) = pic
+summary%volume_average%t_e%value(CurTimeStep) = tec
+summary%volume_average%t_i_average%value(CurTimeStep) = tqc
+summary%volume_average%zeff%value(CurTimeStep) = zeff
+summary%global_quantities%energy_thermal%value(CurTimeStep) = wen2
+summary%global_quantities%energy_b_field_pol%value(CurTimeStep) = emag
+summary%fusion%power%value(CurTimeStep) = wfus
+summary%local%magnetic_axis%position%r(CurTimeStep) = rmag
+summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
+
+
 
 ! Allocations equilibrium
 
