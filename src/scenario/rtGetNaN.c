@@ -1,13 +1,11 @@
 /*
  * File: rtGetNaN.c
  *
- * Real-Time Workshop code generated for Simulink model t15_2.
+ * Code generated for Simulink model 't15_2'.
  *
- * Model version                        : 1.1128
- * Real-Time Workshop file version      : 7.4  (R2009b)  29-Jun-2009
- * Real-Time Workshop file generated on : Thu Mar 24 12:39:33 2016
- * TLC version                          : 7.4 (Jul 14 2009)
- * C/C++ source code generated on       : Thu Mar 24 12:39:34 2016
+ * Model version                  : 1.1137
+ * Simulink Coder version         : 8.5 (R2013b) 08-Aug-2013
+ * C/C++ source code generated on : Wed Feb 28 17:00:10 2018
  *
  * Target selection: ert_shrlib.tlc
  * Embedded hardware selection: 32-bit Generic
@@ -19,10 +17,10 @@
 
 /*
  * Abstract:
- *      Real-Time Workshop function to intialize non-finite, NaN
+ *      Function to intialize non-finite, NaN
  */
 #include "rtGetNaN.h"
-#define NumBitsPerChar                 8
+#define NumBitsPerChar                 8U
 
 /*
  * Initialize rtNaN needed by the generated code.
@@ -32,23 +30,16 @@ real_T rtGetNaN(void)
 {
   size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
   real_T nan = 0.0;
-  if (bitsPerReal == 32) {
+  if (bitsPerReal == 32U) {
     nan = rtGetNaNF();
   } else {
-    typedef struct {
-      struct {
-        uint32_T wordL;
-        uint32_T wordH;
-      } words;
-    } LittleEndianIEEEDouble;
-
     union {
       LittleEndianIEEEDouble bitVal;
       real_T fltVal;
     } tmpVal;
 
-    tmpVal.bitVal.words.wordH = 0xFFF80000;
-    tmpVal.bitVal.words.wordL = 0x00000000;
+    tmpVal.bitVal.words.wordH = 0xFFF80000U;
+    tmpVal.bitVal.words.wordL = 0x00000000U;
     nan = tmpVal.fltVal;
   }
 
@@ -61,22 +52,14 @@ real_T rtGetNaN(void)
  */
 real32_T rtGetNaNF(void)
 {
-  typedef struct {
-    union {
-      real32_T wordLreal;
-      uint32_T wordLuint;
-    } wordL;
-  } IEEESingle;
+  IEEESingle nanF = { { 0 } };
 
-  IEEESingle nanF;
-  nanF.wordL.wordLuint = 0xFFC00000;
+  nanF.wordL.wordLuint = 0xFFC00000U;
   return nanF.wordL.wordLreal;
 }
 
-/* end rt_getNaN.c */
-
 /*
- * File trailer for Real-Time Workshop generated code.
+ * File trailer for generated code.
  *
  * [EOF]
  */

@@ -672,8 +672,7 @@ C*****************
      *(13./4.))**0.5*EXP(-200./TQ0(I)**(1./3.))
 c------> alfa particle source SAL
       SAL(I)=SEch*PD0(I)*PT0(I)
-cccc      SAL(i)=1.e-10
-      SAL(i)=0.
+
 	pnal(i)=(sal(i)+pnaln(i)/tay)/(1./tay+1./talfa2(i))
 c
 c----->  neutron power QNET

@@ -480,6 +480,8 @@ allocate(summary%local%magnetic_axis%position%r(TimeSteps))
 allocate(summary%local%magnetic_axis%position%z(TimeSteps))
 
 ! Filling summary
+write (*,*) 'summary tene = ', tene
+
 summary%ids_properties%homogeneous_time = 1
 summary%time(CurTimeStep) = tt;
 

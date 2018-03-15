@@ -291,6 +291,7 @@ c	call shape_d3d()
       
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
+!      if(k_ener.eq.0)call prof_astra_hl()
 	call pp_calc()
 
 c!!!	CALL BTA(n,mp,RS0)
@@ -306,13 +307,6 @@ c* vic  To read tay_simul
           read (40,*) 
           read (40,*)tt_emo,tt_h,tt_avr,betp_flat,coef_kessel_1,vs_start
            close (40)
-
-          open (unit=40,file='elm.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)tt_elm,tay_elm
-          read (40,*) 
-
-	  close (40)
 
 
           open (unit=40,file='dw.dat',form='formatted') 
@@ -359,6 +353,8 @@ c* vic  To read tay_simul
 
 
 !      kpr=3
+
+       	tt_h=1.e8
        
        goto 2323
 
@@ -504,6 +500,7 @@ c*** Input of PF turns - must be consistent with 'koor' file!
 c*** Input of Zeff waveform ***
         if(k_ener.eq.1)call vic_zeff_read()
         if(k_ener.eq.0)call prof_astra()
+!      if(k_ener.eq.0)call prof_astra_hl()
 	call cur_prof()
 
 
@@ -865,6 +862,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
+!      if(k_ener.eq.0)call prof_astra_hl()
 	call pp_calc()
 
 
@@ -999,7 +997,7 @@ ccc	      tt_h=tt_rampup+1100.
 	   end if
           if(kpr.eq.1)print*,
      *   'tt tt_rampup r_lh_new tt_h',tt,tt_rampup,r_lh_new,tt_h
-	   tt_h=1.e8
+!!!	   tt_h=1.e8
 
 c*******************************
 
@@ -1093,7 +1091,7 @@ ccc	tay_elm=1.
 c	if(ntay.gt.next+1.and.tay.lt.99)then
 !	if(ntay.gt.next+1.and.tay.lt.tay_simul*0.99.and.krref.eq.0)then
 	if(ntay.gt.next+1.and.tay.lt.tay_simul*0.99
-     *   .and.tt.lt.tt_elm)then
+     *   .and.ntay.lt.next+30)then
 	   tay=tay*1.2
 	if(kpr.eq.1)print *,' HERE tay has chaged tay==',tay
 c*vic	   if(tay.gt.100.)tay=100.
@@ -1196,7 +1194,8 @@ c*************
 	pnor=6.25e8
 c	if(tt.gt.tt_dw+20.)emoe=15.*pnor
 c	if(tt.gt.tt_dw+40.)emoe=0.
-	if(tt.gt.tt_dw+dt_term_h)emoe=0.
+!	if(tt.gt.tt_dw+dt_term_h)emoe=0.
+	if(tt.gt.tt_dw+dt_term_h+20.)emoe=0.
 c*************
 	if(kpr.eq.1)print*,'emoe=',emoe
 	if(kpr.eq.1)print*,'!!!! tt tt_dw=',tt,tt_dw
@@ -1817,6 +1816,7 @@ c!!! so transport does not know about time evolution of surfaces
 	   end if
 
       if(k_ener.eq.0)call prof_astra_bs()
+!      if(k_ener.eq.0)call prof_astra_bs_hl()
 
 
 	if(tt.ge.59.0e9)then
@@ -1935,6 +1935,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
+!      if(k_ener.eq.0)call prof_astra_hl()
       if(k_dens_ext.eq.1)call dens_corr()
 
 c	if(q(2).le.0.7)call zyb(n,ires)
@@ -2110,7 +2111,8 @@ c	stop
 
 !      if(kpr.eq.1)print*,'t_vde t_end',t_vde,t_end
 
-      dt_end=dtpl_term_l*cIp_end/7.5*1e3;
+!      dt_end=dtpl_term_l*cIp_end/7.5*1e3;
+      dt_end=dtpl_term_l*cIp_end/15.*1e3;
 
       if(kpr.eq.1)print*,'dt_end',dt_end
 	

@@ -15,15 +15,17 @@
       integer status
 
 	interface
-      subroutine t15_2_initialize(firstTime)
+      subroutine t15_2_initialize()
+!      subroutine t15_2_initialize(firstTime)
 !      subroutine t15_2_initialize(a_in,a_out)
 !       real *8 a_in, a_out
-       logical firstTime
+!       logical firstTime
 
 cDEC$ ATTRIBUTES DLLIMPORT, stdcall::  t15_2_initialize
 cDEC$ ATTRIBUTES ALIAS:'_t15_2_initialize'::t15_2_initialize
+!cDEC$ ATTRIBUTES ALIAS:'_t15_2_initialize'::t15_2_initialize
 !!!cDEC$ ATTRIBUTES VALUE :: a_in,a_out
-cDEC$ ATTRIBUTES VALUE :: firstTime
+!!!cDEC$ ATTRIBUTES VALUE :: firstTime
       end subroutine 
       end interface
 
@@ -80,13 +82,14 @@ cDEC$ ATTRIBUTES ALIAS:'_t15_2_output2'::t15_2_output2
 
       if(i_en.eq.1)then
 !       call t15_2_initialize(EqTime,SimStep)
-       call t15_2_initialize(aa2)
+!       call t15_2_initialize(aa2)
+       call t15_2_initialize()
 !     	 print *,'EqTime,SimStep',EqTime,SimStep
-      k_out=13
       end if
       
 
       k_in=15+123
+      k_out=13
       
       
       do i=1,15
@@ -98,7 +101,11 @@ cDEC$ ATTRIBUTES ALIAS:'_t15_2_output2'::t15_2_output2
       end do
     
 !     	print * ,' k_in a_in',k_in,a_in(1:24)
-      
+
+      do i=1,15
+!      	print * ,' k_in i a_in',k_in,i,a_in(i)
+      end do
+
       
       call t15_2_output(k_in, a_in,
      *  k_out, a_out) 
@@ -107,6 +114,9 @@ cDEC$ ATTRIBUTES ALIAS:'_t15_2_output2'::t15_2_output2
  !      print * ,' k_out2 a_out',k_out,a_out(15+1:15+11)
  !      print * ,' k_out3 a_out',k_out,a_out(15+11+1:15+11+12)
       
+      do i=1,38
+ !     	print * ,' k_out i a_out',k_out,i,a_out(i)
+      end do
       do i=1,38
       c_output2(i)=a_out(i)
       end do

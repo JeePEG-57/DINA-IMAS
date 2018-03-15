@@ -1,13 +1,11 @@
 /*
  * File: rtGetNaN.h
  *
- * Real-Time Workshop code generated for Simulink model t15_2.
+ * Code generated for Simulink model 't15_2'.
  *
- * Model version                        : 1.1128
- * Real-Time Workshop file version      : 7.4  (R2009b)  29-Jun-2009
- * Real-Time Workshop file generated on : Thu Mar 24 12:39:33 2016
- * TLC version                          : 7.4 (Jul 14 2009)
- * C/C++ source code generated on       : Thu Mar 24 12:39:34 2016
+ * Model version                  : 1.1137
+ * Simulink Coder version         : 8.5 (R2013b) 08-Aug-2013
+ * C/C++ source code generated on : Wed Feb 28 17:00:10 2018
  *
  * Target selection: ert_shrlib.tlc
  * Embedded hardware selection: 32-bit Generic
@@ -21,6 +19,7 @@
 #define RTW_HEADER_rtGetNaN_h_
 #include <stddef.h>
 #include "rtwtypes.h"
+#include "rt_nonfinite.h"
 
 extern real_T rtGetNaN(void);
 extern real32_T rtGetNaNF(void);
@@ -28,7 +27,7 @@ extern real32_T rtGetNaNF(void);
 #endif                                 /* RTW_HEADER_rtGetNaN_h_ */
 
 /*
- * File trailer for Real-Time Workshop generated code.
+ * File trailer for generated code.
  *
  * [EOF]
  */

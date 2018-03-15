@@ -38,8 +38,17 @@
            read (41,*)
            read (41,*)tt_kavin,tt_dw
   		  close (41)
+
+        if(kpr.eq.1)print *,'tt_kavin,tt_dw =',
+     *  tt_kavin,tt_dw
+
+     		 open (unit=40,file='k_jetto.dat',form='formatted') 
+          read (40,*) 
+          read (40,*)k_jetto
+         close (40)
+
       end if
-      
+
       if(i_en.eq.1.and.kpr.eq.1)then
 !           Iopen=0
 !      call OpenCloseConsole(Iopen) 
@@ -210,6 +219,7 @@
       omega=1.d0
  	call equil()
  	else
+ 	if(k_jetto.eq.1)k_ener=0
  	omega=0.33d0
  	call equil2()
  	end if
@@ -237,7 +247,7 @@ c  i_fil=0  old case without reconstruction....
 
 	if(kpr.eq.1)print*,'!!!tt tay ntay',tt,tay,ntay
 
-	if(kpr.eq.1)print*,'@@@@@from main  next n ',next,n
+	if(kpr.eq.1)print*,'@@@@@from main  next k_jetto',next,k_jetto
 
 	if(kpr.eq.1)print*,'put_signals'
 

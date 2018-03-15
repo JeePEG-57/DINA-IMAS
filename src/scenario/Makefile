@@ -31,7 +31,7 @@ DINASRC = \
 
 DINAOBJ = $(DINASRC:.f=.o)
 
-CONTROLSRC = t15_2.c t15_2_data.c rt_look.c rt_look1d.c \
+CONTROLSRC = t15_2.c t15_2_data.c pf_lookup3.c pf_lookup3_wrapper.c read_pf.c rt_look.c rt_look1d.c \
 	rt_nonfinite.c rt_rand.c rtGetNaN.c rtGetInf.c
 
 CONTROLOBJ = $(CONTROLSRC:.c=.o)

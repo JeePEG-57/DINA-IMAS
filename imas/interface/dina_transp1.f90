@@ -9,7 +9,7 @@ type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
 type (ids_core_sources) :: core_sources0, core_sources
 
-integer :: i,n,npo
+integer :: i,m,n,npo
 
 parameter (npo=500)
 
@@ -103,7 +103,13 @@ n = size(core_sources0%source(1)%profiles_1d(1)%grid%rho_tor_norm)
  core_profiles%profiles_1d(1)%electrons%temperature(1:n) = te0(1:n)
  core_profiles%profiles_1d(1)%t_i_average(1:n) = tq0(1:n)
 
-
+!if (allocated(core_profiles%profiles_1d(1)%ion)) then
+m = size(core_profiles%profiles_1d(1)%ion)
+do i=1,m
+	allocate(core_profiles%profiles_1d(1)%ion(m)%temperature(n))
+	core_profiles%profiles_1d(1)%ion(m)%temperature(1:n) = tq0(1:n)
+end do
+!end if
 
 return
 end subroutine

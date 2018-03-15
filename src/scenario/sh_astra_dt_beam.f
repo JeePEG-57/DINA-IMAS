@@ -11,26 +11,55 @@
       
 !      return
 
+      i_en=i_en+1
+
       kpr_a=kpr
 
-	dt_prof=639.e3-490.e3
-	if(tt.ge.490.e3)then
-	   tt_prof=tt+dt_prof
-	else
-	   tt_prof=tt
-	end if
+
+      if(kpr.eq.1)print *,' kpr==',kpr
+
+
+      if(i_en.eq.1)then
+
+          open (unit=40,file='elm.dat',form='formatted') 
+          read (40,*) 
+          read (40,*)tt_elm
+          read (40,*) 
+
+	  close (40)
       
-      kpr=0
+      end if
+      
+      if(kpr.eq.1)print *,' tt_elm tt_dw=',tt_elm,tt_dw
+      
+      tt_prof=tt
+	if(tt.ge.tt_elm-tay)then
+	   tt_prof=tt_elm-tay
+      end if
+      
+	if(tt.ge.tt_dw)then
+	   tt_prof=tt+tt_elm-tt_dw
+      end if
+      
+!      kpr=0
 
      	call prof_astra_sigma(tt_prof,n,sigma_jetto,ai,num,kpr)
 
 
 	call prof_astra_nb(tt_prof,n,aj0,a,num,kpr)
+
+	call prof_astra_ecd(tt_prof,n,ajae,a,num,kpr)
       
       tt_astra=tt
 
 	call prof_astra_te(tt_prof,n,te0,a,num,kpr)
 	call prof_astra_ti(tt_prof,n,tq0,a,num,kpr)
+
+      apr='&&te-' 
+      if(kpr.eq.1) print 71,apr,(te0(i),i=1,n) 
+      apr='&&ti-' 
+      if(kpr.eq.1) print 71,apr,(tq0(i),i=1,n) 
+
 	call prof_astra_zeff(tt_prof,n,zeff,a,num,kpr)
 	call prof_astra_ndt(tt_prof,n,pne,a,num,kpr)
       do i=1,n
@@ -39,6 +68,9 @@
       end do
 
 	call prof_astra_ne(tt_prof,n,pne,a,num,kpr)
+
+!	print*,'from astra_prof_HL'
+!	print*,'tt=',tt
 
 
       i_pres=1
@@ -58,7 +90,7 @@
       if(kpr.eq.1) print 71,apr,(pt0(i),i=1,n) 
 
       apr='&& p-' 
-      if(kpr.eq.1) print 71,apr,(p(i),i=1,n) 
+      if(kpr.eq.-1) print 71,apr,(p(i),i=1,n) 
 
 	call prof_astra_pres(tt_prof,n,p,a,num,kpr)
 
@@ -72,8 +104,12 @@
       p_th=(pd0(i)+pt0(i))*tq0(i)+pne(i)*te0(i)
 
 !      ppr(i)=0.1*( p(i)-p_th )/tq0(i)
-      ppr(i)=( p(i)-p_th )/tq0(i)
+!      ppr(i)=( p(i)-p_th )/tq0(i)
       
+      end do
+
+      do i=1,n
+      p(i)=p(i)*200.*1.e-6
       end do
 
       apr='++pne-' 
@@ -82,7 +118,7 @@
       apr='++pd0-' 
       if(kpr.eq.1) print 71,apr,(pd0(i),i=1,n) 
       apr='++ppr-' 
-      if(kpr.eq.1) print 71,apr,(ppr(i),i=1,n) 
+!      if(kpr.eq.1) print 71,apr,(ppr(i),i=1,n) 
 
       end if
 
@@ -94,7 +130,8 @@
       num=5
       if(num.eq.5)then
       
-      coef_astra=1.28
+ccccccc      coef_astra=1.28
+      coef_astra=1.
 	call prof_astra_bs_c(tt_prof,n,aje1,ai,num,kpr)
       do i=1,n
       ajb(i)=aje1(i)*coef_astra
@@ -104,6 +141,9 @@
             
             
       kpr=kpr_a
+      
+ !     stop
+      print *,' end'
       
 	return
 	end
@@ -115,7 +155,8 @@
       common
      *  /dfm10/ajf(npo),aje1(npo),aje(npo)
 
-      coef_astra=1.28
+ccccccc      coef_astra=1.28
+      coef_astra=1.
       do i=1,n
       ajb(i)=aje1(i)*coef_astra
       end do
@@ -153,7 +194,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -161,10 +202,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -173,13 +214,13 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
 	do i=1,n_t
            apr='-den_t-' 
-c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
+c           print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
 	end do
 
 
@@ -189,12 +230,28 @@ c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(n_t)
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
 
        close (unit=41) 
         end if
@@ -221,10 +278,10 @@ c
 	 end do
 
         apr='++poa-' 
- !       if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+ !       print 71,apr,(poa(i),i=1,nn) 
 
       apr='++ppz-' 
-!      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+!      print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -238,6 +295,8 @@ c
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
+	
+	
 	
 c	read (*,*)
 
@@ -277,7 +336,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -290,10 +349,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -302,13 +361,13 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
 	do i=1,n_t
            apr='-den_t-' 
-c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
+c           print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
 	end do
 
 
@@ -318,12 +377,28 @@ c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(n_t)
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
 
        close (unit=41) 
         end if
@@ -350,10 +425,10 @@ c
 	 end do
 
         apr='++poa-' 
- !       if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+ !       print 71,apr,(poa(i),i=1,nn) 
 
       apr='++ppz-' 
-      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+      if(kpr.eq.-1)print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -407,7 +482,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -415,10 +490,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -427,13 +502,13 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
 	do i=1,n_t
            apr='-den_t-' 
-c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
+c           print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
 	end do
 
 
@@ -443,12 +518,28 @@ c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(n_t)
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
 
        close (unit=41) 
         end if
@@ -475,10 +566,10 @@ c
 	 end do
 
         apr='++poa-' 
- !       if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+ !       print 71,apr,(poa(i),i=1,nn) 
 
       apr='++ppz-' 
-!      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+!      print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -488,6 +579,145 @@ c
       end do
       
         apr='++aj0_b-' 
+      if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
+
+	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
+	
+c	read (*,*)
+
+5001    format(4i4)
+5000    format (6(1pe14.6e3))
+
+	return
+	end
+
+	subroutine prof_astra_ecd(tt,n,te0,a,num,kpr)
+	include 'double.inc'
+
+	dimension te0(*),a(*)
+
+ 	include 'parf0' 
+ 	include 'parf_mike' 
+
+	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+
+	character *20 apr,filename
+
+
+	i_sh=i_sh+1
+
+	if(i_sh.eq.1)then
+
+      n_t=9999
+      
+!      filename='tin1scenar-7_BS.dat'
+
+      coef=1.d-1
+      filename='Jzec_prof.txt'
+
+c-------
+           open (unit=41,file=filename,form='formatted') 
+          
+           read (41,*)nn,(poa(ii),ii=1,nn)
+
+           k=0
+           do i=2,n_t 
+           read (41,*,err=2000,end=2000)t_t(i),
+     *    (te0_t(iprof,i),iprof=1,nn)
+           
+           k=k+1
+           t_t(i)=t_t(i)*1.d3
+           
+           apr='-pne_t-' 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+
+
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
+
+c	read (*,*)
+           end do 
+           
+
+c	read (*,*)
+
+           apr='-t_t-' 
+!           print 71,apr,(t_t(i),i=1,n_t) 
+
+	
+
+	do i=1,n_t
+           apr='-den_t-' 
+c           print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
+	end do
+
+
+2000	continue
+
+      nprof=nn 
+         
+	n_t=k
+
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
+	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
+
+!	t_t(1)=-0.1
+!	t_t(n_t)=1.d5
+c
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
+
+       close (unit=41) 
+        end if
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+
+      do i=2,n_t
+      if( (tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
+c==================
+	 t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
+
+      i_time=i
+
+	do iprof=1,nn
+	ppz(iprof)=te0_t(iprof,i-1)+t_coef*(te0_t(iprof,i)-
+     *  te0_t(iprof,i-1))
+      ppz(iprof)=ppz(iprof)*coef
+	end do
+
+c
+	 end if
+
+	 end do
+
+        apr='++poa-' 
+ !       print 71,apr,(poa(i),i=1,nn) 
+
+      apr='++ppz-' 
+!      print 71,apr,(ppz(i),i=1,nn) 
+
+      te0(1)=ppz(1)
+      te0(n)=ppz(nn)
+	do i=2,n-1
+!           call feeti(nn,ppz,te0(i),poa,a(i))
+           call linear(nn,ppz,te0(i),poa,a(i))
+      end do
+      
+        apr='++aj0_ecd-' 
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
@@ -530,7 +760,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -538,13 +768,13 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== nn t_t(i) ',i,nn,t_t(i)
+!	print *,' i== nn t_t(i) ',i,nn,t_t(i)
 	
 !	  apr='++poa-' 
-!        if(kpr.eq.1)print 71,apr,(poa(ii),ii=1,nn) 
+!        print 71,apr,(poa(ii),ii=1,nn) 
 
 
 c	read (*,*)
@@ -554,7 +784,7 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 
 
@@ -565,12 +795,28 @@ c	read (*,*)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(n_t)
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
 
        close (unit=41) 
         end if
@@ -579,7 +825,7 @@ c
 
 	do i=1,n_t
 !           apr='-te0_t-' 
-!           if(kpr.eq.1)print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
+!           print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
 	end do
 
 !      stop
@@ -604,7 +850,7 @@ c
 
 
       apr='++ppz-' 
-      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+      if(kpr.eq.-1)print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -657,7 +903,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -666,10 +912,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -678,13 +924,13 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
 	do i=1,n_t
            apr='-den_t-' 
-c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
+c           print 71,apr,(den_t(iprof,i),iprof=1,nprof) 
 	end do
 
 
@@ -694,13 +940,28 @@ c           if(kpr.eq.1)print 71,apr,(den_t(iprof,i),iprof=1,nprof)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(n_t)
-
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
        close (unit=41) 
         end if
 
@@ -726,9 +987,9 @@ c
 	 end do
 
         apr='++poa-' 
-!       if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+ !       print 71,apr,(poa(i),i=1,nn) 
       apr='++ppz-' 
-!     if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+ !     print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -780,7 +1041,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -788,10 +1049,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -800,7 +1061,7 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
@@ -812,19 +1073,35 @@ c	read (*,*)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2',n_t,t_t(1),t_t(n_t)
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
 
        close (unit=41) 
         end if
 
 	do i=300,305
            apr='-den_t-' 
-!          if(kpr.eq.1)print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
+ !          print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
 	end do
 
 
@@ -852,9 +1129,9 @@ c
 	 end do
 
         apr='++poa-' 
-!        if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+!        print 71,apr,(poa(i),i=1,nn) 
       apr='++ppz-' 
-!      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+!      print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -907,7 +1184,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -915,10 +1192,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -927,7 +1204,7 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
@@ -939,13 +1216,28 @@ c	read (*,*)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(n_t)
-
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
        close (unit=41) 
         end if
 
@@ -979,9 +1271,9 @@ c
 	 end do
 
         apr='++poa-' 
-!       if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+ !       print 71,apr,(poa(i),i=1,nn) 
       apr='++ppz-' 
-!     if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+ !     print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -1035,7 +1327,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -1043,10 +1335,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -1055,7 +1347,7 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
@@ -1067,19 +1359,35 @@ c	read (*,*)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(n_t)
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
 
        close (unit=41) 
         end if
 
 	do i=300,305
            apr='-den_t-' 
- !          if(kpr.eq.1)print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
+ !          print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
 	end do
 
 
@@ -1107,9 +1415,9 @@ c
 	 end do
 
         apr='++poa-' 
-!        if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+!        print 71,apr,(poa(i),i=1,nn) 
       apr='++ppz-' 
-!      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+!      print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -1168,7 +1476,7 @@ c-------
            read (41,*)nn,(poa(ii),ii=1,nn)
 
            k=0
-           do i=1,n_t 
+           do i=2,n_t 
            read (41,*,err=2000,end=2000)t_t(i),
      *    (te0_t(iprof,i),iprof=1,nn)
            
@@ -1176,10 +1484,10 @@ c-------
            t_t(i)=t_t(i)*1.d3
            
            apr='-pne_t-' 
-c           if(kpr.eq.1)print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
 
 
-!	if(kpr.eq.1)print *,' i== n t_t(i) ',i,n,t_t(i)
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
 
 c	read (*,*)
            end do 
@@ -1188,7 +1496,7 @@ c	read (*,*)
 c	read (*,*)
 
            apr='-t_t-' 
-!           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+!           print 71,apr,(t_t(i),i=1,n_t) 
 
 	
 
@@ -1200,12 +1508,28 @@ c	read (*,*)
          
 	n_t=k
 
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
 	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
 
 !	t_t(1)=-0.1
 !	t_t(n_t)=1.d5
 c
-	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2',n_t,t_t(1),t_t(n_t)
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
 
        close (unit=41) 
         end if
@@ -1240,9 +1564,9 @@ c
 	 end do
 
         apr='++poa-' 
-!        if(kpr.eq.1)print 71,apr,(poa(i),i=1,nn) 
+!        print 71,apr,(poa(i),i=1,nn) 
       apr='++ppz-' 
-      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
+      !print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)

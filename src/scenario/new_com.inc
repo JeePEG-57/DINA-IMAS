@@ -394,6 +394,7 @@ c---------------------------
 c----------
 
 
+     *  /vic_015_imas/sigma_jetto(npo),sigma_dina(npo)
      *  /vic_016_imas/xu_dist(mu_l),yu_dist(mu_l)
 
         common

@@ -1616,13 +1616,18 @@ c*******************************************
 c	open (unit=41,file='pfc.dat',access='append',
 c     *	form='formatted')
 
-	open (unit=41,file='pfc_new.dat',
-     *	access='append',form='formatted')
 
 	i_en=i_en+1
 	if(i_en.eq.1)then
 
+	open (unit=41,file='pfc_new.dat',
+     *	form='formatted')
 	write (41,*) 'time [msec], PF_current [kA]'
+	else
+
+		open (unit=41,file='pfc_new.dat',
+     *	access='append',form='formatted')
+
 	end if
 
 c	if(i_en.gt.1)open(unit=41,file='pfc_new.dat',status='old',
@@ -1666,19 +1671,18 @@ c******************************************8
 	dimension pf_volts(*),gaps(*),gaps0(*)
 	character *70 apr
 
-	open (unit=41,file='volt_new.dat',
-     *	access='append',form='formatted')
-c	open (unit=51,file='ref_kavin.dat',
-c     *	access='append',form='formatted')
 
 	i_en=i_en+1
 	if(i_en.eq.1)then
 
-	write (41,*) 'time [msec], Volts [V]'
-c	write (51,*) 'time [msec] Ip[kA] Ip_ref[kA] 
-c     *  gaps[cm] gaps_ref[cm] Zmag[cm] Zmag_ref[cm]'
+	open (unit=41,file='volt_new.dat',
+     *	form='formatted')
 
-c!!!	close (41)
+	write (41,*) 'time [msec], Volts [V]'
+      else
+	open (unit=41,file='volt_new.dat',
+     *	access='append',form='formatted')
+      
 	end if
 
 
@@ -2224,14 +2228,18 @@ c        call emoq_filter(emoq)
 
 c end Kavin's insert
 
-	   open (unit=75,file='kavin.dat',
-     *	access='append',form='formatted')
 
 	i_en=i_en+1
         if(i_en.eq.1)then
 
+	   open (unit=75,file='kavin.dat',
+     *	 form='formatted')
+
 	   write(75,*)
      *'tt,betpj,betp_flat,emoe,del_emo,del_emo_0' 
+         else
+         	   open (unit=75,file='kavin.dat',
+     *	access='append',form='formatted')
 	   end if
 
 	   write(75,5002)

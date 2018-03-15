@@ -108,7 +108,8 @@ c--------------------
         
 !        tpl_ohm=-tokel*1.e-3
 
-        r_lh_new=(wdop+w_alfa+Pohm-w_imp-wtor-qc)/p_hl
+!        r_lh_new=(wdop+w_alfa+Pohm-w_imp-wtor-qc)/p_hl
+        r_lh_new=p_sep_tot/p_hl
         if(kpr.eq.1)print*,'r_lh_new=',r_lh_new
         
         if(kpr.eq.1)print*,'tpl_but tpl_beam tpl_ecd tpl_ohm ',
@@ -215,10 +216,14 @@ c	close (41)
 
 	call bp_gribov(bz_left,bz_right)
 
+        if(i_en.gt.1)then
 	   open (unit=65,file='plasma.dat',
      *	access='append',form='formatted')
-
+        end if
+        
         if(i_en.eq.1)then
+	   open (unit=65,file='plasma.dat',
+     *	form='formatted')
 
 	   write(65,*)
      *'t,tpl/1000.,betpj,eu,uli,r_cur,z_cur,p_sep,eksk, 

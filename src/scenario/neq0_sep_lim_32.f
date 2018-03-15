@@ -5235,13 +5235,21 @@ c********************************************************************
 	dimension pf(*),tcam(*),f(*),x(*),y(*)
 
 
+      i_en=i_en+1
+      
 c	npf_help=npf-1
 	npf_help=npf-n_pasc
 	i_form=1
 
 	if(i_form.eq.1)then
+	if(i_en.eq.1)then
+	open (unit=71,file='tok_data',
+     &  form='formatted')
+      else
 	open (unit=71,file='tok_data',access='append',
      &  form='formatted')
+      end if
+      
 
 c	print*,'npf npf_help',npf,npf_help
 c	read(*,*)

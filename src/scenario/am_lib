@@ -1,0 +1,43 @@
+XLIB= /usr/X11R6/lib
+
+f2c= gcc -w 
+
+
+S=./
+V=$(S)
+
+os=     t15_2.o t15_2_data.o pf_lookup3.o pf_lookup3_wrapper.o read_pf.o rt_look.o rt_look1d.o \
+	rt_nonfinite.o rt_rand.o rtGetNaN.o rtGetInf.o 
+
+
+libsub.a:	$(os)
+
+
+
+		ar -rv libsub.a $(os) 
+
+
+t15_2.o:	$(S)t15_2.c
+		$(f2c) -c   -w   $(S)t15_2.c
+t15_2_data.o:	$(S)t15_2_data.c
+		$(f2c) -c   -w   $(S)t15_2_data.c
+pf_lookup3.o:	$(S)pf_lookup3.c
+		$(f2c) -c   -w   $(S)pf_lookup3.c
+pf_lookup3_wrapper.o:	$(S)pf_lookup3_wrapper.c
+		$(f2c) -c   -w   $(S)pf_lookup3_wrapper.c
+read_pf.o:	$(S)read_pf.c
+		$(f2c) -c   -w   $(S)read_pf.c
+rt_look.o:	$(S)rt_look.c
+		$(f2c) -c   -w   $(S)rt_look.c
+rt_look1d.o:	$(S)rt_look1d.c
+		$(f2c) -c   -w   $(S)rt_look1d.c
+rt_nonfinite.o:	$(S)rt_nonfinite.c
+		$(f2c) -c   -w   $(S)rt_nonfinite.c
+rt_rand.o:	$(S)rt_rand.c
+		$(f2c) -c   -w   $(S)rt_rand.c
+rtGetInf.o:	$(S)rtGetInf.c
+		$(f2c) -c   -w   $(S)rtGetInf.c
+rtGetNaN.o:	$(S)rtGetNaN.c
+		$(f2c) -c   -w   $(S)rtGetNaN.c
+
+

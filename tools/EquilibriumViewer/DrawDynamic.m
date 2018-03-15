@@ -26,8 +26,8 @@ UserData = get(Axes,'UserData');
 
 s_time = handles.Equilibrium.time_slice{1,Frame}.time;
     
-y = 1.e2*handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.grid.dim1;
-x = 1.e2*handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.grid.dim2; 
+y = 1.e2*handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.grid.dim2;
+x = 1.e2*handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.grid.dim1; 
 
 psi = handles.Equilibrium.time_slice{1,Frame}.profiles_2d{1}.psi;
     
@@ -62,11 +62,11 @@ if pmag ~= pbound
     %size(y)
     %size(psi)
 
-    [~,h1]=contour(x,y,psi,PL(1:n_g-1),'r');  %flux
+    [~,h1]=contour(x,y,psi',PL(1:n_g-1),'r');  %flux
 
-    [~,h2]=contour(x,y,psi,PL(n_g+1:end),'b');  %flux
+    [~,h2]=contour(x,y,psi',PL(n_g+1:end),'b');  %flux
 
-    [~,h3]=contour(x,y,psi,[p_s p_s],'m');  %flux
+    [~,h3]=contour(x,y,psi',[p_s p_s],'m');  %flux
     set(h3,'LineWidth',2);
 
     handles.Dynamic = [h1 h2 h3];

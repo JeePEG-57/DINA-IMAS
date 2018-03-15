@@ -243,6 +243,8 @@ c ============ outputs ==============================================
 	tene_xx = tene
 	wfus_xx = w_fusion*1.d6
 	emag_xx = emag*1.d6
+	
+	write (*,*) 'dina_outp vloop, tene = ', vloop, tene
 c=================================================
 
 	do i=1,n

@@ -1,13 +1,11 @@
 /*
  * File: rtGetInf.c
  *
- * Real-Time Workshop code generated for Simulink model t15_2.
+ * Code generated for Simulink model 't15_2'.
  *
- * Model version                        : 1.1128
- * Real-Time Workshop file version      : 7.4  (R2009b)  29-Jun-2009
- * Real-Time Workshop file generated on : Thu Mar 24 12:39:33 2016
- * TLC version                          : 7.4 (Jul 14 2009)
- * C/C++ source code generated on       : Thu Mar 24 12:39:34 2016
+ * Model version                  : 1.1137
+ * Simulink Coder version         : 8.5 (R2013b) 08-Aug-2013
+ * C/C++ source code generated on : Wed Feb 28 17:00:10 2018
  *
  * Target selection: ert_shrlib.tlc
  * Embedded hardware selection: 32-bit Generic
@@ -19,10 +17,10 @@
 
 /*
  * Abstract:
- *      Real-Time Workshop function to intialize non-finite, Inf
+ *      Function to intialize non-finite, Inf
  */
 #include "rtGetInf.h"
-#define NumBitsPerChar                 8
+#define NumBitsPerChar                 8U
 
 /*
  * Initialize rtInf needed by the generated code.
@@ -32,23 +30,16 @@ real_T rtGetInf(void)
 {
   size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
   real_T inf = 0.0;
-  if (bitsPerReal == 32) {
+  if (bitsPerReal == 32U) {
     inf = rtGetInfF();
   } else {
-    typedef struct {
-      struct {
-        uint32_T wordL;
-        uint32_T wordH;
-      } words;
-    } LittleEndianIEEEDouble;
-
     union {
       LittleEndianIEEEDouble bitVal;
       real_T fltVal;
     } tmpVal;
 
-    tmpVal.bitVal.words.wordH = 0x7FF00000;
-    tmpVal.bitVal.words.wordL = 0x00000000;
+    tmpVal.bitVal.words.wordH = 0x7FF00000U;
+    tmpVal.bitVal.words.wordL = 0x00000000U;
     inf = tmpVal.fltVal;
   }
 
@@ -61,15 +52,8 @@ real_T rtGetInf(void)
  */
 real32_T rtGetInfF(void)
 {
-  typedef struct {
-    union {
-      real32_T wordLreal;
-      uint32_T wordLuint;
-    } wordL;
-  } IEEESingle;
-
   IEEESingle infF;
-  infF.wordL.wordLuint = 0x7F800000;
+  infF.wordL.wordLuint = 0x7F800000U;
   return infF.wordL.wordLreal;
 }
 
@@ -81,23 +65,16 @@ real_T rtGetMinusInf(void)
 {
   size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
   real_T minf = 0.0;
-  if (bitsPerReal == 32) {
+  if (bitsPerReal == 32U) {
     minf = rtGetMinusInfF();
   } else {
-    typedef struct {
-      struct {
-        uint32_T wordL;
-        uint32_T wordH;
-      } words;
-    } LittleEndianIEEEDouble;
-
     union {
       LittleEndianIEEEDouble bitVal;
       real_T fltVal;
     } tmpVal;
 
-    tmpVal.bitVal.words.wordH = 0xFFF00000;
-    tmpVal.bitVal.words.wordL = 0x00000000;
+    tmpVal.bitVal.words.wordH = 0xFFF00000U;
+    tmpVal.bitVal.words.wordL = 0x00000000U;
     minf = tmpVal.fltVal;
   }
 
@@ -110,22 +87,13 @@ real_T rtGetMinusInf(void)
  */
 real32_T rtGetMinusInfF(void)
 {
-  typedef struct {
-    union {
-      real32_T wordLreal;
-      uint32_T wordLuint;
-    } wordL;
-  } IEEESingle;
-
   IEEESingle minfF;
-  minfF.wordL.wordLuint = 0xFF800000;
+  minfF.wordL.wordLuint = 0xFF800000U;
   return minfF.wordL.wordLreal;
 }
 
-/* end rtGetInf.c */
-
 /*
- * File trailer for Real-Time Workshop generated code.
+ * File trailer for generated code.
  *
  * [EOF]
  */

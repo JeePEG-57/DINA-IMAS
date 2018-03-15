@@ -4,7 +4,7 @@
 
 
       call difmf_1_c(n,
-     *rs0,next)
+     *rs0,next,sigma_jetto,sigma_dina,k_ener,k_uv)
 
       return
       end
@@ -12,7 +12,7 @@
 
 
       SUBROUTINE DIFMF_1_c(n,
-     *rs0,next)
+     *rs0,next,sigma_jetto,sigma_dina,k_ener,k_uv)
 
 c$$$            SUBROUTINE DIFMF_1(N)
 
@@ -52,7 +52,6 @@ c       implicit real*8 (a-h,o-z)
      *  /en9e/volt(npo)
      *  /sig/sig
 
-	common /keys4/k_ener,k_uv
 	common
      *	/efit6/tpl_p
         common                                                          
@@ -69,6 +68,9 @@ c
 c
 	character *50 mps
 
+      dimension sigma_jetto(*),sigma_dina(*),sigk_jetto(npo)
+      dimension sigk_jetto1(npo),aj0_help(npo),b_corr(npo)
+      
         dimension dm_help(npo),df_help(npo),cur_tor(npo)
 
 
@@ -80,7 +82,7 @@ c
 
         if(kpr.eq.1)print *,' n rs0 next==',n,rs0,next
 
-        if(kpr.eq.1)print *,' sig0_new k_uv==',sig0_new,k_uv
+        if(kpr.eq.1)print *,' sig0_new==',sig0_new
 
         if(kpr.eq.1)print *,' key_sig_coef coef_sigk==',
      *  key_sig_coef,coef_sigk
@@ -166,11 +168,63 @@ c       f(i)=0.5*(fx(i)+fx(i-1))
          DO  I=2,N
         psi(i)=(dm0(i)-dm0(i-1))/ha(i)
         Q(I)=-PFI(I)/PSI(I)
+        if(abs(sigk(i)).le.1.e-3)sigk(i)=1./zeff(i)
         end do
         
         	mps='q'
         if(kpr.eq.1)print 71,mps,(q(i),i=1,n)
 
+      if(k_ener.eq.0)then
+
+	mps='sigma_jetto'
+        if(kpr.eq.1)print 71,mps,(sigma_jetto(i),i=1,n)
+      
+ccccc      ov_zeff=1./zeff(1)
+        coef_sigm=1.
+ccc        if(tt.gt.50.e3)coef_sigm=1.5
+
+      ov_zeff=1./zeff(1)*coef_sigm
+      if(kpr.eq.1)print *,' ov_zeff=',ov_zeff
+      
+      sigk(1)=ov_zeff      
+
+	mps='sigk'
+!      if(kpr.eq.1)print 71,mps,(sigk(i),i=1,n)
+ 
+
+      TXX=TE0(1)
+      sigk_jetto(1)=sigma_jetto(1)/(txx**1.5)
+      
+      if(kpr.eq.1)print *,' txx sigk_jetto(1)=',txx,sigk_jetto(1)
+	do i=2,n
+      TXX=0.5*(TE0(I)+TE0(I-1))
+      sigk_jetto(i)=sigma_jetto(i)/(txx**1.5)
+	sigma_dina(i)=1.2d4/9.*(txx**1.5)*sigk(i)
+      end do      
+
+	mps='1 sigma_dina'
+      if(kpr.eq.1)print 71,mps,(sigma_dina(i),i=1,n)
+
+	mps='sigk_jetto'
+      if(kpr.eq.1)print 71,mps,(sigk_jetto(i),i=1,n)
+      
+	do i=2,n
+	sigk_jetto(i)=sigk_jetto(i)/sigk_jetto(1)*ov_zeff
+      end do      
+      
+      sigk_jetto(1)=ov_zeff
+
+	mps='sigk_jetto'
+      if(kpr.eq.1)print 71,mps,(sigk_jetto(i),i=1,n)
+
+	do i=1,n
+	sigma_dina(i)=sigma_jetto(i)*sigk(i)/sigk_jetto(i)
+      end do      
+
+	mps='sigma_dina'
+      if(kpr.eq.1)print 71,mps,(sigma_dina(i),i=1,n)
+
+      end if ! k_ener=0
 
 c
 c
@@ -178,8 +232,6 @@ c
 c        if(kpr.eq.1)print *,'*** bt=',bt
 c
 	kuv=k_uv
-
-      kbu=1
       kbu=1
 	kae=1
 
@@ -189,6 +241,16 @@ ccc	if(ntay.lt.999999)kbu=0
 	if(ntay.lt.4)kuv=0
 	if(ntay.lt.4)kae=0
 
+
+        if(kpr.eq.1)print *,'kuv kbu=',kuv,kbu
+
+
+      if(k_ener.eq.0)then
+      
+        TXX=TE0(1)
+        sigk_jetto1(1)=sigma_jetto(1)*1.2566e-7*sig0/txx**1.5
+
+      end if      ! k_ener=0
 
 
       N2=N-1
@@ -211,7 +273,27 @@ c********
 c	sigk(i)=1./zeff(i)
 c       sigk(i)=1.
 
+      if(k_ener.eq.0)then
+
+        sigk_jetto1(i)=sigma_jetto(i)*1.2566e-7*sig0/(txx**1.5)
+
+      if(ai(i).le.1.95)then
+!	tsig(i)=txx**1.5*sigk_jetto(i)
+         tsig(i)=txx**1.5*sigk_jetto1(i)
+	else
+	tsig(i)=txx**1.5*sigk_jetto(i)*1.e-7
+	end if
+
+ccc To set up sigk_jetto one needs to make comment of next line
+
+c!!!!!!!!!!	if(tt.gt.150.e3)tsig(i)=txx**1.5*sigk(i)
+
+
+      end if  ! k_ener=0
+
+      if(k_ener.eq.1)then
 	tsig(i)=txx**1.5*sigk(i)/(1.+coef_sigk*ai(i))
+      end if  ! k_ener=1
 
 	end do
 	mps='sigm'
@@ -386,9 +468,8 @@ c
         if(kpr.eq.1)
      *	print *,'tokel tokfi bt',tokel,tokfi,bt,' kA (difmf)'
         if(kpr.eq.1)
-     *	print *,'tokbut tok_b ',tokbut,tok_b,' kA (difmf)'
-        if(kpr.eq.1)
-     *	print *,'tokuv tokuv',tokuv*kuv,tokuv,' kA (difmf)'
+     *	print *,'tokbut tok_b tokuv',kbu*tokbut,tok_b,kuv*tokuv,
+     *   ' kA (difmf)'
 	if(kpr.eq.1)
      *	print *,'tok  tokae tokae2 ',tok,tokae,tok_ae2,' kA (difmf)'
 c
