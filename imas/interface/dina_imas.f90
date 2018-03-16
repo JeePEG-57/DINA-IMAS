@@ -530,6 +530,13 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     
     allocate(equilibrium%vacuum_toroidal_field%b0(TimeSteps))
   
+
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%r(nr))
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%z(nr))
+
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(nr))
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(nr))
+
 ! Filling equilibrium 
 
     equilibrium%ids_properties%homogeneous_time = 1

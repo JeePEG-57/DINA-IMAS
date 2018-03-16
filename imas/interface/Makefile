@@ -5,7 +5,7 @@ LIBS_gfortran=`pkg-config imas-gfortran --libs`
 
 f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
 
-TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a dina_sdn.a solps_imas.a test_dina_to_imas
+TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp1.a dina_transp2.a dina_transp3.a dina_transp4.a dina_transp5.a dina_sdn.a solps_imas.a external_transp.a test_dina_to_imas
 
 DINADIR := ../../src/scenario
 
@@ -101,6 +101,10 @@ dina_transp4.a: dina_transp4.o tran4.o add_dll.o
 dina_transp5.a: dina_transp5.o tran5.o add_dll.o
 	@echo "   * $^ -> $@"
 	ar -rcs dina_transp5.a dina_transp5.o tran5.o add_dll.o
+
+external_transp.a: external_transp.o
+	@echo "   * $^ -> $@"
+	ar -rcs external_transp.a external_transp.o
 
 dina_sdn.a: dina_sdn.o
 	@echo "   * $^ -> $@"
