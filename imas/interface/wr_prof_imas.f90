@@ -1,18 +1,32 @@
 	subroutine ids_prof_jetto()
-	call wr_prof_astra_bs()
-    call wr_prof_astra_sigma()	
-	call wr_prof_astra_nb()
-	call wr_prof_astra_ecd()
-	call wr_prof_astra_te()
-	call wr_prof_astra_ti()
-	call wr_prof_astra_ne()
-	call wr_prof_astra_ndt()
-	call wr_prof_astra_zeff()
-	call wr_prof_astra_pres()
+
+        integer :: pulse, run
+
+        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
+
+        read(2,*)
+        read(2,*) pulse
+        read(2,*)
+        read(2,*) run
+
+        close(2)
+
+        write(*,*) 'jetto_ids: pulse, run =',pulse,run
+
+	call wr_prof_astra_bs(pulse, run)
+        call wr_prof_astra_sigma(pulse, run)	
+	call wr_prof_astra_nb(pulse, run)
+	call wr_prof_astra_ecd(pulse, run)
+	call wr_prof_astra_te(pulse, run)
+	call wr_prof_astra_ti(pulse, run)
+	call wr_prof_astra_ne(pulse, run)
+	call wr_prof_astra_ndt(pulse, run)
+	call wr_prof_astra_zeff(pulse, run)
+	call wr_prof_astra_pres(pulse, run)
 	return
     end
 
-	subroutine wr_prof_astra_bs()
+	subroutine wr_prof_astra_bs(pulse, run)
 
 	use ids_schemas
     use ids_routines	
@@ -34,9 +48,6 @@
       common/ge5/kpr
 	
 !    kpr=1
-
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_profiles', cp)
@@ -83,7 +94,7 @@
 	
 	
 	
-	subroutine wr_prof_astra_sigma()
+	subroutine wr_prof_astra_sigma(pulse, run)
 
 
 	use ids_schemas
@@ -105,9 +116,6 @@
       common/ge5/kpr
 	
 !     kpr=1
-
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_profiles', cp)
@@ -152,7 +160,7 @@
 	
 	
 	
-	subroutine wr_prof_astra_nb()
+	subroutine wr_prof_astra_nb(pulse, run)
 
 
 	use ids_schemas
@@ -174,9 +182,6 @@
 
 !	    kpr=1
 
-	
-	pulse = 170
-	run = 2
 
 	if(kpr.eq.1)print *,' imas open== pulse run ',pulse,run
 	
@@ -227,7 +232,7 @@
 	end
 
 	
-	subroutine wr_prof_astra_ecd()
+	subroutine wr_prof_astra_ecd(pulse, run)
 
 
 	use ids_schemas
@@ -249,8 +254,6 @@
 	
 !	    kpr=1
 
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_sources', cs)
@@ -294,7 +297,7 @@
 	end
 
 
-	subroutine wr_prof_astra_te()
+	subroutine wr_prof_astra_te(pulse, run)
 
 
 	use ids_schemas
@@ -316,8 +319,6 @@
 	
 !	    kpr=1
 
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_profiles', cp)
@@ -362,7 +363,7 @@
 	end
 	
 	
-	subroutine wr_prof_astra_ti()
+	subroutine wr_prof_astra_ti(pulse, run)
 
 
 	use ids_schemas
@@ -384,8 +385,6 @@
 	
 !	    kpr=1
 
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_profiles', cp)
@@ -428,7 +427,7 @@
 	end
 	
 	
-	subroutine wr_prof_astra_ndt()
+	subroutine wr_prof_astra_ndt(pulse, run)
 
 
 	use ids_schemas
@@ -449,9 +448,6 @@
       common/ge5/kpr
 	
 !	    kpr=1
-
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_profiles', cp)
@@ -497,7 +493,7 @@
 	
 	
 	
-	subroutine wr_prof_astra_zeff()
+	subroutine wr_prof_astra_zeff(pulse, run)
 
 
 	use ids_schemas
@@ -518,9 +514,6 @@
       common/ge5/kpr
 	
 !	kpr=1
-	
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_profiles', cp)
@@ -563,7 +556,7 @@
 	end
 	
 	
-	subroutine wr_prof_astra_pres()
+	subroutine wr_prof_astra_pres(pulse, run)
 
 
 	use ids_schemas
@@ -584,10 +577,6 @@
       common/ge5/kpr
 
 !     kpr=1
-
-	
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'equilibrium', eq)
@@ -629,7 +618,7 @@
 	return
 	end
 	
-	subroutine wr_prof_astra_ne()
+	subroutine wr_prof_astra_ne(pulse, run)
 
 
 	use ids_schemas
@@ -649,9 +638,6 @@
 	integer :: it, ir, nt, nr, kpr
       common/ge5/kpr
 	
-	
-	pulse = 170
-	run = 2
 	
 	call imas_open('ids', pulse, run, idx) 
 	call ids_get(idx, 'core_profiles', cp)
@@ -694,6 +680,9 @@
 
 	return
 	end
+
+
+
     subroutine prof_sort(nn,n_t1,te0_t1,t_t1,kpr)
 	include 'double.inc'
  	include 'parf0' 

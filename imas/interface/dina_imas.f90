@@ -274,7 +274,7 @@ call write_cputime(0.d0, 0.d0, 1)
 
 first_call = first_call+1 ! cancel the initialisation for the next call
 
-    kpr=1
+!    kpr=1
     ih_imas=1
     if(ih_imas.eq.1)then
 	call ids_prof_jetto()

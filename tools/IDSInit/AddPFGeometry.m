@@ -1,5 +1,5 @@
 function AddPFGeometry(Shot, Run, Occurence)
-
+disp('AddPFGeometry...');
 
 S = load('env_VS_coils1.mat');
 

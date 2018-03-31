@@ -47,6 +47,20 @@ print *,' Enter run number'
 read (*,*) run
 !run=2
 
+
+!         open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
+! 
+!         read(2,*)
+!         read(2,*) pulse
+!         read(2,*)
+!         read(2,*) run
+! 
+!         close(2)
+! 
+!         write(*,*) 'jetto_ids: pulse, run =',pulse,run
+
+
+
 	filename01 = 'Ne_prof.txt'
 	filename02 = 'Ndt_prof.txt'
 	filename03 = 'Te_prof.txt'

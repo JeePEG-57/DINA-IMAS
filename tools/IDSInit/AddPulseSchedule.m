@@ -1,7 +1,8 @@
-function AddPulseSchedule(Shot, Run, Occurence)
+function AddPulseSchedule(Shot, Run, Occurence, initFile)
 
+disp('AddPulseSchedule...');
 
-S = load('../../machines/iter/JINTRAC_case1/ITER.mat');
+S = load(initFile);
 
 
 for i=1:length(S.ITER.files)
@@ -41,14 +42,14 @@ end
 PSString = 'pulse_schedule';
 EQString = 'equilibrium';
 
-if nargin == 3
+if nargin >= 3
     if Occurence > 0
         PSString = [PSString '/' num2str(Occurence)];
         EQString = [EQString '/' num2str(Occurence)];
     end
 elseif nargin == 2
 else
-    disp('Invalid inputs number, must be 2 or 3.');
+    disp('Invalid inputs number, must be at least 2.');
     return
 end
 
