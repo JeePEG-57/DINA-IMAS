@@ -3561,6 +3561,8 @@ C END PLASMA BOUNDARY
      *	/fluxc7/coef,coef1,api
      *  /fluxc11/npl,pl_cur(nwnh),x_cur(nwnh),y_cur(nwnh)
 
+        common /c_imas_curr_d/curr_d(nr,nz)
+        
 	dimension f(nwnh)
 
 	n1=nr-1
@@ -3619,6 +3621,10 @@ c
 	DO i=1,nr
            DO j=1,nz
               kk=(i-1)*nz+j
+        
+        curr_d(i,j)=f(kk)*coef1*1.e7
+        
+        
               if(abs(f(kk)).gt.1.e-5)then
                  k=k+1
                  pl_cur(k)=f(kk)*coef1

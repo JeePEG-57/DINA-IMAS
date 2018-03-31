@@ -15,10 +15,14 @@
 
       kpr_a=kpr
 
-
-      if(kpr.eq.1)print *,' kpr==',kpr
-
-
+      if(n.eq.0)then
+      n=10
+      do i=1,n
+      a(i)=float(i-1)/float(n-1)
+      end do
+      
+      end if
+      
       if(i_en.eq.1)then
 
           open (unit=40,file='elm.dat',form='formatted') 
@@ -26,10 +30,17 @@
           read (40,*)tt_elm
           read (40,*) 
 
+      if(tt_elm. le.0.d0)then
+      tt_elm=dabs(tt_elm)
+      k_elm=1
+      end if
+      
+
 	  close (40)
       
       end if
       
+      if(kpr.eq.1)print *,' kpr k_elm==',kpr,k_elm
       if(kpr.eq.1)print *,' tt_elm tt_dw=',tt_elm,tt_dw
       
       tt_prof=tt
@@ -40,8 +51,18 @@
 	if(tt.ge.tt_dw)then
 	   tt_prof=tt+tt_elm-tt_dw
       end if
+
+	if(k_elm.eq.1)then
+!	   tt_prof=tt-(75.d0-70.d0)*1.d3	   
+      end if
+      
+      if(tt_prof.le.1.d-1)then
+      tt_prof=1.d-1
+      end if
       
 !      kpr=0
+      apr='+ai-' 
+      if(kpr.eq.1)print 71,apr,(ai(i),i=1,n) 
 
      	call prof_astra_sigma(tt_prof,n,sigma_jetto,ai,num,kpr)
 
@@ -70,7 +91,7 @@
 	call prof_astra_ne(tt_prof,n,pne,a,num,kpr)
 
 !	print*,'from astra_prof_HL'
-!	print*,'tt=',tt
+      if(kpr.eq.1)print*,'tt tt_prof=',tt,tt_prof
 
 
       i_pres=1
@@ -83,9 +104,9 @@
       end do
 
       apr='&&pne-' 
-      if(kpr.eq.1) print 71,apr,(pne(i),i=1,n) 
+ !     if(kpr.eq.1) print 71,apr,(pne(i),i=1,n) 
       apr='&&pd0-' 
-      if(kpr.eq.1) print 71,apr,(pd0(i),i=1,n) 
+ !     if(kpr.eq.1) print 71,apr,(pd0(i),i=1,n) 
       apr='&&pt0-' 
       if(kpr.eq.1) print 71,apr,(pt0(i),i=1,n) 
 
@@ -113,10 +134,10 @@
       end do
 
       apr='++pne-' 
-      if(kpr.eq.1) print 71,apr,(pne(i),i=1,n) 
+ !     if(kpr.eq.1) print 71,apr,(pne(i),i=1,n) 
 
       apr='++pd0-' 
-      if(kpr.eq.1) print 71,apr,(pd0(i),i=1,n) 
+!      if(kpr.eq.1) print 71,apr,(pd0(i),i=1,n) 
       apr='++ppr-' 
 !      if(kpr.eq.1) print 71,apr,(ppr(i),i=1,n) 
 
@@ -143,7 +164,7 @@ ccccccc      coef_astra=1.28
       kpr=kpr_a
       
  !     stop
-      print *,' end'
+!      print *,' end'
       
 	return
 	end
@@ -173,11 +194,28 @@ ccccccc      coef_astra=1.28
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      
+      common /c_imas_ajb/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_ajb1/nn_b,n_tb
+      
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
+
+      coef=1.d-1
 
 	if(i_sh.eq.1)then
 
@@ -185,7 +223,6 @@ ccccccc      coef_astra=1.28
       
 !      filename='tin1scenar-7_BS.dat'
 
-      coef=1.d-1
       filename='Jbs_prof.txt'
 
 c-------
@@ -258,6 +295,9 @@ c
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
+	if(ih_imas.eq.0)then
+	return
+      end if
 
       do i=2,n_t
       if( (tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
@@ -291,9 +331,10 @@ c
 
       end do
       
-        apr='++ajb-' 
+      apr='++ajb-' 
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 	
@@ -315,19 +356,38 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_sigma/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_sigma1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (poa_b,poa)
+      equivalence (n_tb,n_t)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+    	if(kpr.eq.1)print *,' nn_b,n_tb ',nn_b,n_tb
+    	if(kpr.eq.1)print *,' nn,n_t ',nn,n_t
+    	if(kpr.eq.1)print *,' ih_imas ,i_sh ',ih_imas,i_sh
+    	
+
+
+
+      coef=1.d-0
 	if(i_sh.eq.1)then
 
       n_t=9999
       
 !      filename='tin1scenar-7_BS.dat'
 
-      coef=1.d-0
       filename='Sigm_prof.txt'
 
 c-------
@@ -404,6 +464,9 @@ c
         end if
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
 
 
       do i=2,n_t
@@ -425,10 +488,10 @@ c
 	 end do
 
         apr='++poa-' 
- !       print 71,apr,(poa(i),i=1,nn) 
+        print 71,apr,(poa(i),i=1,nn) 
 
-      apr='++ppz-' 
-      if(kpr.eq.-1)print 71,apr,(ppz(i),i=1,nn) 
+      apr='++ppz_sigma-' 
+      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
@@ -438,10 +501,14 @@ c
            call linear(nn,ppz,te0(i),poa,a(i))
       end do
       
+        apr='++a-' 
+      if(kpr.eq.1)  print 71,apr,(a(i),i=1,n) 
         apr='++sigma-' 
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
+    	if(kpr.eq.1)print *,' nn,n ',nn,n
 	
 c	read (*,*)
 
@@ -461,19 +528,32 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_nb/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_nb1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d-1
 	if(i_sh.eq.1)then
 
       n_t=9999
       
 !      filename='tin1scenar-7_BS.dat'
 
-      coef=1.d-1
       filename='Jznb_prof.txt'
 
 c-------
@@ -546,6 +626,9 @@ c
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
+	if(ih_imas.eq.0)then
+	return
+      end if
 
       do i=2,n_t
       if( (tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
@@ -581,6 +664,7 @@ c
         apr='++aj0_b-' 
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 c	read (*,*)
@@ -600,19 +684,32 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_ecd/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_ecd1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d-1
 	if(i_sh.eq.1)then
 
       n_t=9999
       
 !      filename='tin1scenar-7_BS.dat'
 
-      coef=1.d-1
       filename='Jzec_prof.txt'
 
 c-------
@@ -684,6 +781,9 @@ c
         end if
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
 
 
       do i=2,n_t
@@ -720,6 +820,7 @@ c
         apr='++aj0_ecd-' 
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 c	read (*,*)
@@ -740,19 +841,32 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_te/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_te1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d3
 	if(i_sh.eq.1)then
 
       n_t=9999
       
 !      filename='tin1scenar-7_TE.dat'
       filename='Te_prof.txt'
-      coef=1.d3
 
 c-------
            open (unit=41,file=filename,form='formatted') 
@@ -822,6 +936,9 @@ c
         end if
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
 
 	do i=1,n_t
 !           apr='-te0_t-' 
@@ -862,6 +979,7 @@ c
         apr='++te0-' 
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time n_t tt t_coef==',i_time,n_t,tt,t_coef
 	
 c	read (*,*)
@@ -881,13 +999,27 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_ti/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_ti1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
 
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d3
 
 	if(i_sh.eq.1)then
 
@@ -895,7 +1027,6 @@ c	read (*,*)
       
 !      filename='tin1scenar-7_TI.dat'
       filename='Ti_prof.txt'
-      coef=1.d3
 
 c-------
            open (unit=41,file=filename,form='formatted') 
@@ -966,6 +1097,9 @@ c
         end if
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
 
 
       do i=2,n_t
@@ -1001,6 +1135,7 @@ c
         apr='++tq0-' 
       if(kpr.eq.1)  print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 c	read (*,*)
@@ -1021,18 +1156,31 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_ne/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_ne1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d0
 
 	if(i_sh.eq.1)then
 
       n_t=9999
 !      filename='tin1scenar-7_NE.dat'
-      coef=1.d0
       filename='Ne_prof.txt'
 
 c-------
@@ -1107,6 +1255,9 @@ c
 
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
 
       i_time=0
       
@@ -1143,6 +1294,7 @@ c
         apr='++pne-' 
        if(kpr.eq.1) print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 !	stop
@@ -1164,18 +1316,31 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_ndt/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_ndt1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d0
 
 	if(i_sh.eq.1)then
 
       n_t=9999
 !      filename='tin1scenar-7_NE.dat'
-      coef=1.d0
       filename='Ndt_prof.txt'
 
 c-------
@@ -1249,6 +1414,9 @@ c
 
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
 
       i_time=0
       
@@ -1285,6 +1453,7 @@ c
         apr='++ndt-' 
        if(kpr.eq.1) print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 !	stop
@@ -1307,18 +1476,31 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_zeff/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_zeff1/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
 
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d0
 	if(i_sh.eq.1)then
 
       n_t=9999
 !      filename='tin1scenar-7_NE.dat'
-      coef=1.d0
       filename='Zeff_prof.txt'
 
 c-------
@@ -1393,6 +1575,9 @@ c
 
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
 
       i_time=0
       
@@ -1429,6 +1614,7 @@ c
         apr='++zeff-' 
       if(kpr.eq.1)print 71,apr,(te0(i),i=1,n) 
 
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 !	stop
@@ -1453,18 +1639,35 @@ c	read (*,*)
  	include 'parf_mike' 
 
 	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_pres/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_pres1/nn_b,n_tb
+       
+      common /c_imas_is/ih_imas
+       
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
 
 	character *20 apr,filename
 
 
 	i_sh=i_sh+1
 
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
 
+      coef=1.d6/1.6d0
 	if(i_sh.eq.1)then
 
       n_t=9999
 
-      coef=1.d6/1.6d0
 !     filename='Ptot_prof.txt'
 
       coef=1.d0/1.6d0
@@ -1543,6 +1746,11 @@ c
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
+
+	if(ih_imas.eq.0)then
+	return
+      end if
+
       i_time=0
       
       do i=2,n_t
@@ -1579,6 +1787,7 @@ c
        if(kpr.eq.1) print 71,apr,(te0(i),i=1,n) 
 
 	if(kpr.eq.1)print *,' coef==',coef
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
 	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
 	
 !	stop
@@ -1590,3 +1799,6 @@ c	read (*,*)
 
 	return
 	end
+
+
+

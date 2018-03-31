@@ -8,23 +8,29 @@ implicit none
 
 interface 
 ! Declaration of the dina_imas subroutine
-    subroutine dina_imas ( em_coupling0_in, equilibrium0_in,  &
- & pf_active0_in, pf_passive0_in, core_profiles0_in, pulse_schedule_in, equilibrium_in, &
- & magnetics_in, pf_active_in, pf_passive_in, core_profiles_in, &
- & arr_in1,arr_out1)
+subroutine dina_imas(&
+  &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+  & ,bndcond_in &
+  & ,pulse_schedule &
+  & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+  & ,summary &
+  & ,arr_in1, arr_out1 )
  
      use ids_schemas
 ! note that IDS0 are all prescribed, the others are dynamic
-!      type (ids_dina) :: dina0_in, dina_in
-      type (ids_em_coupling) :: em_coupling0_in
-      type (ids_equilibrium) :: equilibrium0_in, equilibrium_in
-      type (ids_magnetics) :: magnetics_in
-      type (ids_pf_active) :: pf_active0_in, pf_active_in
-      type (ids_pf_passive) :: pf_passive0_in, pf_passive_in
-      type (ids_core_profiles)   :: core_profiles0_in, core_profiles_in
-      type (ids_pulse_schedule)   :: pulse_schedule_in
+type (ids_em_coupling)  :: em_coupling0
+type (ids_equilibrium) :: equilibrium0, equilibrium
+type (ids_magnetics)   :: magnetics
+type (ids_pf_active)   :: pf_active0, pf_active
+type (ids_pf_passive)   :: pf_passive0, pf_passive
+type (ids_core_profiles)   :: core_profiles0, core_profiles
+type (ids_core_transport)   :: core_transport
+type (ids_core_sources)   :: core_sources0, core_sources
+type (ids_transport_solver_numerics) :: bndcond_in
+type (ids_pulse_schedule)   :: pulse_schedule
+type (ids_summary) :: summary
 
-    real (DP) :: arr_in1(501), arr_out1(501)
+    real (ids_real) :: arr_in1(501), arr_out1(501)
 
     end subroutine
 end interface
@@ -33,29 +39,33 @@ interface
 ! Declaration of the dina_imas subroutine
     subroutine dina_contr (arr_in1,arr_out1)
      use ids_schemas
-    real (DP) :: arr_in1(501), arr_out1(501)
+    real (ids_real) :: arr_in1(501), arr_out1(501)
     end subroutine
     
 end interface
 
 
-!type (ids_dina) :: dina0, dina
 type (ids_em_coupling) :: em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
 type (ids_pf_active) :: pf_active0, pf_active
 type (ids_pf_passive) :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
-type (ids_pulse_schedule)   :: pulse_schedule0
+type (ids_core_sources)   :: core_sources0, core_sources
+type (ids_core_transport)   :: core_transport
+type (ids_transport_solver_numerics) :: bndcond
+type (ids_pulse_schedule)   :: pulse_schedule
+type (ids_summary) :: summary
 
-real (DP) :: arr_in1(501), arr_out1(501)
+real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
-integer :: pulse=170, run=2, prescribedpulse=170, prescribedrun=1
+integer :: pulse=170, run=6, prescribedpulse=170, prescribedrun=1
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
-real (DP) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
+real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
+real (ids_real) :: StopTime = 700.d0
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
 
@@ -85,7 +95,9 @@ call ids_get(idx0,"equilibrium",equilibrium0)
 call ids_get(idx0,"pf_active",pf_active0)
 call ids_get(idx0,"pf_passive",pf_passive0)
 call ids_get(idx0,"core_profiles",core_profiles0)
-call ids_get(idx0,"pulse_schedule",pulse_schedule0)
+call ids_get(idx0,"core_sources",core_sources0)
+call ids_get(idx0,"transport_solver_numerics",bndcond)
+call ids_get(idx0,"pulse_schedule",pulse_schedule)
 
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
@@ -94,19 +106,30 @@ call imas_close(idx0)
 arr_in1(1:31)=1
 arr_out1(1:31)=0
 
-do iloop=1,4000
+do iloop=1,1000000
 
 write(*,*) 'call DINA_IMAS i =',iloop
 
-call dina_imas( em_coupling0, equilibrium0,   &
- & pf_active0,  pf_passive0, core_profiles0, pulse_schedule0,  equilibrium, &
- & magnetics, pf_active, pf_passive, core_profiles, &
- & arr_in1,arr_out1)
+call dina_imas( em_coupling0, equilibrium0 &
+ & , pf_active0,  pf_passive0, core_profiles0, core_sources0 &
+ & , bndcond &
+ & , pulse_schedule &
+ & ,  equilibrium, &
+ & magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+ & , summary &
+ & , arr_in1,arr_out1)
 
 write(*,*) "Controller work"
 
 call dina_contr(arr_out1,arr_in1)
 
+!call dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
+!call dina_transp2(equilibrium0, core_profiles0, core_profiles)
+!call dina_transp3(equilibrium0, core_profiles0, core_profiles)
+!call dina_transp4(equilibrium0, core_profiles0, core_profiles)
+!call dina_transp5(equilibrium0, core_sources0, core_sources)
+
+call solps_imas(equilibrium, core_transport, bndcond)
 
 ! if (iloop == 1) then
 ! write(*,*)  'Put non-timed'
@@ -142,6 +165,7 @@ call dina_contr(arr_out1,arr_in1)
 
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
+ & core_sources, core_transport, bndcond, summary, &
 & pulse, run, iloop, err)
 
 
@@ -149,12 +173,17 @@ call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
 call ids_deallocate(equilibrium0)
 call ids_deallocate(core_profiles0)
-
+call ids_deallocate(core_sources0)
 
 call ids_copy(pf_active, pf_active0)
 call ids_copy(pf_passive, pf_passive0)
 call ids_copy(equilibrium, equilibrium0)
 call ids_copy(core_profiles, core_profiles0)
+call ids_copy(core_sources, core_sources0)
+
+
+write(*,*) '****** Pulse time =',summary%time(1),'/',StopTime
+if (summary%time(1).gt.StopTime) exit
 
 end do
 
@@ -168,8 +197,9 @@ call ids_deallocate(em_coupling0)
 call ids_deallocate(equilibrium0)
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
-call ids_deallocate(pulse_schedule0)
+call ids_deallocate(pulse_schedule)
 call ids_deallocate(core_profiles0)
+call ids_deallocate(core_sources0)
 
 call ids_deallocate(pf_active)
 call ids_deallocate(pf_passive)

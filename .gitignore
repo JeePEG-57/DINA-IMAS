@@ -18,5 +18,8 @@ imas/fc2k/*.xml
 imas/fc2k/toto
 imas/interface/test_dina
 imas/interface/test_dina_to_imas
+imas/interface/test_wr_prof
+imas/jetto/JINTRAC_IDS/jetto_prof_to_ids
+imas/jetto/JINTRAC_IDS/jetto_prof_from_ids
 imas/kepler_wf/log*
 

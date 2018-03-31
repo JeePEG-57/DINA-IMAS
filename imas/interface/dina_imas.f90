@@ -11,8 +11,8 @@ use ids_schemas
 use ids_routines
 implicit none
 
+
 ! trees are static or dynamic; if not defined, they are static
-!type (ids_dina) :: dina0, dina
 type (ids_em_coupling)  :: em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
@@ -43,7 +43,12 @@ integer,save :: n_output1, n_output2
 
 integer,save ::  n_gaps=6
           
+integer ::  kpr
 
+      common /ge5/kpr
+
+integer   ::  ih_imas
+     common /c_imas_is/ih_imas
 
 integer,save :: key(27)=(/ (0,i=1,27) /)
 
@@ -69,18 +74,22 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
 
 ! DINA parameters
+    integer,parameter :: ntet = 134
     integer,parameter :: nr = 65, nz = 129, ngrid=nr*nz
     
-    real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,s_plasma=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
-    ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0
-    real(ids_real) :: betap,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag
+    real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,parea=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
+  & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0 &
+  & ,rmajor,rminor,elong,tri
+    real(ids_real) :: betap,betat,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag
 
-    real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz)
+    real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
     real(ids_real) :: ai(npo),te0(npo),tq0(npo),pne(npo),tok1(npo),q(npo)
 
     real(ids_real) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),qe0(npo),qq0(npo)
     
+    real(ids_real) :: xbound(ntet),ybound(ntet)
+
     real(ids_real),parameter :: pi = 3.14159265358979323846
 
 
@@ -265,7 +274,11 @@ call write_cputime(0.d0, 0.d0, 1)
 
 first_call = first_call+1 ! cancel the initialisation for the next call
 
-
+    kpr=1
+    ih_imas=1
+    if(ih_imas.eq.1)then
+	call ids_prof_jetto()
+    end if
 !stop
 
 else
@@ -297,10 +310,10 @@ end if
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)
  pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)
 !Transp3
- jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)
+ jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)*1.d-7
  sigk(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
 !Transp4
- aj0(1:n1) = core_profiles0%profiles_1d(1)%j_total(1:n1)
+ aj0(1:n1) = (core_profiles0%profiles_1d(1)%j_non_inductive(1:n1) - core_profiles0%profiles_1d(1)%j_bootstrap(1:n1))*1.d-7
 !Sources
  qe0(1:n1) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n1)
  qq0(1:n1) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
@@ -345,12 +358,13 @@ end do
 
 !write(*,*) '!!!dina_outp enter'
 	call dina_outp(n,  &
-     & tpl,uli,v,s_plasma,psi_ax,rmag,zmag,  &
+     & tpl,uli,v,parea,psi_ax,rmag,zmag,  &
      & q_ax,q_95,rs0,bt0,wen2,tt,  &
      & ai,te0,tq0,pne,tok1,q,  &
-     & x,y,psi,psi_bnd,  &
+     & x,y,psi,psi_bnd,curr_d,  &
+     & xbound,ybound,rmajor,rminor,elong,tri, &
      & pd0,pt0,sigk,jbut,aj0,qe0,qq0, &
-     & betap,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag)
+     & betap,betat,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag)
 
 
 
@@ -466,6 +480,8 @@ allocate(summary%time(TimeSteps))
 allocate(summary%global_quantities%ip%value(TimeSteps))
 allocate(summary%global_quantities%li%value(TimeSteps))
 allocate(summary%global_quantities%beta_pol%value(TimeSteps))
+allocate(summary%global_quantities%beta_tor%value(TimeSteps))
+
 allocate(summary%global_quantities%v_loop%value(TimeSteps))
 allocate(summary%global_quantities%tau_energy%value(TimeSteps))
 allocate(summary%volume_average%n_e%value(TimeSteps))
@@ -480,14 +496,14 @@ allocate(summary%local%magnetic_axis%position%r(TimeSteps))
 allocate(summary%local%magnetic_axis%position%z(TimeSteps))
 
 ! Filling summary
-write (*,*) 'summary tene = ', tene
-
 summary%ids_properties%homogeneous_time = 1
 summary%time(CurTimeStep) = tt;
 
 summary%global_quantities%ip%value(CurTimeStep) = tpl
 summary%global_quantities%li%value(CurTimeStep) = uli
 summary%global_quantities%beta_pol%value(CurTimeStep) = betap
+summary%global_quantities%beta_tor%value(CurTimeStep) = betat
+
 summary%global_quantities%v_loop%value(CurTimeStep) = vloop
 summary%global_quantities%tau_energy%value(CurTimeStep) = tene
 summary%volume_average%n_e%value(CurTimeStep) = pec
@@ -520,9 +536,15 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n))
-  
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%r(ntet))
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%z(ntet))
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(ntet))
+    allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(ntet))
+
+
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(nz,nr))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(nz,nr))
     
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(nz))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(nr))
@@ -530,13 +552,6 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     
     allocate(equilibrium%vacuum_toroidal_field%b0(TimeSteps))
   
-
-    allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%r(nr))
-    allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%z(nr))
-
-    allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(nr))
-    allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(nr))
-
 ! Filling equilibrium 
 
     equilibrium%ids_properties%homogeneous_time = 1
@@ -546,7 +561,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%li_3 = uli
 	equilibrium%time_slice(CurTimeStep)%global_quantities%volume = v ![m3]
-	equilibrium%time_slice(CurTimeStep)%global_quantities%area = s_plasma ![m2]
+	equilibrium%time_slice(CurTimeStep)%global_quantities%area = parea ![m2]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%psi_axis= psi_ax ![Wb]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%psi_boundary = psi_bnd ![Wb]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%r = rmag ![m]
@@ -555,12 +570,22 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 	equilibrium%time_slice(CurTimeStep)%global_quantities%q_95 = q_95
 	equilibrium%time_slice(CurTimeStep)%global_quantities%w_mhd = wen2 ![J]
 
+        equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%r = rmajor
+        equilibrium%time_slice(CurTimeStep)%boundary%minor_radius = rminor
+        equilibrium%time_slice(CurTimeStep)%boundary%elongation = elong
+        equilibrium%time_slice(CurTimeStep)%boundary%triangularity = tri
+
         equilibrium%time_slice(CurTimeStep)%global_quantities%surface = ysbound_xx
         equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n) = ysbound_xx
 
 	equilibrium%vacuum_toroidal_field%r0 = rs0 ![m]
 	equilibrium%vacuum_toroidal_field%b0(CurTimeStep) = bt0 ![T]
     
+    equilibrium%time_slice(CurTimeStep)%boundary%outline%r(1:ntet) = xbound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%outline%z(1:ntet) = ybound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(1:ntet) = xbound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(1:ntet) = ybound(1:ntet)
+
     !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim1(1:n1)=x(1:n1) ![m]
     !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim2(1:n2)=y(1:n2) ![m]
 
@@ -578,6 +603,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     do i=1,nz
     do j=1,nr
       equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)=psi(j,i)
+      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(i,j)=curr_d(j,i)
     enddo
     enddo
     
@@ -678,12 +704,12 @@ allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
 !Transp3
 allocate(core_profiles%profiles_1d(1)%j_bootstrap(n))
 allocate(core_profiles%profiles_1d(1)%conductivity_parallel(n))
- core_profiles%profiles_1d(1)%j_bootstrap(1:n) = jbut(1:n)
+ core_profiles%profiles_1d(1)%j_bootstrap(1:n) = jbut(1:n)*1.d7
  core_profiles%profiles_1d(1)%conductivity_parallel(1:n) = sigk(1:n)
 
 !Transp4
-allocate(core_profiles%profiles_1d(1)%j_total(n))
- core_profiles%profiles_1d(1)%j_total(1:n) = aj0(1:n)
+allocate(core_profiles%profiles_1d(1)%j_non_inductive(n))
+ core_profiles%profiles_1d(1)%j_non_inductive(1:n) = aj0(1:n)*1.d7 + core_profiles%profiles_1d(1)%j_bootstrap(1:n)
 
 !Sources
 

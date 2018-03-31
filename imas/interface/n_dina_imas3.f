@@ -190,30 +190,35 @@ c ============ outputs ==============================================
 
       
 	subroutine dina_outp(n_xx,
-     * tpl_xx,uli_xx,v_xx,s_plasma_xx,psi_ax_xx,rmag_xx,zmag_xx,
+     * tpl_xx,uli_xx,v_xx,parea_xx,psi_ax_xx,rmag_xx,zmag_xx,
      * q_ax_xx,q_95_xx,rs0_xx,bt0_xx,wen2_xx,tt_xx,
      * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
-     * x_xx,y_xx,psi_xx,psi_bnd_xx,
+     * x_xx,y_xx,psi_xx,psi_bnd_xx,curr_d_xx,
+     * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
      * pd0_xx,pt0_xx,sigk_xx,jbut_xx,aj0_xx,qe0_xx,qq0_xx,
-     * betap_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,tene_xx,wfus_xx,emag_xx)
+     * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,
+     * tene_xx,wfus_xx,emag_xx)
 
 
 	include 'double.inc'
 	include 'new_com.inc'
+
+        common /c_imas_curr_d/curr_d(nr,nz)
 
 	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
 	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),jbut_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
      
-	dimension psi_xx(nr,nz)
+	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
+        dimension xbound_xx(*),ybound_xx(*)
 
 
       n_xx=n
 
 !	pi=3.14159
 	
-	tpl_xx=tpl*1000.
+	tpl_xx=tpl*1000.d0
 	
 !	print *,' n_xx tpl_xx=',n_xx,tpl_xx
 	
@@ -221,19 +226,20 @@ c ============ outputs ==============================================
 	
 	uli_xx=uli
 	v_xx=volume
-	s_plasma_xx=s_plasma
+	parea_xx=surface
 	psi_ax_xx=pmag*1.d-5*2.*pi
 	psi_bnd_xx=pbound*1.d-5*2.*pi
-	rmag_xx=rmag/100.
-	zmag_xx=zmag/100.
+	rmag_xx=rmag/100.d0
+	zmag_xx=zmag/100.d0
 	q_ax_xx=q(2)
         q_95_xx=q_95
-	rs0_xx=rs0/100.
-	bt0_xx=bt0/10.
+	rs0_xx=rs0/100.d0
+	bt0_xx=bt0/10.d0
 	wen2_xx=wen2*1.d6
-	tt_xx=tt/1000.
+	tt_xx=tt/1000.d0
 
         betap_xx = betj
+        betat_xx = bett
         tec_xx = tec
         tqc_xx = tqc
         pec_xx = pcch*1.d19
@@ -243,8 +249,16 @@ c ============ outputs ==============================================
 	tene_xx = tene
 	wfus_xx = w_fusion*1.d6
 	emag_xx = emag*1.d6
-	
-	write (*,*) 'dina_outp vloop, tene = ', vloop, tene
+
+        rmajor_xx = rout/100.d0
+        rminor_xx = eu/100.d0
+        elong_xx = elong
+        tri_xx = tri
+
+        do i=1,ntet
+           xbound_xx(i) = xbound(i)*1.d-2
+           ybound_xx(i) = ybound(i)*1.d-2
+        end do
 c=================================================
 
 	do i=1,n
@@ -253,7 +267,7 @@ c=================================================
 	   tq0_xx(i)=tq0(i)
 !	   pne_xx(i)=pne(i)*1.e19
 	   pne_xx(i)=pne(i)
-	   tok1_xx(i)=tok1(i)*1.e7
+	   tok1_xx(i)=tok1(i)*1.d7
 	   q_xx(i)=q(i)
 	end do
 	
@@ -270,17 +284,19 @@ c=================================================
 c=================================================
 
 	do i=1,nr
-	   x_xx(i)=x(i)/100.
+	   x_xx(i)=x(i)/100.d0
 	end do
 
 	do i=1,nz
-	   y_xx(i)=y(i)/100.
+	   y_xx(i)=y(i)/100.d0
 	end do
 
 
 	do i=1,nr
 	   do j=1,nz
-	      psi_xx(i,j)=psi(i,j)*1.e-5*2.*pi
+	      psi_xx(i,j)=psi(i,j)*1.d-5*2.*pi
+
+              curr_d_xx(i,j)=curr_d(i,j)
 	   end do
 	end do
 

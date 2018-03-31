@@ -23,6 +23,9 @@
 	common /c_data_in_time2/i_c_data,i_c_data1       
 
       common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
+      
+            common /c_imas_is/ih_imas
+
 !-----------------------------------  inputs---
 !     *  vchopper_x2,tpl_x2,tt_dw_x2)
 
@@ -34,6 +37,18 @@
 
       
       if(i_en.eq.1)then
+
+        open (unit=1,file='kpr.dat',form='formatted')
+        read (1,*)
+        read (1,*)kpr
+
+        if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
+        
+!              i_con=3
+
+        close ( unit=1)       
+
+
            open (unit=41,file='tt_kavin.dat',form='formatted') 
            read (41,*)
            read (41,*)tt_kavin,tt_dw
@@ -46,6 +61,24 @@
           read (40,*) 
           read (40,*)k_jetto
          close (40)
+         
+        if(kpr.eq.1)print *,'tt_kavin,tt_dw =',
+     *  tt_kavin,tt_dw
+
+        if(kpr.eq.1)print *,'k_jetto  ih_imas =',
+     *  k_jetto,ih_imas
+
+	  call read_data() 
+	  call ONE2()  
+
+      apr='+ai-' 
+!      if(kpr.eq.1)print 71,apr,(ai(i),i=1,n) 
+
+
+       if(k_jetto.eq.1.and.ih_imas.eq.0)then 
+        call prof_astra()
+        ih_imas=1
+       end if
 
       end if
 
@@ -60,7 +93,9 @@
         tt_dw_x2=c_input1(2)   
         
         if(kpr.eq.1)print *,'   tpl_x2==',tpl_x2 
-      
+
+ !           call prof_astra()
+
         do i=1,npf
         vchopper_x2(i)=c_input2(i)
         end do

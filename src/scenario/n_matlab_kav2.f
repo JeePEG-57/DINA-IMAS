@@ -952,11 +952,11 @@ c	   read(*,*)
 
 	if(kpr.eq.1)print *,' time_to time_back=',time_to,time_back
 
-	call wr_tabppf()
-        call wr_pf()
-        call wr_tcam()
-      call wr_rpp()
-      call wr_zpp()
+!!!	call wr_tabppf()
+!!!        call wr_pf()
+!!!        call wr_tcam()
+!!!      call wr_rpp()
+!!!      call wr_zpp()
 
           open (unit=40,file='elm.dat',form='formatted') 
           read (40,*) 
@@ -1348,7 +1348,7 @@ c----------
 	if(kpr.eq.1)print *,' END write_prof '
          call  write_surf()
 c         call  write_surf_eq()
-	 call write_tok()
+!!!	 call write_tok()
 ccc	 call write_separ_coor()
 ccc	 call write_separ_coor2()
 	if(kpr.eq.1)print *,' END write_surf '
@@ -1865,11 +1865,11 @@ ccc      call ppx_pffx_save(2)
 
 	if(it1.ne.0)go to 2000
 
-	call wr_tabppf()
-        call wr_pf()
-        call wr_tcam()
-      call wr_rpp()
-      call wr_zpp()
+!	call wr_tabppf()
+!        call wr_pf()
+!        call wr_tcam()
+!      call wr_rpp()
+!      call wr_zpp()
 
 	zvel=zvel_tran
 
@@ -2040,8 +2040,8 @@ c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c!!!!! Transfer VCHOPPER to VCHOPPER_DINA_order !!!!!!!!!!!!!!!!!!
 c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c**** pfc_new.dat and volt_new.dat files writing ***
-           call wr_tok_new()
-           call wr_volt_new()
+!           call wr_tok_new()
+!           call wr_volt_new()
 
 	call v_sec()
 
@@ -2193,8 +2193,8 @@ c*********************************************
 c!!!!! Transfer VCHOPPER to VCHOPPER_DINA_order !!!!!!!!!!!!!!!!!!
 c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c**** pfc_new.dat and volt_new.dat files writing ***
-           call wr_tok_new()
-           call wr_volt_new()
+!           call wr_tok_new()
+!           call wr_volt_new()
 
 	call v_sec()
 

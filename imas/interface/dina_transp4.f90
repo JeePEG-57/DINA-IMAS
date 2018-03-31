@@ -31,7 +31,7 @@ call ids_copy(core_profiles0,core_profiles)
 
 n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
 
-    	aj0=c_output1
+    	aj0=c_output1*1.d7
 
 !7000	format(1x,1pe14.7)
 
@@ -54,8 +54,8 @@ n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
 ! allocate(core_profiles%profiles_1d(1)%grid%rho_tor_norm(n))
 !  core_profiles%profiles_1d(1)%grid%rho_tor_norm(1:n) = ai(1:n)
 
-allocate(core_profiles%profiles_1d(1)%j_total(n))
- core_profiles%profiles_1d(1)%j_total(1:n) = aj0(1:n)
+allocate(core_profiles%profiles_1d(1)%j_non_inductive(n))
+ core_profiles%profiles_1d(1)%j_non_inductive(1:n) = aj0(1:n) + core_profiles%profiles_1d(1)%j_bootstrap(1:n)
 
 
 

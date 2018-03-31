@@ -1,7 +1,7 @@
 function AddPulseSchedule(Shot, Run, Occurence)
 
 
-S = load('../../machines/iter/ITER_7.5MA/ITER.mat');
+S = load('../../machines/iter/JINTRAC_case1/ITER.mat');
 
 
 for i=1:length(S.ITER.files)

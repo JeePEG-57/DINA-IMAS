@@ -1,4 +1,5 @@
 subroutine dina_put_slice( pf_active, pf_passive , equilibrium, core_profiles, &
+    & core_sources, core_transport, bndcond, summary, &
     & pulse, run, iloop, trig)
 
 
@@ -11,6 +12,11 @@ type (ids_equilibrium) :: equilibrium
 type (ids_pf_active)   :: pf_active
 type (ids_pf_passive)   :: pf_passive
 type (ids_core_profiles)   :: core_profiles
+type (ids_core_transport)   :: core_transport
+type (ids_core_sources)   :: core_sources
+type (ids_transport_solver_numerics) :: bndcond
+type (ids_summary) :: summary
+
 
 integer :: pulse, run, iloop, trig
 
@@ -42,6 +48,11 @@ if (iloop == 1) then
 
   call ids_put(idx,"equilibrium",equilibrium)
   call ids_put(idx,"core_profiles",core_profiles)
+  call ids_put(idx,"core_sources",core_sources)
+  call ids_put(idx,"core_transport",core_transport)
+
+  call ids_put(idx,"transport_solver_numerics",bndcond)
+  call ids_put(idx,"summary",summary)
 
   write(*,*)  'Pulse put!'
 
@@ -62,6 +73,18 @@ else
 
   write(*,*)  'Put core_profiles'
   call ids_put_slice(idx,"core_profiles",core_profiles)
+
+  write(*,*)  'Put core_sources'
+  call ids_put_slice(idx,"core_sources",core_sources)
+
+  write(*,*)  'Put core_transport'
+  call ids_put_slice(idx,"core_transport",core_transport)
+
+  write(*,*)  'Put transport_solver_numerics'
+  call ids_put_slice(idx,"transport_solver_numerics",bndcond)
+
+  write(*,*)  'Put summary'
+  call ids_put_slice(idx,"summary",summary)
 
   write(*,*)  'Slices put!'
 

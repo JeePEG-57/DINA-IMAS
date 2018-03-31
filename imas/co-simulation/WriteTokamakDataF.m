@@ -17,7 +17,7 @@ if length(varargin) < 1
     %cmd = 'echo $KEPLER'; [r,s] = system(cmd); s(s==10)=[]; s(s==13)=[];  
     FilesDir = getenv('KEPLER');
     if isempty(FilesDir)
-        FilesDir = [getenv('HOME') '/kepler'];
+        FilesDir = [getenv('KEPLER')];
     end
 else
     FilesDir = varargin{1};
