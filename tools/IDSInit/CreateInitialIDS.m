@@ -1,4 +1,4 @@
-function CreateInitialIDS(initFile)
+function CreateInitialIDS(varargin)
 
 if nargin > 0
     initFile = varargin{1};
