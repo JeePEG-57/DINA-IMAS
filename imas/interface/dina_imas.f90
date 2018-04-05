@@ -275,7 +275,14 @@ call write_cputime(0.d0, 0.d0, 1)
 first_call = first_call+1 ! cancel the initialisation for the next call
 
 !    kpr=1
-    ih_imas=1
+ 		 open (unit=40,file='k_jetto.dat',form='formatted') 
+          read (40,*) 
+          read (40,*)ih_imas
+         close (40)
+         
+        print *,'from k_jetto.dat  ih_imas =',ih_imas
+
+!    ih_imas=1
     if(ih_imas.eq.1)then
 	call ids_prof_jetto()
     end if
@@ -306,9 +313,9 @@ if (associated(bndcond_in%profiles_1d)) then
 end if
 
 !Transp2
- pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)
- pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)
- pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)
+ pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)*1.d-19
+ pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)*1.d-19
+ pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)*1.d-19
 !Transp3
  jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)*1.d-7
  sigk(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)

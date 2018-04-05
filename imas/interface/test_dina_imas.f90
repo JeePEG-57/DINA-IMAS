@@ -61,11 +61,11 @@ real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
 integer :: pulse=170, run=6, prescribedpulse=170, prescribedrun=1
+real (ids_real) :: StopTime = 750.d0
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
-real (ids_real) :: StopTime = 700.d0
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
 

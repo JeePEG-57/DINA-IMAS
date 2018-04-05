@@ -99,6 +99,13 @@ c-------
       psi8(i)=(dm0(i)-dm0(i-1))/ha(i)
 	end do
 
+	i=2
+	dh1_i=2.*ha(i)/(2.*ha(i)+ha(i+1))
+
+	psi8(2)=0.5*dh1_i*psi8(3)
+
+      if(kpr.eq.1)print *,' psi8==',psi8(2)
+
       DO 31 I=2,N
       AI(I)=0.5*(A(I)+A(I-1))
 	ha2(i-1)=ai(i)-ai(i-1)
@@ -131,6 +138,8 @@ c-------
       if(kpr.eq.1)print 71,apr,(fasp(i),i=1,nn2) 
       
       end if
+
+ 
       
       DO I=1,n
     	qde0(i)=c_input1(i)

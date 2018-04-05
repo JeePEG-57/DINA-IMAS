@@ -69,7 +69,7 @@ n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
 
 !Electrons
 allocate(core_profiles%profiles_1d(1)%electrons%density(n))
- core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)
+ core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)*1.d19
 
 !if (.not. allocated(core_profiles%profiles_1d(1)%ion)) then
    allocate(core_profiles%profiles_1d(1)%ion(2))
@@ -84,7 +84,7 @@ allocate(core_profiles%profiles_1d(1)%ion(1)%element(1))
 ! if (.not. allocated(core_profiles%profiles_1d(1)%ion(1)%n_i)) then
 allocate(core_profiles%profiles_1d(1)%ion(1)%density(n))
 ! end if
- core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)
+ core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)*1.d19
 
 ! Tritium
 allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
@@ -93,7 +93,7 @@ allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
  core_profiles%profiles_1d(1)%ion(2)%element(1)%z_n = 1
 !core_profiles%profiles_1d(1)%ion(2)%label = 'T+'
 allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
- core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)
+ core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)*1.d19
 
 
 return
