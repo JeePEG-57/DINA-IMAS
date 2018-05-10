@@ -195,7 +195,7 @@ c ============ outputs ==============================================
      * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
      * x_xx,y_xx,psi_xx,psi_bnd_xx,curr_d_xx,
      * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
-     * pd0_xx,pt0_xx,sigk_xx,jbut_xx,aj0_xx,qe0_xx,qq0_xx,
+     * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,
      * tene_xx,wfus_xx,emag_xx)
 
@@ -207,7 +207,7 @@ c ============ outputs ==============================================
 
 	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
-	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),jbut_xx(*),
+	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
      
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
@@ -275,7 +275,7 @@ c=================================================
 	   pd0_xx(i)=pd0(i)
 	   pt0_xx(i)=pt0(i)
 	   sigk_xx(i)=sigk(i)
-	   jbut_xx(i)=ajb(i)
+	   ajb_xx(i)=ajb(i)
 	   aj0_xx(i)=aj0(i)
 	   qe0_xx(i)=qe0(i)
 	   qq0_xx(i)=qq0(i)

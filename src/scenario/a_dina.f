@@ -120,19 +120,19 @@
         open (unit=1,file='tran_times.dat',form='formatted')
         read (1,*)
         read (1,*)tt_dina
-        read (1,*)
-        read (1,*)t_ret
+!        read (1,*)
+!        read (1,*)t_ret
         close ( unit=1)       
 
       end if
       
 !      tt_dina=1352.
 
-      print *,' tt== tt_dina==',tt,tt_dina
+      if(kpr.eq.1)print *,' tt== tt_dina==',tt,tt_dina
 
 
 
-      if(tt.gt.tt_dina)then
+      if(tt.gt.tt_dina.and.k_jetto.eq.0)then
 !      if(tt.gt.2250.)then
 !      if(tt.gt.5250.)then
       
@@ -247,7 +247,7 @@
 
  	end if
 
-      print *,' tt==tt_kavin=',tt,tt_kavin
+      if(kpr.eq.1)print *,' tt==tt_kavin=',tt,tt_kavin
 
       
       if(tt.le.tt_kavin)then

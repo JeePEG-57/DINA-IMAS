@@ -1,12 +1,12 @@
 <org.iter.imas.fc2k.ActorGenerator>
-  <version>4.1.0</version>
+  <version>4.2.3</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>../interface/dina_transp1.a</fFile>
+  <fFile>../interface/dina_transp_energy.a</fFile>
   <mainLibraryOptim></mainLibraryOptim>
   <HasOptim>false</HasOptim>
-  <subrt>dina_transp1</subrt>
+  <subrt>dina_transp_energy</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
     <vector>
@@ -79,13 +79,11 @@
       </default>
     </org.iter.imas.fc2k.TupleP>
   </tupleParams>
-  <actor>dinatransp1</actor>
+  <actor>dinatransp_energy</actor>
   <actorVersion></actorVersion>
   <actorDoc></actorDoc>
-  <actorFolder>org/iter/imas/dinatransp1</actorFolder>
-  <ualFolder>$IMAS_PREFIX</ualFolder>
+  <actorFolder>org/iter/imas/dinatransp_energy</actorFolder>
   <semantic>ITER</semantic>
-  <keplerFolder>$KEPLER</keplerFolder>
   <compiler>gfortran</compiler>
   <libraries/>
   <systemLibraries/>

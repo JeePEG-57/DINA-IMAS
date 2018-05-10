@@ -228,7 +228,7 @@ c---
 
 	call den_read()
       call dens_prof()
-         if(k_dens_ext.eq.1)call dens_corr()
+      if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 	call bet_li_dat()
 
 !	call read_data2()
@@ -274,7 +274,7 @@ c	call shape_d3d()
       
 
 	if(k_ener.eq.1)call dens_prog()
-      if(k_dens_ext.eq.1)call dens_corr()
+      if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 	call pp_calc()
      
 	if(k_ener.eq.1)then
@@ -284,13 +284,13 @@ c	call shape_d3d()
 !       call solpsz()
       end if
 	CALL ENERGY(N)
-	end if
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
       if(k_dens_ext.eq.1)call dens_corr()
+	end if
       
-	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
+	if(k_ener.ne.1)call enit(n)
 !      if(k_ener.eq.0)call prof_astra_hl()
 	call pp_calc()
 
@@ -821,7 +821,7 @@ c  toroidal coordinates...
 c**** pcchp calculations with regards Greenwald limit
         call vic_dens()
       
-         if(k_dens_ext.eq.1)call dens_corr()
+         if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 
 c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 !!!        call vic_t_edge()
@@ -843,7 +843,7 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
        call gamma_z4_read()
 
 	if(k_ener.eq.1)call dens_prog()
-      if(k_dens_ext.eq.1)call dens_corr()
+      if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
       call pp_calc()
 
 
@@ -854,14 +854,14 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 !       call solpsz()
       end if
 	CALL ENERGY(N)
-	end if
-	
 	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
       if(k_dens_ext.eq.1)call dens_corr()
+	end if
+	
 
-	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
+	if(k_ener.ne.1)call enit(n)
 !      if(k_ener.eq.0)call prof_astra_hl()
 	call pp_calc()
 
@@ -1227,7 +1227,7 @@ c$
 	call den_read()
 c**** pcchp calculations with regards Greenwald limit
         call vic_dens()
-         if(k_dens_ext.eq.1)call dens_corr()
+         if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 c*** Input of Zeff waveform and ***
         if(k_ener.eq.1)call vic_zeff_read()
 c$
@@ -1905,7 +1905,7 @@ c----------------------------
        call gamma_z4_read()
 
 	 call dens_prog()
-         if(k_dens_ext.eq.1)call dens_corr()
+         if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 
        end if
       
@@ -1931,12 +1931,13 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 !       call solpsz()
       end if
 	CALL ENERGY(N)
-	end if
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
-	if(k_ener.ne.1)call enit(n)
-      if(k_ener.eq.0)call prof_astra()
-!      if(k_ener.eq.0)call prof_astra_hl()
       if(k_dens_ext.eq.1)call dens_corr()
+	end if
+
+      if(k_ener.eq.0)call prof_astra()
+	if(k_ener.ne.1)call enit(n)
+!      if(k_ener.eq.0)call prof_astra_hl()
 
 c	if(q(2).le.0.7)call zyb(n,ires)
 c	if(q(2).le.0.8)call zyb(n,ires)
@@ -1980,10 +1981,11 @@ c	   call zyb(n,ires,q_test)
 
 c	      if(kpr.eq.1)print*,(q(ii),ii=1,n)
 c	      read(*,*)
+      if(k_ener.eq.1)then
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
       if(k_dens_ext.eq.1)call dens_corr()
-
-
+      end if
+      
 	   call pp_calc()
 	   call pff_calc()
 

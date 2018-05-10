@@ -12,7 +12,11 @@ machines/iter/tran_times.dat
 tools/IDS_Coordinates.mat
 tools/mexutilids.mod
 tools/mexLoadIDS.mex*
-imas/fc2k/*.xml
+imas/fc2k/dinaimas21.xml
+imas/fc2k/dinacontr21.xml
+imas/fc2k/dinaputslice21.xml
+imas/fc2k/solps_imas.xml
+imas/fc2k/dinasdn21.xml
 !imas/fc2k/*-template.xml
 !imas/fc2k/externaltransp.xml
 imas/fc2k/toto
@@ -22,4 +26,5 @@ imas/interface/test_wr_prof
 imas/jetto/JINTRAC_IDS/jetto_prof_to_ids
 imas/jetto/JINTRAC_IDS/jetto_prof_from_ids
 imas/kepler_wf/log*
+*/temp
 

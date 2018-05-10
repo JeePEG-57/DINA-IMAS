@@ -1,4 +1,4 @@
-subroutine dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
+subroutine dina_transp_energy(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
 
 use ids_schemas
 use ids_routines

@@ -1,5 +1,5 @@
 % The script writes tokamak data files from one *.mat file.  
-function [MatFile] = WriteTokamakDataF(varargin)
+function [MatFile] = WriteTokamakData(varargin)
 % First argument is directory to unpac files
 % Second argument is mat-file name
 

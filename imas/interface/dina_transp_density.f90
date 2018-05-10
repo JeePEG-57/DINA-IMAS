@@ -1,4 +1,4 @@
-subroutine dina_transp2(equilibrium0, core_profiles0, core_profiles)
+subroutine dina_transp_density(equilibrium0, core_profiles0, core_profiles)
 
 use ids_schemas
 use ids_routines

@@ -1,5 +1,5 @@
 % The script reads tokamak data files and save to one *.mat file
-function [MatFile] = ReadTokamakDataF(FilesDir,varargin)
+function [MatFile] = ReadTokamakData(FilesDir,varargin)
 % First argument is directory to collect included files
 % Second argument is mat-file name
 

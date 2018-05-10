@@ -1,4 +1,4 @@
-subroutine dina_transp5(equilibrium0, core_sources0, core_sources)
+subroutine dina_transp_heatsrc(equilibrium0, core_sources0, core_sources)
 
 use ids_schemas
 use ids_routines

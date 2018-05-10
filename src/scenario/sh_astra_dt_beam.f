@@ -25,11 +25,13 @@
       
       if(i_en.eq.1)then
 
-          open (unit=40,file='elm.dat',form='formatted') 
+          open (unit=40,file='jetto_time.dat',form='formatted') 
           read (40,*) 
           read (40,*)tt_elm
           read (40,*) 
 
+      if(kpr.eq.1)print *,'jetto_time is read=='
+      
       if(tt_elm. le.0.d0)then
       tt_elm=dabs(tt_elm)
       k_elm=1
@@ -197,6 +199,7 @@ ccccccc      coef_astra=1.28
       
       common /c_imas_ajb/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
       common /c_imas_ajb1/nn_b,n_tb
+
       
       common /c_imas_is/ih_imas
       
