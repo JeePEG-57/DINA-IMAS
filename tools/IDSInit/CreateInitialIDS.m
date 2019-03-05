@@ -16,9 +16,8 @@ status
 
 result
 
-AddPFGeometry(170, 1, 0);
 AddPulseSchedule(170, 1, 0, initFile);
-
+AddPFGeometry(170, 1, 0);
 
 WriteTokamakData(getenv('KEPLER'), initFile);
 
