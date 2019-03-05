@@ -64,7 +64,7 @@ integer :: pulse=170, run=6, prescribedpulse=170, prescribedrun=1
 real (ids_real) :: StopTime = 750.d0
 
 ! define local variables
-integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
+integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, idec, imax
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
@@ -84,6 +84,19 @@ print *,' Enter run number'
 !read (*,*)prescribedrun
 prescribedrun=1
 print *,' run number',prescribedrun
+
+print *,' Enter maximum steps number'
+!read (*,*)imax
+imax=1000000
+print *,' imax',imax
+
+print *,' Enter decimation for filling the database'
+!read (*,*)idec
+idec=10
+!idec=1
+print *,' idec',idec
+
+
 
 write(*,*) 'The file'
 
@@ -106,7 +119,7 @@ call imas_close(idx0)
 arr_in1(1:31)=1
 arr_out1(1:31)=0
 
-do iloop=1,1000000
+do iloop=1,imax
 
 write(*,*) 'call DINA_IMAS i =',iloop
 
@@ -163,11 +176,16 @@ call solps_imas(equilibrium, core_transport, bndcond)
 ! 
 ! endif
 
+if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
+
+write(*,*) 'Put ids to database, iloop = ', iloop
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
  & core_sources, core_transport, bndcond, summary, &
 & pulse, run, iloop, err)
 
+
+endif
 
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)

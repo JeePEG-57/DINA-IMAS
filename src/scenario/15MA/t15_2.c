@@ -10793,7 +10793,7 @@ void t15_2_terminate(void)
  *
  * [EOF]
  */
-void t15_2_output(int  nbrInputArgs, double* input,
+void t15_2_output(int  * nbrInputArgs, double* input,
 int *nbrOutputArgs, double* output) 
 {
 	 int i, k, ki;
@@ -10812,7 +10812,7 @@ int *nbrOutputArgs, double* output)
 	  k=k+1;
     }
     ki=k;
-if( kpr == 1){
+if( kpr == -1){
 	printf("k  ki %d %d  \n",k,ki);}
 
 	
@@ -10822,7 +10822,7 @@ if( kpr == 1){
     }
     ki=k;
 
-if( kpr == 1){
+if( kpr == -1){
 		  printf("k  ki %d %d  \n",k,ki);
 
 	  printf("nbrInputArgs "

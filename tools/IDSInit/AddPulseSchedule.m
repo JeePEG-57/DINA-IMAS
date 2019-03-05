@@ -107,94 +107,12 @@ pulse_schedule.ec.antenna{3}.power.reference.time = time;
 pulse_schedule.ec.antenna{3}.power.reference.data = data_q; % EQ, W
 
 
-%% Plasma density for Ip > 1.5 MA
-a = textscan(dens.data{2},'%d');
-nt = a{1}(1);
-time = zeros(1,nt);
-data = zeros(1,nt);
-for i=1:nt
-    a = textscan(dens.data{3+i},'%f');
-    time(i) = a{1}(1); 
-    data(i) = a{1}(2); % 
-end
-pulse_schedule.density_control.valve{1}.flow_rate.reference.time = time;
-pulse_schedule.density_control.valve{1}.flow_rate.reference.data = data;
-
-
-
-%% Be relative density for Ip < 1.5 MA
-a = textscan(gamma_z.data{2},'%d');
-nt = a{1}(1);
-time = zeros(1,nt);
-data = zeros(1,nt);
-for i=1:nt
-    a = textscan(gamma_z.data{3+i},'%f');
-    time(i) = a{1}(1); 
-    data(i) = a{1}(2); % 
-end
-pulse_schedule.density_control.valve{2}.flow_rate.reference.time = time;
-pulse_schedule.density_control.valve{2}.flow_rate.reference.data = data;
-
-
-%% Be relative density for Ip > 1.5 MA
-a = textscan(gamma_z1.data{2},'%d');
-nt = a{1}(1);
-time = zeros(1,nt);
-data = zeros(1,nt);
-for i=1:nt
-    a = textscan(gamma_z1.data{3+i},'%f');
-    time(i) = a{1}(1); 
-    data(i) = a{1}(2); % 
-end
-pulse_schedule.density_control.valve{3}.flow_rate.reference.time = time;
-pulse_schedule.density_control.valve{3}.flow_rate.reference.data = data;
-
-
-%% W relative density for Ip > 1.5 MA
-a = textscan(gamma_z2.data{2},'%d');
-nt = a{1}(1);
-time = zeros(1,nt);
-data = zeros(1,nt);
-for i=1:nt
-    a = textscan(gamma_z2.data{3+i},'%f');
-    time(i) = a{1}(1); 
-    data(i) = a{1}(2); % 
-end
-pulse_schedule.density_control.valve{4}.flow_rate.reference.time = time;
-pulse_schedule.density_control.valve{4}.flow_rate.reference.data = data;
-
-
-%% Ar relative density for Ip > 1.5 MA
-a = textscan(gamma_z3.data{2},'%d');
-nt = a{1}(1);
-time = zeros(1,nt);
-data = zeros(1,nt);
-for i=1:nt
-    a = textscan(gamma_z3.data{3+i},'%f');
-    time(i) = a{1}(1); 
-    data(i) = a{1}(2); % 
-end
-pulse_schedule.density_control.valve{5}.flow_rate.reference.time = time;
-pulse_schedule.density_control.valve{5}.flow_rate.reference.data = data;
-
-
-%% Ne relative density for Ip > 1.5 MA
-a = textscan(gamma_z4.data{2},'%d');
-nt = a{1}(1);
-time = zeros(1,nt);
-data = zeros(1,nt);
-for i=1:nt
-    a = textscan(gamma_z4.data{3+i},'%f');
-    time(i) = a{1}(1); 
-    data(i) = a{1}(2); % 
-end
-pulse_schedule.density_control.valve{6}.flow_rate.reference.time = time;
-pulse_schedule.density_control.valve{6}.flow_rate.reference.data = data;
-
-
-%% Deuterium density for Ip < 1.5 MA
+%% Deuterium density
+iv = 7;
 a = textscan(n_d.data{2},'%d');
 nt = a{1}(1);
+n_z = 1;
+n_a = 2;
 time = zeros(1,nt);
 data = zeros(1,nt);
 for i=1:nt
@@ -202,9 +120,118 @@ for i=1:nt
     time(i) = a{1}(1); 
     data(i) = a{1}(2); % 
 end
-pulse_schedule.density_control.valve{7}.flow_rate.reference.time = time;
-pulse_schedule.density_control.valve{7}.flow_rate.reference.data = data;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.time = time;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.data = data;
 
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.a = n_a;
+
+%% Tritium density
+iv = 1;
+a = textscan(dens.data{2},'%d');
+nt = a{1}(1);
+n_z = 1;
+n_a = 3;
+time = zeros(1,nt);
+data = zeros(1,nt);
+for i=1:nt
+    a = textscan(dens.data{3+i},'%f');
+    time(i) = a{1}(1); 
+    data(i) = a{1}(2); % 
+end
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.time = time;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.data = data;
+
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.a = n_a;
+
+
+%% Be relative density for Ip < 1.5 MA
+iv = 2;
+a = textscan(gamma_z.data{2},'%d');
+nt = a{1}(1);
+n_z = a{1}(2);
+time = zeros(1,nt);
+data = zeros(1,nt);
+for i=1:nt
+    a = textscan(gamma_z.data{3+i},'%f');
+    time(i) = a{1}(1); 
+    data(i) = a{1}(2); % 
+end
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.time = time;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.data = data;
+
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
+
+%% Be relative density for Ip > 1.5 MA
+iv = 3;
+a = textscan(gamma_z1.data{2},'%d');
+nt = a{1}(1);
+n_z = a{1}(2);
+time = zeros(1,nt);
+data = zeros(1,nt);
+for i=1:nt
+    a = textscan(gamma_z1.data{3+i},'%f');
+    time(i) = a{1}(1); 
+    data(i) = a{1}(2); % 
+end
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.time = time;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.data = data;
+
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
+
+%% W relative density for Ip > 1.5 MA
+iv = 4;
+a = textscan(gamma_z2.data{2},'%d');
+nt = a{1}(1);
+n_z = a{1}(2);
+time = zeros(1,nt);
+data = zeros(1,nt);
+for i=1:nt
+    a = textscan(gamma_z2.data{3+i},'%f');
+    time(i) = a{1}(1); 
+    data(i) = a{1}(2); % 
+end
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.time = time;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.data = data;
+
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
+
+%% Ar relative density for Ip > 1.5 MA
+iv = 5;
+a = textscan(gamma_z3.data{2},'%d');
+nt = a{1}(1);
+n_z = a{1}(2);
+time = zeros(1,nt);
+data = zeros(1,nt);
+for i=1:nt
+    a = textscan(gamma_z3.data{3+i},'%f');
+    time(i) = a{1}(1); 
+    data(i) = a{1}(2); % 
+end
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.time = time;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.data = data;
+
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
+
+%% Ne relative density for Ip > 1.5 MA
+iv = 6;
+a = textscan(gamma_z4.data{2},'%d');
+nt = a{1}(1);
+n_z = a{1}(2);
+time = zeros(1,nt);
+data = zeros(1,nt);
+for i=1:nt
+    a = textscan(gamma_z4.data{3+i},'%f');
+    time(i) = a{1}(1); 
+    data(i) = a{1}(2); % 
+end
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.time = time;
+pulse_schedule.density_control.valve{iv}.flow_rate.reference.data = data;
+
+pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
+
+%%
 
 disp('Saving IDS...');
 

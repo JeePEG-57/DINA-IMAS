@@ -125,7 +125,9 @@ call system(" ls -ll p_data1 ")
 call system(" pwd")
 
 
+
 call schedulefiles(pulse_schedule,equilibrium0)
+print *,'schedulefiles written!'
 
 
 nact=size(em_coupling0%mutual_grid_active,2)
@@ -600,10 +602,10 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nr)=x(1:nr)
 
 
-    call write_graf_imas0(nr,nz,ke, &
-     &	0.01d0,0.01d0,tt,&
-     &  psi,x,y,xu,yu,&
-     &  psi_ax,psi_bnd,psi_bnd,0.d0,0.d0) 
+  !  call write_graf_imas0(nr,nz,ke, &
+  !   &	0.01d0,0.01d0,tt,&
+  !   &  psi,x,y,xu,yu,&
+  !   &  psi_ax,psi_bnd,psi_bnd,0.d0,0.d0) 
 
 
 
@@ -950,7 +952,7 @@ use ids_routines
 implicit none
 type (ids_equilibrium) :: equil
 type (ids_pulse_schedule) :: schedule
-integer :: i,nt,io
+integer :: i,nt,io,iv, n_z
 real(8) :: t, v, u
 
 integer :: n1,n2,n3,n4,n5,n6,n7,n8
@@ -1002,7 +1004,7 @@ close(44)
 open(unit=44,file='n_d.dat',action='write',access='sequential')
 nt=size(schedule%density_control%valve(7)%flow_rate%reference%time)
 write(44,*) 'Time_points  t_bar'
-write(44,*) nt, 0.003
+write(44,*) nt
 write(44,*) 'Time  Density'
 do i=1,nt
 t = schedule%density_control%valve(7)%flow_rate%reference%time(i)
@@ -1012,66 +1014,76 @@ enddo
 close(44)
 
 
+iv = 2
 open(unit=44,file='gamma_z.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(2)%flow_rate%reference%time)
+nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
+n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
 write(44,*) 'Time_points  t_bar'
-write(44,*) nt, 0.003
+write(44,*) nt, n_z
 write(44,*) 'Time  Density'
 do i=1,nt
-t = schedule%density_control%valve(2)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(2)%flow_rate%reference%data(i)
+t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
 write(44,*) t, v
 enddo
 close(44)
 
 
+iv = 3
 open(unit=44,file='gamma_z1.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(3)%flow_rate%reference%time)
+nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
+n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
 write(44,*) 'Time_points  t_bar'
-write(44,*) nt, 0.003
+write(44,*) nt, n_z
 write(44,*) 'Time  Density'
 do i=1,nt
-t = schedule%density_control%valve(3)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(3)%flow_rate%reference%data(i)
+t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
 write(44,*) t, v
 enddo
 close(44)
 
 
+iv = 4
 open(unit=44,file='gamma_z2.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(4)%flow_rate%reference%time)
+nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
+n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
 write(44,*) 'Time_points  t_bar'
-write(44,*) nt, 0.003
+write(44,*) nt, n_z
 write(44,*) 'Time  Density'
 do i=1,nt
-t = schedule%density_control%valve(4)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(4)%flow_rate%reference%data(i)
+t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
 write(44,*) t, v
 enddo
 close(44)
 
 
+iv = 5
 open(unit=44,file='gamma_z3.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(5)%flow_rate%reference%time)
+nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
+n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
 write(44,*) 'Time_points  t_bar'
-write(44,*) nt, 0.003
+write(44,*) nt, n_z
 write(44,*) 'Time  Density'
 do i=1,nt
-t = schedule%density_control%valve(5)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(5)%flow_rate%reference%data(i)
+t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
 write(44,*) t, v
 enddo
 close(44)
 
 
+iv = 6
 open(unit=44,file='gamma_z4.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(6)%flow_rate%reference%time)
+nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
+n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
 write(44,*) 'Time_points  t_bar'
-write(44,*) nt, 0.003
+write(44,*) nt, n_z
 write(44,*) 'Time  Density'
 do i=1,nt
-t = schedule%density_control%valve(6)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(6)%flow_rate%reference%data(i)
+t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
+v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
 write(44,*) t, v
 enddo
 close(44)
