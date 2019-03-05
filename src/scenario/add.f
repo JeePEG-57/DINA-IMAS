@@ -11,7 +11,8 @@
 	subroutine  disp(y11,x11,mcurve,x_0)
 	return
 	end
-     	 
+     
+		 
 	subroutine  redraw
 	return
 	end
@@ -2118,7 +2119,7 @@ c  saving for the next time_step...
 c	pd0(i)=pd0_b+(1.-psix**pw_p)*(pd0_a-pd0_b)
 c	pt0(i)=pt0_b+(1.-psix**pw_p)*(pt0_a-pt0_b)
         ppp=1.
-	pd0(i)=pd0_b+((1.-psix**pw_p))**ppp*(pd0_a-pd0_b)
+!	pd0(i)=pd0_b+((1.-psix**pw_p))**ppp*(pd0_a-pd0_b)
 	pt0(i)=pt0_b+((1.-psix**pw_p))**ppp*(pt0_a-pt0_b)
 	pne(i)=pd0(i)+pt0(i)
 	end do
@@ -2134,3 +2135,52 @@ c	pt0(i)=pt0_b+(1.-psix**pw_p)*(pt0_a-pt0_b)
 
 	return
 	end
+	subroutine zz_filter(wen2_xx)
+	include 'double.inc'
+	include 'new_com.inc'
+
+	call zz_filter_c(
+     *  wen2_xx,ntay,tay,tt,kpr)
+
+	return
+	end
+
+	subroutine zz_filter_c(
+     *  wen2,ntay,tay,tt,kpr)
+	include 'double.inc'
+
+
+	if(time.lt.tt-0.5*tay)then
+c  saving for the next time_step...
+	e1 = f9a
+	v1 = f9af
+	time1 = time
+	end if
+
+
+	time=tt
+
+	f9a=wen2
+
+        i_en=i_en+1
+	if(i_en.eq.1)then
+           e1 = f9a
+           f9af=e1
+           v1 = f9af
+           time1 = time
+        end if
+
+	taup=5.*tay
+
+	qqp = 0.5 * (time - time1)/taup
+
+	f9af =(qqp * (f9a + e1) - (qqp - 1.0) * v1) / (qqp + 1.0)
+
+
+	wen2=f9af
+
+
+	return
+	end
+
+

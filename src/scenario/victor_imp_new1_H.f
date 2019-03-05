@@ -159,25 +159,6 @@ c
 
 	 end do
 c*****************************
-	if(i_sh.eq.1)then
-           open (unit=41,file='g_zeff.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)g_zeff 
-           read (41,*) 
-           read (41,*)d_zeff_0,d_zeff_sof,pcch_0
-c*** pcch_0 is density value when we want to have zeff=1+d_zeff_0 
-           close (41)
-           if(g_zeff.gt.0.)then
-              zeff_a=1.+d_zeff_0
-              zeff_b=zeff_a
-           end if
-        end if
-        if(g_zeff.gt.0..and.ntay.gt.2)then
-c!!!           if(ntay.eq.3)pcch_0=pcchp
-           zeff_a=1.+d_zeff_sof-(d_zeff_sof-d_zeff_0)*(pcch_0/pcchp)**2.6
-           zeff_b=zeff_a
-        end if
-c
         if(kpr.eq.1)print *,'from zeff_read zeff_a zeff_b ntay',
      *        zeff_a,zeff_b,ntay
         if(kpr.eq.1)print*,'pcch_0 pcch pcchp',pcch_0,pcch,pcchp
@@ -223,38 +204,21 @@ c=================================
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='g_dens.dat',form='formatted') 
-           read (41,*) 
-           read (41,*) 
-           read (41,*)g_dens 
-           read (41,*) 
-           read (41,*)pcch0,tpl_ch,pcchk 
-           close (41)
-c----------------------------
            open (unit=40,file='dt_term.dat',form='formatted') 
            read (40,*) 
            read (40,*)dt,dt_1
            close (40)
 
-        end if
-        if(g_dens.gt.0.)pcchp=g_dens*tpl*100./pi/eu**2
+           open (unit=40,file='pcchp_end.dat',form='formatted') 
+           read (40,*) 
+           read (40,*)pcchp_end
+           close (40)
 
-        if(g_dens.gt.1.)then           
-           pcchp=pcch0
-           if(tpl.ge.tpl_ch)then
-              i_pcch=i_pcch+1
-              if(i_pcch.eq.1)tt0=tt
-              pcchp=(pcchk-pcch0)*(tt-tt0)/(t_end-tt0)+pcch0
-              if(pcchp.ge.pcchk)pcchp=pcchk
-              if(kpr.eq.1)print*,'tt tt0 t_end',tt,tt0,t_end
-              if(kpr.eq.1)print*,'pcchp tpl tpl_ch',pcchp,tpl,tpl_ch
-c              pause 'from vic_dens'
-           end if
         end if
-
-c	if(ntay.gt.30.and.tt.gt.tt_dw+4.e3.and.key_gamma.eq.0)then
 
 c******* H to L at tt_dw time moment!!!!
+	if(kpr.eq.1)print*,'tt dt_term_h key_gamma',tt,dt_term_h,key_gamma
+	 
 	if(dt_term_h.lt.1.e-5)then
 
 	if(ntay.gt.30.and.tt.gt.tt_dw.and.key_gamma.eq.0)then
@@ -263,9 +227,10 @@ c******* H to L at tt_dw time moment!!!!
 	end if
 	if(key_gamma.eq.1.and.tt.le.tt+dt_1)then
 cc	   pcchp=pcchp_help-(pcchp_help-4.)*(tt-tt_dw)/dt_1
-	   pcchp=pcchp_help-(pcchp_help-1.)*(tt-tt_dw)/dt_1
+ccc      pcchp=pcchp_help-(pcchp_help-1.)*(tt-tt_dw)/dt_1
+	   pcchp=pcchp_help-(pcchp_help-pcchp_end)*(tt-tt_dw)/dt_1
 
-	if(kpr.eq.1)print*,' pcchp_help pcchp',pcchp_help,pcchp
+	if(kpr.eq.1)print*,'pcchp_help pcchp pcchp_end',pcchp_help,pcchp_end
 
 	end if
 	if(tt.gt.tt_dw+dt_1.and.key_gamma.eq.1)then
@@ -2701,4 +2666,147 @@ c
       END
 
 
+
+        subroutine vic_dens_dt()
+	include 'double.inc'
+	include 'new_com.inc'
+
+	call vic_dens_dt_c(
+     *       pcchp,eu,tpl,pi,t_end,tt,tt_dw,ntay,key_h_to_l,dt_term_h,
+     *       pd0_p,pt0_p)
+
+	return
+	end
+
+	subroutine vic_dens_dt_c(
+     *       pcchp,eu,tpl,pi,t_end,tt,tt_dw,ntay,key_h_to_l,dt_term_h,
+     *       pd0_p,pt0_p)
+
+	include 'double.inc'
+        common
+     *  /ge5/kpr
+
+
+
+      pcchp=pd0_p+pt0_p
+
+	if(kpr.eq.1)print*,'pd0_p pt0_p ',pd0_p,pt0_p
+	if(kpr.eq.1)print*,'pcchp ',pcchp
+
+c	print*,'ntay tt_dw dt_term_h',ntay,tt_dw,dt_term_h
+c	read(*,*)
+
+	i_sh=i_sh+1
+
+c=================================
+ccc	tt_gamma=404000.
+ccc	tt_gamma=534000.
+c	tt_gamma=500000.
+c=================================
+
+	if(i_sh.eq.1)then
+c-------
+           open (unit=40,file='dt_term.dat',form='formatted') 
+           read (40,*) 
+           read (40,*)dt,dt_1
+           close (40)
+
+           open (unit=40,file='pcchp_end.dat',form='formatted') 
+           read (40,*) 
+           read (40,*)pcchp_end
+           close (40)
+
+        end if
+
+c******* H to L at tt_dw time moment!!!!
+	if(kpr.eq.1)print*,'tt tt_dw dt_term_h key_gamma',tt,tt_dw,
+     *  dt_term_h,key_gamma
+
+	if(dt_term_h.lt.1.e-5)then
+
+	if(ntay.gt.30.and.tt.gt.tt_dw.and.key_gamma.eq.0)then
+	   key_gamma=1
+	   pcchp_help=pcchp
+	end if
+	if(key_gamma.eq.1.and.tt.le.tt+dt_1)then
+cc	   pcchp=pcchp_help-(pcchp_help-4.)*(tt-tt_dw)/dt_1
+ccc      pcchp=pcchp_help-(pcchp_help-1.)*(tt-tt_dw)/dt_1
+	   pcchp=pcchp_help-(pcchp_help-pcchp_end)*(tt-tt_dw)/dt_1
+
+	if(kpr.eq.1)print*,'pcchp_help pcchp pcchp_end',pcchp_help,
+     * pcchp,pcchp_end
+
+	end if
+	if(tt.gt.tt_dw+dt_1.and.key_gamma.eq.1)then
+	   key_gamma=2
+	   gamma_mem=(pcchp/10.)*pi*eu**2*1.e-4/(tpl/1.e3)
+	end if
+	if(key_gamma.eq.2)then
+	   pcchp=10.*gamma_mem*(tpl/1.e3)/(pi*eu**2*1.e-4)
+	if(kpr.eq.1)print*,' gamma_mem pcchp',gamma_mem,pcchp
+	end if
+
+	end if
+ccc end of H to L at tt_dw time moment
+
+c********** H to L at tt_dw+dt_term_h time moment !!!
+	if(dt_term_h.gt.1.e-5)then
+	
+	if(ntay.gt.30.and.tt.gt.tt_dw.and.key_gamma.eq.0)then
+	   key_gamma=1
+	   gamma_end=0.6
+	   gamma_beg=(pcchp/10.)*pi*eu**2*1.e-4/(tpl/1.e3)
+
+	if(kpr.eq.1)print*,'key_gamma gamma1 gamma2',key_gamma,
+     *  gamma_end,gamma_beg
+
+
+	end if
+	if(key_gamma.eq.1)then
+	   gamma_mem=(tt_dw+dt-tt)*(gamma_beg-gamma_end)/dt+gamma_end
+c	if(gamma_mem.lt.gamma_end)gamma_mem=gamma_end
+	   pcchp=10.*gamma_mem*(tpl/1.e3)/(pi*eu**2*1.e-4)
+	if(kpr.eq.1)print*,' gamma_mem pcchp',gamma_mem,pcchp
+	end if
+c!!!	if(key_gamma.eq.1.and.tt.gt.tt_dw+dt)then
+	if(key_gamma.eq.1.and.key_h_to_l.eq.1)then
+	   tt_1=tt
+	   key_gamma=2
+ccc	   gamma_end=0.35
+	   gamma_end=0.05
+	   gamma_beg=gamma_mem
+	end if
+	if(key_gamma.eq.2)then
+c	   gamma_mem=(tt_dw+dt+dt_1-tt)*
+	   gamma_mem=(tt_1+dt_1-tt)*
+     *  (gamma_beg-gamma_end)/dt_1+gamma_end
+	   if(gamma_mem.lt.gamma_end)gamma_mem=gamma_end
+	   pcchp=10.*gamma_mem*(tpl/1.e3)/(pi*eu**2*1.e-4)
+ 
+    	if(kpr.eq.1)print*,'--pcchp ',pcchp
+
+	end if
+	  
+	end if
+ccc end of H to L at tt_dw+dt_term_h time moment
+	
+           if(kpr.eq.1)print*,'tpl eu pcchp dt_term_h',
+     *  tpl,eu,pcchp,dt_term_h
+     
+c        pause 'from vic_dens'
+
+	if(kpr.eq.1)
+     *   print*,'!!!!!!!!!!!!!tt tt_dw key_h_to_l',tt,tt_dw,key_h_to_l
+	if(kpr.eq.1)print*,'key_gamma pcchp',key_gamma,pcchp
+c	read(*,*)
+
+      al1=pcchp/(pd0_p+pt0_p)
+      pd0_p=pd0_p*al1
+      pt0_p=pt0_p*al1
+
+	if(kpr.eq.1)print*,'pd0_p pt0_p al1',pd0_p,pt0_p,al1
+      
+
+        return
+        end
 

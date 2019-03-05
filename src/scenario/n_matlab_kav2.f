@@ -122,13 +122,15 @@
      *  /vic_015/dt_end
      *  /vic_016/tt_rampup
 
+      common 
+     * /c_imas_t_end2/t_end2
       common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
 
 	dimension tcam(*),tcam0(*),ind(kf),pfhelp(kf)
 
 	dimension uk_help(ntet),vk_help(ntet)
 	dimension uk_help1(ntet),vk_help1(ntet)
-	dimension uk_help2(ntet),vk_help2(ntet)
+	dimension uk_help2(ntet),vk_help2(ntet),tcam_help(200)
 
 	character *30 apr
 	dimension a_print(200)
@@ -184,6 +186,7 @@ c*** tt_rampup - SOF time
 	end if
 
       if(i_en.gt.1)goto 2323
+      tt_HL_xx=600.e3
      
        key_sig_coef=1.d0
      
@@ -226,7 +229,9 @@ c---
 
 	call shape_emo()
 
-	call den_read()
+!	call den_read()
+	call den_read_t()
+      call n_dd_read()
       call dens_prof()
       if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 	call bet_li_dat()
@@ -273,7 +278,8 @@ c	call shape_d3d()
 !      read (*,*)
       
 
-	if(k_ener.eq.1)call dens_prog()
+!	if(k_ener.eq.1)call dens_prog()
+	if(k_ener.eq.1)call dens_prog_dt()
       if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 	call pp_calc()
      
@@ -305,7 +311,8 @@ c* vic  To read tay_simul
 
           open (unit=40,file='scen_data_3.dat',form='formatted') 
           read (40,*) 
-          read (40,*)tt_emo,tt_h,tt_avr,betp_flat,coef_kessel_1,vs_start
+ !         read (40,*)tt_emo,tt_h,tt_avr,betp_flat,coef_kessel_1,vs_start
+        read (40,*)tt_emo,tt_h,tt_avr,betp_flat,coef_kessel_1,vs_start2
            close (40)
 
 
@@ -331,11 +338,25 @@ c* vic  To read tay_simul
           read (40,*) 
           read (40,*)tt_rampup
           read (40,*) 
-          read (40,*)dtpl_term_h,dtpl_term_l,cIp_end
+          read (40,*)dt_end_sim,dtpl_term_l,cIp_end
+          
+
+          dtpl_term_h=0
+          
           read (40,*) 
-          read (40,*)CS1_eob,dt_contr_hl
+          read (40,*)CS1_eob,rms_noise
+
+!tt_rampup
+! 20000  
+! dt_end_sim     dtpl_term_l   cIp_end
+! 20             30            1 
+! Ics1_eob(kA)   rms_noise(m/s)
+! -20             0.2         
+ 
+
 
 	  close (40)
+
 
         dt_term_h=dtpl_term_h*1e3
 
@@ -355,6 +376,13 @@ c* vic  To read tay_simul
 !      kpr=3
 
        	tt_h=1.e8
+       	t_end2=1.e10
+
+          if(kpr.eq.1)print*,
+     *   'tt tt_rampup r_lh_new tt_h',tt,tt_rampup,r_lh_new,tt_h
+
+          if(kpr.eq.1)print*,
+     *   ' ++tt t_end2',tt,t_end2
        
        goto 2323
 
@@ -498,7 +526,7 @@ c*** Input of PF turns - must be consistent with 'koor' file!
         call vic_turn()
 
 c*** Input of Zeff waveform ***
-        if(k_ener.eq.1)call vic_zeff_read()
+!        if(k_ener.eq.1)call vic_zeff_read()
         if(k_ener.eq.0)call prof_astra()
 !      if(k_ener.eq.0)call prof_astra_hl()
 	call cur_prof()
@@ -817,9 +845,11 @@ c	call pll_calc()
 c----------------------------------
 c  toroidal coordinates...
 
-	call den_read()
+!	call den_read()
+	call den_read_t()
+      call n_dd_read()
 c**** pcchp calculations with regards Greenwald limit
-        call vic_dens()
+        call vic_dens_dt()
       
          if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 
@@ -842,7 +872,8 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
        call gamma_z3_read()
        call gamma_z4_read()
 
-	if(k_ener.eq.1)call dens_prog()
+!	if(k_ener.eq.1)call dens_prog()
+	if(k_ener.eq.1)call dens_prog_dt()
       if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
       call pp_calc()
 
@@ -974,9 +1005,10 @@ c	   read(*,*)
 
 	  close (40)
 
-        return
 
 	tt_h=1.e8
+
+        return
 
       
 2323	continue
@@ -1002,6 +1034,66 @@ ccc	      tt_h=tt_rampup+1100.
 c*******************************
 
       if(i_3323.eq.1)goto 3323
+
+      i_kavin=1
+      if(i_kavin.eq.1.and.k_zyb.eq.0)then
+
+      key=1
+      call psi_g_c(key)
+
+
+
+      do i=1,ncam
+      tcam_help(i)=tcam(i)
+      end do
+
+
+           kz_help=kzref
+           kr_help=krref
+
+           kzref=1
+           krref=2
+!           krref=1
+
+           zref=zmag
+           rref=rmag 
+
+c-------  calculate...
+
+
+      int_2005=0
+      
+      it1=1
+      
+	   call ppx_pffx()
+
+	eps2=eps20                                                             
+
+2006  continue
+      
+      int_2005=int_2005+1
+         
+                     
+       call ptoke1()
+     
+	if(int_2005.gt.10)eps2=eps2*1.5
+	if(it1.ne.0.and.int_2005.lt.20)go to 2006
+
+	if(kpr.eq.1)print *,'-+int_2005 eps2  ',int_2005,eps2
+
+        kzref=kz_help
+        krref=kr_help
+
+      do i=1,ncam
+      tcam(i)=tcam_help(i)
+      end do
+
+      key=0
+      call psi_g_c(key)
+
+      end if !  for_kavin
+
+
 
 
         if(pf(3)/pf_turns(3).lt.CS1_eob .and. k_CS1.eq.0 
@@ -1109,6 +1201,11 @@ c	   if(tay.gt.5.)tay=5.
 c****** tay decreasing ******
 ccc	   if(tt.ge.tt_elm)then
 !	   if(tt.ge.tt_dw-5.e3)then
+
+	   if(tt.lt.tt_dw)then
+	   tpl_flat=tpl
+         end if
+
 	   if(tt.ge.tt_dw.and.tay.gt.tay_dw)then
 c	      tay=tay/1.2
 	      tay=tay/1.5
@@ -1197,7 +1294,7 @@ c	if(tt.gt.tt_dw+40.)emoe=0.
 !	if(tt.gt.tt_dw+dt_term_h)emoe=0.
 	if(tt.gt.tt_dw+dt_term_h+20.)emoe=0.
 c*************
-	if(kpr.eq.1)print*,'emoe=',emoe
+	if(kpr.eq.1)print*,'emoe= tpl_flat',emoe,tpl_flat
 	if(kpr.eq.1)print*,'!!!! tt tt_dw=',tt,tt_dw
 
 c	if(kpr.eq.1)print*,'!!!! tt_dw=',tt_dw
@@ -1224,9 +1321,11 @@ c	end if
 c	if(kpr.eq.1)print*,'!!!tt emoe emoq',tt,emoe,emoq
 c$
 
-	call den_read()
+!	call den_read()
+	call den_read_t()
+      call n_dd_read()
 c**** pcchp calculations with regards Greenwald limit
-        call vic_dens()
+        call vic_dens_dt()
          if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 c*** Input of Zeff waveform and ***
         if(k_ener.eq.1)call vic_zeff_read()
@@ -1282,36 +1381,6 @@ ccc	if(ntay.gt.next)call f_cs()
       if(kpr.eq.1)print *,' i_fil==',i_fil
 
 
-      i_kavin=0
-      if(i_kavin.eq.1)then
-      
-c-------  calculate...
-
-
-      int_2005=0
-      
-      it1=1
-      
-2006  continue
-      
-      int_2005=int_2005+1
-         
-	   call ppx_pffx()
-	       
-           kzref=1
-           krref=2
-           zref=zmag0
-           rref=rmag0 
-                     
-           call ptoke1()
-     
-	if(int_2005.gt.10)eps2=eps2*1.5
-	if(it1.ne.0.and.int_2005.lt.20)go to 2006
-
-	if(kpr.eq.1)print *,'-+int_2005 eps2  ',int_2005,eps2
-
-      end if !  for_kavin
-      
 
 c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 c!!!!! Transfer PF_original_order to PF !!!!!!!!!!!!!!
@@ -1904,7 +1973,8 @@ c----------------------------
        call gamma_z3_read()
        call gamma_z4_read()
 
-	 call dens_prog()
+!	 call dens_prog()
+	call dens_prog_dt()
          if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 
        end if
@@ -1992,6 +2062,7 @@ c	      read(*,*)
 	end if
 	end if
 c**********************************************
+      k_zyb=0
 
 
 
@@ -2094,33 +2165,39 @@ c!!!        call wr_kavin()
 
 c	if(tt.lt.t_end)go to 2323
 c	stop
+	cIp_min=dabs(cIp_end)*1.e3
 
 
       
 !!!	if(tt.lt.100.e3.or.tpl.gt.tpl_end)go to 2323
 !!!	if(tt.lt.100.e3.or.tpl.gt.tpl_end)then
 !	if(tt.lt.5.67e5.and.tpl.gt.tpl_end)then
-	if(ntay.lt.5000.or.tpl.gt.tpl_end)then
-	return
+	if(ntay.lt.5000.or.tpl.gt.cIp_min)return
+
 !!!	go to 2323
-      end if
       
 !      kpr=1
       
-	t_end=tt
+	t_end2=tt
 	
 !	t_vde=t_end+250.e3
 
 !      if(kpr.eq.1)print*,'t_vde t_end',t_vde,t_end
 
 !      dt_end=dtpl_term_l*cIp_end/7.5*1e3;
-      dt_end=dtpl_term_l*cIp_end/15.*1e3;
+!      dt_end=dtpl_term_l*cIp_end/15.*1e3;
+      dt_end=dtpl_term_l*cIp_end/tpl_flat*1.e6
 
       if(kpr.eq.1)print*,'dt_end',dt_end
 	
       t_tpl_down=dt_end
 
-      d_tpl=tpl/t_tpl_down
+	if(t_tpl_down.gt.1.e-10)then
+	   d_tpl=tpl/t_tpl_down
+	else
+	   d_tpl=1.e6
+	end if
+
 
       if(kpr.eq.1)print*,'t_tpl_down d_tpl',t_tpl_down,d_tpl
 
@@ -2130,10 +2207,10 @@ c      tpl=1.d-10
       
 c      tpl0=1.d-10
 	
-c	return
 
 	if(kpr.eq.1)print*,'before 3323'
-	if(kpr.eq.1)print*,'tt tpl t_end t_vde',tt,tpl,t_end,t_vde
+	if(kpr.eq.1)print*,'tt tpl t_end2 t_vde',tt,tpl,t_end2,t_vde
+	return
 
 3323	continue
 

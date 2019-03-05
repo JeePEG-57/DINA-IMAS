@@ -445,6 +445,8 @@ c------
       WNET=0.                                                           
       PPch=0.                                                           
 	pion=0.                                                                
+	pion_d=0.
+	pion_t=0.
       VV=0.                                                             
 	wtec=0.                                                                
 	wtqc=0.                                                                
@@ -493,6 +495,8 @@ c	wtqc=wtqc+dqd*(tq0(i)+tq0(i-1))*0.5*(pne(i)+pne(i-1))
       PPch=PPch+PI*(PNE(I)+PNE(I-1))*VI(I)*HA(I)                        
 	pion=pion+dqd*(pd0(i)+pd0(i-1)+pt0(i)+pt0(i-1)                         
      *+ph0(i)+ph0(i-1))                                                 
+	pion_d=pion_d+dqd*(pd0(i)+pd0(i-1))
+	pion_t=pion_t+dqd*(pt0(i)+pt0(i-1))
 	pist=pist+dqd*2.*(sd0(i)+st0(i)+sh0(i))                                
         en_ae=en_ae+ajae(i)*2.*pi*vi(i)*ha(I)                           
    11 VV=VV+VI(I)*HA(I)                                                 
@@ -506,6 +510,8 @@ c	tec=wtec/ppch
 c	tqc=wtqc/ppch                                                         
                                                                         
       pion=pion/VV
+      pion_d=pion_d/VV
+      pion_t=pion_t/VV
                                                               
       TQC=TQC/VV                                                        
       TEC=TEC/VV                                                        
@@ -1052,6 +1058,7 @@ c
 
 c-----                                                                  
 	if(ntay.lt.3)tepr=teoh                                                 
+	if(tepr.le.1)tepr=1.                                          
                                                                         
         zhib0=zhib                                                      
                                                                         
@@ -1062,6 +1069,11 @@ c-----
                            
 c	if(key_ext.eq.0)then						 
 	
+        if(tepr.gt.1.e5)tepr=1.e5
+        if(tene_e.gt.tepr)tene_e=tepr
+        if(zhib.gt.100.)zhib=100.
+        
+        if(kpr.eq.1)print *,' zhib tene_e tepr ==',zhib,tene_e,tepr
 
 
         zhib0=zhib
@@ -1757,8 +1769,10 @@ c	shape_out(32)=vs_ext
       wde=wdop
       wdq=0.
 
+	if(kpr.eq.1)print *,' pion_d ==pion_t=====',pion_d,pion_t
 	if(kpr.eq.1)print *,' pion==wdop=====',pion,wdop
 	if(kpr.eq.1)print *,' tene,wdh====',tene,wdh
+	if(kpr.eq.1)print *,' ++p_loss====',p_loss
 
 	open (unit=41,file='te_ti.dat',
      *	form='formatted')

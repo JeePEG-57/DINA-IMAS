@@ -1136,3 +1136,86 @@ c   ---- rref ----
 
 	return
 	end
+	subroutine den_read_t()
+	include 'double.inc'
+	include 'new_com.inc'
+
+	call den_read_t_c(
+     *  tt,pt0_p,ntay,tay)
+	
+	return
+	end
+
+	subroutine den_read_t_c(
+     *  tt,pcchp,ntay,tay)
+
+	include 'double.inc'
+ 	include 'parf_mike' 
+
+        common
+     *  /ge5/kpr
+
+	dimension t_t(ntime),den_t(ntime)
+
+
+	character *12 apr
+
+	i_sh=i_sh+1
+
+	if(i_sh.eq.1)then
+c-------
+           open (unit=41,file='dens.dat',form='formatted') 
+           read (41,*) 
+           read (41,*)n_t 
+           read (41,*) 
+
+ 	 if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+
+           do i=1,n_t 
+              read (41,*)t_t(i),den_t(i)
+              t_t(i)=t_t(i)*1000. 
+           end do 
+           
+           apr='-t_t-' 
+           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+
+           apr='-den_t-' 
+           if(kpr.eq.1)print 71,apr,(den_t(i),i=1,n_t) 
+
+           close (unit=41) 
+        end if
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+	   if(ntay.le.2)then
+c*vic!!!	      den_t(1)=pcchp
+!!!	      t_t(1)=tt-tay
+	   end if
+
+
+           apr='-den_t22' 
+           if(kpr.eq.1)print 71,apr,(den_t(i),i=1,n_t) 
+
+
+      do i=2,n_t
+      if( (tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
+c==================
+	 t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
+
+	 den=den_t(i-1)+t_coef*(den_t(i)-den_t(i-1))
+c
+	 end if
+
+	 end do
+
+!	   if(ntay.gt.2)pcchp=den
+
+	pcchp=den
+
+c	if(kpr.eq.1)print *,' from den_read  pcchp den ntay',pcchp,den,ntay
+c	pause 'from den_read'
+
+
+       return 
+       end 
+

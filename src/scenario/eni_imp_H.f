@@ -124,6 +124,9 @@ c
 	fkmn(fk0,fa0,fb0,fc0,ve0,epi)=fk0/(1.+fa0*sqrt(ve0)+
      *  fb0*ve0)/(1.+fc0*ve0*epi**1.5)
 c=======
+
+!      tego=100.d0
+      
       N2=N-1
       QE0(1)=0.
       QQ0(1)=0.
@@ -203,9 +206,6 @@ C^M
       if(kpr.eq.1)print*,'!!!tt=',ttb
       if(kpr.eq.1)print*,'emoe emoq',emoe/pnor,emoq/pnor
 
-      if(kpr.eq.1)print*,'nz_imp nz_imp1 nz_imp2',nz_imp,nz_imp1,nz_imp2
-      if(kpr.eq.1)print*,'nz_3 nz_4 ',nz_imp3,nz_imp4
-
       if(i_en.eq.1) then
                  open (unit=41,file='bohm_gbohm.dat',form='formatted')
                 read (41,*)
@@ -226,7 +226,8 @@ C^M
    
 	do i=1,n
 
-        if(ntay.gt.next+1)then
+!        if(ntay.gt.next+1)then
+        if(ntay.ge.0)then
 
            te_zrad(1)=te0(i)*1.e-3
 
@@ -672,7 +673,6 @@ C*****************
      *(13./4.))**0.5*EXP(-200./TQ0(I)**(1./3.))
 c------> alfa particle source SAL
       SAL(I)=SEch*PD0(I)*PT0(I)
-
 	pnal(i)=(sal(i)+pnaln(i)/tay)/(1./tay+1./talfa2(i))
 c
 c----->  neutron power QNET
@@ -789,8 +789,6 @@ C =====================================================================^M
 C                               The     end of Bohm/gyroBohm patch ^M
 C =====================================================================^M
 
-	if(kcchp.eq.0)XII(I)=DXE(I)
-
 
 
 c-----------------
@@ -812,7 +810,7 @@ c---> impurity ligh qpr (here oxigen)
 c       qpr(i)=qu*ppr(i)*pne(i)
 c       qe0(i)=qe0(i)-qpr(i)
 
-        if(ntay.gt.next+1)then
+!        if(ntay.gt.next+1)then
 
 c           q_imp=0.
 
@@ -827,7 +825,7 @@ c       qq0(i)=qq0(i)-wcx(i)
        
 c        print*,'qtor q_imp',qtor(i),q_imp(i)
 c        read(*,*)
-      end if
+!      end if
 
 
 c      print*,'alf_bar ro_bar',alf_bar,ro_bar
@@ -837,7 +835,9 @@ c      read(*,*)
        dxe(i)=alf_bar*dxe(i)
        dxq(i)=alf_bar*dxq(i)
 	end if
-
+	
+       dxe(i)=dabs(dxe(i))
+       dxq(i)=dabs(dxq(i))
 
 	end do
 
@@ -845,10 +845,14 @@ c      read(*,*)
 
       zeff(1)=zeff(2)
       
+      
+      print *,'  zhib xigo =',zhib,higo
+      print *,'  higo tego=',higo,tego
+
 	apr='dxe'
-!        print 71,apr,(dxe(i),i=1,n)
+      if(kpr.eq.1)print 71,apr,(dxe(i),i=1,n)
 	apr='dxq'
-!        print 71,apr,(dxq(i),i=1,n)
+      if(kpr.eq.1)print 71,apr,(dxq(i),i=1,n)
       
 	if(kpr.eq.1)print *,'nz_imp coef_imp==',
      * nz_imp,coef_imp
@@ -990,7 +994,21 @@ c
 	do i=2,n
 	  dxe(i)=dxe(i)*anom_e
 	  dxq(i)=dxq(i)*anom_e
+
 	end do
+
+	apr='++dxe'
+      if(kpr.eq.1)print 71,apr,(dxe(i),i=1,n)
+	apr='++dxq'
+      if(kpr.eq.1)print 71,apr,(dxq(i),i=1,n)
+
+	do i=2,n
+
+       dxe(i)=dabs(dxe(i))
+       dxq(i)=dabs(dxq(i))
+
+	end do
+
 
 	apr='ajb'
 c        print 71,apr,(ajb(i),i=1,n)
@@ -1255,6 +1273,12 @@ c
 
 	i_sh=i_sh+1
 
+
+
+!      goto 5
+      
+            
+      
 	if(i_sh.eq.1)then
 c-------
            open (unit=41,file='p_loss.dat',form='formatted') 
@@ -1275,6 +1299,16 @@ c-------
            apr='-p_loss_t-' 
            if(kpr.eq.1)print 71,apr,(power_ech_t(i),i=1,n_t) 
 
+        	call get_data_in_time(pcch,tene,wdop,
+     *      p_sum,p_loss)
+
+         do i=1,3
+         power_ech_t(i)=p_loss
+         end do
+
+           apr='++p_loss_t-' 
+           if(kpr.eq.1)print 71,apr,(power_ech_t(i),i=1,n_t) 
+         
            close (unit=41) 
         end if
 
@@ -1291,7 +1325,12 @@ c
 	 end if
 
 	 end do
+	 
+5     continue
+	 
 
+!      power_ech=3.2708e0
+      
 	if(kpr.eq.1)print *,' from p_loss ',power_ech
 
       PNOR=6.25E8
@@ -1318,7 +1357,8 @@ c	     qpr(i)=1.-ai(i)**2
            summ=summ+qpr(i)*2.*pi*vi(i)*ha(i)
       end do
 	summ_e=summ/pnor
-
+      
+      
 	if(kpr.eq.1)print *,' p_loss==',summ_e
 
        return 
@@ -1399,13 +1439,14 @@ c	stop
 	include 'double.inc'
 	include 'new_com.inc'
 
+ 
 	call gamma_z1_read_c(
-     *       coef_imp1,tt,kpr)
+     *       coef_imp1,tt,kpr,nz_imp1)
 
         return
         end
       subroutine gamma_z1_read_c(
-     *       gamma_z1,tt,kpr)
+     *       gamma_z1,tt,kpr,nz_imp1)
 
 	include 'double.inc'
  	include 'parf_mike' 
@@ -1420,10 +1461,11 @@ c	stop
 c-------
            open (unit=41,file='gamma_z1.dat',form='formatted') 
            read (41,*) 
-           read (41,*)n_t 
+           read (41,*)n_t,nz_imp1 
            read (41,*) 
            
-           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+           if(kpr.eq.1)print *,' tay tt n_t nz_imp1===',
+     *  tay,tt,n_t,nz_imp1 
            
            do i=1,n_t 
               read (41,*)t_t(i),pn_d_t(i)
@@ -1456,7 +1498,7 @@ c
 
 	 end do
 
-      if(kpr.eq.1)print *,' tt gamma_z1==',tt,gamma_z1
+      if(kpr.eq.1)print *,' tt gamma_z1 ==',tt,gamma_z1
 c	stop
 
         
@@ -1466,14 +1508,24 @@ c	stop
       subroutine gamma_z2_read()
 	include 'double.inc'
 	include 'new_com.inc'
+      include 'br_com.inc'
+
+        include 'par_imp.inc'
+        include 'new_imp.inc'
 
 	call gamma_z2_read_c(
-     *       coef_imp2,tt,kpr)
+     *       coef_imp2,tt,kpr,nz_imp2)
+     
+       gamma_z2=coef_imp2
+       n_imp(2)=nz_imp2
+
+           if(kpr.eq.1)print *,' --n_imp2 nz_imp2===',
+     *  n_imp(2),nz_imp2
 
 	return
 	end
       subroutine gamma_z2_read_c(
-     *       gamma_z2,tt,kpr)
+     *       gamma_z2,tt,kpr,nz_imp2)
 
 	include 'double.inc'
  	include 'parf_mike' 
@@ -1487,10 +1539,11 @@ c	stop
 c-------
            open (unit=41,file='gamma_z2.dat',form='formatted') 
            read (41,*) 
-           read (41,*)n_t 
+           read (41,*)n_t,nz_imp2 
            read (41,*) 
            
-           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+           if(kpr.eq.1)print *,' tay tt n_t nz_imp2===',
+     *  tay,tt,n_t,nz_imp2
            
            do i=1,n_t 
               read (41,*)t_t(i),pn_d_t(i)
@@ -1535,12 +1588,12 @@ c	stop
 	include 'new_com.inc'
 
 	call gamma_z3_read_c(
-     *       coef_imp3,tt,kpr)
+     *       coef_imp3,tt,kpr,nz_imp3)
 
 	return
 	end
       subroutine gamma_z3_read_c(
-     *       gamma_z3,tt,kpr)
+     *       gamma_z3,tt,kpr,nz_imp3)
 
 	include 'double.inc'
  	include 'parf_mike' 
@@ -1554,10 +1607,11 @@ c	stop
 c-------
            open (unit=41,file='gamma_z3.dat',form='formatted') 
            read (41,*) 
-           read (41,*)n_t 
+           read (41,*)n_t,nz_imp3 
            read (41,*) 
            
-           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+           if(kpr.eq.1)print *,' tay tt n_t nz_imp3===',
+     *  tay,tt,n_t,nz_imp3
            
            do i=1,n_t 
               read (41,*)t_t(i),pn_d_t(i)
@@ -1596,18 +1650,17 @@ c	stop
         
 	return
 	end
-
       subroutine gamma_z4_read()
 	include 'double.inc'
 	include 'new_com.inc'
 
 	call gamma_z4_read_c(
-     *       coef_imp4,tt,kpr)
+     *       coef_imp4,tt,kpr,nz_imp4)
 
 	return
 	end
       subroutine gamma_z4_read_c(
-     *       gamma_z4,tt,kpr)
+     *       gamma_z4,tt,kpr,nz_imp4)
 
 	include 'double.inc'
  	include 'parf_mike' 
@@ -1621,10 +1674,11 @@ c	stop
 c-------
            open (unit=41,file='gamma_z4.dat',form='formatted') 
            read (41,*) 
-           read (41,*)n_t 
+           read (41,*)n_t,nz_imp4 
            read (41,*) 
            
-           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+           if(kpr.eq.1)print *,' tay tt n_t  nz_imp4===',
+     *  tay,tt,n_t,nz_imp4
            
            do i=1,n_t 
               read (41,*)t_t(i),pn_d_t(i)
@@ -1663,4 +1717,125 @@ c	stop
         
 	return
 	end
+
+      subroutine gamma_z5_read()
+	include 'double.inc'
+	include 'new_com.inc'
+
+       print *,' coef_imp4 tt kpr===',coef_imp4,tt,kpr 
+
+       
+	call gamma_z5_read_c(
+     *       coef_imp4,tt,kpr)
+
+
+
+	return
+	end
+      subroutine gamma_z5_read_c(
+     *       gamma_z4,tt,kpr)
+
+	include 'double.inc'
+ 	include 'parf_mike' 
+
+	dimension t_t(ntime),pn_d_t(ntime)
+	character *12 apr
+
+       print *,' 1 coef_imp4 tt kpr===',coef_imp4,tt,kpr 
+
+
+	i_sh=i_sh+1
+
+       print *,' 2 coef_imp4 tt kpr i_sh===',coef_imp4,tt,kpr,i_sh 
+
+	if(i_sh.le.5)then
+c-------
+           open (unit=41,file='gamma_z4.dat',form='formatted') 
+           read (41,*) 
+           read (41,*)n_t 
+           read (41,*) 
+           
+           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+           
+           do i=1,n_t 
+              read (41,*)t_t(i),pn_d_t(i)
+!!!              t_t(i)=t_t(i)*1000. 
+           if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
+           end do 
+           
+           apr='-t_t-' 
+           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+
+           apr='-n_d_t-' 
+           if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
+
+
+           close (unit=41) 
+        end if
+
+       print *,' -- coef_imp4 tt kpr===',coef_imp4,tt,kpr 
+      
+      	return
+
+      
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+
+        i_coef=0
+        do i=2,n_t
+           if((tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
+c==================
+              t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
+              
+              i_coef=i
+              
+              gamma_z4=pn_d_t(i-1)+t_coef*
+     *             (pn_d_t(i)-pn_d_t(i-1))
+c
+	 end if
+
+	 end do
+
+      if(kpr.eq.1)print *,' i_coef n_t===',i_coef,n_t 
+
+      if(kpr.eq.1)print *,' tt t_coef gamma_z4==',tt,t_coef,gamma_z4
+c	stop
+
+        
+	return
+	end
+      subroutine gamma_z6_read()
+	include 'double.inc'
+	include 'new_com.inc'
+
+       print *,' 100 coef_imp4 tt kpr===',coef_imp4,tt,kpr 
+
+       
+	call gamma_z6_read_c(
+     *       coef_imp4,tt,kpr)
+
+
+
+	return
+	end
+
+      subroutine gamma_z6_read_c(
+     *       gamma_z4,tt,kpr)
+
+	include 'double.inc'
+ 	include 'parf_mike' 
+
+	dimension t_t(ntime),pn_d_t(ntime)
+	character *12 apr
+
+       print *,' 100 coef_imp4 tt kpr===',coef_imp4,tt,kpr 
+
+
+	i_sh=i_sh+1
+
+       print *,' 100 coef_imp4 tt kpr i_sh===',coef_imp4,tt,kpr,i_sh 
+	return
+	end
+
+
 

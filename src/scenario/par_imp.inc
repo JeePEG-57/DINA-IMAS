@@ -1,2 +1,5 @@
 
-          parameter( nimp =10 )
+            parameter( nimp =100 )
+!           parameter( nimp =50 )
+
+

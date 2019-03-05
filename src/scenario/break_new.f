@@ -112,6 +112,18 @@ c	print *,' file in.dat is reading'
 
         close (41)
 
+
+	open (unit=41,file='init.dat',form='formatted')
+        read (41,*)p
+        read (41,*)T_e
+        read (41,*)T_i
+        read (41,*)gam
+        read (41,*)g_gain
+        close (41)
+
+
+
+
 	r=rmag*1.e-2
 	a=eu*1.e-2
 
@@ -610,7 +622,7 @@ c     psi_n recycling coeff
 c      print*,'psi_n n00=',psi_n,n00
 
 
-	 call n_d_read()
+	 call n_dd_read()
 	  pn_prog=n_d
 
 	g_vx=g_gain*v_v
@@ -1833,8 +1845,8 @@ c	   print *,' n_e n_i v_v0==',n_e,n_i,v_v0
 c        Impurity initialization file....
 
 c Be and Oxigen
-        n_imp(1)=4
-        n_imp(2)=8
+!        n_imp(1)=4
+!        n_imp(2)=8
 
 c Carbon and Oxigen
 !        n_imp(1)=6
@@ -2164,8 +2176,8 @@ c	call pau()
               den(i)=n_d*10.d0
 
 			pne(i)=den(i)
-			pd0(i)=0.5d0*den(i)
-			pt0(i)=0.5d0*den(i)
+			pd0(i)=den(i)
+!			pt0(i)=0.5d0*den(i)
 
 			zeff(i)=z_eff
 
@@ -2181,17 +2193,28 @@ c	call pau()
 	tec=0.d0
 	tqc=0.d0
 	vv=0.d0
+
+	pion_d=0.
+	pion_t=0.
            
 		 do i=2,n
-	      TQC=TQC+PI*(TQ0(I)+TQ0(I-1))*VI(I)*HA(I)                          
+	      TQC=TQC+PI*(TQ0(I)+TQ0(I-1))*VI(I)*HA(I)      
 		  TEC=TEC+PI*(TE0(I)+TE0(I-1))*VI(I)*HA(I)                          
-             VV=VV+VI(I)*HA(I)                                                 
+             VV=VV+VI(I)*HA(I)                      
+      DQD=PI*VI(I)*HA(I)                                                
+	pion_d=pion_d+dqd*(pd0(i)+pd0(i-1))
+	pion_t=pion_t+dqd*(pt0(i)+pt0(i-1))
 		end do
 
       VV=2.*PI*VV                                                       
                                                                         
       TQC=TQC/VV                                                        
       TEC=TEC/VV                                                        
+
+      pion_d=pion_d/VV
+      pion_t=pion_t/VV
+
+	if(kpr.eq.1)print *,' ++ pion_d ==pion_t=====',pion_d,pion_t
 
 
 	int=0
@@ -2222,9 +2245,9 @@ c	call pau()
 	vv=0.d0
            
 		 do i=2,n
-	      TQC=TQC+PI*(TQ0(I)+TQ0(I-1))*VI(I)*HA(I)                          
+	      TQC=TQC+PI*(TQ0(I)+TQ0(I-1))*VI(I)*HA(I) 
 		  TEC=TEC+PI*(TE0(I)+TE0(I-1))*VI(I)*HA(I)                          
-             VV=VV+VI(I)*HA(I)                                                 
+             VV=VV+VI(I)*HA(I)                        
 		end do
 
       VV=2.*PI*VV                                                       
@@ -2678,7 +2701,7 @@ c		print *,'n_rad==== ',n_rad
 	dimension
      *  den_neut(*)
 
-	 real te_rad(1),xz(1)
+	 real te_rad(1),xz(1),res(1)
 
 	c_ion_h=1.
 	c_rec_h=1.
@@ -2720,6 +2743,7 @@ c  Neutrals Temperature .. tn=ti?
         do k=1,n_imp(j)
            d_imp=den_imp(j,k,i)
            den_e=den_e+z_imp(k)*d_imp
+!         if(kpr.eq.1)print *,' j k d_imp=',j,k,d_imp
         end do
 
 	denz(1)=den_imp_n(j,i)
@@ -2752,6 +2776,22 @@ c     *  i,qloss_ion,qloss_rad,qloss_rec,qloss_ch
 
 c----------------------------------
 
+      i_test=0
+      if(i_test.eq.1)then
+
+         nz_imp=18
+
+         tec=1.        
+        te_rad(1)=tec*1.e-3
+        
+        i1=1
+        call zrad(nz_imp,2,1,te_rad,RES)
+
+  	  print *,' i1 nz_imp te Z',i1,nz_imp,te_rad(1),res(1)
+
+        stop
+        
+        end if
 
 
 	i1=1
@@ -2814,6 +2854,12 @@ c	den_e2=den_e
 	sel(j)=qlos_e
 
 	sel(j)=sel(j)*c_coef
+
+        do k=1,n_imp(j)
+           d_imp=den_imp(j,k,i)
+         if(kpr.eq.-1)print *,' j k d_imp=',j,k,d_imp
+        end do
+
 
 c	s_ij=s_ij+sel_ij
 c	s_h1=s_h1+sel_h1
@@ -2984,13 +3030,18 @@ c	stop
 	include 'new_com.inc'
       include 'br_com.inc'
 
+        include 'par_imp.inc'
+        include 'new_imp.inc'
+
 	call gamma_z_read_c(
-     *       gamma_z,tt,kpr)
+     *       gamma_z,tt,kpr,nz_imp)
+     
+        n_imp(1)=nz_imp
 
 	return
 	end
       subroutine gamma_z_read_c(
-     *       gamma_z,tt,kpr)
+     *       gamma_z,tt,kpr,nz_imp)
 
 	include 'double.inc'
  	include 'parf_mike' 
@@ -2998,6 +3049,7 @@ c	stop
       include 'double_break1.inc'
 
 	dimension t_t(ntime),pn_d_t(ntime)
+	
 	character *12 apr
 
 	i_sh=i_sh+1
@@ -3006,10 +3058,11 @@ c	stop
 c-------
            open (unit=41,file='gamma_z.dat',form='formatted') 
            read (41,*) 
-           read (41,*)n_t 
+           read (41,*)n_t,nz_imp 
            read (41,*) 
            
-           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+           if(kpr.eq.1)print *,' tay tt n_t nz_imp===',
+     *  tay,tt,n_t,nz_imp
            
            do i=1,n_t 
               read (41,*)t_t(i),pn_d_t(i)
@@ -3090,7 +3143,7 @@ c	stop
 
 c	kpr=1
 
-	call zeff_read()
+!	call zeff_read()
 c	 n_rad=n
 
 c	print *,'n_rad==== ',n_rad
@@ -3265,7 +3318,7 @@ c!!!!!!	if(den_imp_n(jj,j_x).le.1.d-6)den_imp_n(jj,j_x)=1.d-6
 
 
         dimension
-     *  den_imp(nip,nip,npo),den0_imp(nip,nip,npo),n_imp(*)
+     *  den_imp(nip,nip,*),den0_imp(nip,nip,*),n_imp(*)
 
 
         character * 20 apr
@@ -3752,15 +3805,17 @@ c     *  2i4,6(1pe12.5))'),
 c     *  n_imp_tot,j_x,te,tn
 
 
-c	if(kpr.eq.1)write(6,'(" den_n den_i den_im ",
-c     *  6(1pe12.5))'),
-c     *  den_n,den_i,den_im
+	if(kpr.eq.1)write(6,'(" den_n den_i den_im ",
+     *  6(1pe12.5))'),
+     *  den_n,den_i,(den_im(jj),jj=1,n_imp_tot)
 
 c         n_imp=6
 
       den_e=den_i
 
 c      Begin calculation for each impurity jj=1:n_imp_tot
+
+!      print *,' n_imp===',(n_imp(jj),jj=1,n_imp_tot)
 
 	do jj=1,n_imp_tot
 
@@ -4016,7 +4071,7 @@ c     *  i,f_h(i),f_imp(i)
 	f_h(i)=f_h(i)+a_imp(i,k)*(d_imp1(k)+d_imp2(k)*den_im(jj))
 		end do
 
-	if(kpr.eq.1)then		
+	if(kpr.eq.-1)then		
 	  write(6,'(" -- i f_h f_imp",
      *  i4,6(1pe12.5))'),
      *  i,f_h(i),f_imp(i)
@@ -4106,7 +4161,7 @@ c     *  i,d_imp(i),d_imp0(i),den_im_sum0
         end do
 
       do i=1,n
-	if(kpr.eq.1)then
+	if(kpr.eq.-1)then
 	write(6,'("  jj i tay_l d_imp  yy ",
      *  2i4,6(1pe12.5))'),
      *  jj,i,tay_loss(i),d_imp(i),d_imp(i)/(den_im_sum+1.d-8)
@@ -4877,11 +4932,13 @@ c raspakovka reshenia
          dimension  den_imp(nimp,nimp,*),n_imp(*)
 
          dimension  dens_imp_xx(*)
-
+      
+        common
+     *  /ge5/kpr
 
 c	n_rad=n
 
-c		print *,'n_rad==== ',n_rad
+!		print *,'n_rad==== ',n_rad
 
 
 	do j_x=1,n_rad
@@ -4895,6 +4952,8 @@ c		print *,'n_rad==== ',n_rad
 
 	kk=kk+1
       dens_imp_xx(kk)=den_imp(jj,i,j_x)
+
+ !     if(kpr.eq.1)print *,' kk dens_imp',kk,dens_imp_xx(kk)
       
 !     	 call print4(' jj kk d1 d2  ==',
 !     *  dfloat(jj),dfloat(kk),dens_imp_xx(kk),den_imp(jj,i,j_x))
@@ -6574,4 +6633,76 @@ c     *  i,f_h(i),f_imp(i)
         return
         end
 
+
+      subroutine n_dd_read()
+	include 'double.inc'
+	include 'new_com.inc'
+      include 'br_com.inc'
+
+	call n_dd_read_c(
+     *       n_d,tt,kpr,pd0_p)
+
+	return
+	end
+      subroutine n_dd_read_c(
+     *       n_d,tt,kpr,pd0_p)
+
+	include 'double.inc'
+ 	include 'parf_mike' 
+
+      include 'double_break1.inc'
+
+	dimension t_t(ntime),pn_d_t(ntime)
+	character *12 apr
+
+	i_sh=i_sh+1
+
+	if(i_sh.eq.1)then
+c-------
+           open (unit=41,file='n_d.dat',form='formatted') 
+           read (41,*) 
+           read (41,*)n_t 
+           read (41,*) 
+           
+           if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
+           
+           do i=1,n_t 
+              read (41,*)t_t(i),pn_d_t(i)
+              t_t(i)=t_t(i)*1000. 
+           if(kpr.eq.1)print *,' i t_t n_dd_t==',i,t_t(i),pn_d_t(i)
+           end do 
+           
+           apr='-t_dd_t-' 
+           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+
+           apr='-n_dd_t-' 
+           if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
+
+
+           close (unit=41) 
+        end if
+
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+        do i=2,n_t
+           if((tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
+c==================
+              t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
+
+              n_d=pn_d_t(i-1)+t_coef*
+     *             (pn_d_t(i)-pn_d_t(i-1))
+c
+	 end if
+
+	 end do
+
+      pd0_p=n_d
+      n_d=n_d*0.1d0
+      if(kpr.eq.1)print *,' tt n_d pd0_d==',tt,n_d,pd0_p
+c	stop
+
+        
+	return
+	end
 

@@ -4,6 +4,8 @@ all: dina interface fc2k
 
 dina:
 	make -C src/scenario
+	make -C src/scenario/15MA clean
+	make -C src/scenario/15MA
 
 interface: dina
 	make -C imas/interface

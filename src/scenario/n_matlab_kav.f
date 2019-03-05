@@ -177,6 +177,8 @@
 
      *  /fluxc18/alf_tok,int_tok                                        
 
+      common 
+     * /c_imas_t_end2/t_end2
 
 	common /c_data_in_time2/i_c_data,i_c_data1       
       common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
@@ -217,6 +219,7 @@ c______________________________
 
 	if(i_en2.eq.1)then	
 		key_equil=3
+       	t_end2=1.e10
 
         if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
 
@@ -434,7 +437,7 @@ c     following reading necessary only once for impurity
 	    call imp_neut_calc2()
 	    call ech_calc()
 
-         call n_d_read()
+         call n_dd_read()
          call gamma_z_read()
          call gamma_z2_read()
          call anom_e_read()
@@ -531,7 +534,7 @@ c	print *,' v_v0==',v_v0
 c	print *,' i_imp==',i_imp
 
 
-         call n_d_read()
+         call n_dd_read()
          call gamma_z_read()
          call gamma_z2_read()
          call anom_e_read()
@@ -1146,6 +1149,62 @@ c 	call print1(' ** eu==',eu)
 
 2323	continue
 
+
+      i_kavin=0
+      if(i_kavin.eq.1.and.tt.gt.1300.and.k_zyb.eq.0)then
+
+      key=1
+      call psi_g_c(key)
+
+      do i=1,ncam
+      tcam_help(i)=tcam(i)
+      end do
+
+
+           kz_help=kzref
+           kr_help=krref
+
+           kzref=1
+           krref=2
+!           krref=1
+
+           zref=zmag
+           rref=rmag 
+
+c-------  calculate...
+
+
+      int_2005=0
+      
+      it1=1
+      
+	   call ppx_pffx()
+
+	eps2=eps20                                                             
+
+2006  continue
+      
+      int_2005=int_2005+1
+         
+                     
+       call ptoke1()
+     
+	if(int_2005.gt.10)eps2=eps2*1.5
+	if(it1.ne.0.and.int_2005.lt.20)go to 2006
+
+	if(kpr.eq.1)print *,'-+int_2005 eps2  ',int_2005,eps2
+
+        kzref=kz_help
+        krref=kr_help
+
+      do i=1,ncam
+      tcam(i)=tcam_help(i)
+      end do
+
+      key=0
+      call psi_g_c(key)
+
+      end if !  for_kavin
 
 
 
@@ -1870,7 +1929,7 @@ c
 	    call imp_neut_calc2()
 	    call ech_calc()
 
-         call n_d_read()
+         call n_dd_read()
          call gamma_z_read()
          call gamma_z2_read()
  

@@ -538,4 +538,44 @@ c-------------------
 
 
 
+	subroutine psi_g_c(key)
+	include 'double.inc'
+        include 'parf2'
+    	common
+     *	/n_m/n,m,mp
+     	common
+     *  /eq1g/psi_g(nr,nz)
+     *  /ge5/kpr
 
+     	dimension psi_g_help(nr,nz)
+
+	character *20 apr
+
+
+      if(kpr.eq.1)print *,' key===',key
+      
+
+      if(key.eq.1)then
+      do i=1,nr
+      do j=1,nz
+      
+      psi_g_help(i,j)=psi_g(i,j)
+      
+      end do
+      end do
+      else
+
+      do i=1,nr
+      do j=1,nz
+      
+      psi_g(i,j)=psi_g_help(i,j)
+      
+      end do
+      end do
+      
+      end if
+
+      return
+      end
+      
+      

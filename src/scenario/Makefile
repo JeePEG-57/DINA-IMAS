@@ -31,20 +31,11 @@ DINASRC = \
 
 DINAOBJ = $(DINASRC:.f=.o)
 
-CONTROLSRC = t15_2.c t15_2_data.c pf_lookup3.c pf_lookup3_wrapper.c read_pf.c rt_look.c rt_look1d.c \
-	rt_nonfinite.c rt_rand.c rtGetNaN.c rtGetInf.c
-
-CONTROLOBJ = $(CONTROLSRC:.c=.o)
-
-all: dina_99.a dina_kav.a
+all: dina_99.a
 
 dina_99.a: $(DINAOBJ)
 	$(RM) -r dina_99.a
 	$(AR) $(ARFLAGS) $@ $(DINAOBJ)
-
-dina_kav.a: $(CONTROLOBJ)
-	$(RM) -r dina_kav.a
-	$(AR) $(ARFLAGS) $@ $(CONTROLOBJ)
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<

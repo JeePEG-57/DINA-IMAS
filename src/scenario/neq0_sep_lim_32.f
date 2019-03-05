@@ -506,6 +506,7 @@ c---Z stabilization---
 	   if(k.eq.ind_z(1)) psext0=psext0+FLUXARR(kk,K)
 	END DO
 	work(kk1)=psext0*api
+!	if(kpr.eq.1)print *,' kk1 work',kk1,work(kk1)
 	end do
 	end do
 
@@ -513,6 +514,8 @@ c---Z stabilization---
 
         a_r=pdd(2)
         a_z=pdd(3)
+
+	if(kpr.eq.1)print *,' api a_r a_z',api,a_r,a_z
 
 c---R stabilization---
 
@@ -533,6 +536,8 @@ c---R stabilization---
 
         b_r=pdd(2)
         b_z=pdd(3)
+
+	if(kpr.eq.1)print *,' b_r b_z',b_r,b_z
 
         a11=a_z
         a12=b_z
@@ -2791,7 +2796,8 @@ c---
 
 !!!           call br_bz_vec()
 
-           call br_bz()  
+!           call br_bz()  
+           call br_bz_ves()  
 
 
            return
@@ -3560,9 +3566,8 @@ C END PLASMA BOUNDARY
 	common
      *	/fluxc7/coef,coef1,api
      *  /fluxc11/npl,pl_cur(nwnh),x_cur(nwnh),y_cur(nwnh)
-
         common /c_imas_curr_d/curr_d(nr,nz)
-        
+
 	dimension f(nwnh)
 
 	n1=nr-1
@@ -3621,10 +3626,7 @@ c
 	DO i=1,nr
            DO j=1,nz
               kk=(i-1)*nz+j
-        
         curr_d(i,j)=f(kk)*coef1*1.e7
-        
-        
               if(abs(f(kk)).gt.1.e-5)then
                  k=k+1
                  pl_cur(k)=f(kk)*coef1
@@ -4282,7 +4284,7 @@ c	hpart=1.05
 
 	al1=tpl/(tok+tok_g)
 C
-	if(kpr.eq.1)print *,'tpl hpart ',tpl,hpart
+	if(kpr.eq.1)print *,'tpl al1 ',tpl,al1
 	if(kpr.eq.1)print *,' tok tok_g tok_s ',tok,tok_g,tok_s
 C
 	al0=al0*hpart
@@ -5372,6 +5374,10 @@ c
 
         f(1)=f1
         f(2)=f2
+
+        if(kpr.eq.1)print *,' a(1,1) a(1,2) ',a(1,1),a(1,2)
+        if(kpr.eq.1)print *,' a(2,1) a(2,2) ',a(2,1),a(2,2)
+        if(kpr.eq.1)print *,' f(1) f(2) ',f(1),f(2)
 
 	call mat(a,x,f)
         if(kpr.eq.1)print *,' x(1) x(2) ',x(1),x(2)

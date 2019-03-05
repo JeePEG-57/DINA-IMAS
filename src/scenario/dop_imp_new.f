@@ -238,6 +238,12 @@ c
          read (41,*)scale
 	 if(kpr.eq.1)print *,'scale',scale
          close (41)
+         
+      zhib=0.45
+!      zhib=0.15
+	 if(kpr.eq.1)print *,'scale zhib',scale,zhib
+         
+         
       end if
 
 
@@ -418,7 +424,8 @@ c here balance of heat---(wen2-wen1)/tay=qen2-wel-wio
 
 	if(kpr.eq.1)print *,' palf pion ',palf,pion
 
-      if(ntay.gt.next)zeff_a=zeff_avr
+!      if(ntay.gt.next)zeff_a=zeff_avr
+      zeff_a=zeff_avr
 	if(kpr.eq.1)print *,' zeff_a zeff_avr',zeff_a,zeff_avr
 
 
@@ -705,10 +712,10 @@ c#
 
 c***** We are calculating Nimp to obtain zeff_a we need
          nz_imp=2
-         nz_imp1=4
-         nz_imp2=74
-         nz_imp3=18
-         nz_imp4=10
+!         nz_imp1=4
+!         nz_imp2=74
+!         nz_imp3=18
+!         nz_imp4=10
         
         te_zrad(1)=tec*1.e-3
 

@@ -3252,7 +3252,7 @@ c	pd0(i)=pd0_b+(1.-psix**pw_p)*(pd0_a-pd0_b)
 c	pt0(i)=pt0_b+(1.-psix**pw_p)*(pt0_a-pt0_b)
         ppp=1.
 	pd0(i)=pd0_b+((1.-psix**pw_p))**ppp*(pd0_a-pd0_b)
-	pt0(i)=pt0_b+((1.-psix**pw_p))**ppp*(pt0_a-pt0_b)
+!	pt0(i)=pt0_b+((1.-psix**pw_p))**ppp*(pt0_a-pt0_b)
 	pne(i)=pd0(i)+pt0(i)
 	te0(i)=te_b+(1.-psix**pw_e)*(te_a-te_b)
 	tq0(i)=ti_b+(1.-psix**pw_e)*(ti_a-ti_b)
@@ -4655,6 +4655,85 @@ c	 implicit real *8 (a-h,o-z)
 
       write (41,*)'  '
       close (41)
+
+	return
+	end
+
+
+	subroutine dens_prog_dt()
+        include 'double.inc'
+	include 'new_com.inc'
+
+	call dens_prog_dt_c(
+     *  ntay,pd0_p,pt0_p)
+
+
+	return
+	end
+
+
+
+	subroutine dens_prog_dt_c(
+     *  ntay,pd0_p,pt0_p)
+
+        include 'double.inc'
+	include 'parf0'
+	common
+     *	/n_m/n,m,mp
+	common
+     *  /mid2/vi(npo),spo(npo)
+	common
+     *  /en1/PNE(npo),PD0(npo),PT0(npo),PH0(npo),PDN(npo),
+     *  PTN(npo),PHN(npo)
+     *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)
+     *  /ge5/kpr
+     *  /ge8/pcch
+     *  /ge8e/pcchp
+     *  /en33/anom_e,anom_i,key_t11,kcchp
+	character *12 apr
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+      PP_d=0.d0
+      PP_t=0.d0
+
+	ppch=0.
+	vv=0.
+	
+	do i=2,n
+      VV=VV+VI(I)*HA(I)
+      p_ion_d=0.5*(Pd0(I)+Pd0(I-1))
+      p_ion_t=+0.5*(Pt0(I)+Pt0(I-1))
+
+      PP_d=PP_d+p_ion_d*VI(I)*HA(I)
+      PP_t=PP_t+p_ion_t*VI(I)*HA(I)
+
+	end do
+        pp_d=PP_d/VV
+        pp_t=PP_t/VV
+        
+	if(kpr.eq.1)print *,'===1 pp_d pd0_p=kcchp===',pp_d,pd0_p,kcchp
+	if(kpr.eq.1)print *,'===1 pp_t pt0_p=kcchp===',pp_t,pt0_p,kcchp
+
+!!!	if(ntay.lt.2)pcchp=pcch
+
+
+	if(kcchp.eq.1)then
+	al1_d=pd0_p/pp_d
+	if(pp_t.gt.1.d-8)then
+	al1_t=pt0_p/pp_t
+	else
+	al1_t=0.d0
+	end if
+	if(kpr.eq.1)print *,'===1 pp_d pd0_p=al1_d===',pp_d,pd0_p,al1_d
+	if(kpr.eq.1)print *,'===1 pp_t pt0_p=al1_t===',pp_t,pt0_p,al1_t
+
+	do i=1,n
+!	   pne(i)=pne(i)*al1
+         pd0(i)=pd0(i)*al1_d
+         pt0(i)=pt0(i)*al1_t
+	   pne(i)=pd0(i)+pt0(i)
+        end do
+	end if
 
 	return
 	end
