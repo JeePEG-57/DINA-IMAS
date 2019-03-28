@@ -12,7 +12,7 @@ else
     MatFile = varargin{2};
 end
 if length(varargin) < 1
-    %FilesDir = '~lukashv/kepler';
+    %FilesDir = '~$HOME/kepler';
     %cmd=sprintf('/bin/bash --login -c ''echo "$KEPLER"''');
     %cmd = 'echo $KEPLER'; [r,s] = system(cmd); s(s==10)=[]; s(s==13)=[];  
     FilesDir = getenv('KEPLER');
