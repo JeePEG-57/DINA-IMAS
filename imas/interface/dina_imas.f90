@@ -34,7 +34,7 @@ real (ids_real) :: arr_in1(*), arr_out1(*)
 integer,save :: i, k,  j
 integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
-integer,save :: ncam,npf,kloop,kprobe, ke=57
+integer,save :: kloop,kprobe, ke=57
 
 integer,save :: nact=30, npass=300 , nflux=60, nbpol=70, nelem = 1
 
@@ -56,9 +56,13 @@ integer,save :: key(27)=(/ (0,i=1,27) /)
 real (ids_real),save :: dina_time=0
 real (ids_real),save :: time_8,tt_8,tay_8
 
-integer ::  npo
 
-parameter ( npo=500)
+! DINA parameters
+    integer,parameter :: npo = 500
+    integer,parameter :: ntet = 134
+    integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz
+    integer,parameter :: npf = 15, ncam = 100
+
 
 real (ids_real),save :: vec(npo) = (/ (0,i=1,npo) /)
 
@@ -72,10 +76,6 @@ real (ids_real),save :: output_2(npo) = (/ (0,i=1,npo) /)
 real (ids_real),save :: output_3(npo) = (/ (0,i=1,npo) /)
 real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
-
-! DINA parameters
-    integer,parameter :: ntet = 134
-    integer,parameter :: nr = 65, nz = 129, ngrid=nr*nz
     
     real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,parea=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
   & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0 &
@@ -89,6 +89,8 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),qe0(npo),qq0(npo)
     
     real(ids_real) :: xbound(ntet),ybound(ntet)
+    
+    real(ids_real) :: vchopper(npf),pf(npf),tcam(ncam)
 
     real(ids_real),parameter :: pi = 3.14159265358979323846
 
@@ -257,8 +259,7 @@ call write_cputime(0.d0, 0.d0, 1)
 
 100 format (2I5, 4x,2I5, 4x, 2I5, 4x,2I5)
 
-        npf=nact
-        ncam=npass
+
         kloop=nflux
         kprobe=nbpol
 
@@ -373,7 +374,8 @@ end do
      & x,y,psi,psi_bnd,curr_d,  &
      & xbound,ybound,rmajor,rminor,elong,tri, &
      & pd0,pt0,sigk,jbut,aj0,qe0,qq0, &
-     & betap,betat,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag)
+     & betap,betat,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag, &
+     & vchopper,pf,tcam)
 
 
 
@@ -395,9 +397,7 @@ end do
 	  arr_out1(i)=output_1(i)
       end do
 
-      npf=15
       n_gaps=6
-      ncam=100
 
       n_output2=npf+n_gaps+ncam
 
@@ -433,10 +433,10 @@ print *,' nact=',nact
 do i=1,nact
 
         allocate(pf_active%coil(i)%current%data(1))
-        allocate(pf_active%coil(i)%current%time(1))
+!        allocate(pf_active%coil(i)%current%time(1))
 
         allocate(pf_active%coil(i)%voltage%data(1))
-        allocate(pf_active%coil(i)%voltage%time(1))
+!        allocate(pf_active%coil(i)%voltage%time(1))
 enddo
 
 allocate(pf_active%time(1))
@@ -446,11 +446,11 @@ pf_active%ids_properties%homogeneous_time = 1
 
 do i=1,nact
 
-    pf_active%coil(i)%current%data(1) = 0.5
-!      pf_active%coil(i)%current%time(1) = dina_time
+    pf_active%coil(i)%current%data(1) = pf(i)
+!    pf_active%coil(i)%current%time(1) = dina_time
 
-    pf_active%coil(i)%voltage%data(1) = 100.
-!      pf_active%coil(i)%voltage%time(1) = dina_time
+    pf_active%coil(i)%voltage%data(1) = vchopper(i)
+!    pf_active%coil(i)%voltage%time(1) = dina_time
 
 end do
 
@@ -470,7 +470,7 @@ pf_passive%ids_properties%homogeneous_time = 1
 
 do i=1,npass
 !    print *,' i pass=',i
-    pf_passive%loop(i)%current(1) = 1.
+    pf_passive%loop(i)%current(1) = tcam(i)
 end do
 
 pf_passive%time(1) = dina_time

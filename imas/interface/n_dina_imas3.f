@@ -197,7 +197,8 @@ c ============ outputs ==============================================
      * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
      * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,
-     * tene_xx,wfus_xx,emag_xx)
+     * tene_xx,wfus_xx,emag_xx,
+     * vchopper_xx,pf_xx,tcam_xx)
 
 
 	include 'double.inc'
@@ -212,6 +213,7 @@ c ============ outputs ==============================================
      
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
         dimension xbound_xx(*),ybound_xx(*)
+        dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
 
 
       n_xx=n
@@ -300,6 +302,15 @@ c=================================================
 	   end do
 	end do
 
+	
+	do i=1,npf
+	   vchopper_xx(i) = vchopper(i)
+	   pf_xx(i) = pf(i)*1.d3
+	enddo
+	
+	do i=1,ncam
+	   tcam_xx(i) = tcam(i)*1.d3
+	enddo
 
 	if(kpr.eq.1)print *,' tt t_vde=',tt,t_vde
 
