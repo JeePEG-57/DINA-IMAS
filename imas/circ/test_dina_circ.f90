@@ -45,10 +45,10 @@ interface
 end interface
 
 
-type (ids_em_coupling) :: em_coupling0
+type (ids_em_coupling) :: em_coupling0 
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
-type (ids_pf_active) :: pf_active0, pf_active
+type (ids_pf_active) :: pf_active0, pf_active, pf_active_a
 type (ids_pf_passive) :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_sources)   :: core_sources0, core_sources
@@ -60,11 +60,11 @@ type (ids_summary) :: summary
 real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
-integer :: pulse=170, run=7, prescribedpulse=170, prescribedrun=1
-real (ids_real) :: StopTime = 750.d0
+integer :: pulse=170, run=8, prescribedpulse=170, prescribedrun=6
+real (ids_real) :: tt, StopTime = 750.d0
 
 ! define local variables
-integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop
+integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, imax=1000, nloop, nt
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
@@ -75,40 +75,77 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 print *,' Enter pulse number'
 !read (*,*)prescribedpulse
-prescribedpulse=170
 
 print *,' pulse number',prescribedpulse
-pulse=prescribedpulse
+!read (*,*)pulse
 
 print *,' Enter run number'
 !read (*,*)prescribedrun
-prescribedrun=1
+
 print *,' run number',prescribedrun
 
+print *,' Enter maximum steps number'
+!read (*,*)imax
+imax=1000
+print *,' imax',imax
+
 write(*,*) 'The file'
+
+
+call imas_open('ids',170,1,idx)
+call ids_get(idx,"em_coupling",em_coupling0)
+call ids_get(idx,"pulse_schedule",pulse_schedule)
+call ids_get(idx,"equilibrium",equilibrium0)
+call imas_close(idx)
+write(*,*) 'Transferred non-timed IDSs'
+
+
 
 write(*,*) 'Reading the prescribed IDS'
 call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
 
-call ids_get(idx0,"em_coupling",em_coupling0)
-call ids_get(idx0,"equilibrium",equilibrium0)
-call ids_get(idx0,"pf_active",pf_active0)
-call ids_get(idx0,"pf_passive",pf_passive0)
-call ids_get(idx0,"core_profiles",core_profiles0)
-call ids_get(idx0,"core_sources",core_sources0)
-call ids_get(idx0,"transport_solver_numerics",bndcond)
-call ids_get(idx0,"pulse_schedule",pulse_schedule)
+!call ids_get(idx0,"em_coupling",em_coupling0)
+!call ids_get(idx0,"pulse_schedule",pulse_schedule)
+
+
+call ids_get(idx0,"pf_active",pf_active_a)
 
 write(*,*) 'Finished reading the prescribed IDS'
-call imas_close(idx0)
 
 
 arr_in1(1:31)=1
 arr_out1(1:31)=0
 
-do iloop=1,1000000
 
-write(*,*) 'call DINA_IMAS i =',iloop
+
+nt = size(pf_active_a%time,1)
+nloop = min(imax,nt)
+write(*,*) 'nloop, nt =', nloop, nt
+
+
+do iloop=1,nloop
+
+write(*,*) 'call DINA_CIRC i =',iloop
+
+tt = pf_active_a%time(iloop)
+
+
+nact = size(pf_active_a%coil,1)
+do i=1,nact
+  write(*,*) 'coil voltage =', i, pf_active_a%coil(i)%voltage%data(iloop)
+  arr_in1(2+i) = pf_active_a%coil(i)%voltage%data(iloop)
+enddo
+
+
+
+call ids_get_slice(idx0,"transport_solver_numerics",bndcond,tt,1)
+!call ids_get_slice(idx0,"equilibrium",equilibrium0,tt,1)
+call ids_get_slice(idx0,"pf_active",pf_active0,tt,1)
+call ids_get_slice(idx0,"pf_passive",pf_passive0,tt,1)
+call ids_get_slice(idx0,"core_profiles",core_profiles0,tt,1)
+call ids_get_slice(idx0,"core_sources",core_sources0,tt,1)
+
+
 
 call dina_imas_circ( em_coupling0, equilibrium0 &
  & , pf_active0,  pf_passive0, core_profiles0, core_sources0 &
@@ -119,9 +156,8 @@ call dina_imas_circ( em_coupling0, equilibrium0 &
  & , summary &
  & , arr_in1,arr_out1)
 
-write(*,*) "Controller work"
-
-call dina_contr(arr_out1,arr_in1)
+!write(*,*) "Controller work"
+!call dina_contr(arr_out1,arr_in1)
 
 !call dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
 !call dina_transp2(equilibrium0, core_profiles0, core_profiles)
@@ -187,6 +223,8 @@ if (summary%time(1).gt.StopTime) exit
 
 end do
 
+
+call imas_close(idx0)
 !call imas_close(idx)
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

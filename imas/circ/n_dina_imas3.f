@@ -187,7 +187,7 @@ c ============ outputs ==============================================
       return
       end
 
-
+     
       
 	subroutine dina_outp(n_xx,
      * tpl_xx,uli_xx,v_xx,parea_xx,psi_ax_xx,rmag_xx,zmag_xx,
@@ -197,8 +197,9 @@ c ============ outputs ==============================================
      * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
      * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,
-     * tene_xx,wfus_xx,emag_xx)
-
+     * tene_xx,wfus_xx,emag_xx,
+     * vchopper_xx,pf_xx,tcam_xx)
+     
 
 	include 'double.inc'
 	include 'new_com.inc'
@@ -213,6 +214,7 @@ c ============ outputs ==============================================
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
         dimension xbound_xx(*),ybound_xx(*)
 
+        dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
 
       n_xx=n
 
@@ -300,6 +302,16 @@ c=================================================
 	   end do
 	end do
 
+	
+	do i=1,npf
+	   vchopper_xx(i) = vchopper(i)
+	   pf_xx(i) = pf(i)*1.d3
+	enddo
+	
+	do i=1,ncam
+	   tcam_xx(i) = tcam(i)*1.d3
+	enddo
+	
 
 	if(kpr.eq.1)print *,' tt t_vde=',tt,t_vde
 
@@ -420,7 +432,9 @@ c=================================================
 
      *  pfgreen_mat,vesgreen_mat,
 
-     *  pfprobe_mat,vesprobe_mat,ngrid2)
+     *  pfprobe_mat,vesprobe_mat,ngrid2,
+     
+     *  pf_mat, tcam_mat)
 
       	include 'double.inc'
 
@@ -443,7 +457,9 @@ c=================================================
 
      *  pfprobe_mat(kprobe_mat,*),vesprobe_mat(kprobe_mat,*),
      
-     * gridrange(*)
+     *  gridrange(*),
+     
+     *  pf_mat(*), tcam_mat(*)
 
 	real *8 z_l,z_r,r_l,r_r                                                
 
@@ -537,8 +553,7 @@ c	implicit real *8 (a-h,o-z)
 
      *	/c_add7/i_en4
 
-
-	real*8 pf_mat(kf),tcam_mat(mu)                                                                        
+                                                                        
 	dimension a_print(100)
 	character *20 apr
 
@@ -858,6 +873,15 @@ c	call out42(n_pr,a_print,num,apr)
 
 	end if                                                                 
 
+	
+	do i=1,npf
+	  pf(i) = pf_mat(i)*1.d-3
+	enddo
+	do i=1,ncam
+	  tcam(i) = tcam_mat(i)*1.d-3
+	enddo
+	
+	
         RETURN                                                          
 
         END                                                             

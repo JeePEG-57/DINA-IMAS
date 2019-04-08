@@ -210,20 +210,20 @@ end do
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 write(*,*) 'DINA_IMAS loop finished, clean up'
 
-write(*,*) 'Deallocate static IDS'
-call ids_deallocate(em_coupling0)
-call ids_deallocate(equilibrium0)
-call ids_deallocate(pf_active0)
-call ids_deallocate(pf_passive0)
-call ids_deallocate(pulse_schedule)
-call ids_deallocate(core_profiles0)
-call ids_deallocate(core_sources0)
+!write(*,*) 'Deallocate static IDS'
+!call ids_deallocate(em_coupling0)
+!call ids_deallocate(equilibrium0)
+!call ids_deallocate(pf_active0)
+!call ids_deallocate(pf_passive0)
+!call ids_deallocate(pulse_schedule)
+!call ids_deallocate(core_profiles0)
+!call ids_deallocate(core_sources0)
 
-call ids_deallocate(pf_active)
-call ids_deallocate(pf_passive)
-call ids_deallocate(equilibrium)
-call ids_deallocate(magnetics)
-call ids_deallocate(core_profiles)
+!call ids_deallocate(pf_active)
+!call ids_deallocate(pf_passive)
+!call ids_deallocate(equilibrium)
+!call ids_deallocate(magnetics)
+!call ids_deallocate(core_profiles)
 
 ! write(*,*) 'Read back full dynamic IDS as a test'
 ! 
