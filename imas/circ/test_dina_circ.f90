@@ -87,7 +87,7 @@ print *,' run number',prescribedrun
 
 print *,' Enter maximum steps number'
 !read (*,*)imax
-imax=1000
+imax=10
 print *,' imax',imax
 
 write(*,*) 'The file'
@@ -95,7 +95,7 @@ write(*,*) 'The file'
 
 call imas_open('ids',170,1,idx)
 call ids_get(idx,"em_coupling",em_coupling0)
-call ids_get(idx,"pulse_schedule",pulse_schedule)
+!call ids_get(idx,"pulse_schedule",pulse_schedule)
 call ids_get(idx,"equilibrium",equilibrium0)
 call imas_close(idx)
 write(*,*) 'Transferred non-timed IDSs'
@@ -210,7 +210,7 @@ write(*,*) 'PF currents error', tact_err
 tpass_err = 0.d0
 npass = size(pf_passive%loop, 1)
 do i=1,npass
-  tpass_err = tpass_err + pf_passive%loop(i)%current(1) - pf_passive0%loop(i)%current(1)
+  tpass_err = tpass_err + abs(pf_passive%loop(i)%current(1) - pf_passive0%loop(i)%current(1))
 enddo
 write(*,*) 'Passive current error', tpass_err
 
@@ -256,7 +256,7 @@ call ids_deallocate(core_sources0)
 
 call ids_deallocate(pf_active)
 call ids_deallocate(pf_passive)
-call ids_deallocate(equilibrium)
+!call ids_deallocate(equilibrium)
 call ids_deallocate(magnetics)
 call ids_deallocate(core_profiles)
 
