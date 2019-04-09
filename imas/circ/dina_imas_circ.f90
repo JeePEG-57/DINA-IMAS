@@ -119,7 +119,7 @@ if (first_call == 1) then ! convert input trees to local variables before callin
 
 call cpu_time(cpu_old)
 
-call schedulefiles(pulse_schedule,equilibrium0)
+! call schedulefiles(pulse_schedule,equilibrium0)
 
 
 nact=size(em_coupling0%mutual_grid_active,2)
