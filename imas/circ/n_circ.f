@@ -204,17 +204,19 @@ c______________________________
 
 	i_en2=i_en2+1            
 
+        kpr=0
+
 	if(i_en2.eq.1)then	
 
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
+!        open (unit=1,file='kpr.dat',form='formatted')
+!        read (1,*)
+!        read (1,*)kpr
 
         if(kpr.eq.1)print *,' i_en2== kpr ',i_en2,kpr
         
 !              i_con=3
 
-        close ( unit=1)       
+!        close ( unit=1)       
 
 
       	ARG=1.d0                                     

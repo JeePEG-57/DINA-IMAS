@@ -212,7 +212,7 @@ npass = size(pf_passive%loop, 1)
 do i=1,npass
   tpass_err = tpass_err + abs(pf_passive%loop(i)%current(1) - pf_passive0%loop(i)%current(1))
 enddo
-write(*,*) 'Passive current error', tpass_err
+write(*,*) 'Passive currents summary error', tpass_err
 
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &

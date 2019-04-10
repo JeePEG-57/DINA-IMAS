@@ -286,7 +286,7 @@ end if ! end of first_call
 
 loop_count = loop_count + 1 ! number of times the iterative routine was entered
 
-write(*,*) 'dina_imas loop, first_call = ', first_call, loop_count
+write(*,*) 'dina_imas loop, first_call = ', loop_count, first_call
 
 
 
@@ -571,7 +571,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 
 ! call ids_copy(core_profiles0,core_profiles)
 
-write(*,*) 'Allocate core_profiles... '
+!write(*,*) 'Allocate core_profiles... '
 
     allocate(core_profiles%profiles_1d(TimeSteps))
     allocate(core_profiles%time(TimeSteps))
@@ -599,7 +599,7 @@ write(*,*) 'Allocate core_profiles... '
     core_profiles%time(CurTimeStep) = tt ![s]
 
 
-write(*,*) 'Write core_profiles transp... '
+!write(*,*) 'Write core_profiles transp... '
 ! Transp1
 allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
 allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
@@ -641,33 +641,33 @@ allocate(core_profiles%profiles_1d(1)%conductivity_parallel(n))
  core_profiles%profiles_1d(1)%j_bootstrap(1:n) = jbut(1:n)*1.d7
  core_profiles%profiles_1d(1)%conductivity_parallel(1:n) = sigk(1:n)
 
-      apr='tok1++' 
+!      apr='tok1++' 
 !      print 71,apr,(tok1(i),i=1,n) 
-      apr='j_cd++' 
+!      apr='j_cd++' 
 !      print 71,apr,(aj0(i),i=1,n) 
-      apr='j_boot++' 
+!      apr='j_boot++' 
 !      print 71,apr,(jbut(i),i=1,n) 
-      apr='tok1++' 
-      print 71,apr,(core_profiles%profiles_1d(CurTimeStep)%j_tor(i),i=1,n) 
+!      apr='tok1++' 
+!      print 71,apr,(core_profiles%profiles_1d(CurTimeStep)%j_tor(i),i=1,n) 
 
 
-      apr='sigk++' 
-      print 71,apr,(core_profiles%profiles_1d(1)%conductivity_parallel(i),i=1,n) 
+!      apr='sigk++' 
+!      print 71,apr,(core_profiles%profiles_1d(1)%conductivity_parallel(i),i=1,n) 
 
 
 !Transp4
 allocate(core_profiles%profiles_1d(1)%j_non_inductive(n))
  core_profiles%profiles_1d(1)%j_non_inductive(1:n) = aj0(1:n)*1.d7 + core_profiles%profiles_1d(1)%j_bootstrap(1:n)
 
-      apr='j_cd++' 
-      print 71,apr,(core_profiles%profiles_1d(1)%j_non_inductive(i),i=1,n) 
-      apr='j_boot++' 
-      print 71,apr,(core_profiles%profiles_1d(1)%j_bootstrap(i),i=1,n) 
+!      apr='j_cd++' 
+!      print 71,apr,(core_profiles%profiles_1d(1)%j_non_inductive(i),i=1,n) 
+!      apr='j_boot++' 
+!      print 71,apr,(core_profiles%profiles_1d(1)%j_bootstrap(i),i=1,n) 
 
 !Sources
 
 
-write(*,*) 'Allocate core_sources... '
+!write(*,*) 'Allocate core_sources... '
 allocate(core_sources%source(1))
     allocate(core_sources%source(1)%profiles_1d(TimeSteps))
     allocate(core_sources%time(TimeSteps))
@@ -684,7 +684,7 @@ allocate(core_sources%source(1))
     core_sources%source(1)%profiles_1d(CurTimeStep)%time = tt
     core_sources%time(CurTimeStep) = tt ![s]
 
-write(*,*) 'Write core_sources...'
+!write(*,*) 'Write core_sources...'
 
 allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%electrons%energy(n))
 allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(n))
@@ -693,7 +693,7 @@ allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(n))
 
 
 !SOLPS
-write(*,*) 'Allocate core_transport... '
+!write(*,*) 'Allocate core_transport... '
 allocate(core_transport%model(1))
     allocate(core_transport%model(1)%profiles_1d(TimeSteps))
     allocate(core_transport%time(TimeSteps))
@@ -715,7 +715,7 @@ allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2))
 
 
 
-write(*,*) 'Write core_transport... '
+!write(*,*) 'Write core_transport... '
 allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%electrons%energy%flux(n))
 allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%total_ion_energy%flux(n))
  core_transport%model(1)%profiles_1d(CurTimeStep)%electrons%energy%flux(1:n-1) = 0.d0
