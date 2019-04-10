@@ -607,11 +607,12 @@ c----
 
                                                                         
 
-        write(41,*)' nre nze ',nre,nze                                  
+      
+!        write(41,*)' nre nze ',nre,nze                                  
 
                                                                         
 
-        write (41,*)' dx dy ',dx,dy                                     
+!        write (41,*)' dx dy ',dx,dy                                     
 
                                                                         
 
@@ -621,7 +622,7 @@ c----
 
 	x(i)=re(i)                                                             
 
-        write(41,*)' i x ',i,x(i)                                       
+!        write(41,*)' i x ',i,x(i)                                       
 
 	end do                                                                 
 
@@ -631,7 +632,7 @@ c----
 
 	   y(i)=ze(i)                                                          
 
-        write(41,*)' i y ',i,y(i)                                       
+!        write(41,*)' i y ',i,y(i)                                       
 
 	end do                                                                 
 
@@ -674,7 +675,7 @@ c---------------------------------
 c	call out42(n_pr,a_print,num,apr)
                                                                         
 
-       write(41,*)' ncam npf kloop kprobe ke',ncam,npf,kloop,kprobe,ke  
+!       write(41,*)' ncam npf kloop kprobe ke',ncam,npf,kloop,kprobe,ke  
 
                                                                         
 
@@ -686,7 +687,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   yu(k)=yu_mat(k)*100.                                                
 
-        write(41,*)' k xu yu ',k,xu(k),yu(k)                            
+!        write(41,*)' k xu yu ',k,xu(k),yu(k)                            
 
 	end do                                                                 
 
@@ -706,7 +707,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k rcam pmj ',k,rcam(k),pmj(k,k)                    
+!        write(41,*)' k rcam pmj ',k,rcam(k),pmj(k,k)                    
 
 	end do                                                                 
 
@@ -724,7 +725,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k pfc ',k,pfc(k,1),pfc(k,2),pfc(k,3)               
+!        write(41,*)' k pfc ',k,pfc(k,1),pfc(k,2),pfc(k,3)               
 
 	end do                                                                 
 
@@ -743,7 +744,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k pfres pfind ',k,pfres(k),pfind(k,k)              
+!        write(41,*)' k pfres pfind ',k,pfres(k),pfind(k,k)              
 
 	end do                                                                 
 
@@ -763,7 +764,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k vesarr ',k,vesarr(1,k),vesarr(2,k),vesarr(3,k)   
+!        write(41,*)' k vesarr ',k,vesarr(1,k),vesarr(2,k),vesarr(3,k)   
 
 	end do                                                                 
 
@@ -780,9 +781,9 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)'k fluxarr',k,fluxarr(1,k),                          
+!        write(41,*)'k fluxarr',k,fluxarr(1,k),                          
 
-     *  fluxarr(2,k),fluxarr(3,k)                                       
+!     *  fluxarr(2,k),fluxarr(3,k)                                       
 
 	end do                                                                 
 
