@@ -22,8 +22,8 @@ echo "-----------------"
 
 if [ $input == 'keplerinstall' ]; then
 
-   module purge
-   module load kepler/2.5p2-2.1.3
+#   module purge
+#   module load kepler/2.5p2-2.1.3
    yes | kepler_install $KEPLERMODULE
   
   # ---> Check if Kepler is correctly installed 
