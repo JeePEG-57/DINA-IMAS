@@ -22,8 +22,7 @@ echo "-----------------"
 
 if [ $input == 'keplerinstall' ]; then
 
-  rm -rf $KEPLER/$KEPLERMODULE
-  yes | kepler_install $KEPLERMODULE
+   yes | kepler_install $KEPLERMODULE
   
   # ---> Check if Kepler is correctly installed 
   ls $KEPLER/build-area/build.xml  || exit 1
