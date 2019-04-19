@@ -22,8 +22,7 @@ module load kepler/2.5p2-2.1.3
 export KEPLER_DIR=~/Keplerdir
 #module load Keplerdir/my2.5p2-2.1.3
 # KEPLER ENVIRONMENT VARIABLES
-#KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
-KEPLERMODULE=my2.5p2-2.1.3
+KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
 module load $KEPLERMODULE
 
 module load fc2k/4.2.6
