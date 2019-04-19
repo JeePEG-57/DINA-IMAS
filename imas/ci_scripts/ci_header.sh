@@ -21,9 +21,13 @@ module load imas/3.10.1/ual/3.6.0
 module load kepler/2.5p2-2.1.3
 export KEPLER_DIR=~/Keplerdir
 #module load Keplerdir/my2.5p2-2.1.3
+
 # KEPLER ENVIRONMENT VARIABLES
-KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
-module load $KEPLERMODULE
+#KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
+#module load $KEPLERMODULE
+
+KEPLERMODULE=my2.5p-2.1.3
+
 
 module load fc2k/4.2.6
 export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
