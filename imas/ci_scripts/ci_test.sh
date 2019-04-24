@@ -20,23 +20,34 @@ echo "-----------------"
 
 # ----------------------------------------------------------------------------------------------------------
 
-if [ $input == 'initialIDS' ]; then
+if [ $input == 'flat' ]; then
+
+  # ---> Extract test_dina_to_imas artifact
+  cd imas/test_flat
+  tar -xzvf test_flat.tgz || exit 1
+
+  # ---> Inductance matrices calculation
+  ./test_flat | tee -a test_flat.log
+
+# ----------------------------------------------------------------------------------------------------------
+
+elif [ $input == 'initialIDS' ]; then
 
   # ---> Extract test_dina_to_imas artifact
   cd imas/interface
   tar -xzvf test_dina_to_imas.tgz || exit 1
 
   # ---> Create local database
-  cd ../../tools/IDSInit
-  ../../imas/interface/test_dina_to_imas | tee -a test_dina_to_imas.log
+  cd ../regression
+  ../interface/test_dina_to_imas | tee -a test_dina_to_imas.log
   
   # ---> If some magic string is not found. Then error!
   test -n "$(grep 'All finished' test_dina_to_imas.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
   # ---> If some bloody string is found. Then error!
   test -z "$(grep -i 'ERROR' test_dina_to_imas.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
 
-
 # ----------------------------------------------------------------------------------------------------------
+
 elif [ $input == 'regression' ]; then
 
   # ---> Extract test_circ artifact

@@ -22,8 +22,6 @@ echo "-----------------"
 
 if [ $input == 'keplerinstall' ]; then
 
-#   module purge
-#   module load kepler/2.5p2-2.1.3
    yes | kepler_install $KEPLERMODULE
   
   # ---> Check if Kepler is correctly installed 
@@ -44,6 +42,18 @@ elif [ $input == 'dina' ]; then
   # ---> test_dina_to_imas artifact
   cd imas/interface
   tar -czvf test_dina_to_imas.tgz test_dina_to_imas || exit 1
+
+# ----------------------------------------------------------------------------------------------------------
+
+elif [ $input == 'flat' ]; then
+
+  cd imas/test_flat/
+
+  make clean
+  make || exit 1
+  
+  # ---> test_circ artifact
+  tar -czvf test_flat.tgz test_flat || exit 1
 
 # ----------------------------------------------------------------------------------------------------------
 
