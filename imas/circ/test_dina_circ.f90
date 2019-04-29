@@ -68,7 +68,7 @@ integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, imax=1000, nloop
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
-real (ids_real) :: tact_err(15), tpass_err
+real (ids_real) :: tact_err(15), tpass_err, tmaxa
 
 ! for timing tests
 INTEGER :: clock_start,clock_end,clock_rate
@@ -202,17 +202,24 @@ call dina_imas_circ( em_coupling0, equilibrium0 &
 
 
 nact = size(pf_active%coil, 1)
+tmaxa = 0.d0
 do i=1,nact
   tact_err(i) = pf_active%coil(i)%current%data(1) - pf_active0%coil(i)%current%data(1)
+  tmaxa = max(tmaxa,abs(pf_active0%coil(i)%current%data(1)))
 enddo
 write(*,*) 'PF currents error', tact_err
+write(*,*) 'PF currents reler', tact_err/tmaxa
+write(*,*) 'PF currents max relative error', maxval(abs(tact_err/tmaxa))
 
 tpass_err = 0.d0
+tmaxa = 0d0
 npass = size(pf_passive%loop, 1)
 do i=1,npass
   tpass_err = tpass_err + abs(pf_passive%loop(i)%current(1) - pf_passive0%loop(i)%current(1))
+  tmaxa = max(tmaxa,abs(pf_passive0%loop(i)%current(1)))
 enddo
-write(*,*) 'Passive currents summary error', tpass_err
+write(*,*) 'Passive currents sum abs error', tpass_err
+write(*,*) 'Passive currents relative error', tpass_err/tmaxa
 
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
