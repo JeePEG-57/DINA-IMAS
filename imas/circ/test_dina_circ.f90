@@ -139,12 +139,12 @@ enddo
 
 
 
-call ids_get_slice(idx0,"transport_solver_numerics",bndcond,tt,1)
+!call ids_get_slice(idx0,"transport_solver_numerics",bndcond,tt,1)
 !call ids_get_slice(idx0,"equilibrium",equilibrium0,tt,1)
 call ids_get_slice(idx0,"pf_active",pf_active0,tt,1)
 call ids_get_slice(idx0,"pf_passive",pf_passive0,tt,1)
-call ids_get_slice(idx0,"core_profiles",core_profiles0,tt,1)
-call ids_get_slice(idx0,"core_sources",core_sources0,tt,1)
+!call ids_get_slice(idx0,"core_profiles",core_profiles0,tt,1)
+!call ids_get_slice(idx0,"core_sources",core_sources0,tt,1)
 
 
 
@@ -229,15 +229,15 @@ call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
 
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
-call ids_deallocate(equilibrium0)
-call ids_deallocate(core_profiles0)
-call ids_deallocate(core_sources0)
+!call ids_deallocate(equilibrium0)
+!call ids_deallocate(core_profiles0)
+!call ids_deallocate(core_sources0)
 
 call ids_copy(pf_active, pf_active0)
 call ids_copy(pf_passive, pf_passive0)
-call ids_copy(equilibrium, equilibrium0)
-call ids_copy(core_profiles, core_profiles0)
-call ids_copy(core_sources, core_sources0)
+!call ids_copy(equilibrium, equilibrium0)
+!call ids_copy(core_profiles, core_profiles0)
+!call ids_copy(core_sources, core_sources0)
 
 
 write(*,*) '****** Pulse time =',summary%time(1),'/',StopTime

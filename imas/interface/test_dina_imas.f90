@@ -92,7 +92,7 @@ print *,' imax',imax
 
 print *,' Enter decimation for filling the database'
 !read (*,*)idec
-idec=10
+idec=100
 !idec=1
 print *,' idec',idec
 

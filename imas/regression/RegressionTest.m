@@ -6,27 +6,34 @@ run = [6 8];
 %% Select coils to compare
 coils = [1 5 11];
 
+reload = 1;
+
 %%
 col = cell(1,2);
 col{1} = 'b';
 col{2} = 'r';
+col{3} = 'g';
+
 lnt = cell(1,2);
 lnt{1} = '-';
 lnt{2} = '--';
+lnt{3} = '.';
 
 addpath ../../tools
 %%
+if reload
 pfa = cell(1,length(run));
 for ip=1:length(pfa)
     pfa{ip} = LoadIDS(pulse(ip),run(ip),'pf_active');
 end
-
+end
 %%
+if reload
 pfp = cell(1,length(run));
 for ip=1:length(pfp)
     pfp{ip} = LoadIDS(pulse(ip),run(ip),'pf_passive');
 end
-
+end
 %% Compare active currents
 
 ncoil = length(pfa{1}.coil);
@@ -37,15 +44,19 @@ for ic=coils
     npfa = length(pfa);
     for ip=1:npfa
     
-        plot(pfa{ip}.time, pfa{ip}.coil{ic}.current.data, [lnt{ip} col{ip}]);
+        plot(pfa{1,ip}.time, pfa{1,ip}.coil{ic}.current.data, [lnt{1,ip} col{1,ip}]);
         hold on;
     end
+    xlabel('time, s');
+    ylabel('I, A');
+    title(['Coil ' num2str(ic)]);
+%     legend();
 end
 
 
 %% Compare active voltages
 
-ncoil = length(pfa{ip}.coil);
+ncoil = length(pfa{1}.coil);
 for ic=coils
     figure(ncoil+ic);
     clf;
@@ -53,14 +64,17 @@ for ic=coils
     npfa = length(pfa);
     for ip=1:npfa
     
-        plot(pfa{ip}.time, pfa{ip}.coil{ic}.voltage.data, [lnt{ip} col{ip}]);
+        plot(pfa{1,ip}.time, pfa{1,ip}.coil{ic}.voltage.data, [lnt{1,ip} col{1,ip}]);
         hold on;
     end
+    xlabel('time, s');
+    ylabel('U, V');
+    title(['Coil ' num2str(ic)]);
 end
 
 %% Compare passive currents
 
-figure(3);
+figure(2*ncoil+1);
 clf;
 
 npfp = length(pfp);
