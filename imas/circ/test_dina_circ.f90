@@ -66,7 +66,7 @@ real (ids_real) :: tt, StopTime = 750.d0
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, imax=1000, nloop, nt
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
-integer :: idx, idx0, err
+integer :: idx, idx0, idxc, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
 real (ids_real) :: tact_err(15), tpass_err, tmaxa
 
@@ -110,6 +110,8 @@ call imas_open('ids',prescribedpulse,prescribedrun,idx0)
 
 
 call ids_get(idx0,"pf_active",pf_active_a)
+
+call imas_create('ids',pulse,run,1,1,idxc)
 
 write(*,*) 'Finished reading the prescribed IDS'
 
@@ -222,9 +224,22 @@ write(*,*) 'Passive currents sum abs error', tpass_err
 write(*,*) 'Passive currents relative error', tpass_err/tmaxa
 
 
-call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
- & core_sources, core_transport, bndcond, summary, &
-& pulse, run, iloop, err)
+!call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
+! & core_sources, core_transport, bndcond, summary, &
+!& pulse, run, iloop, err)
+
+if (iloop == 1) then
+
+call ids_put(idxc,"pf_active",pf_active)
+call ids_put(idxc,"pf_passive",pf_passive)
+
+else
+
+call ids_put_slice(idxc,"pf_active",pf_active)
+call ids_put_slice(idxc,"pf_passive",pf_passive)
+
+endif
+
 
 
 call ids_deallocate(pf_active0)
@@ -247,7 +262,7 @@ end do
 
 
 call imas_close(idx0)
-!call imas_close(idx)
+call imas_close(idxc)
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 write(*,*) 'DINA_IMAS loop finished, clean up'
