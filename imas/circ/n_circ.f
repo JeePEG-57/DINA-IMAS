@@ -249,7 +249,7 @@ c______________________________
 
       end if
 
-!      call shape_pfres()
+      call shape_pfres()
 	if(i_gen.eq.0)call inv_gen()
 
 	if(i_gen.eq.1)call inv_gen_pf()
@@ -264,7 +264,7 @@ c______________________________
       end if
 
 
-!      call shape_pfres()
+      call shape_pfres()
       if(i_gen.eq.0)call gen()              
 	if(i_gen.eq.1)call gen_pf()              
 
