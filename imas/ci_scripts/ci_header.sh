@@ -2,6 +2,7 @@
 
 # SET UP ENVIRONMENT FOR COMPILATION
 . /usr/share/Modules/init/sh
+module use /work/imas/etc/attic
 module use /work/imas/etc/modulefiles
 module use /work/imas/etc/modules/all
 shopt -s expand_aliases
