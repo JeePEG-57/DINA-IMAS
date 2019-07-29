@@ -235,6 +235,9 @@ pulse_schedule.density_control.valve{iv}.species{1}.element{1}.z_n = n_z;
 
 disp('Saving IDS...');
 
+pulse_schedule.ids_properties.homogeneous_time = 1;
+pulse_schedule.time = time;
+
 SaveIDS(Shot, Run, PSString, pulse_schedule);
 SaveIDS(Shot, Run, EQString, equilibrium);
 

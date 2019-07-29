@@ -88,7 +88,8 @@ print *,' run number',prescribedrun
 write(*,*) 'The file'
 
 write(*,*) 'Reading the prescribed IDS'
-call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
+! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
+call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,'medveds','test','3') 
 
 call ids_get(idx0,"em_coupling",em_coupling0)
 call ids_get(idx0,"equilibrium",equilibrium0)

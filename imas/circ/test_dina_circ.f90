@@ -93,7 +93,9 @@ print *,' imax',imax
 write(*,*) 'The file'
 
 
-call imas_open('ids',170,1,idx)
+! call imas_open('ids',170,1,idx)
+call imas_open_env('ids',170,1,idx,'medveds','test','3') 
+
 call ids_get(idx,"em_coupling",em_coupling0)
 !call ids_get(idx,"pulse_schedule",pulse_schedule)
 call ids_get(idx,"equilibrium",equilibrium0)
@@ -101,9 +103,9 @@ call imas_close(idx)
 write(*,*) 'Transferred non-timed IDSs'
 
 
-
 write(*,*) 'Reading the prescribed IDS'
-call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
+! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
+call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,'medveds','test','3') 
 
 !call ids_get(idx0,"em_coupling",em_coupling0)
 !call ids_get(idx0,"pulse_schedule",pulse_schedule)
@@ -111,7 +113,8 @@ call imas_open('ids',prescribedpulse,prescribedrun,idx0)
 
 call ids_get(idx0,"pf_active",pf_active_a)
 
-call imas_create('ids',pulse,run,1,1,idxc)
+! call imas_create('ids',pulse,run,1,1,idxc)
+call imas_create_env('ids',pulse,run,1,1,idxc,'medveds','test','3')
 
 write(*,*) 'Finished reading the prescribed IDS'
 

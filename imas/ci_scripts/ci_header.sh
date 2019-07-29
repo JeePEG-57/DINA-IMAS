@@ -2,7 +2,7 @@
 
 # SET UP ENVIRONMENT FOR COMPILATION
 . /usr/share/Modules/init/sh
-module use /work/imas/etc/attic
+# module use /work/imas/etc/attic
 module use /work/imas/etc/modulefiles
 module use /work/imas/etc/modules/all
 shopt -s expand_aliases
@@ -17,22 +17,48 @@ shopt -s expand_aliases
 # fi
 
 module purge 2> /dev/null
-module load imas/3.10.1/ual/3.6.0
-
-module load kepler/2.5p2-2.1.3
-export KEPLER_DIR=~/Keplerdir
-#module load Keplerdir/my2.5p2-2.1.3
+# module load imas/3.10.1/ual/3.6.0
+module load IMAS/3.23.3-4.1.5
+# module load IMAS/3.21.0-3.8.11
 
 # KEPLER ENVIRONMENT VARIABLES
-# KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
-# module load $KEPLERMODULE
-KEPLERMODULE=my2.5p2-2.1.3
-module load Keplerdir/$KEPLERMODULE
 
-module load fc2k/4.2.6
-export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
-module load matlab/2012b
+# module load kepler/2.5p2-2.1.3
+# export KEPLER_DIR=~/Keplerdir
+# #module load Keplerdir/my2.5p2-2.1.3
+# # KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
+# # module load $KEPLERMODULE
+# KEPLERMODULE=my2.5p2-2.1.3
+# module load Keplerdir/$KEPLERMODULE
+
+KEPLERVERSON=Kepler/2.5p4-3.0.4
+# KEPLERVERSON=Kepler/2.5p2-2.1.4
+# KEPLERVERSON=Kepler/2.5p4-2.1.5
+module load $KEPLERVERSON
+
+# KEPLERMODULE=MY2.5p2-2.1.4
+# KEPLERMODULE=MY2.5p4-2.1.5
+# module load Keplerdir/$KEPLERMODULE
+
+KEPLERMODULE=MY2.5p4-3.0.4
+if kepler_avail | grep -q $KEPLERMODULE; then
+   echo "matched"
+   kepler_load $KEPLERMODULE
+else
+   echo "run bash ci_build.sh keplerinstall"
+fi
+
+# module load fc2k/4.2.6
+module load FC2K/4.6.3
+
+# export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
+module load MATLAB/2018a
+
 imasdb test
+
+module load TotalView
+
+export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
 # # FOR PYUAL (PYTHON WORKFLOWS)
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH

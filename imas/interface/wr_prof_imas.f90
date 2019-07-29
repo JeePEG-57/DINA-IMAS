@@ -49,7 +49,8 @@
 	
 !    kpr=1
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -117,7 +118,8 @@
 	
 !     kpr=1
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -185,7 +187,8 @@
 
 	if(kpr.eq.1)print *,' imas open== pulse run ',pulse,run
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_sources', cs)
 	call imas_close(idx)
 	
@@ -255,7 +258,8 @@
 !	    kpr=1
 
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_sources', cs)
 	call imas_close(idx)
 	
@@ -320,7 +324,8 @@
 !	    kpr=1
 
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -386,7 +391,8 @@
 !	    kpr=1
 
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -449,7 +455,8 @@
 	
 !	    kpr=1
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -515,7 +522,8 @@
 	
 !	kpr=1
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -578,7 +586,8 @@
 
 !     kpr=1
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'equilibrium', eq)
 	call imas_close(idx)
 	
@@ -639,7 +648,8 @@
       common/ge5/kpr
 	
 	
-	call imas_open('ids', pulse, run, idx) 
+! 	call imas_open('ids', pulse, run, idx)
+	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	

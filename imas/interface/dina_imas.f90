@@ -302,10 +302,23 @@ n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
  tq0(1:n1) = core_profiles0%profiles_1d(1)%t_i_average(1:n1)
 
  !Boundary conditions
-if (associated(bndcond_in%profiles_1d)) then
+! if (associated(bndcond_in%profiles_1d)) then
+!     write(*,*) 'dina_imas : boundary conditions are found'
+!  te0(n1) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
+!  tq0(n1) = bndcond_in%profiles_1d(1)%energy_ion_total%boundary_condition%value(1)
+!  
+!      write(*,*) 'te0(n1) tq0(n1)= ', &
+!     & te0(n1),tq0(n1)
+! 
+!       call solpsza_example_in(te0(n1),tq0(n1))
+! 
+! 
+! end if
+
+if (associated(bndcond_in%solver_1d)) then
     write(*,*) 'dina_imas : boundary conditions are found'
- te0(n1) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
- tq0(n1) = bndcond_in%profiles_1d(1)%energy_ion_total%boundary_condition%value(1)
+ te0(n1) = bndcond_in%solver_1d(1)%equation(1)%boundary_condition(1)%value(1)
+ tq0(n1) = bndcond_in%solver_1d(1)%equation(3)%boundary_condition(1)%value(1)
  
      write(*,*) 'te0(n1) tq0(n1)= ', &
     & te0(n1),tq0(n1)

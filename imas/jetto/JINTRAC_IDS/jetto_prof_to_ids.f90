@@ -210,11 +210,13 @@ print*, cp%profiles_1d(nt)%j_bootstrap
 print*, 'File read successfull'
 
 
-call imas_create('ids',pulse,run,1,1,idx0)
+! call imas_create('ids',pulse,run,1,1,idx0)
+call imas_create_env('ids',pulse,run,1,1,idx0,'medveds','test','3') 
 
 print *,'Pulse, run =', pulse, run
 write(*,*) 'Opening the prescribed IDS'
-call imas_open('ids',pulse,run,idx0) 
+! call imas_open('ids', pulse, run, idx)
+call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 
 print *,'imas opened', idx0
 
