@@ -18,8 +18,8 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 # module load imas/3.10.1/ual/3.6.0
-module load IMAS/3.23.3-4.1.5
-# module load IMAS/3.21.0-3.8.11
+# module load IMAS/3.23.3-4.1.5
+module load IMAS/3.24.0-4.1.5
 
 # KEPLER ENVIRONMENT VARIABLES
 
@@ -31,7 +31,7 @@ module load IMAS/3.23.3-4.1.5
 # KEPLERMODULE=my2.5p2-2.1.3
 # module load Keplerdir/$KEPLERMODULE
 
-KEPLERVERSON=Kepler/2.5p4-3.0.4
+KEPLERVERSON=Kepler/2.5p4-3.0.5
 # KEPLERVERSON=Kepler/2.5p2-2.1.4
 # KEPLERVERSON=Kepler/2.5p4-2.1.5
 module load $KEPLERVERSON
@@ -40,12 +40,13 @@ module load $KEPLERVERSON
 # KEPLERMODULE=MY2.5p4-2.1.5
 # module load Keplerdir/$KEPLERMODULE
 
-KEPLERMODULE=MY2.5p4-3.0.4
-if kepler_avail | grep -q $KEPLERMODULE; then
-   echo "matched"
+KEPLERMODULE=MY2.5p4-3.0.5
+if kepler_avail 2> /dev/null | grep -q $KEPLERMODULE; then
+   echo kepler_load $KEPLERMODULE
    kepler_load $KEPLERMODULE
 else
    echo "run bash ci_build.sh keplerinstall"
+   return
 fi
 
 # module load fc2k/4.2.6
