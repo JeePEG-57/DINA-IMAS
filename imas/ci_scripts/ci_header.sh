@@ -60,6 +60,8 @@ module load TotalView
 
 export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
+module load PyQt5
+
 # # FOR PYUAL (PYTHON WORKFLOWS)
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
 # 
