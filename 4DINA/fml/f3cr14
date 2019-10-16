@@ -1,0 +1,8 @@
+C F3CR14 []:	smooth CAR14 to 3 points
+	if(j.le.NA1-2) then
+     	F3CR14=(CAR14(j+2)+CAR14(j+1)+CAR14(j))/3.d0
+	elseif (j.eq.NA1-1) then
+	F3CR14=(CAR14(j+1)+CAR14(j))/2.d0
+	else
+	F3CR14=CAR14(j)
+	endif

@@ -1,0 +1,12 @@
+C SP3DD [10^-19m3]:	The formula is a fit to suprathermal hydrogen
+C	density from  D-D reaction rate in DD plasma
+C	according to Putvinskiy
+C	d+d=t(1.008MeV)+p(3.025MeV)
+C	nfast = S*tauS*ln(1+(Vb/Vc)**3)/3
+C	tauS = 0.117*Afast*Te^1.5/ne
+C	Use: nfast = Nd*Nd*sp3dd 	[10^19m-3]
+C			(Polevoi 07-JUN-07)
+	include 'fml/svd2'
+	sp3dd=3025./(10.*TE(J)+1.e-7)
+	sp3dd=svd2*0.117*TE(J)*sqrt(TE(J))/(NE(J)+1.e-7)*
+     *	LOG(1.+sp3dd*sqrt(sp3dd)*5./6.)/3.	

@@ -1,0 +1,15 @@
+C XEXT [m#2/s]:	Experimental ion heat conductivity
+C			(A.Polevoi 21-08-13) 
+	YR=(J-.5)*HRO
+
+	if (J .lt. NA) then
+	XEXT=(G11(J)*NI(J)*GRAD(TIX,J))
+	else
+	XEXT =(G11(J)*NI(J)*GRAD(TIX,NA))
+	endif
+	if(XEXT.lt.-1.d-4) then 
+    	XEXT =-625.*(QITOTR(YR)-QIDWTR(YR))/XEXT
+	else
+	 XEXT=0.d0
+	endif
+

@@ -1,0 +1,3 @@
+C pfstc [a.u.]: peaking factor of alphas
+C			(Polevoi 28-07-09)
+	pfstc=pfast(1)*volume/vint(pfast,roc)

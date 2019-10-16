@@ -2803,6 +2803,16 @@ c---
            return
         end if
 
+	if(kzref.eq.1.and.krref.eq.4)then
+
+
+!!!           call br_bz_vec()
+
+           call br_bz()  
+
+
+           return
+        end if
 
 
 c	if(kpr.eq.1)print*,'rpp=',rpp
@@ -6438,7 +6448,7 @@ c	call out42(n_pr,a_print,num,apr)
 	urr=rref
 	vrr=zref
 
-c	print *,'rref zref ',rref,zref
+	print *,'++ rref zref ',rref,zref
 
 
 	a_print(1)=urr

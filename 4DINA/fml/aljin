@@ -1,0 +1,20 @@
+C----------------------------------------------------------------------|
+C ALJIN []:	MHD alpha (r) defined as
+C	CGS: \alpha_MHD = -2*R_0*[dp/d\rho]*4\pi[q/B]^2
+C	SI:  \alpha_MHD = -2*R_0*[dp/d\rho]*\mu_0[q/B]^2
+C						(Pereverzev 12-JAN-90)
+C----------------------------------------------------------------------|
+	if (j .lt. NA)	then
+	   ALJIN = (NEx(j+1)*TEx(j+1)-NEx(j)*TEx(j)
+     >		   +NIx(j+1)*TIx(j+1)-NIx(j)*TIx(j))/HRO
+	else
+	   ALJIN = (NEx(NA1)*TEx(NA1)-NEx(NA)*TEx(NA)
+     >	           +NIx(NA1)*TIx(NA1)-NIx(NA)*TIx(NA))/HROA
+CJINTRAC     >	           +NI(NA1)*TI(NA1)-NI(NA)*TI(NA))/HROA
+	endif
+	ALJIN = -4.02E-3*(F7x(j)+F8x(j))*0.5*ALJIN*mux(j)**2/
+     .	(RTOR*BTOR*IPOL(1)/(RTOR+SHIF(1)))**2
+!     .	(5.161)**2
+CJINTRAC	ALJIN = -4.02E-3*(RTOR+shif(j))*ALJIN/
+CJINTRAC     .	(MU(j)*RTOR*BTOR*IPOL(1)/(RTOR+SHIF(1)))**2
+

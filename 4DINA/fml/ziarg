@@ -1,0 +1,23 @@
+C ZIArg [ ]:	Average Ar charge
+C       POST D.E. JENSEN R.V. e.a. PPPL-1352 1977
+C			(Leonov 06-9-99)
+	YT=TE(J)
+	Y=LOG10(TE(J))
+					ZIARG=0.d0
+       IF(YT.LT..04d0.AND.YT.GE..02d0)  
+     .	ZIARG=5+9.96578*(Y+1.69897)
+	IF(YT.LT..1d0.AND.YT.GE..04d0)	  ZIARG=8.
+       IF(YT.LT..11.AND.YT.GE..1d0)   ZIARG=8.d0+2.415867*(Y+1.)
+       IF(YT.LT..5d0.AND.YT.GE..11d0)
+     . 	ZIARG=8.1d0+11.25334d0*(Y+.958607d0)
+       IF(YT.LT..7d0.AND.YT.GE..5d0) 
+     .	ZIARG=15.5d0+1.096655d0*(Y+.30103d0)
+       IF(YT.LT.1.5.AND.YT.GE..7d0)   ZIARG=16.d0
+       IF(YT.LT.3.d0.AND.YT.GE.1.5d0) 
+     .	ZIARG=16.d0+4.98289*(Y-.17691d0)
+       IF(YT.LT.5.d0.AND.YT.GE.3.d0) 
+     .	ZIARG=17.5d0+0.90151*(Y-.477121d0)
+       IF(YT.LT.10.d0.AND.YT.GE.5.d0) 
+     .	ZIARG=17.7d0+.996578*(Y-.69897d0)
+       IF(YT.GE.10.d0)               ZIARG=18.d0
+

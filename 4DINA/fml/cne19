@@ -1,0 +1,3 @@
+C cord ave. dens. [10^19 m-3]		chorde av. electron density
+C			 Polevoi (15-APR-13)
+	cne19	= NECHR(.0001d0)

@@ -1,0 +1,6 @@
+C SVheIE [10#19m#3/s]: The formula is a fit to ionization rate of helium 
+C by electron impact (Kukushkin, private communication)
+C	
+C			(POLEVOY 10.11.08)
+	SVHEIE	= svhihe(TE(J))
+

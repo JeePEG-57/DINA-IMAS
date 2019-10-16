@@ -1,0 +1,15 @@
+C XEFT [m#2/s]:	Experimental ion heat conductivity
+C			(A.Polevoi 21-08-13) 
+	YR=(J-.5)*HRO
+
+	if (J .lt. NA) then
+	XEFT=G11(J)*(NI(J)*GRAD(TIX,J)+NE(J)*GRAD(TEX,J))
+	else
+	XEFT =G11(J)*(NI(J)*GRAD(TIX,NA)+NE(J)*GRAD(TEX,NA))
+	endif
+	if(XEFT.lt.-1.d-4) then 
+    	XEFT =-625.*(QITOTR(YR)-QIDWTR(YR)+QETOTR(YR)-QEDWTR(YR))/XEFT
+	else
+	 XEFT=0.d0
+	endif
+

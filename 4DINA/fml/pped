@@ -1,0 +1,16 @@
+C cped [10**19 keV] constant for pedestal pressure
+C for PLH by snipes		P L-H thresould for ITER Ai=2.5
+C	 by J.A.Snipes PPCF, 42, (2000) A299
+C M.Sugihara, et al PPCF 45(2003)L55-L62 (letter to editor)
+C How to use niTe+niTi = cped*(Ptot/PLH3)**.144/(neped/10)**.3333
+C  1.824 10**4/1.6 10**3 = 11.4
+C			 Polevoi (23-JUL-02)
+c==================================================================
+!	pped=11.4*(AMAIN(1)*10/NECH(.01D0))**.333
+!     .	*IPL**2*ELON(NA1)**3.81/ABC**0.57
+!	pped=pped*(1+tria(NA1))**3.41/(RTOR+SHIFT)**2.1/
+!     *	(1+ELON(NA1)**2)**2.33 	!(Ptot/PLH)**0.144
+	pped=11.4*(2.5/0.8)**.333
+     *	*15.D0**2*1.76**3.81/2.**0.57
+	pped=pped*(1+.45)**3.41/(6.2)**2.1/
+     *	(1+1.76**2)**2.33*(1.5)**0.144

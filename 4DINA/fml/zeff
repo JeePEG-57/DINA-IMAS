@@ -1,0 +1,5 @@
+C ZEFF []			Zeff
+C			 Polevoi (06-09-99)
+	ZEFF	=(NHYDR(J)+NDEUT(J)+NTRIT(J)+4.d0*(NALF(J)+NHE3(j))+
+     +	ZIM1(j)**2*NIZ1(J)+ ZIM2(j)**2*NIZ2(J)+ZIM3(j)**2*NIZ3(J))/NE(J)
+	if(ZEFF.lt.1.d0) ZEFF=1.d0

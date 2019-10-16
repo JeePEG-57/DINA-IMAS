@@ -1,0 +1,10 @@
+C VMER [m/s]: "Neclassical" pinch from T-11
+C VMER=2.3*Ez*q/(SQeps*BTOR*(1+Ve*)) [m/s])
+C			(Polevoi 20-09-91)
+C			Usage in a model:   CN=-VMER	(Ware pinch)
+	VMER=0.
+	if(j.gt.1.and.j.lt.na1) then
+	include 'fml/nues'
+	VMER=2.3*UPL(J)/(GP2*RTOR*SQEPS(J)*
+     >	MU(J)*BTOR*RTOR/(RTOR+SHIFT)*(1.d0+NUES))
+	endif

@@ -1,0 +1,6 @@
+C PLH3D [MW]		P L-H thresould for Deaterium
+C	 by J.A.Snipes PPCF, 42, (2000) A299
+C			 Polevoi (23-JUL-02)
+	PLH3D	=1.42*(RTOR*BTOR)**.82*
+     *	(RTOR+SHIFT)**.18*(NECHR(.01)*.1)**.58*ABC**.81
+!*2/AMAIN(1)

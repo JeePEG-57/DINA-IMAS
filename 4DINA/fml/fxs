@@ -1,0 +1,7 @@
+C FXS []:	Normalized radius at auxiliary grid points
+	if(j.lt.NA1) then 
+	FXS=j*HRO/ROC
+	else
+	FXS=1.
+	endif
+	

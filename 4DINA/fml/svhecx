@@ -1,0 +1,6 @@
+C SVheCX [10#19m#3/s]: The formula is a fit to CX rate of helium 
+C  (Kukushkin, private communication)
+C	
+C			(POLEVOY 10.11.08)
+	SVHECX	=1.e4*(1000.*Ti(J))**0.3
+

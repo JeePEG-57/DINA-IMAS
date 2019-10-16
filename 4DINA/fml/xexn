@@ -1,0 +1,17 @@
+C xexn [m#2/s]:	Experimental ion heat conductivity
+C			(A.Polevoi 21-08-13) 
+	YR=(J-.5)*HRO
+
+	if (J .lt. NA) then
+	xexn=(G11(J)*NI(J)*GRAD(TIX,J))
+	else
+	xexn =(G11(J)*NI(J)*GRAD(TIX,NA))
+	endif
+	if(xexn.lt.-1.d-4) then 
+    	xexn =(-625.*(QITOTR(YR)-QIDWTR(YR))
+     .	+(QNTOTR(YR)-QNDNTR(YR))*(Te(j)+Ti(j)*Ni(j)/NE(j))*2.5)
+     .   /xexn
+	else
+	 xexn=0.d0
+	endif
+

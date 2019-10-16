@@ -1,0 +1,5 @@
+C ZMION []			Zmain
+C			 Polevoi (06-09-99)
+	ZMION	=(NHYDR(J)+NDEUT(J)+NTRIT(J)+2.*(NALF(J)+NHE3(J))+
+     +	ZIM1(j)*NIZ1(J)+ ZIM2(j)*NIZ2(J)+ZIM3(j)*NIZ3(J))/NE(J)
+	if(ZMION.lt.1.)ZMION=1.

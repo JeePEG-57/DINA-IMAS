@@ -15,7 +15,7 @@ DINASRC = \
 		camloop.f camlxt.f con_fil.f con_mike.f\
 		ddunew0.f disr.f diter_1.f\
 		dop_imp_new.f dop_pet.f edf.f efi_fil.f efi_ves.f elem_i.f eni_ae.f\
-		eni_imp_H.f etspxhi2.f fit.f flux_pl.f\
+		eni_imp_H.f  fit.f flux_pl.f\
 		forces_for_control.f g_gaps_rus.f gen.f gr_psi_d_pc.f\
 		green_br_N.f green_d.f inh.f map.f\
 		min_distance_1cm_w.f min_distance_pfw_1cm.f\

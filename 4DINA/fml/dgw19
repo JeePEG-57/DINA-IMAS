@@ -1,0 +1,2 @@
+!          Greenwald density 10^19 m-3
+	DGW19=10.*IPL/ABC**2/3.14

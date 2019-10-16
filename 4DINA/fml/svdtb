@@ -1,0 +1,11 @@
+C SVDTB [10#19m#3/s]:The formula is a fit to D-T reaction rate
+C	according to Bosch and Hale, NUC. FUS.,32,p. 1919, (1992)
+C	D+T=alpha(3.52MeV)+n(14.07MeV)
+C	Use:	Palpha=Nd*Nt*SVDTB*3520./625. [MW/m#3]
+C			(Polevoi 5-JUN-07)
+      YSVD=TI(J)/(1.-((TI(J)*(1.51361e-2+
+     + (TI(J)*(4.60643e-3-1.06750e-4*TI(J)))))/
+     + (1.+TI(J)*(7.51886e-2+TI(J)*(1.35000e-2+TI(J)*1.36600e-5)))))
+      SVDTB=(34.3827**2/(4.*YSVD))**0.333
+      SVDTB=1.17302e4*YSVD*sqrt(SVDTB/(1.124656e6*TI(J)**3))*
+     * exp(-3.*SVDTB)

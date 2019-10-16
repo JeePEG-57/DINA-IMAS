@@ -1,0 +1,6 @@
+C WkHz [kHz] toroidal rotation frequency for VTOR[10#19N*s/m3]
+C		(Polevoi 22-AUG-96,Corrected 31-OCT-00,07-MAR-03)
+C	WkHz=1.E5*VTOR(j)/(1.836*9.11*GP2*(RTOR+SHIF(j))*(2*Ndeut(j)+3*NTRIT(J)
+	WkHz=1.E6*VTOR(j)/(1.836*9.11*GP2*(RTOR+SHIF(j))*(2*Ndeut(j)+3*NTRIT(J)
+     .	+4*NALF(J)+AIM1*NIZ1(J)+AIM2*NIZ2(J)+AIM3*NIZ3(J)+Nhydr(J)))
+

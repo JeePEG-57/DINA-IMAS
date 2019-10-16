@@ -1,0 +1,7 @@
+C CCQ1 ST mixing of array car1 (q<1)
+C 
+	IF (J.EQ.1)	JSAWT	=0
+	IF (MU(J).LT.1.)	CCQ1=car1(j)
+	IF (MU(J).GE.1.)	JSAWT	=MAX(J,JSAWT)
+	JSAWT1	=1.42*JSAWT
+	IF (J.LE.JSAWT1)	CCQ1=car1(jsawt1)

@@ -1,0 +1,4 @@
+C SVIEk [10#19m#3/s]: The formula is a fit to ionization rate by electron impact
+C			(POLEVOY 25-08-2013)
+	SVIEk	=sighve(TE(J))
+

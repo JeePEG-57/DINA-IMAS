@@ -34,7 +34,7 @@ real (ids_real) :: arr_in1(*), arr_out1(*)
 integer,save :: i, k,  j
 integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
-integer,save :: kloop,kprobe, ke=57
+integer,save :: kloop,kprobe, ke=57, ngrid2
 
 integer,save :: nact=30, npass=300 , nflux=60, nbpol=70, nelem = 1
 
@@ -50,12 +50,16 @@ integer ::  kpr
 integer   ::  ih_imas
      common /c_imas_is/ih_imas
 
+
 integer,save :: key(27)=(/ (0,i=1,27) /)
 
 ! static and prescribed data expressed in DINA terms
 real (ids_real),save :: dina_time=0
 real (ids_real),save :: time_8,tt_8,tay_8
 
+real(ids_real) ::time_eq
+
+     common /c_imas_time_eq/time_eq
 
 ! DINA parameters
     integer,parameter :: npo = 500
@@ -132,17 +136,40 @@ call schedulefiles(pulse_schedule,equilibrium0)
 print *,'schedulefiles written!'
 
 
-nact=size(em_coupling0%mutual_grid_active,2)
+!call fp_test()
+
+
+ call congig_calc()
+
+       call  read_green_params(&
+&      npass,nact,kloop,kprobe,ke,ngrid2)
+
+        nflux=kloop
+        nbpol=kprobe
+        
+
+print *,'nact',nact
+print *,'npass',npass
+print *,'nbpol',nbpol
+print *,'ngrid ngrid2',ngrid,ngrid2
+
+if(ngrid .ne.ngrid2)then
+print *,'ngrid NE ngrid2',ngrid,ngrid2
+stop
+end if
+
+
+!nact=size(em_coupling0%mutual_grid_active,2)
 print *,'size em_coupling0%mutual_grid_active',nact
-npass=size(em_coupling0%mutual_grid_passive,2)
+!npass=size(em_coupling0%mutual_grid_passive,2)
 print *,'size em_coupling0%mutual_grid_passive',npass
 
-nflux=size(em_coupling0%mutual_loops_grid,1)
+!nflux=size(em_coupling0%mutual_loops_grid,1)
 print *,'em_coupling0%mutual_loops_grid 1',nflux
-nbpol=size(em_coupling0%field_probes_grid,1)
+!nbpol=size(em_coupling0%field_probes_grid,1)
 print *,'em_coupling0%field_probes_grid 1',nbpol
 
-ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
+!ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
 print *,'equilibrium0%coordinate_system%r 1',ke
 
 
@@ -197,11 +224,112 @@ flush(6)
 write(*,*) 'Shapes '
 write(*,100) shape(em_coupling0%mutual_loops_grid),shape(em_coupling0%field_probes_grid)
 
-fluxarr = em_coupling0%mutual_grid_active
-vesarr = em_coupling0%mutual_grid_passive
 
-pslgreen = transpose(em_coupling0%mutual_loops_grid)
-bprgreen = transpose(em_coupling0%field_probes_grid)
+ call congig_calc()
+
+       call  read_green_params(&
+&      npass,nact,kloop,kprobe,ke,ngrid2)
+
+        nflux=kloop
+        nbpol=kprobe
+        
+
+print *,'nact',nact
+print *,'npass',npass
+print *,'nbpol',nbpol
+print *,'ngrid ngrid2',ngrid,ngrid2
+
+if(ngrid .ne.ngrid2)then
+print *,'ngrid NE ngrid2',ngrid,ngrid2
+stop
+end if
+
+
+
+	call read_greens(npass,nact,kloop,kprobe,ngrid2,&
+& 	x,y,&
+&	fluxarr,vesarr, pslgreen,bprgreen,&
+&	pfind,pmj,pfc, pfres,rcam,&
+&	xu,yu,ke,&
+&   pfgreen,vesgreen,pfprobe,&
+&   vesprobe)
+
+  write(*,*) "fluxarr(1:3)=",fluxarr(1,1:3)
+  write(*,*) "vesarr(1:3)=",vesarr(1,1:3)
+  write(*,*) "pslgreen(1:3)=",pslgreen(1,1:3)
+  write(*,*) "bprgreen(1:3)=",bprgreen(1,1:3)
+
+
+allocate(em_coupling0%mutual_grid_active(ngrid,nact))
+allocate(em_coupling0%mutual_grid_passive(ngrid,npass))
+
+allocate(em_coupling0%mutual_loops_passive(nflux,npass))
+allocate(em_coupling0%field_probes_passive(nbpol,npass))
+
+allocate(em_coupling0%mutual_loops_active(nflux,nact))
+allocate(em_coupling0%field_probes_active(nbpol,nact))
+
+allocate(em_coupling0%mutual_active_active(nact,nact))
+allocate(em_coupling0%mutual_passive_passive(npass,npass))
+allocate(em_coupling0%mutual_passive_active(npass,nact))
+
+allocate(em_coupling0%mutual_loops_grid(nflux,ngrid))
+allocate(em_coupling0%field_probes_grid(nbpol,ngrid))
+
+
+allocate(em_coupling0%time(1))
+
+
+print *,' end allocation em_coupling'
+
+
+em_coupling0%ids_properties%homogeneous_time = 1
+
+em_coupling0%mutual_grid_active = fluxarr(1:ngrid,1:nact)
+em_coupling0%mutual_grid_passive = vesarr(1:ngrid,1:npass)
+
+em_coupling0%mutual_loops_passive = vesgreen(1:nflux,1:npass)
+em_coupling0%field_probes_passive = vesprobe(1:nbpol,1:npass)
+
+em_coupling0%mutual_loops_active = pfgreen(1:nflux,1:nact)
+em_coupling0%field_probes_active = pfprobe(1:nbpol,1:nact)
+
+em_coupling0%mutual_active_active = pfind(1:nact,1:nact) 
+em_coupling0%mutual_passive_passive = pmj(1:npass,1:npass)
+em_coupling0%mutual_passive_active = pfc(1:npass,1:nact)
+
+do j=1,nflux
+em_coupling0%mutual_loops_grid(j,1:ngrid)=pslgreen(1:ngrid,j)
+end do
+do j=1,nbpol
+em_coupling0%field_probes_grid(j,1:ngrid)=bprgreen(1:ngrid,j)
+end do
+
+em_coupling0%time(1) = 0.d0
+
+
+pf_active0%ids_properties%homogeneous_time = 1
+pf_passive0%ids_properties%homogeneous_time = 1
+
+!allocate(pf_active0%coil(nact))
+!allocate(pf_passive0%loop(npass))
+
+pf_active0%coil(1:nact)%resistance = pfres(1:nact)
+pf_passive0%loop(1:npass)%resistance = rcam(1:npass)  
+
+
+equilibrium0%ids_properties%homogeneous_time = 1
+
+equilibrium0%time_slice(1)%time = 0.0
+equilibrium0%time(1) = equilibrium0%time_slice(1)%time
+
+    equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr)=x(1:nr) ![m]
+    equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz)=y(1:nz) ![m]
+
+
+    equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)=xu(1:ke)
+    equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)=yu(1:ke)
+
 
 i=size(em_coupling0%mutual_loops_grid,1)
 print *,'em_coupling0%mutual_loops_grid',i
@@ -209,15 +337,37 @@ print *,'em_coupling0%mutual_loops_grid',i
 i=size(em_coupling0%field_probes_grid,1)
 print *,'em_coupling0%field_probes_grid',i
 
-vesgreen = em_coupling0%mutual_loops_passive
-vesprobe = em_coupling0%field_probes_passive
 
-pfgreen = em_coupling0%mutual_loops_active
-pfprobe = em_coupling0%field_probes_active
 
-pfind = em_coupling0%mutual_active_active
-pmj = em_coupling0%mutual_passive_passive
-pfc = em_coupling0%mutual_passive_active
+  write(*,*) "fluxarr(1:3)=",fluxarr(1,1:3)
+  write(*,*) "vesarr(1:3)=",vesarr(1,1:3)
+  write(*,*) "pslgreen(1:3)=",pslgreen(1,1:3)
+  write(*,*) "bprgreen(1:3)=",bprgreen(1,1:3)
+  write(*,*) "pfres(1:3)=",pfres(1:3)
+  write(*,*) "rcam(1:3)=",rcam(1:3)
+
+gridrange(1)=y(1)
+gridrange(2)=y(nz)
+gridrange(3)=x(1)
+gridrange(4)=x(nr)
+
+
+  write(*,*) "limiterxu(1:3)=", xu(1:3)
+  write(*,*) "limiteryu(1:3)=", yu(1:3)
+  write(*,*) "gridrange=",gridrange
+
+flush(6)
+
+! stop
+
+
+
+!allocate(pf_active0%time(1))
+!allocate(pf_passive0%time(1))
+
+!pf_active0%ids_properties%homogeneous_time = 1
+!pf_passive0%ids_properties%homogeneous_time = 1
+
 
 i=size(pf_active0%coil%resistance)
 print *,'pf_active0%coil%resistance',i
@@ -230,21 +380,6 @@ print *,pf_passive0%loop(1:nact)%resistance
 
 write(*,100) shape(pf_active0%coil%resistance),shape(pf_passive0%loop%resistance)
 
-
-pfres(1:nact) = pf_active0%coil(1:nact)%resistance
-rcam(1:npass) = pf_passive0%loop(1:npass)%resistance
-
-
-xu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)
-yu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)
-
-x(1:nr)=equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr) ![m]
-y(1:nz)=equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz) ![m]
-
-gridrange(1)=y(1)
-gridrange(2)=y(nz)
-gridrange(3)=x(1)
-gridrange(4)=x(nr)
 
 
 write(*,*) "End of static data extraction"
@@ -260,8 +395,6 @@ call write_cputime(0.d0, 0.d0, 1)
 100 format (2I5, 4x,2I5, 4x, 2I5, 4x,2I5)
 
 
-        kloop=nflux
-        kprobe=nbpol
 
 
 
@@ -284,6 +417,13 @@ first_call = first_call+1 ! cancel the initialisation for the next call
          close (40)
          
         print *,'from k_jetto.dat  ih_imas =',ih_imas
+
+ 		 open (unit=40,file='time_eq.dat',form='formatted') 
+          read (40,*) 
+          read (40,*)time_eq
+         close (40)
+         
+        print *,'from time_eq.dat  time_eq =',time_eq
 
 !    ih_imas=1
     if(ih_imas.eq.1)then
@@ -358,7 +498,7 @@ input_2(i)=arr_in1(n_input1+i)
 end do
 
 
-!write(*,*) '!!!dina0 enter'
+write(*,*) '!!!dina0 enter'
 	call dina_0(time_8,tt_8,tay_8,key,vec, &
      &	input_1,input_2,input_3, &
      &	output_1,output_2,output_3,output_4,ng)
@@ -366,7 +506,7 @@ end do
 
 
 
-!write(*,*) '!!!dina_outp enter'
+write(*,*) '!!!dina_outp enter'
 	call dina_outp(n,  &
      & tpl,uli,v,parea,psi_ax,rmag,zmag,  &
      & q_ax,q_95,rs0,bt0,wen2,tt,  &
@@ -379,6 +519,7 @@ end do
 
 
 
+write(*,*) '!!!solpsza enter'
       call solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
 
     write(*,*) 'yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx= ', &
@@ -963,12 +1104,17 @@ real(8) :: x1,x2,x3,x4,x5,x6,x7,x8
 
 open(unit=44,file='ech.dat',action='write',access='sequential')
 nt=size(schedule%ec%antenna(1)%power%reference%time)
+
+print *,' nt==',nt
+
 write(44,*) 'Time points'
 write(44,*) nt
 write(44,*) 'Time  Power'
 do i=1,nt
 t = schedule%ec%antenna(1)%power%reference%time(i)
+print *,'i t',i,t
 v = schedule%ec%antenna(1)%power%reference%data(i)*1.d-6
+print *,' v==',v
 write(44,*) t, v
 enddo
 close(44)

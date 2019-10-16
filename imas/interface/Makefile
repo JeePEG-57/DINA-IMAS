@@ -12,7 +12,7 @@ TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp_energy.a dina_t
 DINADIR := ../../src/scenario
 
 
-LIB_SOURCE1 += $(DINADIR)/dina_99.a dina_imas.o wr_prof_imas.o n_dina_imas3.o out42_for.o
+LIB_SOURCE1 += $(DINADIR)/dina_99.a dina_imas.o wr_prof_imas.o n_dina_imas3.o out42_for.o green_imas.o pers2.o
 
 LIB_SOURCE2 += $(DINADIR)/dina_kav.a dina_contr.o n_kav.o out42_for.o main_1l.o
 
@@ -40,6 +40,12 @@ test_wr_prof: test_wr_prof.o wr_prof_imas.o
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
+
+pers2.o: pers2.f 
+	$(f2c) -c pers2.f
+
+green_imas.o: green_imas.f 
+	$(f2c) -c green_imas.f
 
 n_dina_imas3.o: n_dina_imas3.f 
 	$(f2c) -c n_dina_imas3.f
@@ -78,7 +84,7 @@ dina_imas.a: $(LIB_SOURCE1)
 	@echo "   * $^ -> $@"
 	@cp $(DINADIR)/dina_99.a dina_99.a
 	@cp $(DINADIR)/dina_99.a dina_imas.a
-	ar -rcs dina_imas.a wr_prof_imas.o n_dina_imas3.o dina_imas.o
+	ar -rcs dina_imas.a wr_prof_imas.o n_dina_imas3.o dina_imas.o green_imas.o pers2.o
 
 dina_put_slice.a: $(LIB_SOURCE3)
 	@echo "   * $^ -> $@"

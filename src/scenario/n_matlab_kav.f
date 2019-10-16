@@ -179,6 +179,8 @@
 
       common 
      * /c_imas_t_end2/t_end2
+  
+       common /c_imas_time_eq/time_eq
 
 	common /c_data_in_time2/i_c_data,i_c_data1       
       common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
@@ -1820,6 +1822,85 @@ c           print *,' j uk vk  ',j,uk(j),vk(j)
                                                                         
 	if(it1.ne.0)go to 2000                                                 
 
+            kz_help=kzref
+           kr_help=krref
+
+      !    goto 33
+       
+            eps2=eps20
+
+           	rref=rmag
+           	zref=zmag
+
+           	kzref=1
+           	krref=4
+
+      niter=0            
+21	continue          
+
+	niter=niter+1                                                          
+                                                                       
+	call ptoke1()                                                          
+                                                                        
+	if(kpr.eq.1)print *,' --um vm--niter it1',
+     *  um,vm,niter,it1           
+                                                                        
+	if(it1.ne.0.and.niter.lt.20)go to 21      
+
+      if(tt.ge.time_eq-0.5d0*tay.and.tt.lt.time_eq+0.5d0*tay)then
+           call write_equil()
+      end if
+      
+33	continue       
+
+        if(i_en2.eq.-22)then
+      
+        kpr=1
+ 
+           	kzref=0
+           	krref=0
+   	     call ptoke1()       
+
+        	call read_data() 
+
+
+            call read_equil()
+
+            brad=0.d0
+            bvert=0.d0
+
+   	       call ptoke0()       
+
+           	kzref=1
+           	krref=1
+
+           	rref=rmag
+           	zref=zmag
+      niter=0            
+31	continue          
+
+	niter=niter+1                                                          
+                                                                       
+	call ptoke1()                                                          
+                                                                        
+	if(kpr.eq.1)print *,' --um vm--niter it1',
+     *  um,vm,niter,it1           
+                                                                        
+	if(it1.ne.0.and.niter.lt.20)go to 31      
+
+         eps2=1.d-6
+         call stab(ich,i_graph)
+         call write_surf()
+         stop
+
+
+      end if
+
+         kzref=kz_help
+         krref=kr_help 
+
+
+
 	call trian()
 
 
@@ -2050,6 +2131,8 @@ c	a_print(i)=ajb(i)
 c	call out42(n_pr,a_print,num,apr)
 
       call write_fc()
+        call kpl_out()
+
       call ppx_pffx_save(0)
       call pet_tab_wr()
       
@@ -2061,7 +2144,7 @@ c	call out42(n_pr,a_print,num,apr)
        write (40,*)(tcam_help(i),i=1,ncam)
        close (40)
 
-      
+
 	call time_gen() 
 	                                                      
 	do i=1,n
@@ -3075,18 +3158,19 @@ c	delzl=0.5d0*(delzl+delzl0)
 
                                                        
 
-	      ddrr=delrl/nstp                      
+!	      ddrr=delrl/nstp                      
 
-	      ddzz=delzl/nstp                      
+!	      ddzz=delzl/nstp                      
+
+            al1=0.5*dllim/dll 
 
 
+	      ddrr=delrl*al1                      
 
-	      if(nstp.ge.5)nstp=5
+	      ddzz=delzl*al1                      
 
-c	      if(nstp.ge.2)nstp=2
 
-c	      if(nstp.ge.50)nstp=50
-
+             nstp =1
 
 
 	      do  istep=1,nstp                  
@@ -3183,7 +3267,8 @@ c	if(i_graph.eq.1)call graphic(it1,n)
 
 	      zl=zl0+ delzl
 
-
+            if(kpr.eq.1)print *,' RL RL0=',rl,rl0
+            if(kpr.eq.1)print *,' ZL ZL0=',zl,zl0
 
 	      it1=1
 
@@ -3280,7 +3365,7 @@ c	ceps=ceps*0.5
 	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
 
 c	if(abs(crz).gt.1.d-5.and.iter.le.25)go to 1000
-	if(abs(crz).gt.1.d-5.and.iter.le.10)go to 1000
+	if(abs(crz).gt.1.d-5.and.iter.le.95)go to 1000
 
 c	if(abs(crz).gt.1.d-5)go to 1000
 
@@ -3315,7 +3400,6 @@ c	stop
 	return
 
 	end
-
 
 
 

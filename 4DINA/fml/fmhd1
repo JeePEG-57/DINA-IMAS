@@ -1,0 +1,6 @@
+C fmhd1 
+	if(cmhd1.lt.1.d0)	then
+		fmhd1	=1./10**(.75*(abs(log10(cmhd1)))**2.5)
+	else
+		fmhd1	=cmhd1**.03
+	endif

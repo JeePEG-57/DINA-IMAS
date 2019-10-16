@@ -1,0 +1,7 @@
+C PLHM [MW]		P L-H thresould for He
+C	 by Martin Y R, Takizuka T, Journ. of Physics: Conf. Series 123 (2008)
+C         012033
+C			 Polevoi (30-NOV-08)
+	PLHM	= NECHR(0.d0)*.1e0
+	PLHM	= 0.0488d0*(BTOR*RTOR/(RTOR+SHIFT))**.803*(SLAT(NA))**.941*
+     *	PLHM**.717*(2.d0/AMAIN(1))

@@ -1,0 +1,15 @@
+C V*grad(Pion) [MW]:	Heating for electrons (losses for ions)
+C	VGRPI=Gn/NE*GRAD(Pion)
+C	dWi(e)/dt=...-(+)QIGN
+C			(Polevoy 25-MAR-94)
+	IF(J.EQ.1)	THEN
+	VGRPI=0.
+			ELSE
+	IF(J.EQ.NA1)	THEN
+	VGRPI=-(TI(NA1)*NI(NA1)-TI(NA)*NI(NA))/HROA
+     .		*GN(NA)/NE(NA)/625.
+			ELSE
+	VGRPI=-(TI(J+1)*NI(J+1)-TI(J-1)*NI(J-1))/HRO
+     .		*GN(J)/NE(J)/1250.
+			ENDIF
+			ENDIF

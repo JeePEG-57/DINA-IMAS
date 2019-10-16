@@ -1,0 +1,15 @@
+C HEXT [m#2/s]:	Experimental electron heat conductivity
+C			(A.Polevoi 21-08-13) 
+	YR=(J-.5)*HRO
+
+	if (J .lt. NA) then
+	HEXT=(G11(J)*NE(J)*GRAD(TEX,J))
+	else
+	HEXT =(G11(J)*NE(J)*GRAD(TEX,NA))
+	endif
+	if(HEXT.lt.-1.d-4) then 
+    	HEXT =-625.*(QETOTR(YR)-QEDWTR(YR))/HEXT
+	else
+	HEXT=0.d0
+	endif
+

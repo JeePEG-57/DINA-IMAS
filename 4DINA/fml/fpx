@@ -1,0 +1,2 @@
+C FPX [d/l]:	Normalized poloidal flux
+	FPX=(FP(j)-FP(1))/(FP(NA1)-FP(1))

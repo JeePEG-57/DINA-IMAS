@@ -1,0 +1,14 @@
+C DNEX [m#2/s]:	Experimental diffusion coefficient with pinch
+C			(Yushmanov 11-JAN-90)
+	YR=(J-.5)*HRO
+	if (J .lt. NA) then
+		DNEX=(G11(J)*GRAD(NEX,J))
+	else
+		DNEX =(G11(J)*GRAD(NEX,NA))
+	endif
+	if(DNEX.lt.-1.d-4) then 
+ 	   	DNEX =-(QNTOTR(YR)-QNDNTR(YR)-G11(J)*NEX(j)*CN(j))/DNEX
+	else
+		DNEX=0.d0
+	endif
+

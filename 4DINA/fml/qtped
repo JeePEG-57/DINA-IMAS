@@ -1,0 +1,3 @@
+C qtped	[MW]  power to pedestal for iterDTLOH .89
+C				Polevoy		6-OCT-15
+	qtped =VINT(QTOT,CBND1)

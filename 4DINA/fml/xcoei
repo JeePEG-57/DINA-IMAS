@@ -1,0 +1,5 @@
+C	[s] Bracco G and Thomsen K, NF 37 (1997) 759 
+C				 Polevoi (19.06.06)
+	xcoei=10.d0*IPL/GP/ABC**2
+	xcoei=NECHR(.01d0)/(xcoei+.0001d0)
+	xcoei=0.64*BTOR*RTOR/(RTOR+SHIFT)*(ELONG*xcoei)**2

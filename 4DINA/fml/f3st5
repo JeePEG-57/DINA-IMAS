@@ -1,0 +1,6 @@
+C F3st5 []:	smooth CAR5 to 3 points
+	if(j.le.NA1-2) then
+     	F3st5=(CAR5(j+2)+CAR5(j+1)+CAR5(j))/3.d0
+	else
+	F3st5=1.d0
+	endif

@@ -1,0 +1,6 @@
+C PENEL [MW/m#3]: Electron heat losses due to cold neutrals Ionization
+C	PENEL=<sigma*v>*Ne*Nn*(0.025keV)
+C	PE=...-PENEL
+C			(Leonov 01-12-90)
+	INCLUDE 'fml/snnie'
+	PENEL	=4.E-5*SNNIE*NE(J)

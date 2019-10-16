@@ -124,6 +124,9 @@
 
       common 
      * /c_imas_t_end2/t_end2
+
+       common /c_imas_time_eq/time_eq
+           
       common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
 
 	dimension tcam(*),tcam0(*),ind(kf),pfhelp(kf)
@@ -768,7 +771,7 @@ ccc      call ppx_pffx_save(1)
 c	stop
 
 
-c        call kpl_out()
+        call kpl_out()
 
 c        read (*,*)
 
@@ -1933,6 +1936,84 @@ c************
 ccc      call ppx_pffx_save(2)
 
 	if(it1.ne.0)go to 2000
+
+            kz_help=kzref
+           kr_help=krref
+
+     ! goto 33
+           
+            eps2=eps20
+
+           	rref=rmag
+           	zref=zmag
+
+           	kzref=1
+           	krref=4
+
+      niter=0            
+21	continue          
+
+	niter=niter+1                                                          
+                                                                       
+	call ptoke1()                                                          
+                                                                        
+	if(kpr.eq.1)print *,' --um vm--niter it1',
+     *  um,vm,niter,it1           
+                                                                        
+	if(it1.ne.0.and.niter.lt.20)go to 21      
+
+      if(tt.ge.time_eq-0.5d0*tay.and.tt.lt.time_eq+0.5d0*tay)then
+           call write_equil()
+      end if
+
+
+33	continue       
+!        if(i_en2.eq.22)then
+        if(ntay.eq.-2000)then
+      
+        kpr=1
+ 
+           	kzref=0
+           	krref=0
+   	     call ptoke1()       
+
+        	call read_data() 
+
+
+            call read_equil()
+
+            brad=0.d0
+            bvert=0.d0
+
+   	       call ptoke0()       
+
+           	kzref=1
+           	krref=1
+
+           	rref=rmag
+           	zref=zmag
+      niter=0            
+31	continue          
+
+	niter=niter+1                                                          
+                                                                       
+	call ptoke1()                                                          
+                                                                        
+	if(kpr.eq.1)print *,' --um vm--niter it1',
+     *  um,vm,niter,it1           
+                                                                        
+	if(it1.ne.0.and.niter.lt.20)go to 31      
+
+         eps2=1.d-6
+         call stab(ich,i_graph)
+         call write_surf()
+         stop
+
+
+      end if
+
+         kzref=kz_help
+         krref=kr_help 
 
 !	call wr_tabppf()
 !        call wr_pf()

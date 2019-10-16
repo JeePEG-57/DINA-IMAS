@@ -1,0 +1,8 @@
+C	[s] Bracco G and Thomsen K, NF 37 (1997) 759 
+C				 Polevoi (19.06.06)
+	heoh=10.d0*IPL/GP/ABC**2
+	heoh=NECHR(.01d0)/(heoh+.0001d0)
+!	heoh=0.14*ELONG*ABC*(RTOR+SHIFT)*(BTOR*RTOR/(RTOR+SHIFT))**1.1*heoh
+!     .		/(1.+0.64*BTOR*RTOR/(RTOR+SHIFT)*(ELONG*heoh)**2)
+	heoh=11.5*elon(j)*MU(j)/(NE(j)+.0001)*max(0.1,(sqeps(j)**2))
+     
