@@ -36,19 +36,26 @@ assignin('base', 'pf_passive', pf_passive);
 disp('IDS loaded.');
 
 
-if length(pf_active.coil) ~= max(Coils.pf_num)
-    disp('Coils amount error.');
-    return
+for i=2:max(Coils.pf_num)
+    pf_active.coil{i} = pf_active.coil{1};
+end
+for i=2:Vessel.ncam
+    pf_passive.loop{i} = pf_passive.loop{1};
 end
 
-if length(pf_passive.loop) ~= Vessel.ncam
-    disp('Vessel amount error.');
-    return
-end
+% if length(pf_active.coil) ~= max(Coils.pf_num)
+%     disp('Coils amount error.');
+%     return
+% end
+% 
+% if length(pf_passive.loop) ~= Vessel.ncam
+%     disp('Vessel amount error.');
+%     return
+% end
 
 for i=1:length(pf_active.coil)
     
-    pf_active.coil{i}.element = {};
+%     pf_active.coil{i}.element = {};
     
     %pf_active.coil{Coils.pf_num(i)}.resistance = 0.0;
     

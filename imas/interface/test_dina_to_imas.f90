@@ -67,7 +67,7 @@ call ids_get(idx0,'em_coupling',em_coupling0)
 call ids_get(idx0,'equilibrium',equilibrium0)
 call ids_get(idx0,'pf_active',pf_active0)
 call ids_get(idx0,'pf_passive',pf_passive0)
-call ids_get(idx0,'pf_passive',core_profiles0)
+call ids_get(idx0,'core_profiles',core_profiles0)
 
 
 call dina_to_imas( em_coupling0, equilibrium0,   &

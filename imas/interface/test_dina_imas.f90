@@ -127,6 +127,7 @@ arr_out1(1:31)=0
 do iloop=1,imax
 
 write(*,*) 'call DINA_IMAS i =',iloop
+flush(6)
 
 call dina_imas( em_coupling0, equilibrium0 &
  & , pf_active0,  pf_passive0, core_profiles0, core_sources0 &
@@ -137,9 +138,13 @@ call dina_imas( em_coupling0, equilibrium0 &
  & , summary &
  & , arr_in1,arr_out1)
 
-write(*,*) "Controller work"
+write(*,*) "DINA_IMAS finished"
+flush(6)
 
 call dina_contr(arr_out1,arr_in1)
+
+write(*,*) "Controller finished"
+flush(6)
 
 !call dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
 !call dina_transp2(equilibrium0, core_profiles0, core_profiles)
@@ -148,6 +153,9 @@ call dina_contr(arr_out1,arr_in1)
 !call dina_transp5(equilibrium0, core_sources0, core_sources)
 
 call solps_imas(equilibrium, core_transport, bndcond)
+
+write(*,*) "SOLPS finished"
+flush(6)
 
 ! if (iloop == 1) then
 ! write(*,*)  'Put non-timed'
@@ -184,6 +192,7 @@ call solps_imas(equilibrium, core_transport, bndcond)
 if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
 
 write(*,*) 'Put ids to database, iloop = ', iloop
+flush(6)
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
  & core_sources, core_transport, bndcond, summary, &
@@ -192,20 +201,37 @@ call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
 
 endif
 
+write(*,*) 'Deallocate IDS '
+flush(6)
+
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
 call ids_deallocate(equilibrium0)
 call ids_deallocate(core_profiles0)
 call ids_deallocate(core_sources0)
 
-call ids_copy(pf_active, pf_active0)
-call ids_copy(pf_passive, pf_passive0)
+write(*,*) 'Copy IDS '
+flush(6)
+
 call ids_copy(equilibrium, equilibrium0)
+write(*,*) 'Copy IDS 3'
+flush(6)
+
+call ids_copy(pf_active, pf_active0)
+write(*,*) 'Copy IDS 1'
+flush(6)
+call ids_copy(pf_passive, pf_passive0)
+write(*,*) 'Copy IDS 2'
+flush(6)
+
 call ids_copy(core_profiles, core_profiles0)
+write(*,*) 'Copy IDS 4'
+flush(6)
 call ids_copy(core_sources, core_sources0)
 
 
 write(*,*) '****** Pulsetime =',summary%time(1),'/',tmax
+flush(6)
 if (summary%time(1).gt.tmax) exit
 
 end do

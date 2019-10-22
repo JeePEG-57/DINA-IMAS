@@ -113,6 +113,10 @@ real(ids_real),save :: cpu_old = 0.d0, cpu_new
 real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
 
+print *,'DINA_IMAS Enter'
+flush(6)
+
+
 if (first_call == 1) then ! convert input trees to local variables before calling dina
 
 call cpu_time(cpu_old)
@@ -218,11 +222,11 @@ flush(6)
 !print *,' close imas'
 
 
-  write(*,*) 'Shapes '
-  write(*,100) shape(em_coupling0%mutual_grid_active),shape(em_coupling0%mutual_grid_passive)
+!  write(*,*) 'Shapes '
+!  write(*,100) shape(em_coupling0%mutual_grid_active),shape(em_coupling0%mutual_grid_passive)
 
-write(*,*) 'Shapes '
-write(*,100) shape(em_coupling0%mutual_loops_grid),shape(em_coupling0%field_probes_grid)
+!write(*,*) 'Shapes '
+!write(*,100) shape(em_coupling0%mutual_loops_grid),shape(em_coupling0%field_probes_grid)
 
 
  call congig_calc()
@@ -244,7 +248,7 @@ print *,'ngrid NE ngrid2',ngrid,ngrid2
 stop
 end if
 
-
+flush(6)
 
 	call read_greens(npass,nact,kloop,kprobe,ngrid2,&
 & 	x,y,&
@@ -259,6 +263,7 @@ end if
   write(*,*) "pslgreen(1:3)=",pslgreen(1,1:3)
   write(*,*) "bprgreen(1:3)=",bprgreen(1,1:3)
 
+  flush(6)
 
 allocate(em_coupling0%mutual_grid_active(ngrid,nact))
 allocate(em_coupling0%mutual_grid_passive(ngrid,npass))
@@ -282,6 +287,7 @@ allocate(em_coupling0%time(1))
 
 print *,' end allocation em_coupling'
 
+flush(6)
 
 em_coupling0%ids_properties%homogeneous_time = 1
 
@@ -308,20 +314,47 @@ end do
 em_coupling0%time(1) = 0.d0
 
 
+print *,' em_coupling filled'
+flush(6)
+
 pf_active0%ids_properties%homogeneous_time = 1
 pf_passive0%ids_properties%homogeneous_time = 1
 
 !allocate(pf_active0%coil(nact))
 !allocate(pf_passive0%loop(npass))
 
+do i=1,nact
+
+        allocate(pf_active0%coil(i)%current%data(1))
+        allocate(pf_active0%coil(i)%current%time(1))
+
+        allocate(pf_active0%coil(i)%voltage%data(1))
+        allocate(pf_active0%coil(i)%voltage%time(1))
+enddo
+
+do i=1,npass
+
+    allocate(pf_passive0%loop(i)%current(1))
+
+end do
+
 pf_active0%coil(1:nact)%resistance = pfres(1:nact)
 pf_passive0%loop(1:npass)%resistance = rcam(1:npass)  
+
+print *,' pfs filled'
+flush(6)
 
 
 equilibrium0%ids_properties%homogeneous_time = 1
 
 equilibrium0%time_slice(1)%time = 0.0
 equilibrium0%time(1) = equilibrium0%time_slice(1)%time
+
+allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim1(nr))
+allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim2(nz))
+
+allocate(equilibrium0%time_slice(1)%coordinate_system%r(ke, 1))
+allocate(equilibrium0%time_slice(1)%coordinate_system%z(ke, 1))
 
     equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr)=x(1:nr) ![m]
     equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz)=y(1:nz) ![m]
@@ -331,6 +364,10 @@ equilibrium0%time(1) = equilibrium0%time_slice(1)%time
     equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)=yu(1:ke)
 
 
+print *,' equilibrium filled'
+flush(6)
+
+    
 i=size(em_coupling0%mutual_loops_grid,1)
 print *,'em_coupling0%mutual_loops_grid',i
 
@@ -381,6 +418,12 @@ print *,pf_passive0%loop(1:nact)%resistance
 write(*,100) shape(pf_active0%coil%resistance),shape(pf_passive0%loop%resistance)
 
 
+
+ write(*,*) 'DINAIMAS - CoreProfiles Elements: '
+    allocate(core_profiles0%profiles_1d(1))
+    allocate(core_profiles0%time(1))
+    core_profiles0%ids_properties%homogeneous_time = 1
+    core_profiles0%time(1) = 0.d0
 
 write(*,*) "End of static data extraction"
 
@@ -530,6 +573,8 @@ write(*,*) '!!!solpsza enter'
     write(*,*) 'dina_outp call n tpl tt= ', n,tpl,tt
 
 
+    flush(6)
+    
 !write(*,*) "output_1",output_1
 
       n_output1=15
@@ -616,7 +661,7 @@ end do
 
 pf_passive%time(1) = dina_time
 
-
+flush(6)
    
 ! Work with IDS
 
@@ -956,6 +1001,7 @@ allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2)%particles%flux(
     
   !  write(*,*) "psi = ", (equilibrium%profiles_2d(1)%psi(i,1:n2,CurTimeStep),i=1,n1)
 
+flush(6)
 
 
     

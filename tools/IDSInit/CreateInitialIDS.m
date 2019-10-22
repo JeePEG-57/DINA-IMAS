@@ -10,11 +10,14 @@ disp(['Init file is ' initFile]);
 
 addpath('..');
 
-[status, result] = system('../../imas/interface/test_dina_to_imas');
-
-status
-
-result
+if 1
+    idx = imas_create('ids',170, 1, 0, 0);
+    imas_close(idx);
+else
+    [status, result] = system('../../imas/interface/test_dina_to_imas');
+    status
+    result
+end
 
 AddPulseSchedule(170, 1, 0, initFile);
 AddPFGeometry(170, 1, 0);

@@ -73,6 +73,7 @@ Bt0 = a{1}(2)*1.e-1; % kG to Tesla
 equilibrium.vacuum_toroidal_field.r0 = RBt0;
 equilibrium.vacuum_toroidal_field.b0 = Bt0;
 equilibrium.time = 0.0;
+equilibrium.time_slice{1}.time = 0.0;
 
 
 %% EC heating for Ip < 1.5 MA
