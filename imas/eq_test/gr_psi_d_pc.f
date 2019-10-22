@@ -92,12 +92,12 @@ c	read(*,*)
 	else
 
            if(ntay.le.1)then
-              open (unit=61,file='psi_data',
+              open (unit=61,file='psi_data2',
      *             form='formatted')
            end if
 
            if(ntay.gt.1)then
-              open (unit=61,file='psi_data',access='append',
+              open (unit=61,file='psi_data2',access='append',
      *             form='formatted')
            end if
 c           if(ntay.le.1)then

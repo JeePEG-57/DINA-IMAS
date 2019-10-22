@@ -360,6 +360,8 @@ c______________________________
 
        call  write_surf()
 
+       stop
+       
            kzref=0
            krref=0
 	   eps2=eps2_help

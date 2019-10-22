@@ -61,10 +61,10 @@ real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
 integer :: pulse=170, run=6, prescribedpulse=170, prescribedrun=1
-real (ids_real) :: StopTime = 750.d0
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, idec, imax
+real (ids_real) :: tmax
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
@@ -83,12 +83,17 @@ pulse=prescribedpulse
 print *,' Enter run number'
 !read (*,*)prescribedrun
 prescribedrun=1
-print *,' run number',prescribedrun
+print *,' run number =',prescribedrun
 
 print *,' Enter maximum steps number'
 !read (*,*)imax
 imax=1000000
-print *,' imax',imax
+print *,' imax =',imax
+
+print *,' Enter maximum time'
+!read (*,*)imax
+tmax=25.d0
+print *,' tmax =',tmax
 
 print *,' Enter decimation for filling the database'
 !read (*,*)idec
@@ -200,8 +205,8 @@ call ids_copy(core_profiles, core_profiles0)
 call ids_copy(core_sources, core_sources0)
 
 
-write(*,*) '****** Pulse time =',summary%time(1),'/',StopTime
-if (summary%time(1).gt.StopTime) exit
+write(*,*) '****** Pulsetime =',summary%time(1),'/',tmax
+if (summary%time(1).gt.tmax) exit
 
 end do
 

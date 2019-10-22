@@ -4933,6 +4933,12 @@ c
 	i=i+1
 c
 	xcur(i)=0.5*(xpl(k,j)+xpl(k-1,j))
+	
+	if(xcur(i).le.1.)then 
+	  xcur(i)=1.
+	end if
+	
+	
 c!!!	xcur(i)=xpl(k,j)
 	torcur(i)=-coef*( pp(k)*xcur(i)/rs0+0.5*pff(k)*
      *  rs0/xcur(i) )

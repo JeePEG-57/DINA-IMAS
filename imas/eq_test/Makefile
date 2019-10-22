@@ -17,6 +17,9 @@ os=		a_main_equi.o a_dina_equi.o \
 		sh_d3d.o uuu.o zca_tsp.o zcam_d3d.o zcamit.o
 		 
 
+all:	p_equi
+
+
 p_equi:		$(os)
 
 		gfortran -o p_equi $(os) -lm -L$(XLIB) -lX11
@@ -97,5 +100,9 @@ zcam_d3d.o:	$(S)zcam_d3d.f
 zcamit.o:	$(S)zcamit.f
 		$(f2c) -c   -w    $(S)zcamit.f
 
+clean:
+	rm -f *.o
+	rm -f *.a
+	rm -f p_equi
 
 

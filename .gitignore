@@ -1,6 +1,9 @@
 *~
 *.[oa]
 #*#
+*.tif
+*.fig
+*.log
 machines/iter/cputime_dinaimas
 machines/iter/p_data1
 machines/iter/psi_data
@@ -25,6 +28,7 @@ imas/interface/test_dina_to_imas
 imas/interface/test_wr_prof
 imas/circ/test_dina
 imas/circ/test_circ
+imas/eq_test/p_equi
 imas/jetto/JINTRAC_IDS/jetto_prof_to_ids
 imas/jetto/JINTRAC_IDS/jetto_prof_from_ids
 imas/kepler_wf/log*
