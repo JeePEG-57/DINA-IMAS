@@ -87,7 +87,8 @@ read (*,*) run
 
 print *,'Pulse, run =', pulse, run
 write(*,*) 'Opening the prescribed IDS'
-call imas_open('ids',pulse,run,idx0) 
+! call imas_open('ids', pulse, run, idx)
+call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
 
 print *,'imas opened', idx0
 

@@ -69,6 +69,14 @@ elif [ $input == 'regression' ]; then
 
 # ----------------------------------------------------------------------------------------------------------
 
+elif [ $input == 'user' ]; then
+
+find . -type f -name "*.f*" -exec sed -i "s/'medveds'/\'$USER\'/g" {} +
+find . -type f -name "*.m" -exec sed -i "s/'medveds'/\'$USER\'/g" {} +
+find . -type f -name "Dina_Scenario_ScheduleSDN.xml" -exec sed -i "s/'medveds'/\'$USER\'/g" {} +
+
+# ----------------------------------------------------------------------------------------------------------
+
 else
 
   # Error

@@ -39,7 +39,8 @@ if (iloop == 1) then
 
 
   write(*,*) 'Create new pulse file...'
-  call imas_create('ids',pulse,run,1,1,idx)
+!   call imas_create('ids',pulse,run,1,1,idx)
+  call imas_create_env('ids',pulse,run,1,1,idx,'medveds','test','3')
   write(*,*) 'Pulse file is created, put non-timed...'
 
 
@@ -59,7 +60,8 @@ if (iloop == 1) then
 else
 
   write(*,*) 'Open pulse file...'
-  call imas_open('ids',pulse,run,idx) 
+!   call imas_open('ids',pulse,run,idx) 
+  call imas_open_env('ids',pulse,run,idx,'medveds','test','3') 
   write(*,*)  'Pulse file is opened, put slices'
 
   write(*,*)  'Put pf_active'
