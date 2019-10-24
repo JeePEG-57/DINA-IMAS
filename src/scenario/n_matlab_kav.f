@@ -1825,7 +1825,7 @@ c           print *,' j uk vk  ',j,uk(j),vk(j)
             kz_help=kzref
            kr_help=krref
 
-      !    goto 33
+          goto 33
        
             eps2=eps20
 

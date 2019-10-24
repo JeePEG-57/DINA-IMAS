@@ -92,7 +92,7 @@ print *,' imax =',imax
 
 print *,' Enter maximum time'
 !read (*,*)imax
-tmax=25.d0
+tmax=120.d0
 print *,' tmax =',tmax
 
 print *,' Enter decimation for filling the database'
@@ -214,16 +214,14 @@ write(*,*) 'Copy IDS '
 flush(6)
 
 call ids_copy(equilibrium, equilibrium0)
-write(*,*) 'Copy IDS 3'
-flush(6)
-
-call ids_copy(pf_active, pf_active0)
 write(*,*) 'Copy IDS 1'
 flush(6)
-call ids_copy(pf_passive, pf_passive0)
+call ids_copy(pf_active, pf_active0)
 write(*,*) 'Copy IDS 2'
 flush(6)
-
+call ids_copy(pf_passive, pf_passive0)
+write(*,*) 'Copy IDS 3'
+flush(6)
 call ids_copy(core_profiles, core_profiles0)
 write(*,*) 'Copy IDS 4'
 flush(6)
