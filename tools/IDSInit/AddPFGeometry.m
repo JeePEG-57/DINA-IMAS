@@ -171,6 +171,10 @@ end
 
 
 disp('Saving IDS...');
+pf_active.ids_properties.homogeneous_time = 1;
+pf_active.time = 0.0;
+pf_passive.ids_properties.homogeneous_time = 1;
+pf_passive.time = 0.0;
 
 SaveIDS(Shot, Run, PFActiveString, pf_active);
 SaveIDS(Shot, Run, PFPassiveString, pf_passive);

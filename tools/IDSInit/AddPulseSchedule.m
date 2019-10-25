@@ -238,8 +238,10 @@ disp('Saving IDS...');
 
 pulse_schedule.ids_properties.homogeneous_time = 1;
 pulse_schedule.time = time;
-
 SaveIDS(Shot, Run, PSString, pulse_schedule);
+
+equilibrium.ids_properties.homogeneous_time = 1;
+equilibrium.time = 0.0;
 SaveIDS(Shot, Run, EQString, equilibrium);
 
 disp('IDS Saved.');
