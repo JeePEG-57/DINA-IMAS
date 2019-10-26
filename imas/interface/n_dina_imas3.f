@@ -1,3 +1,7 @@
+!> In subroutine dina_0 as a result of call dina2 and then call equil2 or 
+!> call equil according to tt_kavin value the DINA modeling of one time step is
+!> being produced
+
 	subroutine dina_0(time_8,tt_8,tay_8,key_mat,vec_mat,
      *	p_input_1,p_input_2,p_input_3,
      *	output_1,output_2,output_3,output_4,ng)
@@ -187,7 +191,9 @@ c ============ outputs ==============================================
       return
       end
 
-
+      
+!> dina_outp is a subroutine to collect the output data to write them after that 
+!> to IDSs in dina_imas subroutine
       
 	subroutine dina_outp(n_xx,
      * tpl_xx,uli_xx,v_xx,parea_xx,psi_ax_xx,rmag_xx,zmag_xx,
@@ -324,6 +330,9 @@ c=================================================
       return
       end
 
+      
+!> dina_input is the subroutine to collect the initial kinetic profiles before enter 
+!> to DINA to write them after that to DINA from IDSs in dina_imas subroutine
 
 	subroutine dina_input(te0_xx,tq0_xx,pne_xx,
      * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx)
@@ -409,7 +418,7 @@ c=================================================
       end
 
 
-
+!> dina_v96_in is the subroutine to write Green Functions from IDSs to DINA in DINA units
 
         subroutine  dina_v96_in(
 

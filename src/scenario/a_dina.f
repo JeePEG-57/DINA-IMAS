@@ -1,3 +1,12 @@
+!> dina2 is a subroutine to do the DINA modeling in one time step,
+!> In that subroutine the kpr.dat, tt_kavin.dat, k_jetto, tran_times.dat files
+!> are written,
+!> If tt>tt_dina and k_jetto=0 there are the calls to the external transport modules,
+!> If tt<tt_kavin there is a call equil to simulate the one time DINA modeling with
+!> energy and particle 0D transport modules,
+!> If tt>tt_kavin there is a call equil2 to simulate the one time DINA modeling with
+!> energy and particle 1D transport modules
+
 	subroutine dina2(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
