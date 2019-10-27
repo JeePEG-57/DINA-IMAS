@@ -1,9 +1,11 @@
 function CreateInitialIDS(varargin)
 
+sourceDir = '../../machines/iter/';
+
 if nargin > 0
     initFile = varargin{1};
 else
-    initFile = '../../machines/iter/JINTRAC_case1/ITER.mat';
+    initFile = [sourceDir '15MA_40ka.mat'];
 end
 
 disp(['Init file is ' initFile]);
@@ -11,7 +13,7 @@ disp(['Init file is ' initFile]);
 addpath('..');
 
 if 1
-    idx = imas_create_env('ids',170, 1, 0, 0,'medveds','test','3');
+    idx = imas_create_env('ids',170, 1, 0, 0, getenv('USER'),'test','3');
     imas_close(idx);
 else
     [status, result] = system('../../imas/interface/test_dina_to_imas');
@@ -22,7 +24,11 @@ end
 AddPulseSchedule(170, 1, 0, initFile);
 AddPFGeometry(170, 1, 0);
 
-WriteTokamakData(getenv('KEPLER'), initFile);
+KeplerDir = [getenv('KEPLER') '/'];
+
+copyfile([sourceDir 'common/*'], KeplerDir);
+
+WriteTokamakData(KeplerDir, initFile);
 
 
 %[MyPath,MyName,~] = fileparts(mfilename('fullpath'));
