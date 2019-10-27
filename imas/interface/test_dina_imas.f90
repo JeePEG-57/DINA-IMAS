@@ -68,9 +68,15 @@ real (ids_real) :: tmax
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
+character (len=255) :: user
+
 
 ! for timing tests
 INTEGER :: clock_start,clock_end,clock_rate
+
+
+call getenv("USER", user)
+print *,' User name is ', user
 
 
 print *,' Enter pulse number'
@@ -92,7 +98,7 @@ print *,' imax =',imax
 
 print *,' Enter maximum time'
 !read (*,*)imax
-tmax=120.d0
+tmax=900.d0
 print *,' tmax =',tmax
 
 print *,' Enter decimation for filling the database'
@@ -101,13 +107,11 @@ idec=100
 !idec=1
 print *,' idec',idec
 
-
-
 write(*,*) 'The file'
 
 write(*,*) 'Reading the prescribed IDS'
 ! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
-call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,'medveds','test','3') 
+call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3') 
 
 call ids_get(idx0,"em_coupling",em_coupling0)
 call ids_get(idx0,"equilibrium",equilibrium0)
@@ -120,7 +124,6 @@ call ids_get(idx0,"pulse_schedule",pulse_schedule)
 
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
-
 
 arr_in1(1:31)=1
 arr_out1(1:31)=0

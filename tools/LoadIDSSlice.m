@@ -6,7 +6,7 @@ end
 UALInterface;
 
 %  expIdx = imas_open('ids', shot, run);
-expIdx = imas_open_env('ids', shot, run,'medveds','test','3');
+expIdx = imas_open_env('ids', shot, run, getenv('USER'),'test','3');
 cpo=ids_get_slice(expIdx, ids, time, interp);
 imas_close(expIdx,'ids',shot,run);
 %
