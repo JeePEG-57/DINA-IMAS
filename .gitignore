@@ -32,6 +32,8 @@ imas/eq_test/p_equi
 imas/jetto/JINTRAC_IDS/jetto_prof_to_ids
 imas/jetto/JINTRAC_IDS/jetto_prof_from_ids
 imas/kepler_wf/log*
+4DINA/p_4dina
+*cputime*
 */temp
 *.directory
 
