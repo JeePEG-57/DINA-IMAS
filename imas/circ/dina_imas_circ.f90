@@ -374,10 +374,10 @@ print *,' nact=',nact
 do i=1,nact
 
         allocate(pf_active%coil(i)%current%data(1))
-        allocate(pf_active%coil(i)%current%time(1))
+!         allocate(pf_active%coil(i)%current%time(1))
 
         allocate(pf_active%coil(i)%voltage%data(1))
-        allocate(pf_active%coil(i)%voltage%time(1))
+!         allocate(pf_active%coil(i)%voltage%time(1))
 enddo
 
 allocate(pf_active%time(1))
@@ -389,11 +389,11 @@ do i=1,nact
 
 !    pf_active%coil(i)%current%data(1) = output_2(n_gaps+i)
     pf_active%coil(i)%current%data(1) = pf(i)
-!      pf_active%coil(i)%current%time(1) = dina_time
+!    pf_active%coil(i)%current%time(1) = dina_time
 
 !    pf_active%coil(i)%voltage%data(1) = input_2(i)
     pf_active%coil(i)%voltage%data(1) = vchopper(i)
-!      pf_active%coil(i)%voltage%time(1) = dina_time
+!    pf_active%coil(i)%voltage%time(1) = dina_time
 
 end do
 

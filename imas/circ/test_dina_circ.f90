@@ -73,6 +73,8 @@ real (ids_real) :: tact_err(15), tpass_err, tmaxa
 ! for timing tests
 INTEGER :: clock_start,clock_end,clock_rate
 
+character (len=255) :: user
+call getenv("USER", user)
 
 print *,' Enter pulse number'
 !read (*,*)prescribedpulse
@@ -94,7 +96,7 @@ write(*,*) 'The file'
 
 
 ! call imas_open('ids',170,1,idx)
-call imas_open_env('ids',170,1,idx,'medveds','test','3') 
+call imas_open_env('ids',170,1,idx,user,'test','3') 
 
 call ids_get(idx,"em_coupling",em_coupling0)
 !call ids_get(idx,"pulse_schedule",pulse_schedule)
@@ -105,7 +107,7 @@ write(*,*) 'Transferred non-timed IDSs'
 
 write(*,*) 'Reading the prescribed IDS'
 ! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
-call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,'medveds','test','3') 
+call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3') 
 
 !call ids_get(idx0,"em_coupling",em_coupling0)
 !call ids_get(idx0,"pulse_schedule",pulse_schedule)
@@ -114,7 +116,7 @@ call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,'medveds','test','3'
 call ids_get(idx0,"pf_active",pf_active_a)
 
 ! call imas_create('ids',pulse,run,1,1,idxc)
-call imas_create_env('ids',pulse,run,1,1,idxc,'medveds','test','3')
+call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
 
 write(*,*) 'Finished reading the prescribed IDS'
 
@@ -146,8 +148,10 @@ enddo
 
 !call ids_get_slice(idx0,"transport_solver_numerics",bndcond,tt,1)
 !call ids_get_slice(idx0,"equilibrium",equilibrium0,tt,1)
+
 call ids_get_slice(idx0,"pf_active",pf_active0,tt,1)
 call ids_get_slice(idx0,"pf_passive",pf_passive0,tt,1)
+
 !call ids_get_slice(idx0,"core_profiles",core_profiles0,tt,1)
 !call ids_get_slice(idx0,"core_sources",core_sources0,tt,1)
 
@@ -233,26 +237,42 @@ write(*,*) 'Passive currents relative error', tpass_err/tmaxa
 
 if (iloop == 1) then
 
+do i=1,nact
+  if(associated(pf_active%coil(i)%current%time)) deallocate(pf_active%coil(i)%current%time)
+  if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
+enddo
 call ids_put(idxc,"pf_active",pf_active)
-call ids_put(idxc,"pf_passive",pf_passive)
+if(associated(pf_passive%loop)) then
+  call ids_put(idxc,"pf_passive",pf_passive)
+endif
 
 else
 
+do i=1,nact
+  if(associated(pf_active%coil(i)%current%time)) deallocate(pf_active%coil(i)%current%time)
+  if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
+enddo
 call ids_put_slice(idxc,"pf_active",pf_active)
 call ids_put_slice(idxc,"pf_passive",pf_passive)
 
 endif
 
+! call ids_deallocate(pf_active0)
+! call ids_deallocate(pf_passive0)
 
-
-call ids_deallocate(pf_active0)
-call ids_deallocate(pf_passive0)
 !call ids_deallocate(equilibrium0)
 !call ids_deallocate(core_profiles0)
 !call ids_deallocate(core_sources0)
 
-call ids_copy(pf_active, pf_active0)
-call ids_copy(pf_passive, pf_passive0)
+! call ids_copy(pf_active, pf_active0)
+! call ids_copy(pf_passive, pf_passive0)
+do i=1,nact
+  pf_active0%coil(i)%current%data(1) = pf_active%coil(i)%current%data(1)
+enddo
+do i=1,npass
+  pf_passive0%loop(i)%current(1) = pf_passive%loop(i)%current(1)
+enddo
+
 !call ids_copy(equilibrium, equilibrium0)
 !call ids_copy(core_profiles, core_profiles0)
 !call ids_copy(core_sources, core_sources0)

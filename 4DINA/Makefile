@@ -47,3 +47,6 @@ solpsz2.o:	$(S)solpsz2.f
 nbicomR_IMAS.o:	$(S)nbicomR_IMAS.f
 		$(f2c) -c   -w    $(S)nbicomR_IMAS.f
 
+clean:
+	rm -f *.o
+	rm -f p_4dina

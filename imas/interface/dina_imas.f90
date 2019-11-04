@@ -328,15 +328,15 @@ pf_active0%ids_properties%homogeneous_time = 1
 pf_passive0%ids_properties%homogeneous_time = 1
 
 !allocate(pf_active0%coil(nact))
-!allocate(pf_passive0%loop(npass))
+if(.NOT.associated(pf_passive0%loop)) allocate(pf_passive0%loop(npass))
 
 do i=1,nact
 
         allocate(pf_active0%coil(i)%current%data(1))
-        allocate(pf_active0%coil(i)%current%time(1))
+!         allocate(pf_active0%coil(i)%current%time(1))
 
         allocate(pf_active0%coil(i)%voltage%data(1))
-        allocate(pf_active0%coil(i)%voltage%time(1))
+!         allocate(pf_active0%coil(i)%voltage%time(1))
 enddo
 
 do i=1,npass

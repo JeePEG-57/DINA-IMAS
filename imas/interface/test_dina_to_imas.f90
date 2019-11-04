@@ -46,6 +46,8 @@ integer,save :: i1=11, i2=8, ke=57
 ! for timing tests
 INTEGER :: clock_start,clock_end,clock_rate
 
+character (len=255) :: user
+call getenv("USER", user)
 
 print *,' Enter pulse number'
 !read (*,*)prescribedpulse
@@ -60,7 +62,7 @@ print *,' run number',prescribedrun
 
 
 ! call imas_create('ids',prescribedpulse,prescribedrun,1,1,idx0)
-call imas_create_env('ids',prescribedpulse,prescribedrun,1,1,idx0,'medveds','test','3')
+call imas_create_env('ids',prescribedpulse,prescribedrun,1,1,idx0,user,'test','3')
 write(*,*) 'created'
 
 
@@ -145,7 +147,7 @@ write(*,*) 'DINA_IMAS Exiting cleanly'
 write(*,*) 'Reading saved data...'
 
 ! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
-call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,'medveds','test','3')
+call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3')
 call ids_get(idx0,'em_coupling',em_coupling1)
 
 write(*,*) 'TestDINAIMAS - TestElements: '

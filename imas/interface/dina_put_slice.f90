@@ -6,8 +6,6 @@ subroutine dina_put_slice( pf_active, pf_passive , equilibrium, core_profiles, &
 use ids_schemas
 use ids_routines
 implicit none
-
-
 type (ids_equilibrium) :: equilibrium
 type (ids_pf_active)   :: pf_active
 type (ids_pf_passive)   :: pf_passive
@@ -33,14 +31,15 @@ real(DP),dimension(:,:),allocatable :: psi
 
 real(DP) :: tt,psi_ax,psi_bnd
 
-
+character (len=255) :: user
+call getenv("USER", user)
 
 if (iloop == 1) then
 
 
   write(*,*) 'Create new pulse file...'
 !   call imas_create('ids',pulse,run,1,1,idx)
-  call imas_create_env('ids',pulse,run,1,1,idx,'medveds','test','3')
+  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
   write(*,*) 'Pulse file is created, put non-timed...'
 
 
@@ -61,7 +60,7 @@ else
 
   write(*,*) 'Open pulse file...'
 !   call imas_open('ids',pulse,run,idx) 
-  call imas_open_env('ids',pulse,run,idx,'medveds','test','3') 
+  call imas_open_env('ids',pulse,run,idx,user,'test','3') 
   write(*,*)  'Pulse file is opened, put slices'
 
   write(*,*)  'Put pf_active'

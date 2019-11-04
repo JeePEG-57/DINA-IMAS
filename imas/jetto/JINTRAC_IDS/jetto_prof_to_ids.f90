@@ -39,6 +39,9 @@ character(LEN=100) :: filename01,filename02,filename03,filename04,filename05 &
 &,filename06,filename07,filename08,filename09,filename10 &
 &,filename11,filename12,filename13
 
+character (len=255) :: user
+call getenv("USER", user)
+
 print *,' Enter pulse number'
 read (*,*) pulse
 !pulse=170
@@ -211,12 +214,12 @@ print*, 'File read successfull'
 
 
 ! call imas_create('ids',pulse,run,1,1,idx0)
-call imas_create_env('ids',pulse,run,1,1,idx0,'medveds','test','3') 
+call imas_create_env('ids',pulse,run,1,1,idx0,user,'test','3') 
 
 print *,'Pulse, run =', pulse, run
 write(*,*) 'Opening the prescribed IDS'
 ! call imas_open('ids', pulse, run, idx)
-call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 
 print *,'imas opened', idx0
 

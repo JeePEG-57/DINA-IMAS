@@ -46,11 +46,14 @@
 	integer :: it, ir, nt, nr, kpr
 
       common/ge5/kpr
+          
+      character (len=255) :: user
+      call getenv("USER", user)
 	
 !    kpr=1
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -115,11 +118,14 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
       common/ge5/kpr
+      
+      character (len=255) :: user
+      call getenv("USER", user)
 	
 !     kpr=1
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -181,6 +187,9 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
       common/ge5/kpr
+      
+      character (len=255) :: user
+      call getenv("USER", user)	
 
 !	    kpr=1
 
@@ -188,7 +197,7 @@
 	if(kpr.eq.1)print *,' imas open== pulse run ',pulse,run
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_sources', cs)
 	call imas_close(idx)
 	
@@ -254,12 +263,15 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr ,kpr
       common/ge5/kpr
-	
+      
+      character (len=255) :: user
+      call getenv("USER", user)
+		
 !	    kpr=1
 
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_sources', cs)
 	call imas_close(idx)
 	
@@ -320,12 +332,15 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
       common/ge5/kpr
-	
+      
+      character (len=255) :: user
+      call getenv("USER", user)
+		
 !	    kpr=1
 
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -387,12 +402,15 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
       common /ge5/kpr
-	
+      
+      character (len=255) :: user
+      call getenv("USER", user)
+		
 !	    kpr=1
 
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -452,11 +470,14 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr , kpr 
       common/ge5/kpr
+      
+      character (len=255) :: user
+      call getenv("USER", user)	
 	
 !	    kpr=1
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -519,11 +540,14 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
       common/ge5/kpr
-	
+      
+      character (len=255) :: user
+      call getenv("USER", user)
+		
 !	kpr=1
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
@@ -583,11 +607,14 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
       common/ge5/kpr
-
+      
+      character (len=255) :: user
+      call getenv("USER", user)
+	
 !     kpr=1
 	
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'equilibrium', eq)
 	call imas_close(idx)
 	
@@ -645,11 +672,13 @@
 	type (ids_core_profiles) :: cp	
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
-      common/ge5/kpr
-	
-	
+      common/ge5/kpr	
+      
+      character (len=255) :: user
+      call getenv("USER", user)
+		
 ! 	call imas_open('ids', pulse, run, idx)
-	call imas_open_env('ids', pulse, run, idx,'medveds','test','3') 
+	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
 	call ids_get(idx, 'core_profiles', cp)
 	call imas_close(idx)
 	
