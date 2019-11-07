@@ -89,7 +89,8 @@ print *,' run number',prescribedrun
 
 print *,' Enter maximum steps number'
 !read (*,*)imax
-imax=10
+! imax=10
+imax=9
 print *,' imax',imax
 
 write(*,*) 'The file'
@@ -149,7 +150,9 @@ enddo
 !call ids_get_slice(idx0,"transport_solver_numerics",bndcond,tt,1)
 !call ids_get_slice(idx0,"equilibrium",equilibrium0,tt,1)
 
+!call ids_deallocate(pf_active0)
 call ids_get_slice(idx0,"pf_active",pf_active0,tt,1)
+! call ids_deallocate(pf_passive0)
 call ids_get_slice(idx0,"pf_passive",pf_passive0,tt,1)
 
 !call ids_get_slice(idx0,"core_profiles",core_profiles0,tt,1)
@@ -253,7 +256,9 @@ do i=1,nact
   if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
 enddo
 call ids_put_slice(idxc,"pf_active",pf_active)
-call ids_put_slice(idxc,"pf_passive",pf_passive)
+if(associated(pf_passive%loop)) then
+  call ids_put_slice(idxc,"pf_passive",pf_passive)
+endif
 
 endif
 
@@ -290,20 +295,20 @@ call imas_close(idxc)
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 write(*,*) 'DINA_IMAS loop finished, clean up'
 
-write(*,*) 'Deallocate static IDS'
-call ids_deallocate(em_coupling0)
-call ids_deallocate(equilibrium0)
-call ids_deallocate(pf_active0)
-call ids_deallocate(pf_passive0)
-call ids_deallocate(pulse_schedule)
-call ids_deallocate(core_profiles0)
-call ids_deallocate(core_sources0)
-
-call ids_deallocate(pf_active)
-call ids_deallocate(pf_passive)
-!call ids_deallocate(equilibrium)
-call ids_deallocate(magnetics)
-call ids_deallocate(core_profiles)
+! write(*,*) 'Deallocate static IDS'
+! call ids_deallocate(em_coupling0)
+! call ids_deallocate(equilibrium0)
+! call ids_deallocate(pf_active0)
+! call ids_deallocate(pf_passive0)
+! call ids_deallocate(pulse_schedule)
+! call ids_deallocate(core_profiles0)
+! call ids_deallocate(core_sources0)
+! 
+! call ids_deallocate(pf_active)
+! call ids_deallocate(pf_passive)
+! !call ids_deallocate(equilibrium)
+! call ids_deallocate(magnetics)
+! call ids_deallocate(core_profiles)
 
 ! write(*,*) 'Read back full dynamic IDS as a test'
 ! 

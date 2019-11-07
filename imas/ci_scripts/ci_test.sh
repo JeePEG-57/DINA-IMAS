@@ -59,7 +59,8 @@ elif [ $input == 'regression' ]; then
   cd ../regression
   tar xvf IDS_ref.tar --strip 1 -C $MDSPLUS_TREE_BASE_0
   
-  ../circ/test_circ | tee -a test_circ.log
+#   ../circ/test_circ | tee -a test_circ.log
+  ../circ/test_circ | tee test_circ.log
 
 #   # ---> Extract executable from the artifact and run the wrapper
 #   if [ $input == 'exewrapper1' ]; then

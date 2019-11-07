@@ -19,7 +19,7 @@ shopt -s expand_aliases
 module purge 2> /dev/null
 # module load imas/3.10.1/ual/3.6.0
 # module load IMAS/3.23.3-4.1.5
-module load IMAS/3.24.0-4.1.5
+module load IMAS/3.25.0-4.3.0
 
 # KEPLER ENVIRONMENT VARIABLES
 
@@ -50,7 +50,7 @@ else
 fi
 
 # module load fc2k/4.2.6
-module load FC2K/4.6.3
+module load FC2K/4.6.5
 
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 module load MATLAB/2018a
