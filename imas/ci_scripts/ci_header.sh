@@ -19,7 +19,7 @@ shopt -s expand_aliases
 module purge 2> /dev/null
 # module load imas/3.10.1/ual/3.6.0
 # module load IMAS/3.23.3-4.1.5
-module load IMAS/3.25.0-4.3.0
+module load IMAS/3.25.0-4.3.1
 
 # KEPLER ENVIRONMENT VARIABLES
 

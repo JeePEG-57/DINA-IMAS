@@ -89,8 +89,8 @@ print *,' run number',prescribedrun
 
 print *,' Enter maximum steps number'
 !read (*,*)imax
-! imax=10
-imax=9
+imax=10
+! imax=9
 print *,' imax',imax
 
 write(*,*) 'The file'
@@ -116,8 +116,8 @@ call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3')
 
 call ids_get(idx0,"pf_active",pf_active_a)
 
-! call imas_create('ids',pulse,run,1,1,idxc)
-call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
+! ! call imas_create('ids',pulse,run,1,1,idxc)
+! call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
 
 write(*,*) 'Finished reading the prescribed IDS'
 
@@ -150,7 +150,7 @@ enddo
 !call ids_get_slice(idx0,"transport_solver_numerics",bndcond,tt,1)
 !call ids_get_slice(idx0,"equilibrium",equilibrium0,tt,1)
 
-!call ids_deallocate(pf_active0)
+! call ids_deallocate(pf_active0)
 call ids_get_slice(idx0,"pf_active",pf_active0,tt,1)
 ! call ids_deallocate(pf_passive0)
 call ids_get_slice(idx0,"pf_passive",pf_passive0,tt,1)
@@ -240,25 +240,34 @@ write(*,*) 'Passive currents relative error', tpass_err/tmaxa
 
 if (iloop == 1) then
 
-do i=1,nact
-  if(associated(pf_active%coil(i)%current%time)) deallocate(pf_active%coil(i)%current%time)
-  if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
-enddo
+
+call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
+
+! do i=1,nact
+!   if(associated(pf_active%coil(i)%current%time)) deallocate(pf_active%coil(i)%current%time)
+!   if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
+! enddo
+
 call ids_put(idxc,"pf_active",pf_active)
-if(associated(pf_passive%loop)) then
+
+! call imas_close(idxc)
+! 
+! call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
+
+! if(associated(pf_passive%loop)) then
   call ids_put(idxc,"pf_passive",pf_passive)
-endif
+! endif
 
 else
 
-do i=1,nact
-  if(associated(pf_active%coil(i)%current%time)) deallocate(pf_active%coil(i)%current%time)
-  if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
-enddo
-call ids_put_slice(idxc,"pf_active",pf_active)
-if(associated(pf_passive%loop)) then
-  call ids_put_slice(idxc,"pf_passive",pf_passive)
-endif
+! ! do i=1,nact
+! !   if(associated(pf_active%coil(i)%current%time)) deallocate(pf_active%coil(i)%current%time)
+! !   if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
+! ! enddo
+! call ids_put_slice(idxc,"pf_active",pf_active)
+! ! if(associated(pf_passive%loop)) then
+! call ids_put_slice(idxc,"pf_passive",pf_passive)
+! ! endif
 
 endif
 

@@ -368,21 +368,27 @@ call ids_copy(pf_active0,pf_active)
 call ids_copy(pf_passive0,pf_passive)
 !write(*,*) '!!!ids_copy pf_passive0 exit'
 
-
-
-print *,' nact=',nact
-do i=1,nact
-
-        allocate(pf_active%coil(i)%current%data(1))
-!         allocate(pf_active%coil(i)%current%time(1))
-
-        allocate(pf_active%coil(i)%voltage%data(1))
-!         allocate(pf_active%coil(i)%voltage%time(1))
-enddo
-
-allocate(pf_active%time(1))
-
-
+! call ids_deallocate(pf_active)
+! allocate(pf_active%coil(nact))
+! call ids_deallocate(pf_passive)
+! allocate(pf_passive%time(1))
+! print *,' nact=',nact
+! do i=1,nact
+! !         if(associated(pf_active%coil(i)%current%data)) deallocate(pf_active%coil(i)%current%data)
+!         allocate(pf_active%coil(i)%current%data(1))
+! !         allocate(pf_active%coil(i)%current%time(1))
+! 
+! !        if(associated(pf_active%coil(i)%voltage%data)) deallocate(pf_active%coil(i)%voltage%data)
+!         allocate(pf_active%coil(i)%voltage%data(1))
+! !         allocate(pf_active%coil(i)%voltage%time(1))
+! enddo
+! allocate(pf_active%time(1))
+! allocate(pf_passive%loop(npass))
+! print *,' npass=',npass  
+! do i=1,npass
+!     allocate(pf_passive%loop(i)%current(1))
+! end do
+pf_passive%ids_properties%homogeneous_time = 1
 pf_active%ids_properties%homogeneous_time = 1
 
 do i=1,nact
@@ -398,18 +404,6 @@ do i=1,nact
 end do
 
 pf_active%time(1) = dina_time
-
-
-print *,' npass=',npass
-    
-do i=1,npass
-    allocate(pf_passive%loop(i)%current(1))
-end do
-
-allocate(pf_passive%time(1))
-
-
-pf_passive%ids_properties%homogeneous_time = 1
 
 do i=1,npass
 !    print *,' i pass=',i
