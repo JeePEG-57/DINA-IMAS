@@ -332,8 +332,8 @@ if (summary%time(1).gt.StopTime) exit
 end do
 
 
-call imas_close(idx0)
-call imas_close(idxc)
+! call imas_close(idx0)
+! call imas_close(idxc)
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 write(*,*) 'DINA_IMAS loop finished, clean up'
