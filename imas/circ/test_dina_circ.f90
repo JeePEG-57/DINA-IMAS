@@ -49,7 +49,7 @@ type (ids_em_coupling) :: em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
 type (ids_pf_active) :: pf_active0, pf_active, pf_active_a
-type (ids_pf_passive) :: pf_passive0, pf_passive
+type (ids_pf_passive) :: pf_passive0, pf_passive, pf_passive_a
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_sources)   :: core_sources0, core_sources
 type (ids_core_transport)   :: core_transport
@@ -115,6 +115,7 @@ call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3')
 
 
 call ids_get(idx0,"pf_active",pf_active_a)
+call ids_get(idx0,"pf_passive",pf_passive_a)
 
 ! ! call imas_create('ids',pulse,run,1,1,idxc)
 ! call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
@@ -150,10 +151,38 @@ enddo
 !call ids_get_slice(idx0,"transport_solver_numerics",bndcond,tt,1)
 !call ids_get_slice(idx0,"equilibrium",equilibrium0,tt,1)
 
-! call ids_deallocate(pf_active0)
-call ids_get_slice(idx0,"pf_active",pf_active0,tt,1)
-! call ids_deallocate(pf_passive0)
-call ids_get_slice(idx0,"pf_passive",pf_passive0,tt,1)
+call ids_deallocate(pf_active0)
+! call ids_get_slice(idx0,"pf_active",pf_active0,tt,1)
+
+!re-allocate instead of get_slice
+print *,' nact=',nact
+allocate(pf_active0%coil(nact))
+do i=1,nact
+        allocate(pf_active0%coil(i)%current%data(1))
+        allocate(pf_active0%coil(i)%voltage%data(1))
+        pf_active0%coil(i)%current%data(1)  = pf_active_a%coil(i)%current%data(iloop)
+        pf_active0%coil(i)%voltage%data(1)  = pf_active_a%coil(i)%voltage%data(iloop)
+        pf_active0%coil(i)%resistance  = pf_active_a%coil(i)%resistance
+enddo
+allocate(pf_active0%time(1))
+pf_active0%time(1) = tt
+pf_active0%ids_properties%homogeneous_time = 1
+
+call ids_deallocate(pf_passive0)
+! call ids_get_slice(idx0,"pf_passive",pf_passive0,tt,1)
+!re-allocate instead of get_slice
+npass = size(pf_passive_a%loop,1)
+print *,' npass=',npass
+allocate(pf_passive0%loop(npass))
+do i=1,npass
+        allocate(pf_passive0%loop(i)%current(1))
+        pf_passive0%loop(i)%current(1)  = pf_passive_a%loop(i)%current(iloop)
+        pf_passive0%loop(i)%resistance  = pf_passive_a%loop(i)%resistance
+enddo
+allocate(pf_passive0%time(1))
+pf_passive0%time(1) = tt
+pf_passive0%ids_properties%homogeneous_time = 1
+
 
 !call ids_get_slice(idx0,"core_profiles",core_profiles0,tt,1)
 !call ids_get_slice(idx0,"core_sources",core_sources0,tt,1)
@@ -248,14 +277,16 @@ call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
 !   if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
 ! enddo
 
-call ids_put(idxc,"pf_active",pf_active)
+! no put to idxc
+! call ids_put(idxc,"pf_active",pf_active)
 
 ! call imas_close(idxc)
 ! 
 ! call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
 
 ! if(associated(pf_passive%loop)) then
-  call ids_put(idxc,"pf_passive",pf_passive)
+! no put to idxc
+! call ids_put(idxc,"pf_passive",pf_passive)
 ! endif
 
 else
@@ -264,8 +295,11 @@ else
 ! !   if(associated(pf_active%coil(i)%current%time)) deallocate(pf_active%coil(i)%current%time)
 ! !   if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
 ! ! enddo
+
+! no put to idxc
 ! call ids_put_slice(idxc,"pf_active",pf_active)
 ! ! if(associated(pf_passive%loop)) then
+! ! ! no put to idxc
 ! call ids_put_slice(idxc,"pf_passive",pf_passive)
 ! ! endif
 

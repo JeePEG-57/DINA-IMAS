@@ -368,6 +368,7 @@ call ids_copy(pf_active0,pf_active)
 call ids_copy(pf_passive0,pf_passive)
 !write(*,*) '!!!ids_copy pf_passive0 exit'
 
+! !re-allocate instead of copy
 ! call ids_deallocate(pf_active)
 ! allocate(pf_active%coil(nact))
 ! call ids_deallocate(pf_passive)
@@ -388,6 +389,7 @@ call ids_copy(pf_passive0,pf_passive)
 ! do i=1,npass
 !     allocate(pf_passive%loop(i)%current(1))
 ! end do
+
 pf_passive%ids_properties%homogeneous_time = 1
 pf_active%ids_properties%homogeneous_time = 1
 
