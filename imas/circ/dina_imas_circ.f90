@@ -361,34 +361,34 @@ end do
 	cpu_old = cpu_new
 
 
-!write(*,*) '!!!ids_copy pf_active0 enter'
-call ids_copy(pf_active0,pf_active)
-!write(*,*) '!!!ids_copy pf_active0 exit'
-!write(*,*) '!!!ids_copy pf_passive0 enter'
-call ids_copy(pf_passive0,pf_passive)
-!write(*,*) '!!!ids_copy pf_passive0 exit'
+! !write(*,*) '!!!ids_copy pf_active0 enter'
+! call ids_copy(pf_active0,pf_active)
+! !write(*,*) '!!!ids_copy pf_active0 exit'
+! !write(*,*) '!!!ids_copy pf_passive0 enter'
+! call ids_copy(pf_passive0,pf_passive)
+! !write(*,*) '!!!ids_copy pf_passive0 exit'
 
-! !re-allocate instead of copy
-! call ids_deallocate(pf_active)
-! allocate(pf_active%coil(nact))
-! call ids_deallocate(pf_passive)
-! allocate(pf_passive%time(1))
-! print *,' nact=',nact
-! do i=1,nact
-! !         if(associated(pf_active%coil(i)%current%data)) deallocate(pf_active%coil(i)%current%data)
-!         allocate(pf_active%coil(i)%current%data(1))
-! !         allocate(pf_active%coil(i)%current%time(1))
-! 
-! !        if(associated(pf_active%coil(i)%voltage%data)) deallocate(pf_active%coil(i)%voltage%data)
-!         allocate(pf_active%coil(i)%voltage%data(1))
-! !         allocate(pf_active%coil(i)%voltage%time(1))
-! enddo
-! allocate(pf_active%time(1))
-! allocate(pf_passive%loop(npass))
-! print *,' npass=',npass  
-! do i=1,npass
-!     allocate(pf_passive%loop(i)%current(1))
-! end do
+!re-allocate instead of copy
+call ids_deallocate(pf_active)
+allocate(pf_active%coil(nact))
+call ids_deallocate(pf_passive)
+allocate(pf_passive%time(1))
+print *,' nact=',nact
+do i=1,nact
+!         if(associated(pf_active%coil(i)%current%data)) deallocate(pf_active%coil(i)%current%data)
+        allocate(pf_active%coil(i)%current%data(1))
+!         allocate(pf_active%coil(i)%current%time(1))
+
+!        if(associated(pf_active%coil(i)%voltage%data)) deallocate(pf_active%coil(i)%voltage%data)
+        allocate(pf_active%coil(i)%voltage%data(1))
+!         allocate(pf_active%coil(i)%voltage%time(1))
+enddo
+allocate(pf_active%time(1))
+allocate(pf_passive%loop(npass))
+print *,' npass=',npass  
+do i=1,npass
+    allocate(pf_passive%loop(i)%current(1))
+end do
 
 pf_passive%ids_properties%homogeneous_time = 1
 pf_active%ids_properties%homogeneous_time = 1
