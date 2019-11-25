@@ -325,6 +325,7 @@ end do
 
     dina_time=tt
  
+    n = 1 ! dummy radial dimension
     write(*,*) 'dina_outp call n tpl tt= ', n,tpl,tt
 
 

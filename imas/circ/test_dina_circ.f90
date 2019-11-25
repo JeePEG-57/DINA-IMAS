@@ -277,16 +277,16 @@ call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
 !   if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
 ! enddo
 
-! no put to idxc
-! call ids_put(idxc,"pf_active",pf_active)
+! ! no put to idxc
+call ids_put(idxc,"pf_active",pf_active)
 
 ! call imas_close(idxc)
 ! 
 ! call imas_create_env('ids',pulse,run,1,1,idxc,user,'test','3')
 
 ! if(associated(pf_passive%loop)) then
-! no put to idxc
-! call ids_put(idxc,"pf_passive",pf_passive)
+! ! no put to idxc
+call ids_put(idxc,"pf_passive",pf_passive)
 ! endif
 
 else
@@ -296,11 +296,11 @@ else
 ! !   if(associated(pf_active%coil(i)%voltage%time)) deallocate(pf_active%coil(i)%voltage%time)
 ! ! enddo
 
-! no put to idxc
-! call ids_put_slice(idxc,"pf_active",pf_active)
+! ! no put to idxc
+call ids_put_slice(idxc,"pf_active",pf_active)
 ! ! if(associated(pf_passive%loop)) then
-! ! ! no put to idxc
-! call ids_put_slice(idxc,"pf_passive",pf_passive)
+! ! no put to idxc
+call ids_put_slice(idxc,"pf_passive",pf_passive)
 ! ! endif
 
 endif
