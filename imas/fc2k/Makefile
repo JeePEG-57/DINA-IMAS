@@ -19,6 +19,7 @@ fc2k: dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp_energy.xml di
 	$$FC2K/bin/fc2k -nocompile dinaputslice21.xml
 	$$FC2K/bin/fc2k -nocompile dinatransp_energy.xml
 	$$FC2K/bin/fc2k -nocompile dinatransp_density.xml
+	$$FC2K/bin/fc2k -nocompile astra_transp_density.xml
 	$$FC2K/bin/fc2k -nocompile dinatransp_bootcond.xml
 	$$FC2K/bin/fc2k -nocompile dinatransp_curdrive.xml
 	$$FC2K/bin/fc2k -nocompile dinatransp_heatsrc.xml

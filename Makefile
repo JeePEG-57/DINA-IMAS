@@ -8,6 +8,7 @@ dina:
 	make -C src/scenario/kavin_controller
 
 interface: dina
+	make -C imas/astra_transp
 	make -C imas/interface
 
 fc2k: interface
@@ -16,6 +17,7 @@ fc2k: interface
 
 clean:
 	make -C src/scenario clean
+	make -C imas/astra_transp clean
 	make -C imas/interface clean
 	make -C imas/fc2k clean
 

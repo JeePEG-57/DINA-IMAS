@@ -24,6 +24,7 @@ imas/fc2k/dinasdn21.xml
 !imas/fc2k/externaltransp.xml
 imas/fc2k/toto
 imas/interface/test_dina
+imas/interface/test_dina_astra
 imas/interface/test_dina_to_imas
 imas/interface/test_wr_prof
 imas/circ/test_dina
@@ -32,7 +33,7 @@ imas/eq_test/p_equi
 imas/jetto/JINTRAC_IDS/jetto_prof_to_ids
 imas/jetto/JINTRAC_IDS/jetto_prof_from_ids
 imas/kepler_wf/log*
-4DINA/p_4dina
+imas/astra_transp/p_4dina
 *cputime*
 */temp
 *.directory

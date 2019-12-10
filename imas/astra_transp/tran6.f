@@ -1,11 +1,11 @@
-	subroutine transp2(
+	subroutine transp6(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
 !------------------------------------outputs
      *  c_output1,c_output2,c_output3)
 
-cDEC$ ATTRIBUTES DLLEXPORT::  transp2
+cDEC$ ATTRIBUTES DLLEXPORT::  transp6
 
       include 'double.inc'
 	include 'new_com.inc'                                                  
@@ -26,7 +26,7 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp2
 !------------------------------------inputs
 
 
-       if(kp.eq.1)print *,' CALL TRANSP2'
+       if(kp.eq.1)print *,' CALL TRANSP6'
 
       i_en=i_en+1
       if(i_en.eq.1)then

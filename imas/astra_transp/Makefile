@@ -1,7 +1,11 @@
+F90_gfortran=gfortran -w
+COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
+LIBS_gfortran=`pkg-config imas-gfortran --libs`
+
 XLIB= /usr/X11R6/lib
 
 #f2c= g77 -ff2c -fno-automatic
-f2c= gfortran -w  -ffixed-line-length-none -fno-automatic 
+f2c= gfortran -w  -ffixed-line-length-none -fno-automatic -fPIC
 
 
 S=./
@@ -11,10 +15,18 @@ V=$(S)
 
 os=		a_main_dina.o a_dina.o add_dll.o tran6.o main_astra.o \
 		solsrs_IMAS.o neutex_IMAS.o pelsrs1_IMAS.o solpsz2.o nbicomR_IMAS.o
-		 
+
+all: p_4dina astra_transp_density.a
+
+astra_transp_density.a: astra_transp_density.o $(os)
+	@echo "   * $^ -> $@"
+	ar -rcs astra_transp_density.a astra_transp_density.o $(os)
+
+%.o: %.f90
+	@echo "   * $^ -> $@"
+	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
 p_4dina:	$(os)
-
 		gfortran -o p_4dina $(os) -lm -L$(XLIB) -lX11
 
 
@@ -49,4 +61,5 @@ nbicomR_IMAS.o:	$(S)nbicomR_IMAS.f
 
 clean:
 	rm -f *.o
+	rm -f *.a
 	rm -f p_4dina

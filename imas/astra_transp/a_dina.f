@@ -34,7 +34,7 @@
       k_ajb_ext=1
 
 
-      call transp2(
+      call transp6(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !------------------------------------outputs

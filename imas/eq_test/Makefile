@@ -1,7 +1,10 @@
+F90_gfortran=gfortran -w
+COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
+LIBS_gfortran=`pkg-config imas-gfortran --libs`
 XLIB= /usr/X11R6/lib
 
 #f2c= g77 -ff2c -fno-automatic
-f2c= gfortran -w  -ffixed-line-length-none -fno-automatic 
+f2c= gfortran -w  -ffixed-line-length-none -fno-automatic -fPIC 
 
 
 S=./
@@ -17,8 +20,15 @@ os=		a_main_equi.o a_dina_equi.o \
 		sh_d3d.o uuu.o zca_tsp.o zcam_d3d.o zcamit.o
 		 
 
-all:	p_equi
+all:	p_equi dina_equil.a
 
+dina_equil.a: dina_equil.o $(os)
+	@echo "   * $^ -> $@"
+	ar -rcs dina_equil.a dina_equil.o $(os)
+
+%.o: %.f90
+	@echo "   * $^ -> $@"
+	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
 p_equi:		$(os)
 
