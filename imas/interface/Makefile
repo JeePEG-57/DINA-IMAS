@@ -7,7 +7,7 @@ f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic 
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 
-TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp_energy.a dina_transp_density.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a dina_sdn.a solps_imas.a test_dina test_wr_prof
+TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp_energy.a dina_transp_density.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a dina_sdn.a solps_imas.a test_dina_to_imas test_dina test_wr_prof
 
 DINADIR := ../../src/scenario
 ASTRADIR := ../astra_transp
