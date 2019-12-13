@@ -4,6 +4,7 @@ import os
 
 from PyQt5 import QtWidgets
 import design
+import captions
 
 import numpy
 import random
@@ -45,6 +46,14 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         super().__init__()
         self.setupUi(self)  # Initialise design
         self.initUi()
+        
+    def initTableOfParameters(self, table, headers):
+        nCol = len(headers)
+        table.setRowCount(nCol)
+        table.setVerticalHeaderLabels(headers)
+        for i in range(nCol):
+            table.verticalHeaderItem(i).setToolTip(captions.tooltip[headers[i]])
+        
         
     def initUi(self):
         self.setWindowTitle('DINA GUI')
@@ -145,11 +154,11 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.tableControlMarg.setHorizontalHeaderLabels(['Max Voltage, V', 'Max current, kA']) 
         self.tableControlMarg.setVerticalHeaderLabels(['VVS1', 'VVS3'] + self.coilNames) 
         layoutContr.addWidget(self.tableControlMarg)
-        
-        self.tableControl1.setVerticalHeaderLabels(['tcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'Tu, s'])
+                
+        self.initTableOfParameters(self.tableControl1, ['Time_cont2', 'Ip_div', 'Time_ref_ramp', 'Ip_rd', 'Time_rd_ref', 'Time_V'])
         layoutContr.addWidget(self.tableControl1)
-        
-        self.tableControl2.setVerticalHeaderLabels(['c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0'])
+                            
+        self.initTableOfParameters(self.tableControl2, ['c_a_tpl1', 'c_a_tpl1_EOB', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0'])       
         layoutContr.addWidget(self.tableControl2)
         
         self.tabControl.setLayout(layoutContr)
@@ -276,7 +285,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
       
     def BrowseFolder(self):
-      self.directory = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder")
+      self.directory = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder", os.getenv('KEPLER'))
 
       if self.directory: 
         self.labelDir.setText(self.directory)
