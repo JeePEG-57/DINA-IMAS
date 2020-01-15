@@ -5,7 +5,7 @@
 !> After call dina_outp the output data are being recorded to IDS and dat files
 
 
-subroutine dina_imas(&
+subroutine dina_equil(&
   &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
@@ -102,8 +102,6 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: xbound(ntet),ybound(ntet)
     
     real(ids_real) :: vchopper(npf),pf(npf),tcam(ncam)
-    
-    real(ids_real) :: pptab(npo),fptab(npo)
 
     real(ids_real),parameter :: pi = 3.14159265358979323846
 
@@ -579,10 +577,21 @@ write(*,*) '!!!dina_outp enter'
      & xbound,ybound,rmajor,rminor,elong,tri, &
      & pd0,pt0,sigk,jbut,aj0,qe0,qq0, &
      & betap,betat,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag, &
-     & vchopper,pf,tcam, &
-     & pptab,fptab)
+     & vchopper,pf,tcam)
 
 
+     
+     
+     call dina2(
+!-----------------------------------  inputs---
+     *  c_input1,c_input2,
+!------------------------------------outputs
+     *  c_output1,c_output2,c_output3)
+     
+     
+     
+     
+     
 
 write(*,*) '!!!solpsza enter'
       call solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
@@ -753,9 +762,6 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(n))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(n))
-    
     allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%r(ntet))
     allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%z(ntet))
     allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(ntet))
@@ -776,8 +782,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 
     equilibrium%ids_properties%homogeneous_time = 1
     equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n) = ai(1:n)
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = pptab(1:n)
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = fptab(1:n)
+    
     
     equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%li_3 = uli
@@ -791,7 +796,10 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 	equilibrium%time_slice(CurTimeStep)%global_quantities%q_95 = q_95
 	equilibrium%time_slice(CurTimeStep)%global_quantities%w_mhd = wen2 ![J]
 
-
+        equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%r = rmajor
+        equilibrium%time_slice(CurTimeStep)%boundary%minor_radius = rminor
+        equilibrium%time_slice(CurTimeStep)%boundary%elongation = elong
+        equilibrium%time_slice(CurTimeStep)%boundary%triangularity = tri
 
         equilibrium%time_slice(CurTimeStep)%global_quantities%surface = ysbound_xx
         equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n) = ysbound_xx
@@ -799,18 +807,11 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 	equilibrium%vacuum_toroidal_field%r0 = rs0 ![m]
 	equilibrium%vacuum_toroidal_field%b0(CurTimeStep) = bt0 ![T]
     
-    
-        equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%r = rmajor
-        equilibrium%time_slice(CurTimeStep)%boundary%minor_radius = rminor
-        equilibrium%time_slice(CurTimeStep)%boundary%elongation = elong
-        equilibrium%time_slice(CurTimeStep)%boundary%triangularity = tri    
-    
-        equilibrium%time_slice(CurTimeStep)%boundary%outline%r(1:ntet) = xbound(1:ntet)
-        equilibrium%time_slice(CurTimeStep)%boundary%outline%z(1:ntet) = ybound(1:ntet)
-        equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(1:ntet) = xbound(1:ntet)
-        equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(1:ntet) = ybound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%outline%r(1:ntet) = xbound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%outline%z(1:ntet) = ybound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(1:ntet) = xbound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(1:ntet) = ybound(1:ntet)
 
-        
     !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim1(1:n1)=x(1:n1) ![m]
     !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim2(1:n2)=y(1:n2) ![m]
 

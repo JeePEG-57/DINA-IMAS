@@ -204,7 +204,8 @@ c ============ outputs ==============================================
      * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,
      * tene_xx,wfus_xx,emag_xx,
-     * vchopper_xx,pf_xx,tcam_xx)
+     * vchopper_xx,pf_xx,tcam_xx,
+     * pptab_xx,fptab_xx)
 
 
 	include 'double.inc'
@@ -220,6 +221,7 @@ c ============ outputs ==============================================
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
         dimension xbound_xx(*),ybound_xx(*)
         dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
+        dimension pptab_xx(*),fptab_xx(*)
 
 
       n_xx=n
@@ -277,6 +279,8 @@ c=================================================
 	   pne_xx(i)=pne(i)
 	   tok1_xx(i)=tok1(i)*1.d7
 	   q_xx(i)=q(i)
+	   pptab_xx(i)=pptab(i)
+	   fptab_xx(i)=fptab(i)
 	end do
 	
 	do i=1,n

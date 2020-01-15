@@ -12,7 +12,7 @@ V=$(S)
 
 
 
-os=		a_main_equi.o a_dina_equi.o \
+os=		a_dina_equi.o \
 		bispl.o bispla.o bound.o brz.o  bunema.o \
 		diter_1.o fit.o flux_pl.o gr_psi_d_pc.o green_imas.o inh.o \
 		map.o n_equi.o ndop_4.o neq0_sep_lim_32.o neqm.o obrm.o \
@@ -30,9 +30,8 @@ dina_equil.a: dina_equil.o $(os)
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
-p_equi:		$(os)
-
-		gfortran -o p_equi $(os) -lm -L$(XLIB) -lX11
+p_equi: a_main_equi.o $(os)
+		gfortran -o p_equi a_main_equi.o $(os) -lm -L$(XLIB) -lX11
 
 
 a_main_equi.o:	$(S)a_main_equi.f
