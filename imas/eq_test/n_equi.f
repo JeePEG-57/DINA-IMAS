@@ -250,7 +250,7 @@ c______________________________
 !      call shape_pf() 
 !      call shape_tcam() 
 
-      call read_equil()
+      !call read_equil()
 
       do i=1,npf
       pf0(i)=pf(i)
@@ -323,7 +323,7 @@ c______________________________
       if(kkk1.lt.2)goto 1
 
 !       call write_equil()
-       call read_equil()
+       !call read_equil()
      
 !      stop
  

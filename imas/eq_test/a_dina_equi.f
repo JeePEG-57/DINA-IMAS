@@ -1,3 +1,152 @@
+       subroutine dina_input(tt_xx,tpl_xx, n_xx,pstab_xx, pptab_xx,fptab_xx, 
+     *  ncam_xx,tcam_xx, npf_xx,pf_xx)
+     
+      include 'double.inc'
+      include 'new_com.inc'
+      
+                  
+      dimension pstab_xx(*),pptab_xx(*),fptab_xx(*),tcam_xx(*),pf_xx(*)
+      
+      n = n_xx
+      nutab = n_xx
+      ncam = ncam_xx
+      npf = npf_xx
+      tt = tt_xx
+      tpl = tpl_xx
+      
+      do i=1,nutab
+        pstab(i) = pstab_xx(i)
+        pptab(i) = pptab_xx(i)
+        fptab(i) = fptab_xx(i)
+      end do      
+      
+      do i=1,ncam
+        tcam(i) = tcam_xx(i)   
+      enddo
+      do i=1,npf
+         pf(i) = pf_xx(i)
+      enddo
+      
+      
+      
+      
+      do i=1,n
+        ppx(i)=pptab(i)
+        pffx(i)=fptab(i)
+      end do      
+      
+      do i=1,nutab
+        a(i) = pstab(i)
+      end do
+      
+      return
+      end
+
+
+
+	subroutine dina_outp(n_xx,
+     * tpl_xx,uli_xx,v_xx,parea_xx,psi_ax_xx,rmag_xx,zmag_xx,
+     * q_ax_xx,q_95_xx,rs0_xx,bt0_xx,wen2_xx,tt_xx,
+     * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
+     * x_xx,y_xx,psi_xx,psi_bnd_xx,curr_d_xx,
+     * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
+     * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,
+     * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,
+     * tene_xx,wfus_xx,emag_xx,
+     * vchopper_xx,pf_xx,tcam_xx,
+     * pptab_xx,fptab_xx)
+
+
+	include 'double.inc'
+	include 'new_com.inc'
+
+        common /c_imas_curr_d/curr_d(nr,nz)
+
+	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
+     *  q_xx(*),x_xx(*),y_xx(*)
+	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),
+     *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
+     
+	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
+        dimension xbound_xx(*),ybound_xx(*)
+        dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
+        dimension pptab_xx(*),fptab_xx(*)
+
+
+      n_xx=n
+
+!	pi=3.14159
+	
+	tpl_xx=tpl*1000.d0
+	
+!	print *,' n_xx tpl_xx=',n_xx,tpl_xx
+	
+!	return
+	
+	uli_xx=uli
+	v_xx=volume
+	parea_xx=surface
+	psi_ax_xx=pmag*1.d-5*2.*pi
+	psi_bnd_xx=pbound*1.d-5*2.*pi
+	rmag_xx=rmag/100.d0
+	zmag_xx=zmag/100.d0
+	q_ax_xx=q(2)
+        q_95_xx=q_95
+	rs0_xx=rs0/100.d0
+	bt0_xx=bt0/10.d0
+	wen2_xx=wen2*1.d6
+	tt_xx=tt/1000.d0
+
+        betap_xx = betj
+        betat_xx = bett
+
+	emag_xx = emag*1.d6
+
+        rmajor_xx = rout/100.d0
+        rminor_xx = eu/100.d0
+        elong_xx = elong
+        tri_xx = tri
+
+        do i=1,ntet
+           xbound_xx(i) = xbound(i)*1.d-2
+           ybound_xx(i) = ybound(i)*1.d-2
+        end do
+c=================================================
+
+	do i=1,n
+	   ai_xx(i)=ai(i)
+
+	   tok1_xx(i)=tok1(i)*1.d7
+	   q_xx(i)=q(i)
+
+	end do
+	
+
+c=================================================
+
+	do i=1,nr
+	   x_xx(i)=x(i)/100.d0
+	end do
+
+	do i=1,nz
+	   y_xx(i)=y(i)/100.d0
+	end do
+
+
+	do i=1,nr
+	   do j=1,nz
+	      psi_xx(i,j)=psi(i,j)*1.d-5*2.*pi
+
+	   end do
+	end do
+
+
+    
+      return
+      end
+
+
+
 	subroutine dina2(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,

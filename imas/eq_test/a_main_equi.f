@@ -13,7 +13,9 @@ c	include 'fgraph.fi'
 
       print *,' -------- a_main=',a_main
 
-
+  
+      call read_equil()
+      
       
 	  call dina2(
 !-----------------------------------  inputs---
