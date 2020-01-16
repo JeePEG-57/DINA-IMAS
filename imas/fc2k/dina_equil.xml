@@ -3,7 +3,7 @@
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>/home/ITER/dubrovm/dina/imas/eq_test/dina_equil.a</fFile>
+  <fFile>../eq_test/dina_equil.a</fFile>
   <mainLibraryOptim></mainLibraryOptim>
   <HasOptim>false</HasOptim>
   <subrt>dina_equil</subrt>

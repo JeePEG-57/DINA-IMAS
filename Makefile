@@ -19,6 +19,7 @@ fc2k: interface
 clean:
 	make -C src/scenario clean
 	make -C imas/astra_transp clean
+	make -C imas/eq_test clean
 	make -C imas/interface clean
 	make -C imas/fc2k clean
 
