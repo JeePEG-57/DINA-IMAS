@@ -326,7 +326,9 @@ C
 	DO J=1,nz,M1
 	k=k+1
 	kk2=(i-1)*nz+j
-        al1=pspl(kk2)/ui(i,j)
+	if(ui(i,j).ne.0d0) then
+           al1=pspl(kk2)/ui(i,j)
+        endif
 c	if(kpr.eq.1)print *,' al1 pspl ui',al1,pspl(kk2),ui(i,j)
         pspl(kk2)=ui(i,j)
 	end do
@@ -337,7 +339,9 @@ C
 	DO J=1,nz
 	k=k+1
 	kk2=(i-1)*nz+j
-        al1=pspl(kk2)/ui(i,j)
+	if(ui(i,j).ne.0d0) then
+           al1=pspl(kk2)/ui(i,j)
+        endif
 c 	if(kpr.eq.1)print *,' al1 pspl ui',al1,pspl(kk2),ui(i,j)
         pspl(kk2)=ui(i,j)
 c

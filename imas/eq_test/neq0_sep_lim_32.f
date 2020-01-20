@@ -4274,8 +4274,10 @@ c*vic Current center coordinates ********
 	END DO
 
 c*vic
-        r_cur=r_cur/tok
-        z_cur=z_cur/tok
+        if(tok.ne.0d0) then
+           r_cur=r_cur/tok
+           z_cur=z_cur/tok
+        endif
 
         if(kpr.eq.1)print*,'r_cur z_cur',r_cur,z_cur
 c        pause 'from cur_dens'
@@ -4288,10 +4290,15 @@ c        pause 'from cur_dens'
 	sp_t=npoint*dx*dy
 	sp_pl=sp_t-sp_h
 	if(kpr.eq.1)print *,' sp_t sp_h sp_pl=',sp_t,sp_h,sp_pl
-	al0=sp_h/sp_pl
+	
+	if(sp_pl.ne.0d0) then
+	   al0=sp_h/sp_pl
+	endif
 c	hpart=1.05
 
-	al1=tpl/(tok+tok_g)
+	if(tok+tok_g.ne.0d0) then
+	   al1=tpl/(tok+tok_g)
+	endif
 C
 	if(kpr.eq.1)print *,'tpl al1 ',tpl,al1
 	if(kpr.eq.1)print *,' tok tok_g tok_s ',tok,tok_g,tok_s

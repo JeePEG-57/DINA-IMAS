@@ -561,9 +561,11 @@ c-----------
 
  	res_ves=0.
 	do i=1,npf
-	   res_ves=res_ves+1./pfres(i)
+	   if(pfres(i).ne.0) then
+	      res_ves=res_ves+1./pfres(i)
+	   endif   
 	end do
-	   res_ves=1./res_ves
+	res_ves=1./res_ves
 
 	if(kpr.eq.1)print *,'npf pf_res ',ncam,res_ves
                                                                         

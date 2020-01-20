@@ -4,7 +4,8 @@ LIBS_gfortran=`pkg-config imas-gfortran --libs`
 XLIB= /usr/X11R6/lib
 
 #f2c= g77 -ff2c -fno-automatic
-f2c= gfortran -w  -ffixed-line-length-none -fno-automatic -fPIC 
+f2c= gfortran -w  -ffixed-line-length-none -fno-automatic -fPIC -g -ffpe-trap=invalid,zero
+
 
 
 S=./
