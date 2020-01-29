@@ -1,11 +1,11 @@
-	subroutine transp6(
+	subroutine transp7(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
 !------------------------------------outputs
      *  c_output1,c_output2,c_output3)
 
-cDEC$ ATTRIBUTES DLLEXPORT::  transp6
+cDEC$ ATTRIBUTES DLLEXPORT::  transp7
 
       include 'double.inc'
 	include 'new_com.inc'                                                  
@@ -194,47 +194,27 @@ c-------
       sd0(1)=0.
       
       do i=2,nn2
+      if(sd0_p(i).lt.0)sd0_p(i)=0.
+      if(sd0_n(i).lt.0)sd0_n(i)=0.
       sd0(i)=sd0_p(i)+sd0_n(i)
-      if(sd0(i).lt.0)sd0(i)=0.
+!      if(sd0(i).lt.0)sd0(i)=0.
       sd0(i)=0.5d0*sd0(i)*1.d-3
       st0(i)=sd0(i)
 	end do
 
+      apr='sd0_p-' 
+      if(kpr.eq.1)print 71,apr,(sd0_p(i),i=1,nn2) 
+      apr='sd0_n-' 
+      if(kpr.eq.1)print 71,apr,(sd0_n(i),i=1,nn2) 
 
       apr='sd0-' 
       if(kpr.eq.1)print 71,apr,(sd0(i),i=1,nn2) 
 
-      CALL TP(N)
-      apr='pd0-' 
-      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,nn2) 
-      apr='pt0-' 
-      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,nn2) 
-
-      call den_read()
-	call dens_prog()
-      
-      del=pcch-pcchp
-      V=del/tay
-      dGHFS=-d_GHFS*( del+V*tay1 )
-      GHFS=GHFS+dGHFS
-      if(GHFS.le.GHFS0)GHFS=GHFS0
-      
-      if(kpr.eq.1)print *,' pcchp  pcch',pcchp,pcch
-      if(kpr.eq.1)print *,' GHFS  del',GHFS,del
-      if(kpr.eq.1)print *,' d_GHFS tay1',d_GHFS,tay1
-
-      call time_step_tran()
-
-!      ntay=ntay+1
-
       DO I=1,n
-    	c_output1(I)=pd0(i)
-    	c_output2(I)=pt0(i)
-   	c_output3(I)=pne(i)
+    	c_output1(I)=sd0_p(i)
+    	c_output2(I)=sd0_n(i)
+   	c_output3(I)=sd0(i)
 	end do
-
-      call DOPP()
-      call time_out()
 
         tt=tt+tay
         ntay=ntay+1

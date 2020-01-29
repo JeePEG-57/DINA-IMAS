@@ -87,15 +87,15 @@
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='dens.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
-           read (41,*) 
+!           open (unit=41,file='dens.dat',form='formatted') 
+           read (1,*) 
+           read (1,*)n_t 
+           read (1,*) 
 
  	 if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
 
            do i=1,n_t 
-              read (41,*)t_t(i),den_t(i)
+              read (1,*)t_t(i),den_t(i)
               t_t(i)=t_t(i)*1000. 
            end do 
            
@@ -105,7 +105,7 @@ c-------
            apr='-den_t-' 
            if(kpr.eq.1)print 71,apr,(den_t(i),i=1,n_t) 
 
-           close (unit=41) 
+        !   close (unit=41) 
         end if
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
@@ -167,6 +167,8 @@ c       implicit real*8 (a-h,o-z)
      *  /ge5/kpr
      *  /ge7/eu,rs,zact,elong
 
+        common /c_src/src
+        common /c_src1/dif_coef
 
       if(nij.eq.0)then
 
@@ -189,15 +191,23 @@ c       implicit real*8 (a-h,o-z)
       TGE=0.5*(TE0(I)+TE0(I-1))
 
       x11=1.e4*sqrt(tge/pot)*((ai(i)*eu/rs)**1.75)/(q(i)*pg*rs)
-     	xii(i)=x11*gra2(i)
+
+     	xii(i)=x11*gra2(i)*dif_coef
 
  	sd0(i)=sd0(i)-sal(i)
 	st0(i)=st0(i)-sal(i)
 	src=src+sd0(i)+st0(i)
       DIF(I)=0.4*XII(I)
+      
+      print *,' i dif=',i,dif(i)
+      
     1 CONTINUE
 
-	if(kpr.eq.1)print *,' nij source======',nij,src
+	if(kpr.eq.1)print *,' dif_coef source======',dif_coef,src
+	if(kpr.eq.1)print *,' eu rs======',eu,rs
+	
+!	stop
+	
 ccc	pause
    71 FORMAT(20X,A6/,(8E10.3))
       RETURN
@@ -222,7 +232,8 @@ c       implicit real*8 (a-h,o-z)
 	common
      *  /mid3/GRA1(npo),GRA2(npo)
 c
-	if(kpr.eq.1)print *,' alp1 kpin================',alp1,kpin
+	if(kpr.eq.1)print *,' alp1 kpin eu================',
+     *  alp1,kpin,eu
 
       DO 1 I=2,N
       VP=ALP1*DIF(i)/(GRA2(I)*EU)*AI(I)
@@ -470,7 +481,7 @@ c      PRINT 71,apr,(b(I),I=1,N)
       apr=' c**'
 c      PRINT 71,apr,(c(I),I=1,N)
       apr=' fd**'
-c      PRINT 71,apr,(fd(I),I=1,N)
+      if(kpr.eq.1)PRINT 71,apr,(fd(I),I=1,N)
       apr=' teta**'
 c      PRINT 71,apr,(teta(I),I=1,N)
 
@@ -478,7 +489,7 @@ c      PRINT 71,apr,(teta(I),I=1,N)
      *ZD,UD,EPS0,LD)
 
       apr=' pd**'
-c      PRINT 71,apr,(pd(I),I=1,N)
+      if(kpr.eq.1)PRINT 71,apr,(pd(I),I=1,N)
 
 c      stop
 

@@ -1,4 +1,4 @@
-subroutine astra_transp_density(equilibrium0, core_profiles0, core_profiles)
+subroutine astra_transp_density(equilibrium0, core_profiles0, core_sources0, core_profiles)
 
 use ids_schemas
 use ids_routines
@@ -7,6 +7,7 @@ implicit none
 
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
+type (ids_core_sources) :: core_sources0
 
 integer :: i,n,n2,npo
 
@@ -18,6 +19,8 @@ real(ids_real) :: ai(npo),pne(npo),pd0(npo),pt0(npo)
 
 real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
+
+
 
       call transp6( &
 !-----------------------------------  inputs---

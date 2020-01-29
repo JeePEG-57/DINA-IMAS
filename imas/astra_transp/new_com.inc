@@ -96,6 +96,7 @@
      *  /en2e/pd0_a,pt0_a,pd0_b,pt0_b,pw_p
      *  /en5/SD0(npo),ST0(npo),SH0(npo)
      *  /en6/Vn(npo)
+     *  /en7/UD,ZD,UT,ZT,UH,ZH,LD,LT,LH,ID,IT,IH,KTP,NN_tr
      *  /en9/QE0(npo),QQ0(npo),QDG(npo)
      *  /en12/pnal(npo),pnaln(npo),zalfa,talfa
      *  /en14e/t_dop

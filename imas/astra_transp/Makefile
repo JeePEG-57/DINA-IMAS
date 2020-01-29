@@ -13,22 +13,31 @@ V=$(S)
 
 
 
-os=		a_main_dina.o a_dina.o add_dll.o tran6.o main_astra.o \
+os=		a_main_dina.o add_dll.o main_astra.o \
 		solsrs_IMAS.o neutex_IMAS.o pelsrs1_IMAS.o solpsz2.o nbicomR_IMAS.o
 
-all: p_4dina astra_transp_density.a
+os_d= $(os) a_dina.o tran6.o
+os_s= $(os) a_dina_src.o tran7.o
 
-astra_transp_density.a: astra_transp_density.o $(os)
+all: p_4dina p_4dina_src astra_transp_density.a astra_transp_src.a
+
+astra_transp_density.a: astra_transp_density.o $(os_d)
 	@echo "   * $^ -> $@"
-	ar -rcs astra_transp_density.a astra_transp_density.o $(os)
+	ar -rcs astra_transp_density.a astra_transp_density.o $(os_d) 
+
+astra_transp_src.a: astra_transp_src.o $(os_s)
+	@echo "   * $^ -> $@"
+	ar -rcs astra_transp_src.a astra_transp_src.o $(os_s)
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
-p_4dina:	$(os)
-		gfortran -o p_4dina $(os) -lm -L$(XLIB) -lX11
+p_4dina:	$(os_d)
+		gfortran -o p_4dina $(os_d) -lm -L$(XLIB) -lX11
 
+p_4dina_src:	$(os_s)
+		gfortran -o p_4dina_src $(os_s) -lm -L$(XLIB) -lX11
 
 a_main_dina.o:	$(S)a_main_dina.f
 		$(f2c) -c   -w   $(S)a_main_dina.f
@@ -36,11 +45,17 @@ a_main_dina.o:	$(S)a_main_dina.f
 a_dina.o:	$(S)a_dina.f
 		$(f2c) -c   -w   $(S)a_dina.f
 
+a_dina_src.o:	$(S)a_dina_src.f
+		$(f2c) -c   -w   $(S)a_dina_src.f
+
 add_dll.o:	$(S)add_dll.f
 		$(f2c) -c   -w    $(S)add_dll.f
 
 tran6.o:	$(S)tran6.f
 		$(f2c) -c   -w    $(S)tran6.f
+
+tran7.o:	$(S)tran7.f
+		$(f2c) -c   -w    $(S)tran7.f
 
 main_astra.o:	$(S)main_astra.f
 		$(f2c) -c   -w    $(S)main_astra.f
@@ -63,3 +78,4 @@ clean:
 	rm -f *.o
 	rm -f *.a
 	rm -f p_4dina
+	rm -f p_4dina_src

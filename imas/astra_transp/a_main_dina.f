@@ -1,6 +1,6 @@
 c	include 'fgraph.fi'
 	include 'double.inc'
-	include 'new_com.inc'
+!	include 'new_com.inc'
 
 	character *20 yy
 
@@ -16,16 +16,17 @@ c	include 'fgraph.fi'
 !      tay=10.
 !      t_vde=1000.
 
-        open (unit=1,file='tay_time.dat',form='formatted')
-        read (1,*)
-        read (1,*)tay,tt_end
+        open (unit=49,file='tay_time.dat',form='formatted')
+        read (49,*)
+        read (49,*)tay,tt_end
         
-        close ( unit=1)       
+        close ( unit=49)       
 
       if(kpr1.eq.1)print *,' - tay  tt_end==',tay,tt_end
 
       do k=1,999993
-      
+
+     
 	  call dina2(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
@@ -33,6 +34,8 @@ c	include 'fgraph.fi'
      *  c_output1,c_output2,c_output3)
 
 
+	ntay=ntay+1
+	tt=tt+tay
        
        if(kpr1.gt.0)print *,' -------- k tt tt_end=',k,tt,tt_end
 

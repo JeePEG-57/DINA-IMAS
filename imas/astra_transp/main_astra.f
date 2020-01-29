@@ -1,4 +1,5 @@
-       subroutine main_astra(a_dina,pd0,pt0,pne,te0,tq0,n_dina,sd0,GHFS)
+       subroutine main_astra(a_dina,pd0,pt0,pne,te0,tq0,n_dina,
+     *  sd0_p,sd0_n,GHFS)
       
       	implicit none
 	include  'for/parameter.inc'
@@ -20,7 +21,9 @@
          
         double precision VINT
         
-        real *8 a_dina(*),pd0(*),pt0(*),pne(*),te0(*),tq0(*),sd0(*)
+        real *8 a_dina(*),pd0(*),pt0(*),pne(*),te0(*),tq0(*),
+     *  sd0_p(*),sd0_n(*)
+     
         real *8 psn,ro_astra(nrd),pni(nrd),sdt(nrd),GHFS
         integer n_dina
         
@@ -120,11 +123,12 @@
 	
       if(kpr.eq.1)print *,' i_en,yGHFS==',i_en,yGHFS
 
-	  open(1,file='te_data.dat')
-       	read(1,*)na11
+      na11=na1
+!	  open(1,file='te_data.dat')
+!       	read(1,*)na11
        	if(kpr.eq.1)print *,' na1 na11=',na1,na11
 !      	read(1,*)(te(i),i=1,na1)
-      	close (1) 
+!      	close (1) 
 
         if(kpr.eq.1)print *,'TE2 TI2==',te(2),ti(2)
         if(kpr.eq.1)print *,'TE TI==',te(90),ti(90)
@@ -153,30 +157,45 @@
         if(kpr.eq.1)print *,'TE2 TI2==',te(2),ti(2)
         if(kpr.eq.1)print *,'TE TI==',te(90),ti(90)
 
-	  open(1,file='te_data.dat')
+!	  open(1,file='te_data.dat')
 
-       	write(1,*)na1
-      	write(1,*)(te(i),i=1,na1)
+!       	write(1,*)na1
+!      	write(1,*)(te(i),i=1,na1)
       	
-      	close (1) 
+!      	close (1) 
 
         if(kpr.eq.1)print *,'ySpel ySsep==',ySpel(2),ySsep(2)
         if(kpr.eq.1)print *,'ySpel ySsep==',ySpel(90),ySsep(90)
 
 
         do i=1,na1
-        sdt(i)=ySpel(i)+ySsep(i)
-        sdt(i)=0.5d0*sdt(i)*1.d-3
+        sdt(i)=ySpel(i)
+!        sdt(i)=0.5d0*sdt(i)*1.d-3
         end do
 
 
       	do i=2,n_dina-1
 	   psn=a_dina(i)
-	   call feeti(na1,sdt,sd0(i),ro_astra,psn)
+	   call feeti(na1,sdt,sd0_p(i),ro_astra,psn)
 	end do
 
-	sd0(n_dina)=sdt(na1)
-	sd0(1)=sdt(1)
+	sd0_p(n_dina)=sdt(na1)
+	sd0_p(1)=sdt(1)
+
+        do i=1,na1
+        sdt(i)=ySsep(i)
+!        sdt(i)=0.5d0*sdt(i)*1.d-3
+        end do
+
+
+      	do i=2,n_dina-1
+	   psn=a_dina(i)
+	   call feeti(na1,sdt,sd0_n(i),ro_astra,psn)
+	end do
+
+	sd0_n(n_dina)=sdt(na1)
+	sd0_n(1)=sdt(1)
+
       
 !      print *,'sdt',(sdt(i),i=1,na1)
 	
@@ -322,13 +341,14 @@
      4	VR(*),SHIF(*),SHIV(*),ELON(*),TRIA(*),
      5  AMETR(*),RHO(*),FP(*),MU(*),IPL
         integer NA1,NB1,NAB,NA,j,j1,kpr
-	  open(1,file='equil_in.dat',err=2)
+
+!	  open(1,file='equil_in.dat',err=2)
 
 	  	read(1,*,err=2,end=2)
      3	BTOR,RTOR,ABC,AB,ROC,SHIFT,UPDWN,HRO,NA1,NB1,
      4	VR(1:na1),SHIF(1:na1),SHIV(1:na1),ELON(1:na1),TRIA(1:na1),
      5  AMETR(1:na1),RHO(1:na1),FP(1:na1),MU(1:na1),IPL
-	  		  close(1)
+!	  		  close(1)
 	  		  NA=NA1-1
 	  		  HROA=ROC-RHO(NA)
 !	  write(*,*) BTOR,RTOR,ABC,AB,ROC,SHIFT,UPDWN,HRO,NA1,NB1 
@@ -342,7 +362,8 @@
 
 		  return
  2	write(*,*) 'problem in reading of equil_in.dat'
-	  close(1)
+
+!	  close(1)
 	return
 	end 
  
@@ -627,6 +648,8 @@
 	  F9B=F9(na1)
   	  TEB 	=TE(na1)
 	  TIB	=TI(na1)      
+
+	return	
 
 	open(1,file='out_data.dat')
 	write(1,*) F0B,F1B,F2B,F3B,F4B,F5B,F6B,F7B,F8B,F9B,TIB,TEB
