@@ -3,10 +3,10 @@
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>../interface/dina_transp_density.a</fFile>
+  <fFile>../astra_transp/astra_transp_src.a</fFile>
   <mainLibraryOptim></mainLibraryOptim>
   <HasOptim>false</HasOptim>
-  <subrt>dina_transp_density</subrt>
+  <subrt>astra_transp_src</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
     <vector>
@@ -53,15 +53,6 @@
             <string>0</string>
             <string>0</string>
             <string>0</string>
-            <string>1</string>
-            <string>0</string>
-            <string>null</string>
-          </vector>
-          <vector>
-            <string>core_profiles</string>
-            <string>0</string>
-            <string>0</string>
-            <string>0</string>
             <string>0</string>
             <string>1</string>
             <string>null</string>
@@ -70,10 +61,10 @@
       </default>
     </org.iter.imas.fc2k.TupleP>
   </tupleParams>
-  <actor>dinatransp_density</actor>
+  <actor>astra_transp_sources</actor>
   <actorVersion></actorVersion>
   <actorDoc></actorDoc>
-  <actorFolder>org/iter/imas/dinatransp_density</actorFolder>
+  <actorFolder>org/iter/imas/astra_transp_sources</actorFolder>
   <semantic>ITER</semantic>
   <compiler>gfortran</compiler>
   <libraries/>

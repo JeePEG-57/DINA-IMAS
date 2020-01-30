@@ -1,4 +1,4 @@
-subroutine dina_transp_density(equilibrium0, core_profiles0, core_profiles)
+subroutine dina_transp_density(equilibrium0, core_profiles0, core_sources0, core_profiles)
 
 use ids_schemas
 use ids_routines
@@ -7,6 +7,7 @@ implicit none
 
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
+type (ids_core_profiles) :: core_sources0
 
 integer :: i,n,n2,npo
 
@@ -14,9 +15,21 @@ parameter (npo=500)
 
 !integer, parameter :: DP = kind(1.0d0)
 real(ids_real) :: ai(npo),pne(npo),pd0(npo),pt0(npo)
+real(ids_real), dimension(:) :: qqe(npo), qqd(npo), qqt(npo)
 
 real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
+
+
+n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
+
+
+!qqe(1:n) = core_sources%source(1)%profiles_1d(1)%electrons%particles(1:n)
+!qqd(1:n) = core_sources%source(1)%profiles_1d(1)%ion(1)%particles(1:n)
+!qqt(1:n) = core_sources%source(1)%profiles_1d(1)%ion(2)%particles(1:n)
+
+
+
 
       call transp20( &
 !-----------------------------------  inputs---
@@ -34,7 +47,7 @@ call ids_copy(core_profiles0,core_profiles)
 ! 
 ! read (61,*)n2
 
-n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
+
 
 ! write(*,*) 'dina_transp2, n,n2=,', n, n2
 ! 
