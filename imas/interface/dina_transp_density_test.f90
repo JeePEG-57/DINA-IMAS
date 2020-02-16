@@ -1,5 +1,4 @@
-!subroutine dina_transp_density(equilibrium0, core_profiles0, core_sources0, core_profiles)
-subroutine dina_transp_density(equilibrium0, core_profiles0, src_in, core_profiles)
+subroutine dina_transp_density_test(equilibrium0, core_profiles0, core_sources0, core_profiles)
 !subroutine dina_transp_density(equilibrium0, core_profiles0,  core_profiles)
 
 use ids_schemas
@@ -9,9 +8,7 @@ implicit none
 
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
-!type (ids_core_sources) :: core_sources0
-real (ids_real) :: src_in(*)
-
+type (ids_core_sources) :: core_sources0
 
 integer :: i,n,n2,npo
 
@@ -42,18 +39,6 @@ n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
 
  print *,' transp20== n',n
 
- 
-qqe(1:n) = src_in(1:n)
-qqd(1:n) = src_in(n+1:2*n)
-qqt(1:n) = src_in(2*n+1:3*n) 
- 
-      apr='--qqe-' 
-      print 71,apr,(qqe(i),i=1,n) 
-      apr='--qqd-' 
-      print 71,apr,(qqd(i),i=1,n) 
-      apr='--qqt-' 
-      print 71,apr,(qqt(i),i=1,n) 
- 
 !Transp2
  pne(1:n) = core_profiles%profiles_1d(1)%electrons%density(1:n)*1.d-19
  pd0(1:n) = core_profiles%profiles_1d(1)%ion(1)%density(1:n)*1.d-19

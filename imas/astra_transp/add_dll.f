@@ -199,10 +199,11 @@ c       implicit real*8 (a-h,o-z)
 	src=src+sd0(i)+st0(i)
       DIF(I)=0.4*XII(I)
       
-      print *,' i dif=',i,dif(i)
+!      print *,' i dif=',i,dif(i)
       
     1 CONTINUE
 
+	if(kpr.eq.1)print *,' pne1 pne2======',pne(1),pne(2)
 	if(kpr.eq.1)print *,' dif_coef source======',dif_coef,src
 	if(kpr.eq.1)print *,' eu rs======',eu,rs
 	
@@ -491,6 +492,7 @@ c      PRINT 71,apr,(teta(I),I=1,N)
       apr=' pd**'
       if(kpr.eq.1)PRINT 71,apr,(pd(I),I=1,N)
 
+        if(kpr.eq.1)print *,' pd1 pd2=',pd(1),pd(2)
 c      stop
 
 	do i=1,n
@@ -506,6 +508,9 @@ c
      *ZT,UT,EPS0,LT)
       apr=' pt**'
 c      PRINT 71,apr,(pt(I),I=1,N)
+
+        if(kpr.eq.1)print *,' pt1 pt2=',pt(1),pt(2)
+
 	do i=1,n
       IF(abs(PT(I)-PT0(I)).GT.EPS1*abs(PT0(I))) keps=1
       PT0(I)=PT(I)

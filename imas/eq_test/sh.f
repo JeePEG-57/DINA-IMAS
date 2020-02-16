@@ -1022,10 +1022,17 @@ c	 implicit real *8 (a-h,o-z)
 
       include 'double.inc'
 
+      parameter ( nn=1000)
+      
          dimension ppx(*),pffx(*),a(*)
 
          dimension pstab(*),pptab(*),fptab(*),tcam(*),pf(*)
 
+      common /c_read_equil/pstab_c(nn),pptab_c(nn),
+     *  fptab_c(nn),tcam_c(nn),pf_c(nn),tt_c,tpl_c  
+
+      common /c_read_equil2/npf_c,ncam_c
+        
 
 	include 'parf0'
 
@@ -1035,6 +1042,10 @@ c	 implicit real *8 (a-h,o-z)
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 
+      i_en=i_en+1
+
+      if(i_en.eq.1)then
+      
          open (unit=42,file='equil.txt',form='formatted')
             read (42,*)tt,tpl
             read (42,*)nutab
@@ -1047,13 +1058,51 @@ c	 implicit real *8 (a-h,o-z)
             read (42,*)(pf(k),k=1,npf)
             
          close (42)
+            
+            tt_c=tt
+            tpl_c=tpl
+            npf_c=npf
+            ncam_c=ncam
+            nutab_c=nutab
+
+      do i=1,nutab
+        pptab_c(i)=pptab(i)
+        fptab_c(i)=fptab(i)
+      end do
+
+      do i=1,ncam
+        tcam_c(i)=tcam(i)
+      end do
+
+      do i=1,npf
+        pf_c(i)=pf(i)
+      end do
+      
+      end if
+      
+            tt=tt_c
+            tpl=tpl_c
+            npf=npf_c
+            ncam=ncam_c
+            nutab=nutab_c
+
+      do i=1,nutab_c
+        pptab(i)=pptab_c(i)
+        fptab(i)=fptab_c(i)
+      end do
+
+      do i=1,ncam_c
+        tcam(i)=tcam_c(i)
+      end do
+
+      do i=1,npf_c
+        pf(i)=pf_c(i)
+      end do
 
       do i=1,n
         ppx(i)=pptab(i)
         pffx(i)=fptab(i)
       end do
-
-
 
       goto 5
       

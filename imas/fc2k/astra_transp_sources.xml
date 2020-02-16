@@ -49,10 +49,10 @@
             <string>null</string>
           </vector>
           <vector>
-            <string>core_sources</string>
+            <string>double</string>
             <string>0</string>
-            <string>0</string>
-            <string>0</string>
+            <string>1</string>
+            <string>300</string>
             <string>0</string>
             <string>1</string>
             <string>null</string>

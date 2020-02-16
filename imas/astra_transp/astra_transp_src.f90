@@ -1,4 +1,5 @@
-subroutine astra_transp_src(equilibrium0, core_profiles0, core_sources)
+!subroutine astra_transp_src(equilibrium0, core_profiles0, core_sources0, core_sources)
+subroutine astra_transp_src(equilibrium0, core_profiles0, src_out)
 
 use ids_schemas
 use ids_routines
@@ -7,7 +8,8 @@ implicit none
 
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0
-type (ids_core_sources) :: core_sources
+!type (ids_core_sources) :: core_sources0, core_sources
+real (ids_real) :: src_out(*)
 
 integer :: i,n,n2,npo
 
@@ -23,6 +25,8 @@ real(ids_real) :: te0(npo),tq0(npo)
 
 real(ids_real) :: tt
 
+	character *20 apr
+
 
 n = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
 ai(1:n) = core_profiles0%profiles_1d(1)%grid%rho_tor_norm(1:n)
@@ -31,10 +35,33 @@ ai(1:n) = core_profiles0%profiles_1d(1)%grid%rho_tor_norm(1:n)
 tt = core_profiles0%time(1)
 
 
-! te0(1:n) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n)
-! tq0(1:n) = core_profiles0%profiles_1d(1)%t_i_average(1:n)
+print *,'  Astra sources tt n',tt,n
 
- 
+
+ te0(1:n) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n)
+ tq0(1:n) = core_profiles0%profiles_1d(1)%t_i_average(1:n)
+
+      apr='--te0-' 
+      print 71,apr,(te0(i),i=1,n) 
+      apr='--tq0-' 
+      print 71,apr,(tq0(i),i=1,n) 
+
+   71 FORMAT(20X,A20/,(6(1pE10.3)))
+
+
+!call ids_copy(core_sources0,core_sources)
+
+ pne(1:n) = core_profiles0%profiles_1d(1)%electrons%density(1:n)*1.d-19
+ pd0(1:n) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n)*1.d-19
+ pt0(1:n) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n)*1.d-19
+
+      apr='--pne-' 
+      print 71,apr,(pne(i),i=1,n) 
+      apr='--pd0-' 
+      print 71,apr,(pd0(i),i=1,n) 
+      apr='--pt0-' 
+      print 71,apr,(pt0(i),i=1,n) 
+
 
       call transp7( &
 !-----------------------------------  inputs---
@@ -81,48 +108,64 @@ tt = core_profiles0%time(1)
     	pne=c_output3
 
 
-  core_sources%ids_properties%homogeneous_time = 1
+!   core_sources%ids_properties%homogeneous_time = 1
+! 
+!    
+! !allocate(core_sources%time(1))   
+!     
+!     
+! !allocate(core_sources%source(1))    
+! !allocate(core_sources%source(1)%profiles_1d(1)) 
+!  
+! !allocate(core_sources%source(1)%profiles_1d(1)%grid%rho_tor_norm(n))
+!  core_sources%source(1)%profiles_1d(1)%grid%rho_tor_norm(1:n) = ai(1:n)
+! 
+! !Electrons
+! allocate(core_sources%source(1)%profiles_1d(1)%electrons%particles(n))
+!  core_sources%source(1)%profiles_1d(1)%electrons%particles(1:n) = pne(1:n)
+! 
+! 
+! ! Ions 
+! allocate(core_sources%source(1)%profiles_1d(1)%ion(2))
+! 
+! ! Deuterium
+! allocate(core_sources%source(1)%profiles_1d(1)%ion(1)%element(1))
+!  core_sources%source(1)%profiles_1d(1)%ion(1)%element(1)%a = 2
+!  core_sources%source(1)%profiles_1d(1)%ion(1)%z_ion = 1
+!  core_sources%source(1)%profiles_1d(1)%ion(1)%element(1)%z_n = 1
+! !core_sources%source(1)%profiles_1d(1)%ion(1)%label = 'D+'
+! allocate(core_sources%source(1)%profiles_1d(1)%ion(1)%particles(n))
+!  core_sources%source(1)%profiles_1d(1)%ion(1)%particles(1:n) = pd0(1:n)
+! 
+! ! Tritium
+! allocate(core_sources%source(1)%profiles_1d(1)%ion(2)%element(1))
+!  core_sources%source(1)%profiles_1d(1)%ion(2)%element(1)%a = 3
+!  core_sources%source(1)%profiles_1d(1)%ion(2)%z_ion = 1
+!  core_sources%source(1)%profiles_1d(1)%ion(2)%element(1)%z_n = 1
+! !core_sources%source(1)%profiles_1d(1)%ion(2)%label = 'T+'
+! allocate(core_sources%source(1)%profiles_1d(1)%ion(2)%particles(n))
+!  core_sources%source(1)%profiles_1d(1)%ion(2)%particles(1:n) = pt0(1:n)
+! 
+!  
+!     core_sources%source(1)%profiles_1d(1)%time = tt
+!     core_sources%time(1) = tt ![s]
+    
 
-   
-allocate(core_sources%time(1))   
+src_out(1:n) = pne(1:n)
+src_out(n+1:2*n) = pd0(1:n)
+src_out(2*n+1:3*n) = pt0(1:n)
+
     
     
-allocate(core_sources%source(1))    
-allocate(core_sources%source(1)%profiles_1d(1)) 
- 
-allocate(core_sources%source(1)%profiles_1d(1)%grid%rho_tor_norm(n))
- core_sources%source(1)%profiles_1d(1)%grid%rho_tor_norm(1:n) = ai(1:n)
-
-!Electrons
-allocate(core_sources%source(1)%profiles_1d(1)%electrons%particles(n))
- core_sources%source(1)%profiles_1d(1)%electrons%particles(1:n) = pne(1:n)
-
-
-! Ions 
-allocate(core_sources%source(1)%profiles_1d(1)%ion(2))
-
-! Deuterium
-allocate(core_sources%source(1)%profiles_1d(1)%ion(1)%element(1))
- core_sources%source(1)%profiles_1d(1)%ion(1)%element(1)%a = 2
- core_sources%source(1)%profiles_1d(1)%ion(1)%z_ion = 1
- core_sources%source(1)%profiles_1d(1)%ion(1)%element(1)%z_n = 1
-!core_sources%source(1)%profiles_1d(1)%ion(1)%label = 'D+'
-allocate(core_sources%source(1)%profiles_1d(1)%ion(1)%particles(n))
- core_sources%source(1)%profiles_1d(1)%ion(1)%particles(1:n) = pd0(1:n)
-
-! Tritium
-allocate(core_sources%source(1)%profiles_1d(1)%ion(2)%element(1))
- core_sources%source(1)%profiles_1d(1)%ion(2)%element(1)%a = 3
- core_sources%source(1)%profiles_1d(1)%ion(2)%z_ion = 1
- core_sources%source(1)%profiles_1d(1)%ion(2)%element(1)%z_n = 1
-!core_sources%source(1)%profiles_1d(1)%ion(2)%label = 'T+'
-allocate(core_sources%source(1)%profiles_1d(1)%ion(2)%particles(n))
- core_sources%source(1)%profiles_1d(1)%ion(2)%particles(1:n) = pt0(1:n)
-
- 
-    core_sources%source(1)%profiles_1d(1)%time = tt
-    core_sources%time(1) = tt ![s]
-    
+! pd0(1:n)=core_sources%source(1)%profiles_1d(1)%ion(1)%particles(1:n)
+! pt0(1:n)=core_sources%source(1)%profiles_1d(1)%ion(2)%particles(1:n)
+!     
+!       apr='--sd0-' 
+!       print 71,apr,(pd0(i),i=1,n) 
+!       apr='--st0-' 
+!       print 71,apr,(pt0(i),i=1,n) 
+! 
+! print *,' end astra_sources'
     
 return
 end subroutine

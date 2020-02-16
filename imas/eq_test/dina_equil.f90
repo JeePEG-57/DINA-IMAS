@@ -1,7 +1,7 @@
-!> dina_imas is the main subroutine to connect DINA input-output data with IMAS
+!> dina_equil is the main subroutine to reproduce DANA equilibrium
 !> As a result of call dina_v96_in the Green Functions are being transmitted to DINA from IDSs
 !> After call dina_input the initial kinetic profiles are being transmitted to DINA from IDSs   
-!> As a result of call dina_0 and then call dina2 the DINA modeling in one time step is being produced
+!> As a result of call dina2 the DINA modeling in one time step is being produced
 !> After call dina_outp the output data are being recorded to IDS and dat files
 
 

@@ -3,10 +3,10 @@
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
-  <fFile>../interface/dina_transp_density.a</fFile>
+  <fFile>../interface/dina_transp_density_test.a</fFile>
   <mainLibraryOptim></mainLibraryOptim>
   <HasOptim>false</HasOptim>
-  <subrt>dina_transp_density</subrt>
+  <subrt>dina_transp_density_test</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
     <vector>
@@ -49,10 +49,10 @@
             <string>null</string>
           </vector>
           <vector>
-            <string>double</string>
+            <string>core_sources</string>
             <string>0</string>
-            <string>1</string>
-            <string>300</string>
+            <string>0</string>
+            <string>0</string>
             <string>1</string>
             <string>0</string>
             <string>null</string>
@@ -70,10 +70,10 @@
       </default>
     </org.iter.imas.fc2k.TupleP>
   </tupleParams>
-  <actor>dinatransp_density</actor>
+  <actor>dinatransp_density_test</actor>
   <actorVersion></actorVersion>
   <actorDoc></actorDoc>
-  <actorFolder>org/iter/imas/dinatransp_density</actorFolder>
+  <actorFolder>org/iter/imas/dinatransp_density_test</actorFolder>
   <semantic>ITER</semantic>
   <compiler>gfortran</compiler>
   <libraries/>

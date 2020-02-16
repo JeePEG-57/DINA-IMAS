@@ -28,9 +28,8 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp7
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
 !------------------------------------inputs
+            
 
-
-       if(kp.eq.1)print *,' CALL TRANSP2'
 
       i_en=i_en+1
       if(i_en.eq.1)then
@@ -43,6 +42,8 @@ c---  we think ....???
 	ARG=1.
 	pi=4.*atan(ARG)
 !      call read_data2()
+
+
 
       nij=1
 
@@ -65,6 +66,7 @@ c---  we think ....???
       end if
 
 
+       if(kpr.eq.1)print *,' ---CALL TRANSP7'
       
       
       filename='metric.dat'
@@ -97,9 +99,18 @@ c-------
            read (41,*,err=2000,end=2000)(spo(i),i=1,nn2)
 
            close (41)
-           
 
-           
+
+        if(i_en.gt.1)then
+
+        do i=1,nn2
+        pd0(i)=c_input1(i)
+        pt0(i)=c_input2(i)
+	  end do
+
+       end if
+
+
 2000	continue
 
 
@@ -149,14 +160,14 @@ c-------
       read (1,*)
       end if
       
-      if(i_en.eq.1)then
-      call time_step_tran()
-      end if
+!      if(i_en.eq.1)then
+!      call time_step_tran()
+!      end if
 
-      apr='pdn-' 
-      if(kpr.eq.1)print 71,apr,(pdn(i),i=1,nn2) 
-      apr='ptn-' 
-      if(kpr.eq.1)print 71,apr,(ptn(i),i=1,nn2) 
+      apr='pd0-' 
+      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,nn2) 
+      apr='pt0-' 
+      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,nn2) 
 
 
 ! IN:
@@ -180,20 +191,25 @@ c-------
       yL_OH=0
 
       do i=1,nn2
-      pne(i)=pdn(i)+ptn(i)
+      pne(i)=pd0(i)+pt0(i)
 	end do
 
       apr='pne-' 
       if(kpr.eq.1)print 71,apr,(pne(i),i=1,nn2) 
      
+      if(kpr.eq.1)print *,' CALL main_astra'
+
 
       call main_astra(a,pd0,pt0,pne,te0,tq0,n,
      *  sd0_p,sd0_n,GHFS)
 
+      if(kpr.eq.1)print *,' AFTER main_astra'
+
+
       st0(1)=0.
       sd0(1)=0.
       
-      do i=2,nn2
+      do i=1,nn2
       if(sd0_p(i).lt.0)sd0_p(i)=0.
       if(sd0_n(i).lt.0)sd0_n(i)=0.
       sd0(i)=sd0_p(i)+sd0_n(i)
@@ -208,7 +224,7 @@ c-------
       if(kpr.eq.1)print 71,apr,(sd0_n(i),i=1,nn2) 
 
       apr='sd0-' 
-      if(kpr.eq.1)print 71,apr,(sd0(i),i=1,nn2) 
+!      if(kpr.eq.1)print 71,apr,(sd0(i),i=1,nn2) 
 
       DO I=1,n
     	c_output1(I)=sd0_p(i)
@@ -218,101 +234,14 @@ c-------
 
         tt=tt+tay
         ntay=ntay+1
+      if(i_en.eq.1)then
+      close (unit=1)
+      end if
 
  !     stop      
 
       return
-      
-      
-      
-
-      kk=0
-      do i=1,n
-      kk=kk+1
-      pf_xx(i)=c_input2(kk)
-      end do
-      do i=1,n_gaps_xx
-      kk=kk+1
-      gaps_xx(i)=c_input2(kk)
-      end do
-      do i=1,npf_xx
-      kk=kk+1
-      pf_turns_xx(i)=c_input2(kk)
-      end do
-
-
-	 call put_signals(z_cur_xx,elong_xx,xleft_xx,
-     *  xright_xx,tpl_xx,tt_xx,
-     *  npf_xx,pf_xx,n_gaps_xx,gaps_xx,
-     *  ntay_xx,next_xx,zvel_xx,pf_turns_xx,rsep_xx,klim_xx,
-     *  t_end_xx,i_wr_xx)
-
-	call get_signals(vchopper_x2,tpl_x2,tt_dw_x2)
-
-!        c_output1(1)=tpl_x2      
-!        c_output1(2)=tt_dw_x2      
-      
-        do i=1,npf
-!        c_output2(i)=vchopper_x2(i)
-        end do
-
-
-      return
-      end
-
-
-
-	subroutine put_signals(z_cur_xx,elong_xx,xleft_xx,
-     *  xright_xx,tpl_xx,tt_xx,
-     *  npf_xx,pf_xx,n_gaps_xx,gaps_xx,
-     *  ntay_xx,next_xx,zvel_xx,pf_turns_xx,rsep_xx,klim_xx,
-     *  t_end_xx,i_wr_xx)
-     
-
-      include 'double.inc'
-	include 'new_com.inc'                                                  
-
-
-	dimension pf_xx(*),gaps_xx(*),pf_turns_xx(*)
-
-	character*70 apr
-
-71	format(20x,a6/,(6(1pe10.3)))
-
-!      kpr=1
-
-
-
- 1000 continue
- 5000 format (50(1pe14.5))
-
-      if(kpr.eq.1)print*,'END of reading signals'
-
-	return
-      end
-      
-	subroutine get_signals(vchopper_xx,tpl_xx,tt_dw_xx)
-
-      include 'double.inc'
-	include 'new_com.inc'                                                  
-
-	dimension vchopper_xx(*)
-     
-      do i=1,npf
-!        vchopper_xx(i)=vchopper(i)
-      end do
-
-!      tpl_xx=tpl
-!      tt_dw_xx=tt_dw
-
-      
-      
- 1000 continue
- 5000 format (50(1pe14.5))
-
-      if(kpr.eq.1)print*,'END of reading signals'
-
-	return
+   	return
       end
        subroutine time_out()
        include 'double.inc'
@@ -334,11 +263,11 @@ c
 
 c       open (unit=42,file='for042',access='append',
        if(i_dop.eq.1)then 
-       open (unit=42,file='for042',
+       open (unit=42,file='for045',
      *       form='formatted')
        else
 c       open (unit=42,file='for042',status='old',
-       open (unit=42,file='for042',access='append',
+       open (unit=42,file='for045',access='append',
      *       form='formatted')
        end if
 
@@ -440,7 +369,7 @@ c       -----te average-----
       ng=4
 
 
-	tmp='names_md'
+	tmp='names_md5'
 
         i_en=i_en+1
 	if(i_en.eq.1)then

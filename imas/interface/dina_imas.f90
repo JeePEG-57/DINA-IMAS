@@ -121,6 +121,7 @@ real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
 real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
+	character *20 apr
 
 print *,'DINA_IMAS Enter'
 flush(6)
@@ -493,6 +494,11 @@ n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
  te0(1:n1) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n1)
  tq0(1:n1) = core_profiles0%profiles_1d(1)%t_i_average(1:n1)
 
+      apr='--te0-' 
+      print 71,apr,(te0(i),i=1,n1) 
+      apr='--tq0-' 
+      print 71,apr,(tq0(i),i=1,n1) 
+
 ! if (associated(bndcond_in%profiles_1d)) then
 !     write(*,*) 'dina_imas : boundary conditions are found'
 !  te0(n1) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
@@ -514,25 +520,77 @@ if (associated(bndcond_in%solver_1d)) then
      write(*,*) 'te0(n1) tq0(n1)= ', &
     & te0(n1),tq0(n1)
 
-      call solpsza_example_in(te0(n1),tq0(n1))
+
+ !     call solpsza_example_in(te0(n1),tq0(n1))
 
 
 end if
+
+write(*,*) 'transp2 n1=',n1
+
+write(*,*) 'transp3 n1=',n1
+!Transp3
+ jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)*1.d-7
+ sigk(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
+      apr='--jbut-' 
+      print 71,apr,(jbut(i),i=1,n1) 
+      apr='--sigk-' 
+      print 71,apr,(sigk(i),i=1,n1) 
+
+write(*,*) 'transp4 n1=',n1
+!Transp4
+ aj0(1:n1) = (core_profiles0%profiles_1d(1)%j_non_inductive(1:n1) - core_profiles0%profiles_1d(1)%j_bootstrap(1:n1))*1.d-7
+      apr='--aj0-' 
+      print 71,apr,(aj0(i),i=1,n1) 
+
+!Sources
+write(*,*) 'sources n1=',n1
+
+!call ids_copy(core_sources0,core_sources)
+
+ !qe0(1:n1) = core_sources%source(1)%profiles_1d(1)%electrons%energy(1:n1)
+      apr='--qe0-' 
+      print 71,apr,(qe0(i),i=1,n1) 
+ !qq0(1:n1) = core_sources%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
+ 
+ 
+      apr='--qq0-' 
+      print 71,apr,(qq0(i),i=1,n1) 
+
+
+ qe0(1:n1) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n1)
+      apr='--qe0-' 
+      print 71,apr,(qe0(i),i=1,n1) 
+ qq0(1:n1) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
+      apr='--qq0-' 
+      print 71,apr,(qq0(i),i=1,n1) 
+
+
+
 
 !Transp2
  pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)*1.d-19
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)*1.d-19
  pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)*1.d-19
-!Transp3
- jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)*1.d-7
- sigk(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
-!Transp4
- aj0(1:n1) = (core_profiles0%profiles_1d(1)%j_non_inductive(1:n1) - core_profiles0%profiles_1d(1)%j_bootstrap(1:n1))*1.d-7
-!Sources
- qe0(1:n1) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n1)
- qq0(1:n1) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
+
+
+      apr='--pne-' 
+      print 71,apr,(pne(i),i=1,n1) 
+      apr='--pd0-' 
+      print 71,apr,(pd0(i),i=1,n1) 
+      apr='--pt0-' 
+      print 71,apr,(pt0(i),i=1,n1) 
+    
 
 write(*,*) 'dina_input enter...'
+
+      
+
+
+
+
+
+   71 FORMAT(20X,A20/,(6(1pE10.3)))
 
 	call dina_input(te0,tq0,pne, &
      & pd0,pt0,sigk,jbut,aj0,qe0,qq0)
@@ -896,7 +954,6 @@ allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
 allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
  core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(1:n) = te0(1:n)
  core_profiles%profiles_1d(CurTimeStep)%t_i_average(1:n) = tq0(1:n)
-
 !Transp2
 !Electrons
 allocate(core_profiles%profiles_1d(1)%electrons%density(n))
@@ -1034,7 +1091,14 @@ allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2)%particles%flux(
 flush(6)
 
 
+      apr='--pne-' 
+      print 71,apr,(pne(i),i=1,n) 
+      apr='--pd0-' 
+      print 71,apr,(pd0(i),i=1,n) 
+      apr='--pt0-' 
+      print 71,apr,(pt0(i),i=1,n) 
     
+    print *,' end dina_imas'
 
 return
 end subroutine

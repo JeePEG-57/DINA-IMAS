@@ -73,9 +73,12 @@ c=====================================================================
 	include 'for/parameter.inc'
 	include 'for/solsrs_IMAS.inc'
 
+      common
+     *  /ge5/kpr
+
 !	include 'for/status.inc'
 !	include 'for/const.inc'
-	integer	JS1,J0,JJ,JABS,JDEL,JBEG,JEND,JS,J,JMIN
+	integer	JS1,J0,JJ,JABS,JDEL,JBEG,JEND,JS,J,JMIN,kpr
 	double precision DNI(NRD),DNE(NRD),YKCR(NRD),YSFT(NRD),JJFP(NRD)
      ,	,YTE(NRD),YTI(NRD),YNTE(NRD),YNTI(NRD),YXJ(NRD),YX12(NRD),ALFA
 	double precision YAM,YCN,YCE,YCI,YSTNE,YSTNI,YSTNE1,YSTNI1,YTST
@@ -217,20 +220,28 @@ cc		CAR16(J)=0.
 	YF1=NE(NA1)**an*TE(NA1)**at
 	YRP1=YRP**(3.d0-ap)
   
-!	write(*,*) YA1,YA2,YA3
+!	if(kpr.eq.1)print *,' YA1,YA2,YA3',YA1,YA2,YA3
  1	J=J-JS
+
+
 	YR2=YR1
 	YF2=YF1
 	YRP2=YRP1
 	YR1=SHIF(J)-YSIG*JS*AMETR(J)
 	YF1=NE(J)**an*TE(J)**at
 	YRP1=YRP2 - YA2*dabs(YR2-YR1)*(YF1+YF2)
-	
+      
 !	YKCR(J)=YKC1*TE(J)**Y16/ (NE(J)*ALOG(2000.*TE(J)/7.5) )**.3333
-	YKCR(J)=YKC1*TE(J)**Y16/(NE(J)*DLOG(2.667d2*TE(J)))**.3333
+	YKCR(J)=YKC1*TE(J)**Y16/(NE(J)*DLOG(1.d0+2.667d2*TE(J)))**.3333
      .	*YRP2**YP23
 
-!	write(*,*) YF1,YF2,YR1,YR2,YRP1,YRP2,J
+!      print *,' j YKCR(J) YKC1',j,YKCR(J),YKC1
+!      print *,' te(J) ne Y16 ',te(j),ne(j),Y16
+!      	write(*,*) 'YRP2 YP23',YRP2,YP23
+      	
+!      stop
+      	
+      	
 	if(YRP1.gt.0.d0)	then
 	DNI(J)= YA3*(YRP2**YPP-YRP1**YPP)+DNI(J)
 
@@ -243,14 +254,19 @@ C*NEW
 
 	if(YRP1.le.0.) goto 2
 
+!	if(kpr.eq.1)print *,' j,js YRP1',j,js,YRP1
+
 	if(J.eq.1) then
-		J=0
-		JS=-1
-		goto 1
+		goto 2
 	endif
 	if(J.lt.NA1) goto 1	
 
+
  2	continue
+
+
+	if(kpr.eq.1)write(*,*) 'after 1 J YRP1 ',J,YRP1
+
 c*NEW-1 vvvvvvvvvvvvv
 !        write(*,*) 'NA,JABS,na1=',NA,JABS,na1
 	YKCR(NA1)=YKCR(NA)
@@ -355,8 +371,11 @@ C density, energy shift
 	if(DNI(J).ne.0.d0) then
 		JJ=NRD*(FP(J)+YSFT(J)-FP(1))/YDF + 1	
 	if(JJ.lt.0) JJ=-JJ
+	if(JJ.eq.0) JJ=1
 	if(JJ.lt.NRD) then
 
+!      print *,' jj j=',jj,j
+      
 		J0=JJFP(JJ)
 	JDEL=(2*YKCR(J)/HRO)+1
 	Jdel=min(JDEL,1)
@@ -380,11 +399,16 @@ c*19-NOV-2013 ^^^^^^^^^^^^^^^^^^^
 	endif
 	endif
 	enddo
+
+!	if(kpr.eq.1)write(*,*) 'before smth'
 C smoothing with energy/particle conservation
 	ALFA = 0.001d0
 	call	SMTH(ALFA,NA1,DNE,YXJ,NA1,DNI,YX12)
 	call	SMTH(ALFA,NA1,YNTE,YXJ,NA1,YKCR,YX12)
 	call	SMTH(ALFA,NA1,YNTI,YXJ,NA1,YSFT,YX12)
+
+!	if(kpr.eq.1)write(*,*) 'after smth'
+
 		YSDNE=0.d0
 		YSDNI=0.d0
 		YSTNE=0.d0

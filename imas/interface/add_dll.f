@@ -87,15 +87,15 @@
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='dens.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
-           read (41,*) 
+!           open (unit=41,file='dens.dat',form='formatted') 
+           read (1,*) 
+           read (1,*)n_t 
+           read (1,*) 
 
  	 if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
 
            do i=1,n_t 
-              read (41,*)t_t(i),den_t(i)
+              read (1,*)t_t(i),den_t(i)
               t_t(i)=t_t(i)*1000. 
            end do 
            
@@ -105,7 +105,7 @@ c-------
            apr='-den_t-' 
            if(kpr.eq.1)print 71,apr,(den_t(i),i=1,n_t) 
 
-           close (unit=41) 
+        !   close (unit=41) 
         end if
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
@@ -164,8 +164,11 @@ c       implicit real*8 (a-h,o-z)
      *  /mid3/GRA1(npo),GRA2(npo)
         common
      *  /ge3/AI(npo),AA0(npo),HA2(npo),a(npo),ha(npo)
+     *  /ge5/kpr
      *  /ge7/eu,rs,zact,elong
 
+        common /c_src/src
+        common /c_src1/dif_coef
 
       if(nij.eq.0)then
 
@@ -188,15 +191,24 @@ c       implicit real*8 (a-h,o-z)
       TGE=0.5*(TE0(I)+TE0(I-1))
 
       x11=1.e4*sqrt(tge/pot)*((ai(i)*eu/rs)**1.75)/(q(i)*pg*rs)
-     	xii(i)=x11*gra2(i)
+
+     	xii(i)=x11*gra2(i)*dif_coef
 
  	sd0(i)=sd0(i)-sal(i)
 	st0(i)=st0(i)-sal(i)
 	src=src+sd0(i)+st0(i)
       DIF(I)=0.4*XII(I)
+      
+!      print *,' i dif=',i,dif(i)
+      
     1 CONTINUE
 
-ccc	print *,' source============================',src
+	if(kpr.eq.1)print *,' pne1 pne2======',pne(1),pne(2)
+	if(kpr.eq.1)print *,' dif_coef source======',dif_coef,src
+	if(kpr.eq.1)print *,' eu rs======',eu,rs
+	
+!	stop
+	
 ccc	pause
    71 FORMAT(20X,A6/,(8E10.3))
       RETURN
@@ -210,6 +222,7 @@ c       implicit real*8 (a-h,o-z)
 	include 'parf0'
       COMMON
      *  /ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)
+     *  /ge5/kpr
      *  /ge7/eu,rs,zact,elong
 	common
      *  /en1/PNE(npo),PD0(npo),PT0(npo),PH0(npo),PDN(npo),
@@ -220,7 +233,8 @@ c       implicit real*8 (a-h,o-z)
 	common
      *  /mid3/GRA1(npo),GRA2(npo)
 c
-	if(kpr.eq.1)print *,' alp1 kpin================',alp1,kpin
+	if(kpr.eq.1)print *,' alp1 kpin eu================',
+     *  alp1,kpin,eu
 
       DO 1 I=2,N
       VP=ALP1*DIF(i)/(GRA2(I)*EU)*AI(I)
@@ -468,7 +482,7 @@ c      PRINT 71,apr,(b(I),I=1,N)
       apr=' c**'
 c      PRINT 71,apr,(c(I),I=1,N)
       apr=' fd**'
-c      PRINT 71,apr,(fd(I),I=1,N)
+      if(kpr.eq.1)PRINT 71,apr,(fd(I),I=1,N)
       apr=' teta**'
 c      PRINT 71,apr,(teta(I),I=1,N)
 
@@ -476,8 +490,9 @@ c      PRINT 71,apr,(teta(I),I=1,N)
      *ZD,UD,EPS0,LD)
 
       apr=' pd**'
-c      PRINT 71,apr,(pd(I),I=1,N)
+      if(kpr.eq.1)PRINT 71,apr,(pd(I),I=1,N)
 
+        if(kpr.eq.1)print *,' pd1 pd2=',pd(1),pd(2)
 c      stop
 
 	do i=1,n
@@ -493,6 +508,9 @@ c
      *ZT,UT,EPS0,LT)
       apr=' pt**'
 c      PRINT 71,apr,(pt(I),I=1,N)
+
+        if(kpr.eq.1)print *,' pt1 pt2=',pt(1),pt(2)
+
 	do i=1,n
       IF(abs(PT(I)-PT0(I)).GT.EPS1*abs(PT0(I))) keps=1
       PT0(I)=PT(I)
@@ -590,6 +608,7 @@ c
 	df=0.
 
 	if(kpr.eq.1)print *,' ntay fmax1 fmax0=',ntay,fmax1,fmax0
+	if(kpr.eq.1)print *,' tay =',tay
 
 	if(ntay.gt.2)then
 c	if(ntay.gt.9999)then
@@ -680,10 +699,12 @@ c--------------------------
 
         MTE='pnal'
 c        PRINT 71,MTE,(pnal(i),i=1,n)
+        MTE='zeff'
+        PRINT 71,MTE,(zeff(i),i=1,n)
         MTE='pne'
-c        PRINT 71,MTE,(pne(i),i=1,n)
+        PRINT 71,MTE,(pne(i),i=1,n)
         MTE='ppr'
-c        PRINT 71,MTE,(ppr(i),i=1,n)
+!        PRINT 71,MTE,(ppr(i),i=1,n)
 
       DO 50 I=1,N
 c calculate pne...
@@ -860,6 +881,17 @@ c
       if(kpr.eq.1)PRINT 71,apr,(c(i),i=1,n)
         apr='* gge'
       if(kpr.eq.1)PRINT 71,apr,(gge(i),i=1,n)
+
+        apr='* qe0'
+      if(kpr.eq.1)PRINT 71,apr,(qe0(i),i=1,n)
+        apr='* qq0'
+      if(kpr.eq.1)PRINT 71,apr,(qq0(i),i=1,n)
+
+        apr='* fe'
+      if(kpr.eq.1)PRINT 71,apr,(fe(i),i=1,n)
+        apr='* fq'
+      if(kpr.eq.1)PRINT 71,apr,(fq(i),i=1,n)
+
 
       MFE='FE'
       MFQ='FQ'
@@ -2604,6 +2636,7 @@ c	print *,' nal==',nal
 c---> ions energy source
       QQ0(I)=QpQ(I) +QAQ(I)+QDQ0(I)
 
+
 c******************************************
 
 c   here tego is only parameter
@@ -2764,6 +2797,16 @@ c
 	do i=1,n
 c	ajb(i)=0.
 	end do
+	apr='qpe'
+      if(kpr.eq.1)  print 71,apr,(qpe(i),i=1,n)
+	apr='qpq'
+      if(kpr.eq.1)  print 71,apr,(qpq(i),i=1,n)
+	apr='qae'
+      if(kpr.eq.1)  print 71,apr,(qae(i),i=1,n)
+	apr='qaq'
+      if(kpr.eq.1)  print 71,apr,(qaq(i),i=1,n)
+	apr='qtor'
+      if(kpr.eq.1)  print 71,apr,(qtor(i),i=1,n)
 
 	i_boot=0
 

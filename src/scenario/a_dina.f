@@ -133,9 +133,11 @@
 !        read (1,*)t_ret
         close ( unit=1)       
 
+      if(kpr.eq.1)print *,' 00 tt== tt_dina==',tt,tt_dina
+
       end if
       
-!      tt_dina=1352.
+      tt_dina=1352.e6
 
       if(kpr.eq.1)print *,' tt== tt_dina==',tt,tt_dina
 
@@ -285,7 +287,7 @@ c  i_fil=0  old case without reconstruction....
 	tt=tt+tay
 
 
-      call write_tran1()
+      if(tt.gt.1.5e3)call write_tran1()
 
 
 

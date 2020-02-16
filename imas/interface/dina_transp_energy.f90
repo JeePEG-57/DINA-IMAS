@@ -20,35 +20,45 @@ real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 real(ids_real) :: qe0(npo),qq0(npo)
 
+	character *20 apr
+
+
+
 
 call ids_copy(core_profiles0,core_profiles)
 call ids_copy(core_sources0,core_sources)
 
 
-! open (unit=61,file='dina_transp5.dat',action='read',form='formatted')
-! 
-! read (61,*)n
-! 
-! write(*,*) 'dina_transp5, n=,', n
-! 
-! do i=1,n
-! read (61,*) ai(i)
-! enddo
-! do i=1,n
-! read (61,*) qe0(i)
-! enddo
-! do i=1,n
-! read (61,*) qq0(i)
-! enddo
-! 
-! close (61)
-
 n = size(core_sources0%source(1)%profiles_1d(1)%grid%rho_tor_norm)
 
- qe0(1:n) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n)
- qq0(1:n) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n)
+    print *,' ENERGY== n',n
+
+! Transp1
+ te0(1:n) = core_profiles%profiles_1d(1)%electrons%temperature(1:n)
+ tq0(1:n) = core_profiles%profiles_1d(1)%t_i_average(1:n)
+ 
+      apr='--te0-' 
+      print 71,apr,(te0(i),i=1,n) 
+      apr='--tq0-' 
+      print 71,apr,(tq0(i),i=1,n) 
+    71 FORMAT(20X,A20/,(6(1pE10.3)))
+       
+
+    
+
+ qe0(1:n) = core_sources%source(1)%profiles_1d(1)%electrons%energy(1:n)
+ qq0(1:n) = core_sources%source(1)%profiles_1d(1)%total_ion_energy(1:n)
+ 
  c_input1(1:n)=qe0(1:n)
  c_input2(1:n)=qq0(1:n)
+
+      apr='--qe0-' 
+      print 71,apr,(qe0(i),i=1,n) 
+
+      apr='--qq0-' 
+      print 71,apr,(qq0(i),i=1,n) 
+
+
 
 ! do i=1,n
 !   c_input1(i)=qe0(i)
@@ -110,6 +120,33 @@ do i=1,m
 	core_profiles%profiles_1d(1)%ion(m)%temperature(1:n) = tq0(1:n)
 end do
 !end if
+
+
+! Transp1
+ te0(1:n) = core_profiles%profiles_1d(1)%electrons%temperature(1:n)
+ !tq0(1:n) = core_profiles%profiles_1d(1)%ion(m)%temperature(1:n)
+ tq0(1:n) = core_profiles%profiles_1d(1)%t_i_average(1:n)
+ 
+      apr='--te0-' 
+      print 71,apr,(te0(i),i=1,n) 
+      apr='--tq0-' 
+      print 71,apr,(tQ0(i),i=1,n) 
+
+ qe0(1:n) = core_sources%source(1)%profiles_1d(1)%electrons%energy(1:n)
+ qq0(1:n) = core_sources%source(1)%profiles_1d(1)%total_ion_energy(1:n)
+
+
+
+      apr='--qe0-' 
+      print 71,apr,(qe0(i),i=1,n) 
+
+      apr='--qq0-' 
+      print 71,apr,(qq0(i),i=1,n) 
+
+
+
+    return
+
 
 return
 end subroutine

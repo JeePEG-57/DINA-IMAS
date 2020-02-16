@@ -7,7 +7,7 @@ f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic 
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 
-TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp_energy.a dina_transp_density.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a dina_sdn.a solps_imas.a test_dina_to_imas test_dina test_wr_prof
+TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a dina_sdn.a solps_imas.a test_dina_to_imas test_dina test_wr_prof
 
 DINADIR := ../../src/scenario
 ASTRADIR := ../astra_transp
@@ -47,7 +47,6 @@ test_wr_prof: test_wr_prof.o wr_prof_imas.o
 %.o: %.f90
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
-
 
 pers2.o: pers2.f 
 	$(f2c) -c pers2.f
@@ -110,6 +109,10 @@ dina_transp_energy.a: dina_transp_energy.o tran1.o add_dll.o
 dina_transp_density.a: dina_transp_density.o tran2.o add_dll.o
 	@echo "   * $^ -> $@"
 	ar -rcs dina_transp_density.a dina_transp_density.o tran2.o add_dll.o
+
+dina_transp_density_test.a: dina_transp_density_test.o tran2.o add_dll.o
+	@echo "   * $^ -> $@"
+	ar -rcs dina_transp_density_test.a dina_transp_density_test.o tran2.o add_dll.o
 
 dina_transp_bootcond.a: dina_transp_bootcond.o tran3.o add_dll.o
 	@echo "   * $^ -> $@"
