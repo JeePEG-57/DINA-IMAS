@@ -478,7 +478,7 @@ real(8) :: x1,x2,x3,x4,x5,x6,x7,x8
 
 
 open(unit=44,file='ech.dat',action='write',access='sequential')
-nt=size(schedule%ec%antenna(1)%power%reference%time)
+nt=size(schedule%ec%launcher(1)%power%reference%time)
 
 print *,' nt==',nt
 
@@ -486,9 +486,9 @@ write(44,*) 'Time points'
 write(44,*) nt
 write(44,*) 'Time  Power'
 do i=1,nt
-t = schedule%ec%antenna(1)%power%reference%time(i)
+t = schedule%ec%launcher(1)%power%reference%time(i)
 print *,'i t',i,t
-v = schedule%ec%antenna(1)%power%reference%data(i)*1.d-6
+v = schedule%ec%launcher(1)%power%reference%data(i)*1.d-6
 print *,' v==',v
 write(44,*) t, v
 enddo
@@ -496,14 +496,14 @@ close(44)
 
 
 open(unit=44,file='emo.dat',action='write',access='sequential')
-nt=size(schedule%ec%antenna(2)%power%reference%time)
+nt=size(schedule%ec%launcher(2)%power%reference%time)
 write(44,*) 'Time points'
 write(44,*) nt
 write(44,*) 'Time  Power'
 do i=1,nt
-t = schedule%ec%antenna(2)%power%reference%time(i)
-v = schedule%ec%antenna(2)%power%reference%data(i)*1.d-6
-u = schedule%ec%antenna(3)%power%reference%data(i)*1.d-6
+t = schedule%ec%launcher(2)%power%reference%time(i)
+v = schedule%ec%launcher(2)%power%reference%data(i)*1.d-6
+u = schedule%ec%launcher(3)%power%reference%data(i)*1.d-6
 write(44,*) t, v, u
 enddo
 close(44)

@@ -86,8 +86,8 @@ for i=1:nt
     time(i) = a{1}(1); 
     data(i) = a{1}(2)*1.e6; % EC, MW to W
 end
-pulse_schedule.ec.antenna{1}.power.reference.time = time;
-pulse_schedule.ec.antenna{1}.power.reference.data = data;
+pulse_schedule.ec.launcher{1}.power.reference.time = time;
+pulse_schedule.ec.launcher{1}.power.reference.data = data;
 
 
 %% EC+EQ heating for Ip > 1.5 MA
@@ -102,10 +102,10 @@ for i=1:nt
     data_e(i) = a{1}(2)*1.e6; % EC, MW to W
     data_q(i) = a{1}(3)*1.e6; % EQ, MW to W
 end
-pulse_schedule.ec.antenna{2}.power.reference.time = time;
-pulse_schedule.ec.antenna{2}.power.reference.data = data_e; % EC, W
-pulse_schedule.ec.antenna{3}.power.reference.time = time;
-pulse_schedule.ec.antenna{3}.power.reference.data = data_q; % EQ, W
+pulse_schedule.ec.launcher{2}.power.reference.time = time;
+pulse_schedule.ec.launcher{2}.power.reference.data = data_e; % EC, W
+pulse_schedule.ec.launcher{3}.power.reference.time = time;
+pulse_schedule.ec.launcher{3}.power.reference.data = data_q; % EQ, W
 
 
 %% Deuterium density

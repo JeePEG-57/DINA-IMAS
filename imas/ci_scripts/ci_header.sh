@@ -17,9 +17,8 @@ shopt -s expand_aliases
 # fi
 
 module purge 2> /dev/null
-# module load imas/3.10.1/ual/3.6.0
-# module load IMAS/3.23.3-4.1.5
-module load IMAS/3.25.0-4.3.1
+# module load IMAS/3.25.0-4.3.1
+module load IMAS/3.26.0-4.5.0
 
 # KEPLER ENVIRONMENT VARIABLES
 
@@ -31,16 +30,17 @@ module load IMAS/3.25.0-4.3.1
 # KEPLERMODULE=my2.5p2-2.1.3
 # module load Keplerdir/$KEPLERMODULE
 
-KEPLERVERSON=Kepler/2.5p4-3.0.5
-# KEPLERVERSON=Kepler/2.5p2-2.1.4
-# KEPLERVERSON=Kepler/2.5p4-2.1.5
+# KEPLERVERSON=Kepler/2.5p4-3.0.5
+KEPLERVERSON=Kepler/2.5p4-3.0.6
+
 module load $KEPLERVERSON
 
 # KEPLERMODULE=MY2.5p2-2.1.4
 # KEPLERMODULE=MY2.5p4-2.1.5
 # module load Keplerdir/$KEPLERMODULE
 
-KEPLERMODULE=MY2.5p4-3.0.5
+# KEPLERMODULE=MY2.5p4-3.0.5
+KEPLERMODULE=MY2.5p4-3.0.6
 if kepler_avail 2> /dev/null | grep -q $KEPLERMODULE; then
    echo kepler_load $KEPLERMODULE
    kepler_load $KEPLERMODULE
@@ -50,7 +50,8 @@ else
 fi
 
 # module load fc2k/4.2.6
-module load FC2K/4.6.5
+# module load FC2K/4.6.5
+module load FC2K/4.6.6
 
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 module load MATLAB/2018a
