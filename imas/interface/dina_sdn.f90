@@ -31,6 +31,7 @@ if (ifirst.eq.1 .AND. ioswitch.eq.0) then
     allocate(sdn%topic(1)%signal(i)%name(1))
     allocate(sdn%topic(1)%signal(i)%value%data(1))
     allocate(sdn%topic(1)%signal(i)%value%time(1))
+    sdn%topic(1)%signal(i)%name(1) = ' '
   enddo
   allocate(sdn%topic(2)%name(1))
   sdn%topic(2)%name(1) = 'Output SDN'
@@ -40,6 +41,7 @@ if (ifirst.eq.1 .AND. ioswitch.eq.0) then
     allocate(sdn%topic(2)%signal(k)%name(1))
     allocate(sdn%topic(2)%signal(k)%value%data(1))
     allocate(sdn%topic(2)%signal(k)%value%time(1))
+    sdn%topic(2)%signal(k)%name(1) = ' '
   enddo
 
   !input names

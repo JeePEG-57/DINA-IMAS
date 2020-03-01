@@ -20,6 +20,7 @@ fc2k: dinaimas21.xml dinacontr21.xml dinaputslice21.xml dinatransp_energy.xml di
 	$$FC2K/bin/fc2k -nocompile dinatransp_energy.xml
 	$$FC2K/bin/fc2k -nocompile dinatransp_density.xml
 	$$FC2K/bin/fc2k -nocompile dinatransp_density_test.xml
+	$$FC2K/bin/fc2k -nocompile dinatransp_density_test0.xml
 	$$FC2K/bin/fc2k -nocompile astra_transp_density.xml
 	$$FC2K/bin/fc2k -nocompile astra_transp_sources.xml
 	$$FC2K/bin/fc2k -nocompile dina_equil.xml
