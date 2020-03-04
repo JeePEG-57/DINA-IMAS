@@ -146,9 +146,9 @@ call system(" ls -ll p_data1 ")
 call system(" pwd")
 
 
-call schedulefiles(pulse_schedule,equilibrium0)
-print *,'schedulefiles written!'
 
+!call schedulefiles(pulse_schedule,equilibrium0)
+!print *,'schedulefiles written!'
 
 
 !call fp_test()
@@ -426,19 +426,18 @@ call write_cputime(0.d0, 0.d0, 1)
 first_call = first_call+1 ! cancel the initialisation for the next call
 
 !    kpr=1
-
- 		 open (unit=40,file='k_jetto.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)ih_imas
-         close (40)
+! 		 open (unit=41,file='k_jetto.dat',form='formatted') 
+! 		 open (unit=49,file='dina_data.dat',form='formatted') 
+          read (49,*) 
+          read (49,*)ih_imas
+ !        close (49)
          
         print *,'from k_jetto.dat  ih_imas =',ih_imas
 
- 		 open (unit=40,file='time_eq.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)time_eq
-         close (40)
-
+! 		 open (unit=40,file='time_eq.dat',form='formatted') 
+          read (49,*) 
+          read (49,*)time_eq
+!         close (41)
          
         print *,'from time_eq.dat  time_eq =',time_eq
 
@@ -484,62 +483,15 @@ if (associated(bndcond_in%solver_1d)) then
      write(*,*) 'te0(n1) tq0(n1)= ', &
     & te0(n1),tq0(n1)
 
-
-
- !     call solpsza_example_in(te0(n1),tq0(n1))
-
+      call solpsza_example_in(te0(n1),tq0(n1))
 
 
 end if
-
-
-write(*,*) 'transp2 n1=',n1
-
-write(*,*) 'transp3 n1=',n1
-!Transp3
- jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)*1.d-7
- sigk(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
-      apr='--jbut-' 
-      print 71,apr,(jbut(i),i=1,n1) 
-      apr='--sigk-' 
-      print 71,apr,(sigk(i),i=1,n1) 
-
-write(*,*) 'transp4 n1=',n1
-!Transp4
- aj0(1:n1) = (core_profiles0%profiles_1d(1)%j_non_inductive(1:n1) - core_profiles0%profiles_1d(1)%j_bootstrap(1:n1))*1.d-7
-      apr='--aj0-' 
-      print 71,apr,(aj0(i),i=1,n1) 
-
-!Sources
-write(*,*) 'sources n1=',n1
-
-!call ids_copy(core_sources0,core_sources)
-
- !qe0(1:n1) = core_sources%source(1)%profiles_1d(1)%electrons%energy(1:n1)
-      apr='--qe0-' 
-      print 71,apr,(qe0(i),i=1,n1) 
- !qq0(1:n1) = core_sources%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
- 
- 
-      apr='--qq0-' 
-      print 71,apr,(qq0(i),i=1,n1) 
-
-
- qe0(1:n1) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n1)
-      apr='--qe0-' 
-      print 71,apr,(qe0(i),i=1,n1) 
- qq0(1:n1) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
-      apr='--qq0-' 
-      print 71,apr,(qq0(i),i=1,n1) 
-
-
 
 !Transp2
  pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)*1.d-19
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)*1.d-19
  pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)*1.d-19
-
- 
       apr='--pne-' 
       print 71,apr,(pne(i),i=1,n1) 
       apr='--pd0-' 
@@ -625,13 +577,6 @@ write(*,*) '!!!solpsza enter'
 
 
     flush(6)
-    
-
-write(*,*) 'dina_input enter...'
-
-
-   71 FORMAT(20X,A20/,(6(1pE10.3)))
-
     
 !write(*,*) "output_1",output_1
 
@@ -793,7 +738,6 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(n))
 
-
     allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%r(ntet))
     allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%z(ntet))
     allocate(equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(ntet))
@@ -819,7 +763,6 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = fptab(1:n)
     
     
-
     equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%li_3 = uli
 	equilibrium%time_slice(CurTimeStep)%global_quantities%volume = v ![m3]
@@ -832,6 +775,10 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 	equilibrium%time_slice(CurTimeStep)%global_quantities%q_95 = q_95
 	equilibrium%time_slice(CurTimeStep)%global_quantities%w_mhd = wen2 ![J]
 
+        equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%r = rmajor
+        equilibrium%time_slice(CurTimeStep)%boundary%minor_radius = rminor
+        equilibrium%time_slice(CurTimeStep)%boundary%elongation = elong
+        equilibrium%time_slice(CurTimeStep)%boundary%triangularity = tri
 
         equilibrium%time_slice(CurTimeStep)%global_quantities%surface = ysbound_xx
         equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n) = ysbound_xx
@@ -839,18 +786,11 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 	equilibrium%vacuum_toroidal_field%r0 = rs0 ![m]
 	equilibrium%vacuum_toroidal_field%b0(CurTimeStep) = bt0 ![T]
     
-    
-        equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%r = rmajor
-        equilibrium%time_slice(CurTimeStep)%boundary%minor_radius = rminor
-        equilibrium%time_slice(CurTimeStep)%boundary%elongation = elong
-        equilibrium%time_slice(CurTimeStep)%boundary%triangularity = tri    
-    
-        equilibrium%time_slice(CurTimeStep)%boundary%outline%r(1:ntet) = xbound(1:ntet)
-        equilibrium%time_slice(CurTimeStep)%boundary%outline%z(1:ntet) = ybound(1:ntet)
-        equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(1:ntet) = xbound(1:ntet)
-        equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(1:ntet) = ybound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%outline%r(1:ntet) = xbound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%outline%z(1:ntet) = ybound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(1:ntet) = xbound(1:ntet)
+    equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(1:ntet) = ybound(1:ntet)
 
-        
     !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim1(1:n1)=x(1:n1) ![m]
     !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim2(1:n2)=y(1:n2) ![m]
 
@@ -1073,7 +1013,6 @@ allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2)%particles%flux(
 
 flush(6)
 
-
       apr='++te0-' 
       print 71,apr,(te0(i),i=1,n1) 
       apr='++tq0-' 
@@ -1087,6 +1026,10 @@ flush(6)
     
     print *,' end dina_imas'
 
+      
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+    
 
 return
 end subroutine
@@ -1231,9 +1174,7 @@ real(8) :: x1,x2,x3,x4,x5,x6,x7,x8
 
 
 open(unit=44,file='ech.dat',action='write',access='sequential')
-
 nt=size(schedule%ec%launcher(1)%power%reference%time)
-
 
 print *,' nt==',nt
 
@@ -1241,11 +1182,9 @@ write(44,*) 'Time points'
 write(44,*) nt
 write(44,*) 'Time  Power'
 do i=1,nt
-
 t = schedule%ec%launcher(1)%power%reference%time(i)
 print *,'i t',i,t
 v = schedule%ec%launcher(1)%power%reference%data(i)*1.d-6
-
 print *,' v==',v
 write(44,*) t, v
 enddo
@@ -1253,18 +1192,14 @@ close(44)
 
 
 open(unit=44,file='emo.dat',action='write',access='sequential')
-
 nt=size(schedule%ec%launcher(2)%power%reference%time)
-
 write(44,*) 'Time points'
 write(44,*) nt
 write(44,*) 'Time  Power'
 do i=1,nt
-
 t = schedule%ec%launcher(2)%power%reference%time(i)
 v = schedule%ec%launcher(2)%power%reference%data(i)*1.d-6
 u = schedule%ec%launcher(3)%power%reference%data(i)*1.d-6
-
 write(44,*) t, v, u
 enddo
 close(44)
