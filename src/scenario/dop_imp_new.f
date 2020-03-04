@@ -233,11 +233,10 @@ c
 
       i_en=i_en+1
       if(i_en.eq.1)then
-         open (unit=41, file='scale.dat',form='formatted')
-         read (41,*)
-         read (41,*)scale
+!         open (unit=41, file='scale.dat',form='formatted')
+         scale=1.
 	 if(kpr.eq.1)print *,'scale',scale
-         close (41)
+!         close (41)
          
       zhib=0.45
 !      zhib=0.15

@@ -82,44 +82,43 @@ c      U=100.
 
 c	print *,' file in.dat is reading'
 
-	open (unit=41,file='in.dat',form='formatted')
-        read (41,*)U
-        read (41,*)tay_ee
-        read (41,*)tay_ei
-        read (41,*)alf_n
-        read (41,*)p
-        read (41,*)R
-        read (41,*)a
-        read (41,*)R_ves
-        read (41,*)a_ves
-        read (41,*)e_ves
-        read (41,*)Z
-        read (41,*)psi_n
-        read (41,*)I_p
-        read (41,*)T_e
-        read (41,*)T_i
-        read (41,*)gam
-        read (41,*)elong
-        read (41,*)Bt
-        read (41,*)i_temp
-        read (41,*)alfa_loss
-        read (41,*)g_gain
-        read (41,*)tay_lo
+!	open (unit=41,file='in.dat',form='formatted')
+        U=15.
+        tay_ee=0.
+        tay_ei=0.
+        alf_n=0.84
+        p=1e-3
+        R=5.68 
+        a=1.6 
+        R_ves=6.2
+        a_ves=2.09 
+        e_ves=1.9
+        Z=0.
+        psi_n=0.99
+        I_p=1e-3
+        T_e=2.e-3 
+        T_i=2.e-3 
+        gam=5.e-2
+        elong=1.
+        Bt=4.9
+        i_temp=1 
+        alfa_loss=1.
+        g_gain=50.
+        tay_lo=2.000e5
 
 
 	t_a=tay_ei
 	 
 
-        close (41)
+!        close (41)
 
-
-	open (unit=41,file='init.dat',form='formatted')
-        read (41,*)p
-        read (41,*)T_e
-        read (41,*)T_i
-        read (41,*)gam
-        read (41,*)g_gain
-        close (41)
+!	open (unit=41,file='init.dat',form='formatted')
+        read (49,*)p
+        read (49,*)T_e
+        read (49,*)T_i
+        read (49,*)gam
+        read (49,*)g_gain
+!        close (41)
 
 
 
@@ -749,6 +748,8 @@ c      print *,' s_0 s1_ s_2 s_3 ',s_0,s_1,s_2,s_3
      *  den_e,den_n,denz,
      *  qlos_e,qloss_ion,qloss_rad,qloss_rec,qloss_ch)
 
+
+
 	qlos_e=qlos_e*alfa_rus
 	qloss_ion=qloss_ion*alfa_rus
 	qloss_rad=qloss_rad*alfa_rus
@@ -774,11 +775,16 @@ c     *  i,qloss_ion,qloss_rad,qloss_rec,qloss_ch
        call rates_zog(te_inp,tn_inp,nz_inp,
      *  rin_zog,rre_zog,rcx_zog)
 
-      c_ion=svie(te_inp,den_e)
-      c_rec=svr(te_inp,den_e)
 
-	c_ex=rcx_o(tn_inp,nz_inp)
-	c_ex_zog=rcx_zo(tn_inp,nz_inp)
+
+!      c_ion=svie(te_inp,den_e)
+
+!      c_rec=svr(te_inp,den_e)
+
+!	c_ex=rcx_o(tn_inp,nz_inp)
+!	c_ex_zog=rcx_zo(tn_inp,nz_inp)
+
+      if(kpr.eq.1)print *,'HYI4  '
 
       s_ion= S_iz
 	 s_cxc=S_cx
@@ -819,6 +825,7 @@ c   Energy....
 	do i=1,n_imp_tot
 	qlos_imp=qlos_imp+sel(i)*1.d-1
 	end do
+
 
 
 c      delta=0.
@@ -957,12 +964,12 @@ c      stop
 
 
 
-      subroutine en_00()
+      subroutine en_000()
       include 'double.inc'
       include 'new_com.inc'
       include 'br_com.inc'
 
-      call en_00_c(n_rad,
+      call en_000_c(n_rad,
      * tay,kpr,n_e,n_e0,n_d,n_d0,n0,n00,T_e,T_e0,T_i,T_i0,
      * pi,a_min,R_maj,tt,n_i,n_i0,
      * I_p,I_p0,p_oh,p_cx,p_ioniz,p_rad,q_ech,z_eff,v_v0,v_p,
@@ -976,7 +983,7 @@ c----------------------
 
       return
       end
-      subroutine en_00_c(n,
+      subroutine en_000_c(n,
      * tay_old,kpr,n_e,n_e0,n_d,n_d0,n0,n00,T_e,T_e0,T_i,T_i0,
      * pi,a,R,tt,n_i,n_i0,
      * I_p,I_p0,p_oh,p_cx,p_ioniz,p_rad,q_ech,z_eff,v_v0,v_p,
@@ -2978,15 +2985,15 @@ c
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='n_d.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
-           read (41,*) 
+!           open (unit=41,file='n_d.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t 
+           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
            
            do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
+              read (49,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -2998,7 +3005,7 @@ c-------
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 
@@ -3056,16 +3063,16 @@ c	stop
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='gamma_z.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t,nz_imp 
-           read (41,*) 
+!           open (unit=41,file='gamma_z.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t,nz_imp 
+           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp===',
      *  tay,tt,n_t,nz_imp
            
            do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
+              read (49,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -3077,7 +3084,7 @@ c-------
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 
@@ -5007,14 +5014,14 @@ c	   print *,' n_e n_i v_v0==',n_e,n_i,v_v0
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='ech.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
-           read (41,*) 
+!           open (unit=41,file='ech.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t 
+           read (49,*) 
 
 
            do i=1,n_t 
-              read (41,*)t_t(i),udd_sol_t(i)
+              read (49,*)t_t(i),udd_sol_t(i)
               t_t(i)=t_t(i)*1000. 
            end do 
            
@@ -5024,7 +5031,7 @@ c-------
            apr='-ech_t-' 
       if(kpr.eq.1)print 71,apr,(udd_sol_t(i),i=1,n_t) 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 
@@ -5309,6 +5316,12 @@ c	   print *,' n_e n_i v_v0==',n_e,n_i,v_v0
 !	n_imp_tot=1
 	n_imp_tot=2
 
+      dens_imp_neut(1)=1.e-16
+
+           apr=' dens_imp_neut1'
+        if(kpr.eq.1)print 71,apr,(dens_imp_neut(j),j=1,1)
+
+      return
 
 	i_sh=i_sh+1
 
@@ -5423,6 +5436,14 @@ c	   print *,' n_e n_i v_v0==',n_e,n_i,v_v0
 !	n_imp_tot=1
 	n_imp_tot=2
 
+      dens_imp_neut(2)=1.e-6
+
+           apr=' dens_imp_neut2'
+        if(kpr.eq.1)print 71,apr,(dens_imp_neut(j),j=1,2)
+  
+      return
+      
+      
 
 	i_sh=i_sh+1
 
@@ -6659,15 +6680,15 @@ c     *  i,f_h(i),f_imp(i)
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='n_d.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
-           read (41,*) 
+!           open (unit=41,file='n_d.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t 
+           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
            
            do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
+              read (49,*)t_t(i),pn_d_t(i)
               t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_dd_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -6679,7 +6700,7 @@ c-------
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 

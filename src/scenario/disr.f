@@ -11,14 +11,13 @@
 	subroutine bet_li_dat_c(t_beta,alf_beta,t_li,delta_time,kpr)
 	include 'double.inc'
 
-	open ( unit=41,file='bet_li.dat',form='formatted')
+!	open ( unit=41,file='bet_li.dat',form='formatted')
 
-	read (41,*)
-	read (41,*)t_beta,alf_beta
-	read (41,*)
-	read (41,*)t_li
-	read (41,*)
-	read (41,*)delta_time
+	t_beta=7000.e5
+	alf_beta=0.85
+	t_li=60000.e5
+	delta_time=20000.
+
 
 	if(kpr.eq.1)print *,' ** t_beta,alf_beta,t_li ',t_beta,alf_beta,t_li
         if(kpr.eq.1)print*,'delta_time',delta_time

@@ -1985,21 +1985,21 @@ c 	parameter (ntime=20)
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='emo.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
+!           open (unit=41,file='emo.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t 
 
  	 if(kpr.eq.1)print *,' tt n_t===',tt,n_t 
            
-           read (41,*) 
+           read (49,*) 
            do i=1,n_t 
-              read (41,*)t_t(i),emoe_t(i),emoq_t(i)
+              read (49,*)t_t(i),emoe_t(i),emoq_t(i)
               t_t(i)=t_t(i)*1000. 
            end do 
            
            apr='-t_t-' 
 c           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
@@ -2090,15 +2090,15 @@ c	pause 'from shape_emo'
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='pfres.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
+!           open (unit=41,file='pfres.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t 
 
  	 if(kpr.eq.1)print *,' tt n_t===',tt,n_t 
-           read (41,*) 
+           read (49,*) 
 
            do i=1,n_t 
-              read (41,*)t_t(i),(pf_t(k,i),k=1,npf)
+              read (49,*)t_t(i),(pf_t(k,i),k=1,npf)
               t_t(i)=t_t(i)*1000. 
            end do 
 
@@ -2123,7 +2123,7 @@ c-------
            
            apr='-t_t-' 
 c           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 

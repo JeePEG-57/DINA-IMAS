@@ -65,7 +65,7 @@ c---  we think ....???
 
       i_feed=1
       
-       if(kp.eq.1)print *,' ---CALL TRANSP2'
+       if(kpr.eq.1)print *,' ---CALL TRANSP2'
       
       filename='metric.dat'
 
@@ -285,7 +285,7 @@ c
        character *12 apr
 
        i_dop=i_dop+1
-
+        igr=1
 c       open (unit=42,file='for042',access='append',
        if(i_dop.eq.1)then 
        open (unit=42,file='for043',
@@ -353,6 +353,8 @@ c
         common /c_src/src
       common /c_GHFS/GHFS
 
+       common /c_solps1/yndt,yNe,yTe,yTi
+
 	common
      *	/n_m/n,m,mp
 	common
@@ -391,7 +393,19 @@ c       -----te average-----
 	ygr(4,igr)=GHFS
 	yy(4)=' GHFS'
 
-      ng=4
+	ygr(5,igr)=yndt
+	yy(5)='yndt'
+
+	ygr(6,igr)=yNe
+	yy(6)='yNe'
+
+	ygr(7,igr)=yTe
+	yy(7)='yTe'
+
+	ygr(8,igr)=yTi
+	yy(8)='yTi'
+
+      ng=8
 
 
 	tmp='names_md2'

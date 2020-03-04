@@ -47,29 +47,32 @@
       
       if(i_en.eq.1)then
 
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
+!        open (unit=1,file='kpr.dat',form='formatted')
+        read (49,*)
+        read (49,*)kpr
 
         if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
         
 !              i_con=3
 
-        close ( unit=1)       
+!        close ( unit=1)       
 
 
-           open (unit=41,file='tt_kavin.dat',form='formatted') 
-           read (41,*)
-           read (41,*)tt_kavin,tt_dw
-  		  close (41)
+!           open (unit=41,file='tt_kavin.dat',form='formatted') 
+!           read (41,*)
+!           read (41,*)tt_kavin,tt_dw
+!  		   close (41)
+
+           tt_kavin=3500.
+           tt_dw=1.e+10
 
         if(kpr.eq.1)print *,'tt_kavin,tt_dw =',
      *  tt_kavin,tt_dw
 
-     		 open (unit=40,file='k_jetto.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)k_jetto
-         close (40)
+!     		 open (unit=40,file='k_jetto.dat',form='formatted') 
+!          read (40,*) 
+!          read (40,*)k_jetto
+!         close (40)
          
         if(kpr.eq.1)print *,'tt_kavin,tt_dw =',
      *  tt_kavin,tt_dw
@@ -97,6 +100,8 @@
       end if
 
       if(i_en.gt.2)then
+!      stop
+
 
         tpl_x2=c_input1(1)      
         tt_dw_x2=c_input1(2)   
@@ -126,18 +131,13 @@
       if(i_en.eq.1)then
       call vic_read_gaps()
 
-        open (unit=1,file='tran_times.dat',form='formatted')
-        read (1,*)
-        read (1,*)tt_dina
-!        read (1,*)
-!        read (1,*)t_ret
-        close ( unit=1)       
-
-      if(kpr.eq.1)print *,' 00 tt== tt_dina==',tt,tt_dina
+!        open (unit=1,file='tran_times.dat',form='formatted')
+        read (49,*)
+        read (49,*)tt_dina
 
       end if
       
-      tt_dina=1352.e6
+!      tt_dina=1352.
 
       if(kpr.eq.1)print *,' tt== tt_dina==',tt,tt_dina
 
@@ -287,7 +287,7 @@ c  i_fil=0  old case without reconstruction....
 	tt=tt+tay
 
 
-      if(tt.gt.1.5e3)call write_tran1()
+!      call write_tran1()
 
 
 

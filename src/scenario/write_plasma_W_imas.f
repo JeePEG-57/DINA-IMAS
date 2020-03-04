@@ -176,10 +176,10 @@ c        read(*,*)
 
 
         if(i_en.eq.1)then
-           open (unit=41,file='Pvs3.dat',form='formatted')
-           read(41,*)
-           read (41,*)Pvs3
-           close (41)
+!           open (unit=41,file='Pvs3.dat',form='formatted')
+!           read(41,*)
+           Pvs3=0.
+ !          close (41)
         end if
 
 

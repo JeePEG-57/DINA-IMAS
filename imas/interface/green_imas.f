@@ -1138,6 +1138,9 @@ c
 	end if
                                                                         
 
+      return
+      
+
 	open (unit=41,file='glcoeff_mat.flat',form='formatted') 
 	write (41,*)npf,ncam,kloop,kprobe         
 	write (41,*)' end of file '         
@@ -2275,104 +2278,106 @@ c	implicit real*8 (a-h,o-z)
 !	close (40)
 !    	open(unit=41,status='old',file=tmp,form='formatted')
 
+      kpr=0
 
-     	open(unit=41,file='tokamak_config.dat',
+     	open(unit=49,file='dina_data.dat',
+!!!     	open(unit=41,file='tokamak_config.dat',
      *  form='formatted')
 	if(kpr.eq.1)print *,' opened file tokamak_config.dat'
-	read(41,*)
+	read(49,*)
 	if(kpr.eq.1)print *,' 1'
-	read(41,*)npf
+	read(49,*)npf
 	if(kpr.eq.1)print *,'npf ',npf
 	do I=1,npf
-	read(41,*)
-	read(41,*)nr(i),nz(i),nt(i),n_pf_num(i)
+	read(49,*)
+	read(49,*)nr(i),nz(i),nt(i),n_pf_num(i)
 c
 	if(kpr.eq.1)PRINT*,'i Nr Nz nt pf_num',i,Nr(I),nz(i),nt(i),n_pf_num(i)
-	read(41,*)R_c(I),Z_c(I),dr(i),dz(i),alpha(i),beta(i)
+	read(49,*)R_c(I),Z_c(I),dr(i),dz(i),alpha(i),beta(i)
 	if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ',
      * r_c(i),z_c(i),dr(i),dz(i),alpha(i),beta(i)
 	END DO
 
 
-	read(41,*)
+	read(49,*)
 	if(kpr.eq.1)print *,' res_pf'
-	read(41,*)npf_res
+	read(49,*)npf_res
 	if(kpr.eq.1)print *,'npf_res ',npf_res
 	do I=1,npf_res
-	read(41,*)pfres(i)
+	read(49,*)pfres(i)
 	if(kpr.eq.1)print *,' i pfres(i)',i,pfres(i)
       end do
       
-	read(41,*)
+	read(49,*)
 	if(kpr.eq.1)print *,' Vessel'
-	read(41,*)ncam
+	read(49,*)ncam
 	if(kpr.eq.1)print *,'ncam ',ncam
 	do I=1,ncam
-	read(41,*)
-	read(41,*)ndl_ves(i),ndh_ves(i),nt_ves(i),n_ves_num(i)
+	read(49,*)
+	read(49,*)ndl_ves(i),ndh_ves(i),nt_ves(i),n_ves_num(i)
 c
 	if(kpr.eq.1)PRINT*,'i N M nt ves_n',i,Ndl_ves(I),
      *  ndh_ves(i),nt_ves(i),n_ves_num(i)
-	read(41,*)Rc(I),Zc(I),dl(i),hl(i),alpha_ves(i),beta_ves(i)
+	read(49,*)Rc(I),Zc(I),dl(i),hl(i),alpha_ves(i),beta_ves(i)
 	if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ',
      * rc(i),zc(i),dl(i),hl(i),alpha_ves(i),beta_ves(i)
 	END DO
 
 
-	read(41,*)
+	read(49,*)
 	if(kpr.eq.1)print *,' res_ves'
-	read(41,*)ncam
+	read(49,*)ncam
 	if(kpr.eq.1)print *,'ncam ',ncam
 	do I=1,ncam
-	read(41,*)rcam(i)
+	read(49,*)rcam(i)
 	if(kpr.eq.1)print *,' i rcam(i)',i,rcam(i)
       end do
 
 
-	read(41,*)
+	read(49,*)
 	if(kpr.eq.1)print *,' Flux loops'
-	read(41,*)kloop
+	read(49,*)kloop
 	if(kpr.eq.1)print *,'kloop ',kloop
 	do I=1,kloop
 
-	read(41,*)Rl(I),Zl(I)
+	read(49,*)Rl(I),Zl(I)
 	if(kpr.eq.1)print *,'r_l z_l ',rl(i),zl(i)
 	END DO
 
 
-	read(41,*)
+	read(49,*)
 	if(kpr.eq.1)print *,' Probe'
-	read(41,*)kprobe,kpb
+	read(49,*)kprobe,kpb
 	if(kpr.eq.1)print *,'kprobe,kpb ',kprobe,kpb
 	do I=1,kprobe
-	read(41,*)R_prob(I),Z_prob(I),anglep(i),smp(i)
+	read(49,*)R_prob(I),Z_prob(I),anglep(i),smp(i)
 	if(kpr.eq.1)print *,'r_pr z_pr alpha smp ',
      * R_prob(I),Z_prob(I),anglep(i),smp(i)
 	END DO
 
-	read(41,*)
+	read(49,*)
 	if(kpr.eq.1)print *,' limiter'
-	read(41,*)ke
+	read(49,*)ke
 	if(kpr.eq.1)print *,'ke ',ke
 	do I=1,ke
 
-	read(41,*)xu(I),yu(I)
+	read(49,*)xu(I),yu(I)
 	xu(I)=xu(I)*100.d0
 	yu(I)=yu(I)*100.d0
 	if(kpr.eq.1)print *,'xu yu ',xu(I),yu(I)
 	END DO
 
-      read(41,*)    
-	read(41,*)r00,rk
+      read(49,*)    
+	read(49,*)r00,rk
 	r00=r00*100.d0
 	rk=rk*100.d0
-      read(41,*)z00,zk
+      read(49,*)z00,zk
 	z00=z00*100.d0
 	zk=zk*100.d0
 	if(kpr.eq.1)print *,'r00,rk ',r00,rk
 	if(kpr.eq.1)print *,'z00,zk ',z00,zk
 
-	close(41)
+!	close(41)
 
 2	FORMAT(/,2(2x,1PE10.3))
 
@@ -2427,6 +2432,7 @@ c
       
       end do
 
+      if(i_wr.eq.1)then
 	open(unit=4,file='koor_jt_old',form='formatted')
 
 	do i=1,npf
@@ -2440,7 +2446,8 @@ c
 
 	close(4)
 
-
+      end if
+      
       do ii=1,npf
       	npf_max=max(npf_max,n_pf_num(ii));
       end do
@@ -2480,6 +2487,8 @@ c
 	   end do
 	end do
 
+      if(i_wr.eq.1)then
+
 	open(unit=4,file='koor_jt',form='formatted')
 
 	do i=1,npf
@@ -2492,7 +2501,8 @@ c
 	end do
 
 	close(4)
-
+      end if
+      
 	do i=1,npf
 	DO J=1,nmx(i)
 	pw(j,i)=turn_pf(j,i)
@@ -2537,6 +2547,8 @@ c
       
       end do
 
+      if(i_wr.eq.1)then
+
 	open(unit=4,file='koor_ves',form='formatted')
 
 	do i=1,ncam
@@ -2549,7 +2561,8 @@ c
 	end do
 
 	close(4)
-
+      end if
+      
 !      stop
 c
 71 	format (20x,a6/,(6(1pe10.3)))

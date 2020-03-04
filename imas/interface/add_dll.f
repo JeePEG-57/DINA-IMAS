@@ -184,6 +184,8 @@ c       implicit real*8 (a-h,o-z)
 
 
 	src=0.
+	src1=0.
+	src2=0.
       pot=1.
       DO 1 I=2,N
 
@@ -197,6 +199,8 @@ c       implicit real*8 (a-h,o-z)
  	sd0(i)=sd0(i)-sal(i)
 	st0(i)=st0(i)-sal(i)
 	src=src+sd0(i)+st0(i)
+	src1=src1+sd0(i)
+	src2=src2+st0(i)
       DIF(I)=0.4*XII(I)
       
 !      print *,' i dif=',i,dif(i)
@@ -204,6 +208,7 @@ c       implicit real*8 (a-h,o-z)
     1 CONTINUE
 
 	if(kpr.eq.1)print *,' pne1 pne2======',pne(1),pne(2)
+	if(kpr.eq.1)print *,' source1 source2======',src1,src2
 	if(kpr.eq.1)print *,' dif_coef source======',dif_coef,src
 	if(kpr.eq.1)print *,' eu rs======',eu,rs
 	
@@ -469,6 +474,10 @@ c  END NEW additions...
      *dh1(i)+PKO*PHN(I)
    14 CONTINUE
    71 FORMAT(20X,A6/,(6(1pE12.5)))
+
+
+     	if(kpr.eq.1)print *,' ntay id it =',ntay,id,it
+     	
 
       IF(NTAY.EQ.0)GO TO  99
 	keps=0
@@ -1493,7 +1502,6 @@ c-----------------------------------------------
 
 	return
 	end
-
 	subroutine read_data3()
 	include 'double.inc'
 	include 'new_com.inc'
@@ -1506,6 +1514,311 @@ c-----------------------------------------------
 	return
 	end
 	subroutine read_data3_c(
+     *  res_coef,n_polar,
+     *  k_ion)
+
+	include 'double.inc'
+        include 'parf0'
+	include 'parf2'
+	common
+     *  /cont13/zmag,zvel,delrmag,delzmag
+     *  /cont13e/zmag0,rmag,rmag0,rvel
+	common
+     *	/n_m/n,m,mp
+	common
+     *  /eq12/omega,pspl0(nwnh)
+	common
+     *	/ge1e/rs0,tpl
+     *  /ge2/NTAY,TAY,TT
+     *  /ge4/EPS1,EPS2,EPS0
+     *  /ge5/kpr
+     *  /ge6e/zeff_a,zeff_b
+     *	/ge7/eu,rs,zout,eksk
+	common
+     *  /DFM1/UDM,ZDM,L3,SIG0
+     *  /dfm7/bt0,uind
+	common
+     *	/efit0/kefit
+     *	/efit1/alfax(2),betax(2)
+     *	/efit2/alfa0,beta,alfa1
+     *	/efit3/pw_1,pw_2
+	common
+     *  /pol5/psend
+	common
+     *  /en1e/te_a,ti_a,te_b,ti_b,pw_e
+     *  /en2e/pd0_a,pt0_a,pd0_b,pt0_b,pw_p
+     *  /en7/UD,ZD,UT,ZT,UH,ZH,LD,LT,LH,ID,IT,IH,KTP,Neng
+     *  /en11/un(4),zn(2),ll,ken,ken1,ken2,noit
+     *  /en12/pnal(npo),pnaln(npo),zalfa,talfa
+     *  /en13/KPIN,VPIN,ALP1,POT,SKOR
+     *  /en14/EMOE,EMOQ,NDOP,QDE0(npo),QDQ0(npo)
+     *  /en14e/t_dop
+     *  /eq15e/pll0,tpl0,udd
+     *  /en19/DD,DT,DH,SIN0,SINK,ALPY,Sss,Ppp,Eee
+     *  /en33/anom_e,anom_i,key_t11,kcchp
+     *  /en25/zhib,tego
+
+	common
+     *	/keys1/i_graph
+     *	/keys2/key_b
+     *	/keys3/kzero,iread,iwrite
+     *  /keys4/k_ener,k_uv
+     *  /keys5/next
+     *  /keys7/i_c
+     *  /keys8/ndh
+     *  /keys9/i_d3d,i_iter,i_smal
+     *  /keys10/ngra
+     *  /keys11/i_ramp
+     *  /keys12/i_v
+     *  /keys13/i_con,i_act
+     *  /keys14/i_beta,i_gap5
+     *  /keys15/i_br
+     *  /keys17/i_feed,i_ecoil
+	common
+     *	/con1/gain,ta,zref,kzref
+     *  /con2/rref,krref,bvert
+     *  /con3/i_pf
+     *  /con5/n_exp,k_cont
+     *  /con6/ind_r(2),ind_z(2)
+	common
+     *	/point1/r0,z0
+	common
+     *  /halo1/c_h,d_halo,fmax_in,tpl_in
+     *  /halo2/kmaj,k_q,k_d,kaxis,ndisrup
+     *  /halo2e/next0,li_drop,n_li,n_dif,nmix
+     *  /halo3/tay_00,tay_th,t_disr,d_tpl,tpl_end
+     *  /halo4e/w_h0,delaval0,pshalo0,te_h0
+     *  /halo5/q_vde,q_95,del_f,i_halo
+     *  /halo12/te_h
+     *  /halo14/hpart
+     *  /halo15/e_sep,nsep
+	common
+     *  /pol4/UM,VM,UK(ntet),VK(ntet)
+	common
+     *	/cont18/t_vde,time_disr
+	common
+     *  /ef_0/key_ef
+
+
+      n=50
+	m=90
+	next=1
+
+
+
+	tt2=0
+	tay=10.
+	t_end=700.e5 
+	rs0=620.
+	psend=-1.e4
+	i_graph=0
+
+      rout=rs0
+
+	alfa0=4.E-2
+	beta=0.1
+	alfa1=-1. 
+	omega=0.33
+
+      iread=0
+      kzero=0
+      iwrite=0
+      kefit=2
+
+      alfax(1)=1.00 
+      alfax(2)=-1.22145
+      betax(1)=17.4468
+      betax(2)=-21.31107
+
+      pw_1=4.
+      pw_2=0.8
+
+      te_a=956.471
+	ti_a=214.0269
+	te_b=10.
+	ti_b=10.
+	pw_e=2.
+
+	pd0_a=0.3
+      pt0_a=1.e-5
+      pd0_b=0.2
+      pt0_b=1.e-5
+      pw_p=3.
+
+	zeff_a=1.8
+	zeff_b=1.8
+
+	sig0=5.3715E3
+
+	zhib=4.5e-1 
+	tego=100. 
+	zalfa=4.
+	talfa=500.
+	alp1=0.
+
+
+	ktp=1
+	kpin=0
+	ken=0
+	ken1=0
+	ken2=1
+	kd2=0
+	nal=1
+
+	alpy=20.
+	ppp=1.e-0
+	eee=40.e3
+	dd=1.
+	dt=0.
+	dh=0.
+	df=0.
+
+	lt=1
+	ld=1
+	lh=1
+	ll=1
+	lm=3
+	it=1
+	id=1
+	ih=0
+
+	eps0=1.e-8
+	eps1=1.e-3
+	eps2=1.e-5
+
+	anom_e=1.
+	anom_i=1.
+	key_t11=1
+	kcchp=0
+
+	emoe=0.
+	emoq=0.
+
+	udd=0
+	
+	k_ener=1
+	k_uv=0
+	
+	t_dop=5.
+	
+	r0=588.
+	z0=0.
+	zref=0.
+	
+      kzref=1 
+      krref=3 
+      key_b=2 
+      i_pf=5
+	
+	i_c=0
+
+	q_vde=3.
+	
+	tay_00=0.1
+	tay_th=0.05
+	t_disr=4.
+	
+	d_tpl=6.
+	tpl_end=150.
+
+	c_h=1.
+	d_halo=10.
+
+	kmaj=-1
+	li_drop=9999
+	ndisrup=-16
+	n_dif=0
+
+	hpart=1.1
+	te_h=0.5
+	
+	i_d3d=0
+	i_iter=1
+	i_smal=0
+
+	i_ramp=0
+	i_v=1
+	i_con=0
+	
+	tpl=1.
+	bt0=53.
+	eu=160.
+	eksk=1.
+
+	e_sep=5.e-3
+
+
+      i_beta=0
+      i_gap5=0
+      
+	i_br=0
+	
+	ind_r(1)=15
+	ind_r(2)=16
+	ind_z(1)=13
+	ind_z(2)=14
+
+	key_ef=0
+	
+	res_coef=1.
+
+	n_polar=2
+
+
+	if(kpr.eq.1)then
+	   print *,' key_ef ===',key_ef
+	   print *,' res_coef===',res_coef
+	   print *,' n_polar===',n_polar
+	   print *,' k_ion===',k_ion
+	   print *,' pow_el pow_ion===',pow_el,pow_ion
+	   print*,'tt2 teg0=',tt2,tego
+
+	   print *,' end for002 reading'
+	end if
+
+
+
+	pnor=6.25e8
+	emoe=emoe*pnor
+	emoq=emoq*pnor
+
+	ndh=1
+
+
+c##	mp=(m-2)/2+2
+	mp=m
+	if(kpr.eq.1)print *,' n m mp',n,m,mp
+c	read (*,*)
+
+
+        rs=r0
+        zout=z0
+	um=r0
+	vm=z0
+	rmag=um
+	zmag=vm
+
+	if(kpr.eq.1)print *,' um vm eu elong',um,vm,eu,eksk
+
+
+	if(kpr.eq.1)print *,' t_end===',t_end
+
+
+	return
+	end
+
+	subroutine read_data3_old()
+	include 'double.inc'
+	include 'new_com.inc'
+
+
+	call read_data3_old_c(
+     *  res_coef,n_polar,
+     *  k_ion)
+
+	return
+	end
+	subroutine read_data3_old_c(
      *  res_coef,n_polar,
      *  k_ion)
 
@@ -4120,12 +4433,4 @@ c
 	end do
 	return
 	end
-
-
-
-
-
-
-
-
 

@@ -32,6 +32,7 @@
 /* %%%-SFUNWIZ_wrapper_includes_Changes_BEGIN --- EDIT HERE TO _END */
 #include <math.h>
 #include<stdio.h>
+extern FILE*f1;
 /* %%%-SFUNWIZ_wrapper_includes_Changes_END --- EDIT HERE TO _BEGIN */
 #define u_width 
 #define y_width 50
@@ -61,85 +62,172 @@ void read_gaps_term_Outputs_wrapper(real_T *y0,
 int N,i,j,k,N_g; static int k1,k2,k3,k4,k5,k6;
 static double y_1[50][2],y_2[50][2],y_3[50][2],y_4[50][2],y_5[50][2],y_6[50][2];
 FILE*f;char b[256];
+int i2;
+
 
 N_g=*n_gaps; /*mexPrintf(" N_g %d\n",N_g);*/
 
 if(N_g==1){
 if(k1==0){
 
-f=fopen("g1_term.dat","r");fgets(b,255,f);
-fscanf(f,"%d ",&N); fgets(b,255,f);
-for(i=0;i<N;i++) fscanf(f,"%lf %lf",y_1[i],y_1[i]+1);
-fclose(f);
+	printf("---g1_term.dat \n");
+
+//f=fopen("g1_term.dat","r");
+//	fscanf(f1," %s ",b);
+//printf ("     %s",b);
+
+fgets(b,255,f1);
+printf ("     %s",b);
+
+
+fscanf(f1,"%d \n",&N); 
+printf("---g1_term.dat N  %d  \n",N);
+
+fgets(b,255,f1);
+printf ("     %s",b);
+
+for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_1[i],y_1[i]+1);
+//fclose(f);
 /*for(k=0;k<N;k++)for(j=i;j<50;j++)y_1[j][k]=0;
 for(j=i;j<50;j++)y_1[j][0]=y_1[j-1][0]+1;*/
 for(j=i;j<50;j++){y_1[j][0]=y_1[j-1][0]+1; y_1[j][1]=y_1[j-1][1];}
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_1[j][k];
+
+j=1;
+printf("---g1_term.dat N y_01 y_02 %d %g %g \n",N,y_1[j-1][0],y_1[j-1][1]);
+j=N-1;
+printf("---g1_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_1[j-1][0],y_1[j-1][1]);
+printf("---g1_term.dat j y_01 y_02 %d %g %g \n",j,y_1[j][0],y_1[j][1]);
+
+printf("---g1_term-- end.dat \n");
+
+//scanf("%d", &i2);
+
+
 k1=1;}return;}
 
 if(N_g==2){
 if(k2==0){
 
-f=fopen("g2_term.dat","r");fgets(b,255,f);
-fscanf(f,"%d ",&N); fgets(b,255,f);
-for(i=0;i<N;i++) fscanf(f,"%lf %lf",y_2[i],y_2[i]+1);
-fclose(f);
+	printf("---g2_term.dat \n");
+
+//f=fopen("g2_term.dat","r");
+//	fscanf(f1," %s ",b);
+//printf ("     %s",b);
+fgets(b,255,f1);
+fscanf(f1,"%d \n",&N); fgets(b,255,f1);
+for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_2[i],y_2[i]+1);
+//fclose(f);
 /*for(k=0;k<N;k++)for(j=i;j<50;j++)y_2[j][k]=0;
 for(j=i;j<50;j++)y_2[j][0]=y_2[j-1][0]+1;*/
 for(j=i;j<50;j++){y_2[j][0]=y_2[j-1][0]+1; y_2[j][1]=y_2[j-1][1];}
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_2[j][k];
+
+j=1;
+printf("---g2_term.dat N y_01 y_02 %d %g %g \n",N,y_2[j-1][0],y_2[j-1][1]);
+j=N-1;
+printf("---g2_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_2[j-1][0],y_2[j-1][1]);
+printf("---g2_term.dat j y_01 y_02 %d %g %g \n",j,y_2[j][0],y_2[j][1]);
+
+printf("---g2_term-- end.dat \n");
+
+
 k2=1;}return;}
 
 if(N_g==3){
 if(k3==0){
 
-f=fopen("g3_term.dat","r");fgets(b,255,f);
-fscanf(f,"%d ",&N); fgets(b,255,f);
-for(i=0;i<N;i++) fscanf(f,"%lf %lf",y_3[i],y_3[i]+1);
-fclose(f);
+	printf("---g3_term.dat \n");
+
+//f=fopen("g3_term.dat","r");
+//fscanf(f1," %s ",b);
+fgets(b,255,f1);
+fscanf(f1,"%d \n",&N); fgets(b,255,f1);
+for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_3[i],y_3[i]+1);
+//fclose(f);
 /*for(k=0;k<N;k++)for(j=i;j<50;j++)y_3[j][k]=0;
 for(j=i;j<50;j++)y_3[j][0]=y_3[j-1][0]+1;*/
 for(j=i;j<50;j++){y_3[j][0]=y_3[j-1][0]+1; y_3[j][1]=y_3[j-1][1];}
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_3[j][k];
+j=1;
+printf("---g3_term.dat N y_01 y_02 %d %g %g \n",N,y_3[j-1][0],y_3[j-1][1]);
+j=N-1;
+printf("---g3_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_3[j-1][0],y_3[j-1][1]);
+printf("---g3_term.dat j y_01 y_02 %d %g %g \n",j,y_3[j][0],y_3[j][1]);
+
+printf("---g3_term-- end.dat \n");
 k3=1;}return;}
 
 if(N_g==4){
 if(k4==0){
 
-f=fopen("g4_term.dat","r");fgets(b,255,f);
-fscanf(f,"%d ",&N); fgets(b,255,f);
-for(i=0;i<N;i++) fscanf(f,"%lf %lf",y_4[i],y_4[i]+1);
-fclose(f);
+	printf("---g4_term.dat \n");
+
+//f=fopen("g4_term.dat","r");
+//fscanf(f1," %s ",b);
+fgets(b,255,f1);
+fscanf(f1,"%d \n",&N); fgets(b,255,f1);
+for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_4[i],y_4[i]+1);
+//fclose(f);
 /*for(k=0;k<N;k++)for(j=i;j<50;j++)y_4[j][k]=0;
 for(j=i;j<50;j++)y_4[j][0]=y_4[j-1][0]+1;*/
 for(j=i;j<50;j++){y_4[j][0]=y_4[j-1][0]+1; y_4[j][1]=y_4[j-1][1];}
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_4[j][k];
+j=1;
+printf("---g4_term.dat N y_01 y_02 %d %g %g \n",N,y_4[j-1][0],y_4[j-1][1]);
+j=N-1;
+printf("---g4_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_4[j-1][0],y_4[j-1][1]);
+printf("---g4_term.dat j y_01 y_02 %d %g %g \n",j,y_4[j][0],y_4[j][1]);
+
+printf("---g4_term-- end.dat \n");
 k4=1;}return;}
 
 if(N_g==5){
 if(k5==0){
 
-f=fopen("g5_term.dat","r");fgets(b,255,f);
-fscanf(f,"%d ",&N); fgets(b,255,f);
-for(i=0;i<N;i++) fscanf(f,"%lf %lf",y_5[i],y_5[i]+1);
-fclose(f);
+	printf("---g5_term.dat \n");
+
+//f=fopen("g5_term.dat","r");
+//fscanf(f1," %s ",b);
+fgets(b,255,f1);
+fscanf(f1,"%d \n",&N); fgets(b,255,f1);
+for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_5[i],y_5[i]+1);
+//fclose(f);
 /*for(k=0;k<N;k++)for(j=i;j<50;j++)y_5[j][k]=0;
 for(j=i;j<50;j++)y_5[j][0]=y_5[j-1][0]+1;*/
 for(j=i;j<50;j++){y_5[j][0]=y_5[j-1][0]+1; y_5[j][1]=y_5[j-1][1];}
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_5[j][k];
+j=1;
+printf("---g5_term.dat N y_01 y_02 %d %g %g \n",N,y_5[j-1][0],y_5[j-1][1]);
+j=N-1;
+printf("---g5_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_5[j-1][0],y_5[j-1][1]);
+printf("---g5_term.dat j y_01 y_02 %d %g %g \n",j,y_5[j][0],y_5[j][1]);
+
+printf("---g5_term-- end.dat \n");
 k5=1;}return;}
 
 if(N_g==6){
 if(k6==0){
 
-f=fopen("g6_term.dat","r");fgets(b,255,f);
-fscanf(f,"%d ",&N); fgets(b,255,f);
-for(i=0;i<N;i++) fscanf(f,"%lf %lf",y_6[i],y_6[i]+1);
-fclose(f);
+	printf("---g6_term.dat \n");
+
+//f=fopen("g6_term.dat","r");
+//fscanf(f1," %s ",b);
+fgets(b,255,f1);
+fscanf(f1,"%d \n",&N); fgets(b,255,f1);
+for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_6[i],y_6[i]+1);
+//fclose(f);
 /*for(k=0;k<N;k++)for(j=i;j<50;j++)y_6[j][k]=0;
 for(j=i;j<50;j++)y_6[j][0]=y_6[j-1][0]+1;*/
 for(j=i;j<50;j++){y_6[j][0]=y_6[j-1][0]+1; y_6[j][1]=y_6[j-1][1];}
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_6[j][k];
+j=1;
+printf("---g6_term.dat N y_01 y_02 %d %g %g \n",N,y_6[j-1][0],y_6[j-1][1]);
+j=N-1;
+printf("---g6_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_6[j-1][0],y_6[j-1][1]);
+printf("---g6_term.dat j y_01 y_02 %d %g %g \n",j,y_6[j][0],y_6[j][1]);
+
+printf("---g6_term-- end.dat \n");
 k6=1;}return;}
 /* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */
 }

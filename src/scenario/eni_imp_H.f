@@ -155,11 +155,11 @@ c ---->  Auxiliary heating power calculated (only in 17 point is deposited)
 
       i_en=i_en+1
       if(i_en.eq.1)then
-         open (unit=41, file='heat_profile.dat',form='formatted')
-         read (41,*)
-         read (41,*)w_heat1,w_heat2
+!         open (unit=41, file='heat_profile.dat',form='formatted')
+         w_heat1=0. 
+         w_heat2=0.33333
 c	 print *,'w_heat1 w_heat2',w_heat1,w_heat2
-         close (41)
+!         close (41)
       end if
 
 c      pause 'from eni_st.f'
@@ -207,11 +207,11 @@ C^M
       if(kpr.eq.1)print*,'emoe emoq',emoe/pnor,emoq/pnor
 
       if(i_en.eq.1) then
-                 open (unit=41,file='bohm_gbohm.dat',form='formatted')
-                read (41,*)
-                read (41,*) k_Bohm
-                read (41,*)
-                close(41)
+!                 open (unit=41,file='bohm_gbohm.dat',form='formatted')
+                read (49,*)
+                read (49,*) k_Bohm
+!                read (41,*)
+!                close(41)
         end if
 
  !       kpr = 1
@@ -1281,15 +1281,28 @@ c
       
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='p_loss.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t 
-           read (41,*) 
+      n_t=5
+      
+      t_t(1)=0.000000e+000
+      t_t(2)=1.500000e+000
+      t_t(3)=3.500000e+000
+      t_t(4)=10.00000e+001
+      t_t(5)=9.100000e+008
+
+
+      power_ech_t(1)=3.2708
+      power_ech_t(2)=3.2708
+      power_ech_t(3)=3.2708
+      power_ech_t(4)=0.0
+      power_ech_t(5)=0.0000
+      
+      
+!           open (unit=41,file='p_loss.dat',form='formatted') 
 
  	 if(kpr.eq.1)print *,' p_loss  tt n_t===',power_ech,tt,n_t 
 
            do i=1,n_t 
-              read (41,*)t_t(i),power_ech_t(i)
+!              read (41,*)t_t(i),power_ech_t(i)
               t_t(i)=t_t(i)*1000. 
            end do 
            
@@ -1384,6 +1397,10 @@ c	     qpr(i)=1.-ai(i)**2
 	dimension t_t(ntime),pn_d_t(ntime)
 	character *12 apr
 
+      anom_e=1.d0
+      return
+      
+
 	i_sh=i_sh+1
 
 	if(i_sh.eq.1)then
@@ -1459,16 +1476,16 @@ c	stop
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='gamma_z1.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t,nz_imp1 
-           read (41,*) 
+!           open (unit=41,file='gamma_z1.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t,nz_imp1 
+           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp1===',
      *  tay,tt,n_t,nz_imp1 
            
            do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
+              read (49,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -1480,7 +1497,7 @@ c-------
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 
@@ -1537,16 +1554,16 @@ c	stop
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='gamma_z2.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t,nz_imp2 
-           read (41,*) 
+!           open (unit=41,file='gamma_z2.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t,nz_imp2 
+           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp2===',
      *  tay,tt,n_t,nz_imp2
            
            do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
+              read (49,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -1558,7 +1575,7 @@ c-------
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 
@@ -1605,16 +1622,16 @@ c	stop
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='gamma_z3.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t,nz_imp3 
-           read (41,*) 
+!           open (unit=41,file='gamma_z3.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t,nz_imp3 
+           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp3===',
      *  tay,tt,n_t,nz_imp3
            
            do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
+              read (49,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -1626,7 +1643,7 @@ c-------
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 
@@ -1672,16 +1689,16 @@ c	stop
 
 	if(i_sh.eq.1)then
 c-------
-           open (unit=41,file='gamma_z4.dat',form='formatted') 
-           read (41,*) 
-           read (41,*)n_t,nz_imp4 
-           read (41,*) 
+!           open (unit=41,file='gamma_z4.dat',form='formatted') 
+           read (49,*) 
+           read (49,*)n_t,nz_imp4 
+           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t  nz_imp4===',
      *  tay,tt,n_t,nz_imp4
            
            do i=1,n_t 
-              read (41,*)t_t(i),pn_d_t(i)
+              read (49,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -1693,7 +1710,7 @@ c-------
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
 
-           close (unit=41) 
+!           close (unit=41) 
         end if
 
 

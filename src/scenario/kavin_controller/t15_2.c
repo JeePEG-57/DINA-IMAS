@@ -24,6 +24,10 @@
 
 #include <float.h>
 #include <stdio.h>
+//extern FILE*f;
+FILE*f;
+FILE*f1;
+
 #include <stdlib.h>
 #include <string.h>
 //#include <Windows.h>
@@ -7625,7 +7629,7 @@ void t15_2_step(void)
 /* Model initialize function */
 void t15_2_initialize(void)
 {
-	FILE *prob1, *f;
+//	FILE *prob1, *f;
 	char b[256];
 
       int i,j,ii,jj,kk;
@@ -7636,8 +7640,13 @@ void t15_2_initialize(void)
   
 	  printf("---t15_2_initialize \n");
 
-f=fopen("control_data2.dat","r");
-	fgets(b,255,f);
+	  printf("---control_data2.dat \n");
+
+//f=fopen("control_data2.dat","r");
+f=fopen("control_init.dat","r");
+f1=f;
+
+fgets(b,255,f);
 	fscanf(f,"%lf",&tcont2);
 	fscanf(f,"%lf",&Ip_div);
 	fscanf(f,"%lf",&ref_ramp);
@@ -7663,7 +7672,7 @@ fscanf(f,"%lf \n",&c2_y0);
   	  printf("%g   %g   %g  \n ",y0,c1_y0,c2_y0);
 
 
-fclose(f);
+//fclose(f);
 
 
 

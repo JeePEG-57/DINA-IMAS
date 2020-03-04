@@ -283,8 +283,8 @@ c=================================================
 !	   pptab_xx(i)=pptab(i)
 !	   fptab_xx(i)=fptab(i)
 
-	!   pptab_xx(i)=ppx(i)
-	!   fptab_xx(i)=pffx(i)
+	   pptab_xx(i)=ppx(i)
+	   fptab_xx(i)=pffx(i)
 
 
 	end do

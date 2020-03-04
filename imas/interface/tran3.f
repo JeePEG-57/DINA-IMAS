@@ -28,16 +28,6 @@
 
       i_en=i_en+1
       if(i_en.eq.1)then
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
-        close ( unit=1)       
-        open (unit=1,file='tran_times.dat',form='formatted')
-        read (1,*)
-        read (1,*)tt_dina
-        read (1,*)
-        read (1,*)t_ret
-        close ( unit=1)       
 
 c---  we think ....???
 	ARG=1.
@@ -136,9 +126,9 @@ c-------
       end if
 
       apr='ajb-' 
-      if(kpr.eq.1)print 71,apr,(ajb(i),i=1,nn2) 
+!      if(kpr.eq.1)print 71,apr,(ajb(i),i=1,nn2) 
       apr='sigk-' 
-      if(kpr.eq.1)print 71,apr,(sigk(i),i=1,nn2) 
+!      if(kpr.eq.1)print 71,apr,(sigk(i),i=1,nn2) 
 
       call enit2(N)
 
@@ -155,27 +145,6 @@ c-------
 	end do
 
 7000	format(1x,1pe14.7)
-
-      open (unit=61,file='dina_transp3.dat',form='formatted')
-
-      write (61,*)n
-
-      write(*,*) 'dina_transp3, n=,', n
-
-      do i=1,n
-      write (61,7000) ai(i)
-      enddo
-      do i=1,n
-!write(*,*) 'i=',i
-      write (61,7000) ajb(i)
-!write(*,*) 'jbut(i)=',jbut(i)
-      enddo
-      do i=1,n
-      write (61,7000) sigk(i)
-      enddo
-
-      close (61)
-
 
       return
       end

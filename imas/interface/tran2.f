@@ -24,6 +24,8 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp20
 
       common /c_GHFS/GHFS
         common /c_src1/dif_coef
+
+      common /cc_tran2/pd_b,pt_b
       
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
@@ -163,6 +165,13 @@ c-------
       if(i_en.eq.1)then
       call time_step_tran()
       end if
+
+
+      pd0(n)=pd_b
+      pt0(n)=pt_b
+
+      print *,' pd_b pt_b',pd_b,pt_b
+
 
       apr='pdn-' 
       if(kpr.eq.1)print 71,apr,(pdn(i),i=1,nn2) 

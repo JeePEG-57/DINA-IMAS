@@ -6415,13 +6415,14 @@ c	zmag=zref
 	call spoint(ksep,xw,yw,fint,rmag,zmag,pmag,
      *  rsep,zsep,psep,rsep1,zsep1,psep1)
 
-c	print *,' rmag zmag pmag',rmag,zmag,pmag
+	print *,' rmag zmag ',rmag,zmag
 
 
 	zmag0=zmag
 	rmag0=rmag
 
 
+        print *,' ** brad bvert',brad,bvert
 
 
 	i_en=i_en+1
@@ -6469,8 +6470,12 @@ c-------------------
 	brad_p=-psi_z
 	bvert_p=-psi_r
 
+      print *,' k brad_p bvert_p',k,brad_p,bvert_p
+
 	brad=brad+brad_p
 	bvert=bvert+bvert_p
+
+      print *,' k brad bvert',k,brad,bvert
 
 	a_print(1)=brad
 	a_print(2)=bvert
@@ -6548,7 +6553,9 @@ c-------------------
 	apr='--rmag zmag br_bz s**'
 	num=20
 c	call out42(n_pr,a_print,num,apr)
-c        print *,' brad_fin bvert_fin ',brad_fin,bvert_fin
+        print *,' brad_fin bvert_fin ',brad_fin,bvert_fin
+        print *,' brad_p bvert_p ',brad_p,bvert_p
+        print *,' k brad bvert',k,brad,bvert
 
 c	call pau()
 

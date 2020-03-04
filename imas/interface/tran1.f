@@ -20,6 +20,9 @@
 
 	character *20 apr,filename
 
+      common /cc_tran1/te_b2,ti_b2
+      
+
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
 !------------------------------------inputs
@@ -29,27 +32,12 @@
       ntay_h=ntay
       
       i_en=i_en+1
-      if(i_en.eq.1)then
-
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
-        close ( unit=1)       
-
-        open (unit=1,file='tran_times.dat',form='formatted')
-        read (1,*)
-        read (1,*)tt_dina
-        read (1,*)
-        read (1,*)t_ret
-        close ( unit=1)       
-
 
 c---  we think ....???
 	ARG=1.
 	pi=4.*atan(ARG)
       call read_data3()
 
-      end if
 
       tt_1=tt_1+tay
       
@@ -160,7 +148,11 @@ c-------
       if(kpr.eq.1)print 71,apr,(ten(i),i=1,nn2) 
       apr='tqn-' 
       if(kpr.eq.1)print 71,apr,(tqn(i),i=1,nn2) 
+      
+      te0(n)=te_b2
+      tq0(n)=ti_b2
 
+      print *,' te_b2 ti_b2',te_b2,ti_b2
      
       ntay=ntay_1
 
@@ -185,24 +177,6 @@ c-------
 
 5000  format (50(1pe14.5))
 
-
-      open (unit=61,file='dina_transp1.dat',form='formatted')
-
-      write (61,*)n
-      write(*,*) 'dina_transp1, n=,', n
-
-      do i=1,n
-      write (61,*) ai(i)
-      enddo
-
-      do i=1,n
-      write (61,*) te0(i)
-      enddo
-      do i=1,n
-      write (61,*) tq0(i)
-      enddo
-
-      close (61)
 
       return
       end

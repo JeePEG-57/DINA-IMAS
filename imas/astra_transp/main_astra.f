@@ -7,6 +7,8 @@
       
       common
      *  /ge5/kpr
+     
+       common /c_solps1/yndt,yNe,yTe,yTi
 
 	real*8	
      .	YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
@@ -121,7 +123,6 @@
 	
 !	yGHFS=2000.
 	
-      if(kpr.eq.1)print *,' i_en,yGHFS==',i_en,yGHFS
 
       na11=na1
 !	  open(1,file='te_data.dat')
@@ -134,6 +135,10 @@
         if(kpr.eq.1)print *,'TE TI==',te(90),ti(90)
         if(kpr.eq.1)print *,'TE TI==',te(na1),ti(na1)
 
+        yL_OH=0.
+
+      if(kpr.eq.1)print *,' i_en,yGHFS= yL_OH=',i_en,yGHFS,yL_OH
+        
         call solsrs_IMAS( 
      1  yMu,Ycnim,ySeng,yGsol,yPsol,yPalp,yGNBI,
      2  yL_OH,
@@ -147,7 +152,9 @@
 !               	   write(*,*) 'Spel',VINT(ySpel,ROC) 
 !               	   write(*,*) 'SepR',ySsep(1:na1)
 !               	   write(*,*) 'SpelR',ySpel(1:na1)
-      if(kpr.eq.1)print *,' yndt==',yndt
+      if(kpr.eq.1)print *,' yndt== yNe ',yndt,yNe
+      if(kpr.eq.1)print *,' yTe== yTi ',yTe,yTi
+      
 !      print *,'ySpel',(ySpel(i),i=1,na1)
 !      print *,'ySsep',(ySsep(i),i=1,na1)
 

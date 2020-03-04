@@ -26,6 +26,9 @@ real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 real(ids_real) :: Yne, Yndt, YnHe
 real(ids_real) :: tt
+real(ids_real) :: pd_b,pt_b
+
+      common /cc_tran2/pd_b,pt_b
 
 	character *20 apr
 
@@ -43,34 +46,38 @@ call ids_copy(core_profiles0,core_profiles)
  print *,' transp20== n',n
 
  
-qqe(1:n) = src_in(1:n)
-qqd(1:n) = src_in(n+1:2*n)
-qqt(1:n) = src_in(2*n+1:3*n) 
- 
-      apr='--qqe-' 
-      print 71,apr,(qqe(i),i=1,n) 
+qqd(1:n) = src_in(1:n)
+qqt(1:n) = src_in(n+1:2*n)
+qqe(1:n) = src_in(2*n+1:3*n) 
+
       apr='--qqd-' 
       print 71,apr,(qqd(i),i=1,n) 
       apr='--qqt-' 
       print 71,apr,(qqt(i),i=1,n) 
+      apr='--qqe-' 
+      print 71,apr,(qqe(i),i=1,n) 
  
  
 
 
 !Note *1.d-19 gain. Remember that below entire profile assignment will overwrite n-th value
-! if (associated(bndcond_in%solver_1d)) then
-!     write(*,*) 'dina_imas : boundary conditions are found'
-!  Yne = bndcond_in%solver_1d(1)%equation(2)%boundary_condition(1)%value(1)*1.d-19
-!  Yndt = bndcond_in%solver_1d(1)%equation(6)%boundary_condition(1)%value(1)*1.d-19
-!  YnHe = bndcond_in%solver_1d(1)%equation(8)%boundary_condition(1)%value(1)*1.d-19
+ if (associated(bndcond_in%solver_1d)) then
+     write(*,*) 'dina_transp_density : boundary conditions are found'
+  Yne = bndcond_in%solver_1d(1)%equation(2)%boundary_condition(1)%value(1)*1.d-19
+  Yndt = bndcond_in%solver_1d(1)%equation(6)%boundary_condition(1)%value(1)*1.d-19
+  YnHe = bndcond_in%solver_1d(1)%equation(8)%boundary_condition(1)%value(1)*1.d-19
 !  
-!  pne(n) = Yne
-!  pd0(n) = Yndt*0.5d0
-!  pt0(n) = Yndt*0.5d0
+  pne(n) = Yne
+  pd0(n) = Yndt*0.5d0
+  pt0(n) = Yndt*0.5d0
 !  
-!       write(*,*) 'pne(n) pd0(n) pt0(n)= ', pne(n), pd0(n), pt0(n)
+       write(*,*) 'pne(n) pd0(n) pt0(n)= ', pne(n), pd0(n), pt0(n)
+
+    pd_b= pd0(n)
+    pt_b=pt0(n)
+
 ! 
-! end if
+ end if
 
  
 !Transp2
@@ -88,8 +95,8 @@ qqt(1:n) = src_in(2*n+1:3*n)
         
 
     do i=1,npo
-    c_input1(i)=0.1
-    c_input2(i)=0.3
+    c_input1(i)=qqd(i)
+    c_input2(i)=qqt(i)
     end do
 
 !pd0(1:n)=core_sources0%source(1)%profiles_1d(1)%ion(1)%particles(1:n)

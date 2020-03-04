@@ -62,6 +62,11 @@ print *,'  Astra sources tt n',tt,n
       apr='--pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
 
+        do i=1,n
+        c_input1(i)=pd0(i)
+        c_input2(i)=pt0(i)
+        end do
+
 
       call transp7( &
 !-----------------------------------  inputs---
@@ -151,9 +156,9 @@ print *,'  Astra sources tt n',tt,n
 !     core_sources%time(1) = tt ![s]
     
 
-src_out(1:n) = pne(1:n)
-src_out(n+1:2*n) = pd0(1:n)
-src_out(2*n+1:3*n) = pt0(1:n)
+src_out(1:n) = pd0(1:n)
+src_out(n+1:2*n) = pt0(1:n)
+src_out(2*n+1:3*n) = pne(1:n)
 
     
     

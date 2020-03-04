@@ -232,15 +232,15 @@ c______________________________
 
         if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
 
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
+!        open (unit=1,file='kpr.dat',form='formatted')
+!        read (1,*)
+!        read (1,*)kpr
 
-        if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
+!        if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
         
 !              i_con=3
 
-        close ( unit=1)       
+!        close ( unit=1)       
 	end if
 
 c	print *,' HYU!!!!'
@@ -258,27 +258,27 @@ c	print *,' HYU!!!!'
 	coef=10.d0/(4.d0*pi)                                                       
 	amu0=0.4*pi
 
-	call read_data() 
+!	call read_data() 
 
 
 	                                                       
 !	tt=0.
 
-           open (unit=41,file='t_end.dat',form='formatted') 
-           read (41,*)
-           read (41,*)t_end 
-           read (41,*)
-           read (41,*)tt_br
-           read (41,*)
-           read (41,*)time_end
+!           open (unit=41,file='t_end.dat',form='formatted') 
+!           read (41,*)
+           t_end=1.2e3 
+!           read (41,*)
+           tt_br=101.99
+           
+!           read (41,*)
+           time_end=2.5e5
 
 	      next_in=1
 
-           read (41,*)
-           read (41,*)next_in
+!           read (41,*)
+           next_in=2
 
-
-		 close (41)
+!		 close (41)
 
 	     tpl_init=tpl
 	     tpl_init1=tpl
@@ -356,7 +356,8 @@ c	stop
       end if
       
 
-	CALL TOK()
+!	CALL TOK()
+	CALL TOK_new()
 
 	call cam_t()   
 
@@ -426,8 +427,9 @@ c	if(ntay.gt.5)ntay=5
 	call ptoke0() 
 
 c     following reading necessary only once for impurity
-	  call readmc_y
-        call readehr1_y 
+
+!	  call readmc_y
+!        call readehr1_y 
 
 	tt1=0
 	ksteps=1
@@ -831,6 +833,10 @@ c        call psi_wr()
 	num=20
 
 	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
+
+	if(kpr.eq.1)print *,' --kzref krref',
+     *  kzref,krref           
+
 
 
 1	continue                                                              
@@ -1829,6 +1835,9 @@ c           print *,' j uk vk  ',j,uk(j),vk(j)
                                                                         
 	if(it1.ne.0)go to 2000                                                 
 
+          goto 63
+
+
             kz_help=kzref
            kr_help=krref
 
@@ -1905,6 +1914,8 @@ c           print *,' j uk vk  ',j,uk(j),vk(j)
 
          kzref=kz_help
          krref=kr_help 
+
+63	continue       
 
 
 
@@ -2402,91 +2413,232 @@ c	if(dabs(delzmag).ge.3.)then
      
        
 
-     	open(unit=2,file='for002_kav',form='formatted')
+!     	open(unit=2,file='for002_kav',form='formatted')
         if(kpr.eq.1)print *,' begin for002_kav reading'
 
-	read (2,*)
-	read (2,*)n,m,next
-	read (2,*)
-	read (2,*)tt,tay,t_end,rs0,psend
-	read (2,*)
-	read (2,*)i_graph
-	read (2,*)
-	read (2,*)alfa0,beta,alfa1,omega
-	read (2,*)
-	read (2,*)iread,kzero,iwrite,kefit
-	read (2,*)
-	read (2,*)alfax,betax
-	read (2,*)
-	read (2,*)pw_1,pw_2
-	read (2,*)
-	read (2,*)te_a,ti_a,te_b,ti_b,pw_e
-	read (2,*)
-	read (2,*)pd0_a,pt0_a,pd0_b,pt0_b,pw_p
-	read (2,*)
-	read (2,*)zeff_a,zeff_b
-	read (2,*)
-	read (2,*)sig0
-	read (2,*)
-	read (2,*)zhib,tego,zalfa,talfa,alp1
-	read (2,*)
-	read(2,*)ktp,kpin,ken,ken1,ken2,kd2,nal
-	read (2,*)
-	read(2,*)edop,ppp,eee,dd,dt,dh,df
-	read (2,*)
-	read(2,*)lt,ld,lh,ll,lm,it,id,ih
-	read (2,*)
-	read(2,*)eps0,eps1,eps2
-	read (2,*)
-	read (2,*)anom_e,anom_i,key_t11,kcchp
-	read (2,*)
-	read (2,*)emoe,emoq
-	read (2,*)
-	read (2,*)udd
-	read (2,*)
-	read (2,*)k_ener,k_uv
-	read (2,*)
-	read (2,*)t_dop
-	read (2,*)
-	read (2,*)r0,z0,zref
-	read (2,*)
-	read (2,*)kzref,krref,key_b,i_pf
-	read (2,*)
-	read (2,*)i_c
-	read (2,*)
-	read (2,*)q_vde
-	read (2,*)
-	read (2,*)tay_00,tay_th,t_disr
-	read (2,*)
-	read (2,*)d_tpl,tpl_end
-	read (2,*)
-	read (2,*)c_h,d_halo
-	read (2,*)
-	read (2,*)kmaj,li_drop,ndisrup,n_dif,nmix
-	read (2,*)
-	read (2,*)hpart,te_h
-	read (2,*)
-	read (2,*)i_d3d,i_iter,i_smal
-	read (2,*)
-	read (2,*)ngra,i_ramp,i_v,i_con
-	read (2,*)
-	read (2,*)tpl,bt0,eu,eksk
-	read (2,*)
-	read (2,*)e_sep
-	read (2,*)
-	read (2,*)i_beta,i_gap5
-	read (2,*)
-	read (2,*)i_br
-	read (2,*)
-	read (2,*)ind_r,ind_z
-	read (2,*)
-	read (2,*)key_ef
-	read (2,*)
-	read (2,*)res_coef
-	read (2,*)
-	read (2,*)n_polar
-c	read (2,*)
-c        read (2,*)k_ion,pow_el,pow_ion
+!	read (49,*)
+	n=50
+	m=90
+	next=1
+	
+!	read (49,*)
+	tt=0.
+	tay=2.
+	t_end=700.e5
+	rs0=620.
+	psend=-1.e4
+	
+!	read (49,*)
+	i_graph=0	
+	
+!	read (49,*)
+	alfa0=4.E-2
+	beta=0.1
+	alfa1=-1.
+	omega=0.33
+	
+!	read (49,*)
+	iread=0 
+	kzero=0
+	iwrite=0
+	kefit=2
+	
+	
+!	read (49,*)
+	alfax(1)=1.00
+	alfax(2)=-1.22145 
+	betax(1)=17.4468
+	betax(2)=-21.31107
+
+
+!	read (49,*)
+	pw_1=4.
+	pw_2=0.8
+         
+!	read (49,*)
+	te_a=956.471
+	ti_a=214.0269
+	te_b=10. 
+	ti_b=10. 
+	pw_e=2.
+
+
+!	read (49,*)
+	pd0_a=0.3
+	pt0_a=0.3
+	pd0_b=0.2
+	pt0_b=0.2 
+	pw_p=3.
+	
+!	read (49,*)
+	zeff_a=1.8
+	zeff_b=1.8
+	
+!	read (49,*)
+	sig0=5.3715E3
+	
+!	read (49,*)
+	zhib=4.5e-1
+	tego=100.
+	zalfa= 4. 
+	talfa= 500.
+	alp1=1.
+	
+                      
+	
+!	read (49,*)
+	ktp=1
+	kpin=1
+	ken=0
+	ken1=0
+	ken2=1
+	kd2=0
+	nal=1
+	
+	
+	
+!	read (49,*)
+	edop=20.
+	ppp= 1.e-0
+	eee=40.e3 
+	dd=1.
+	dt=0.
+	dh=0.
+	df= 0.
+                          
+
+!	read (49,*)
+	lt=3
+	ld=3
+	lh=1 
+	ll=1
+	lm=3
+	it=1
+	id=1
+	ih=0
+	
+	
+!	read (49,*)
+	eps0=1.e-8
+	eps1=1.e-3 
+	eps2=1.e-5
+	
+!	read (49,*)
+	anom_e=1.
+	anom_i=1.0
+	key_t11=1
+	kcchp=1
+                  
+	
+!	read (49,*)
+	emoe=0.2
+	emoq=0.0
+    
+	
+!	read (49,*)
+	udd=0.
+	
+!	read (49,*)
+	k_ener=1
+	k_uv=1
+	
+	
+!	read (49,*)
+	t_dop=5.
+
+!	read (49,*)
+	r0=588.
+	z0=0.
+	zref=0.
+
+	
+!	read (49,*)
+	kzref=1
+	krref=1
+	key_b=2
+	i_pf=5
+	
+!	read (49,*)
+	i_c=0
+	
+	
+!	read (49,*)
+	q_vde=3.0
+	
+!	read (49,*)
+	tay_00=0.1
+	tay_th=0.05
+	t_disr=4.
+	
+!	read (49,*)
+	d_tpl=6.
+	tpl_end=1500.
+
+	
+!	read (49,*)
+	c_h=1.
+	d_halo=10.
+	
+!	read (49,*)
+	kmaj=-1
+	li_drop=99999
+	ndisrup= -16
+	n_dif=0
+	nmix=13
+	
+!	read (49,*)
+	hpart=1.1
+	te_h=0.5
+
+!	read (49,*)
+	i_d3d=0
+	i_iter=1
+	i_smal=0
+	
+!	read (49,*)
+	ngra=50
+	i_ramp=0
+	i_v=1
+	i_con=0
+	
+!	read (49,*)
+	tpl=1.
+	bt0=53.0
+	eu=160.
+	eksk=1.
+	
+!	read (49,*)
+	e_sep=5.e-3
+	
+!	read (49,*)
+	i_beta=0
+	i_gap5=0
+	
+!	read (49,*)
+	i_br=0
+	
+!	read (49,*)
+	ind_r(1)=14
+	ind_r(2)=16 
+	ind_z(1)=13
+	ind_z(2)=14 
+	
+!	read (49,*)
+	key_ef=0
+	
+!	read (49,*)
+	res_coef=1.
+	
+!	read (49,*)
+	n_polar=2
+
+
+	read (49,*)
+	read (49,*)tay,rs0,key_t11,bt0
+
+
+
+      if(kpr.eq.1)print *,' n_polar==',n_polar
 
 
 	if(kpr.eq.1)then
@@ -2515,7 +2667,7 @@ c        read (*,*)
 	ndh=1
 
 
-	close(2)
+!	close(2)
 
 c##	mp=(m-2)/2+2
 	mp=m
@@ -2532,27 +2684,13 @@ c	read (*,*)
 
 	if(kpr.eq.1)print *,' um vm eu elong',um,vm,eu,eksk
 
-        if(kmaj.eq.1)then
-
-     	open(unit=2,file='halo',form='formatted')
-        if(kpr.eq.1)print *,' begin halo reading'
-
-	read (2,*)
-	read (2,*)w_h0,te_h0
-        if(kpr.eq.1)print *,' w_h0  te_h0==',w_h0,te_h0
-	close(2)
-
-        end if
-
-
-     	open(unit=2,file='time',form='formatted')
+ !    	open(unit=2,file='time',form='formatted')
         if(kpr.eq.1)print *,' begin time reading'
+!	read (49,*)
+        t_vde=1700.e5 
+ 	  time_disr=9999.e5
 
-	read (2,*)
-	read (2,*)t_vde,time_disr
         if(kpr.eq.1)print *,' t_vde time_disr',t_vde,time_disr
-
-	close(2)
 
 	return
 	end

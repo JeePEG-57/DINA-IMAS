@@ -175,6 +175,9 @@ bndcond_out%solver_1d(1)%equation(8)%boundary_condition(1)%position = rho_tor_no
 
 !Write values to file
 5002    format (192(1x,1pe12.4e3))
+
+    return
+    
 	i_en=i_en+1
         if(i_en.eq.1)then
 	open (unit=65,file='solps.dat',form='formatted')

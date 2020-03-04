@@ -28,17 +28,6 @@
 
       i_en=i_en+1
       if(i_en.eq.1)then
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
-        close ( unit=1)       
-
-        open (unit=1,file='tran_times.dat',form='formatted')
-        read (1,*)
-        read (1,*)tt_dina
-        read (1,*)
-        read (1,*)t_ret
-        close ( unit=1)       
 
 c---  we think ....???
 	ARG=1.
@@ -162,24 +151,6 @@ c	if(ai(i).le.0.8)n_f=i
     	c_output1(I)=qde0(i)
     	c_output2(I)=qdq0(i)
 	end do
-
-      open (unit=61,file='dina_transp5.dat',form='formatted')
-
-      write (61,*)n
-
-      write(*,*) 'dina_transp5, n=,', n
-
-      do i=1,n
-      write (61,*) ai(i)
-      enddo
-      do i=1,n
-      write (61,*) qde0(i)
-      enddo
-      do i=1,n
-      write (61,*) qdq0(i)
-      enddo
-
-      close (61)
 
 
       return

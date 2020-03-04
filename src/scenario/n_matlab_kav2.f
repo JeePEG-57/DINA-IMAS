@@ -246,22 +246,19 @@ c---
 c	call shape_d3d()
 
 
-          open (unit=40,file='zvel_max.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)zv_max
-          read (40,*) 
-          read (40,*)n_svd
-          read (40,*) 
-          read (40,*)i_avr
-          read (40,*) 
-          read (40,*)i_filter
-          read (40,*) 
-          read (40,*)tau_p
+!          open (unit=40,file='zvel_max.dat',form='formatted') 
+
+          zv_max=0.01e5
+          n_svd=10
+          i_avr=0
+          i_filter=0
+          tau_p=100.
+          
           
           if(kpr.eq.1)print *,' zv_max,n_svd,i_avr,i_filter,tau_p',
      *    zv_max,n_svd,i_avr,i_filter,tau_p
           
-           close (40)
+!           close (40)
 
 	   zv_max_help=zv_max
 	   zv_max=1.e10
@@ -315,20 +312,24 @@ c* vic  To read tay_simul
 	key_h_to_l=0
 	tt_h_to_l=1.e8
 
-          open (unit=40,file='scen_data_3.dat',form='formatted') 
-          read (40,*) 
+!          open (unit=40,file='scen_data_3.dat',form='formatted') 
  !         read (40,*)tt_emo,tt_h,tt_avr,betp_flat,coef_kessel_1,vs_start
-        read (40,*)tt_emo,tt_h,tt_avr,betp_flat,coef_kessel_1,vs_start2
-           close (40)
+        tt_emo=200.e3 
+        tt_h=66100.
+        tt_avr=66100.
+        betp_flat=0.678
+        coef_kessel_1=1.2
+        vs_start2=2.53035
 
-
-          open (unit=40,file='dw.dat',form='formatted') 
-          read (40,*) 
+!          open (unit=40,file='dw.dat',form='formatted') 
+!          tay_dw=5.
+!          open (unit=40,file='dw.dat',form='formatted') 
+          read (49,*) 
 !          read (40,*)tt_dw,tay_dw
-          read (40,*)tay_dw
-          read (40,*) 
+          read (49,*)tay_dw
 
-	  close (40)
+!	  close (40)
+
 
 	del_tt=0.
 	i_lim=0
@@ -340,28 +341,19 @@ c* vic  To read tay_simul
 	   xu_dist(i)=xu(i)
 	   yu_dist(i)=yu(i)
 	end do
-          open (unit=40,file='tt_kavin2.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)tt_rampup
-          read (40,*) 
-          read (40,*)dt_end_sim,dtpl_term_l,cIp_end
+!          open (unit=40,file='tt_kavin2.dat',form='formatted') 
+          read (39,*) 
+          read (39,*)tt_rampup
+          read (39,*) 
+          read (39,*)dt_end_sim,dtpl_term_l,cIp_end
           
 
           dtpl_term_h=0
           
-          read (40,*) 
-          read (40,*)CS1_eob,rms_noise
+          read (39,*) 
+          read (39,*)CS1_eob,rms_noise
 
-!tt_rampup
-! 20000  
-! dt_end_sim     dtpl_term_l   cIp_end
-! 20             30            1 
-! Ics1_eob(kA)   rms_noise(m/s)
-! -20             0.2         
- 
-
-
-	  close (40)
+	  close (39)
 
 
         dt_term_h=dtpl_term_h*1e3
@@ -1014,6 +1006,8 @@ c	   read(*,*)
 
 	tt_h=1.e8
 
+      stop
+
         return
 
       
@@ -1041,7 +1035,11 @@ c*******************************
 
       if(i_3323.eq.1)goto 3323
 
-      i_kavin=1
+      i_kavin=0
+      
+!  If write eqdsk_files then =1 ! 03.12.2019      
+!      i_kavin=1  
+
       if(i_kavin.eq.1.and.k_zyb.eq.0)then
 
       key=1
@@ -1100,8 +1098,11 @@ c-------  calculate...
       end if !  for_kavin
 
 
-
-
+        cs1_help=pf(3)/pf_turns(3)
+        
+        print *,' cs1_help CS1_eob dt_contr_hl=',
+     *  cs1_help,CS1_eob,dt_contr_hl
+      
         if(pf(3)/pf_turns(3).lt.CS1_eob .and. k_CS1.eq.0 
      *     .and. tt.gt.dt_contr_hl*1e3) then
         k_CS1=1
@@ -1272,8 +1273,11 @@ c!!!	call index_calc()
 
 	i_sh=0
 
-  	call s_zpp()
-  	call shape_rpp() 
+! 03_12_2019
+!  	call s_zpp()
+!  	call shape_rpp() 
+
+
 
 !	rref=rref_p
 
@@ -1399,12 +1403,9 @@ c!!!!!	call vic_br_bz()
 	it1=1
 c----------
       if(i_ngra.eq.0)then
-          open (unit=40,file='time_ngra.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)time1,time2
-          read (40,*) 
-
-	  close (40)
+!          open (unit=40,file='time_ngra.dat',form='formatted') 
+        time1=350.e3 
+        time2=450.e3
 	  i_ngra=1
 	  end if
 	  
@@ -1446,7 +1447,7 @@ c	   stop
 c	end if
 
 c%%%%%%% eqdsk writing %%%%%%%%%
-
+      if(i_kavin.eq.1)then
 	if(tt.ge.130.062e5.and.k_eqdsk.eq.0)then
 	   k_eqdsk=k_eqdsk+1
 	   call equidsk_write(k_eqdsk)
@@ -1485,6 +1486,10 @@ c	   call equidsk_write(k_eqdsk)
 	   k_eqdsk=k_eqdsk+1
 c	   call equidsk_write(k_eqdsk)
 	end if
+
+
+	end if  ! i_kavin=1
+
 
 ccc     call ppx_pffx_save(2)
 
@@ -1938,7 +1943,9 @@ c************
 
 ccc      call ppx_pffx_save(2)
 
-	if(it1.ne.0)go to 2000
+	if(it1.ne.0.and.int_2000.lt.10)go to 2000
+      
+      goto 63
 
             kz_help=kzref
            kr_help=krref
@@ -2017,6 +2024,8 @@ ccc      call ppx_pffx_save(2)
 
          kzref=kz_help
          krref=kr_help 
+         
+ 63	continue       
 
 !	call wr_tabppf()
 !        call wr_pf()
@@ -2027,6 +2036,8 @@ ccc      call ppx_pffx_save(2)
 	zvel=zvel_tran
 
  5555   continue
+
+      
 
 	CALL BTA(n,mp,RS0)
 
@@ -2179,7 +2190,7 @@ c****************************************************
       end if
       
 c****** PF current limits checking ***********
-        call vic_pf_limits()
+!        call vic_pf_limits()
 c*********************************************
 
 c###	if(ntay.eq.next)call gen()
@@ -2245,7 +2256,13 @@ c!!!        call wr_kavin()
 
 	call time_out()
 
-	if(kpr.eq.1)print *,' END time out==='
+      ttt_stop=50.e3
+!	if(kpr.eq.1)print *,' ttt_stop  tt',ttt_stop,tt
+
+      if(tt.ge.ttt_stop)then
+!      print *,' tt GT ttt_stop',tt,ttt_stop
+!      stop
+      end if
 
 c	if(tt.lt.t_end)go to 2323
 c	stop

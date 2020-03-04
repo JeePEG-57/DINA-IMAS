@@ -20,6 +20,10 @@ real(ids_real) :: ai(npo),te0(npo),tq0(npo)
 real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 real(ids_real) :: qe0(npo),qq0(npo)
+ 
+ real *8 te_b2,ti_b2
+
+      common /cc_tran1/te_b2,ti_b2
 
 	character *20 apr
 
@@ -33,16 +37,21 @@ n = size(core_sources0%source(1)%profiles_1d(1)%grid%rho_tor_norm)
 
 
 !Maybe *1.d-3 needed? Remember that below entire profile assignment will overwrite n-th value
-! if (associated(bndcond_in%solver_1d)) then
-!     write(*,*) 'dina_imas : boundary conditions are found'
-!  te0(n) = bndcond_in%solver_1d(1)%equation(1)%boundary_condition(1)%value(1)
-!  tq0(n) = bndcond_in%solver_1d(1)%equation(3)%boundary_condition(1)%value(1)
+ if (associated(bndcond_in%solver_1d)) then
+     write(*,*) 'dina_transp_energy : boundary conditions are found'
+  te0(n) = bndcond_in%solver_1d(1)%equation(1)%boundary_condition(1)%value(1)
+  tq0(n) = bndcond_in%solver_1d(1)%equation(3)%boundary_condition(1)%value(1)
 !  
-!      write(*,*) 'te0(n) tq0(n)= ', te0(n), tq0(n)
+      write(*,*) 'te0(n) tq0(n)= ', te0(n), tq0(n)
 ! 
-! end if
+
+    te_b2= te0(n)
+    ti_b2=tq0(n)
+    
+ end if
 
 
+    print *,' --te_b2 ti_b2',te_b2,ti_b2
     print *,' ENERGY== n',n
 
 ! Transp1

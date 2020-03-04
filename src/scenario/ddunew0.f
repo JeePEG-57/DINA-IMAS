@@ -79,6 +79,8 @@ c
 
 c
         sig0_new=9./(4.*pi*sig0)*1.e4
+        
+        key_sig_coef=1.d0
 
         if(kpr.eq.1)print *,' n rs0 next==',n,rs0,next
 
@@ -90,11 +92,9 @@ c
 
         if(key_sig_coef.eq.1)then
 c********
-	  open (unit=40,file='coef_sigk.dat',form='formatted') 
-          read (40,*) 
-          read (40,*)coef_sigk
-	  close (40)
-
+!	  open (unit=40,file='coef_sigk.dat',form='formatted') 
+        coef_sigk=0.38
+        
         if(kpr.eq.1)print *,' key_sig_coef coef_sigk==',
      *  key_sig_coef,coef_sigk
 
