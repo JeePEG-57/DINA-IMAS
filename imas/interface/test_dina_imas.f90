@@ -46,7 +46,7 @@ end interface
 
 
 type (ids_em_coupling) :: em_coupling0
-type (ids_equilibrium) :: equilibrium0, equilibrium
+type (ids_equilibrium) :: equilibrium0, equilibrium, equilibrium1
 type (ids_magnetics) :: magnetics
 type (ids_pf_active) :: pf_active0, pf_active
 type (ids_pf_passive) :: pf_passive0, pf_passive
@@ -149,6 +149,7 @@ call dina_contr(arr_out1,arr_in1)
 
 write(*,*) "Controller finished"
 flush(6)
+
 
 !call dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
 !call dina_transp2(equilibrium0, core_profiles0, core_profiles)

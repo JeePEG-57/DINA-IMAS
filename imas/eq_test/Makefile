@@ -21,11 +21,16 @@ os=		a_dina_equi.o \
 		sh_d3d.o uuu.o zca_tsp.o zcam_d3d.o zcamit.o
 		 
 
-all:	p_equi dina_equil.a
+all:	p_equi dina_equil.a test_equil
 
 dina_equil.a: dina_equil.o $(os)
 	@echo "   * $^ -> $@"
 	ar -rcs dina_equil.a dina_equil.o $(os)
+
+test_equil: test_dina_equil.o dina_equil.o $(os)
+	@echo "   * $^ -> $@"
+	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+
 
 %.o: %.f90
 	@echo "   * $^ -> $@"

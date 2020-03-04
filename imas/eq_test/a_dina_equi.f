@@ -1,4 +1,5 @@
-       subroutine dina_input(tt_xx,tpl_xx, n_xx,pstab_xx, pptab_xx,fptab_xx, 
+       subroutine dina_input(tt_xx,tpl_xx, n_xx,pstab_xx, 
+     * pptab_xx,fptab_xx, 
      *  ncam_xx,tcam_xx, npf_xx,pf_xx)
      
       include 'double.inc'
@@ -7,24 +8,37 @@
                   
       dimension pstab_xx(*),pptab_xx(*),fptab_xx(*),tcam_xx(*),pf_xx(*)
       
+      character *8 apr      
+      
       n = n_xx
       nutab = n_xx
       ncam = ncam_xx
       npf = npf_xx
-      tt = tt_xx
-      tpl = tpl_xx
+      tt = tt_xx*1.d3
+      tpl = tpl_xx*1.d-3
       
       do i=1,nutab
         pstab(i) = pstab_xx(i)
         pptab(i) = pptab_xx(i)
         fptab(i) = fptab_xx(i)
       end do      
-      
+
+      print *,' nutab',nutab
+
+ 	apr='pstab'
+	if(kpr.eq.1)print 71,apr,(pstab(j),j=1,nutab)
+ 	apr='pptab'
+	if(kpr.eq.1)print 71,apr,(pptab(j),j=1,nutab)
+ 	apr='fptab'
+	if(kpr.eq.1)print 71,apr,(fptab(j),j=1,nutab)
+
+ 71	format(20x,a6/,(6(1x,1pe10.3)))
+    
       do i=1,ncam
-        tcam(i) = tcam_xx(i)   
+        tcam(i) = tcam_xx(i)*1.d-3   
       enddo
       do i=1,npf
-         pf(i) = pf_xx(i)
+         pf(i) = pf_xx(i)*1.d-3
       enddo
       
       

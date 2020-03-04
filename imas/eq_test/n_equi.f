@@ -213,6 +213,7 @@ c______________________________
         open (unit=1,file='kpr.dat',form='formatted')
         read (1,*)
         read (1,*)kpr
+        close (1)
 
         if(kpr.eq.1)print *,'  kpr ',kpr
 
@@ -360,17 +361,16 @@ c______________________________
 
        call  write_surf()
 
-       stop
-       
-           kzref=0
-           krref=0
-	   eps2=eps2_help
-
-	call map_tor()
-	call eq_res_ps()
-      CALL BTA(n,mp,RS0)
-		
-         call  write_surf()
+      
+!            kzref=0
+!            krref=0
+! 	   eps2=eps2_help
+! 
+! 	call map_tor()
+! 	call eq_res_ps()
+!       CALL BTA(n,mp,RS0)
+! 		
+!          call  write_surf()
 
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))                                      

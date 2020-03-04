@@ -49,6 +49,15 @@
             <string>null</string>
           </vector>
           <vector>
+            <string>transport_solver_numerics</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
             <string>core_profiles</string>
             <string>0</string>
             <string>0</string>

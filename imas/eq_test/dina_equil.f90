@@ -98,7 +98,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real),parameter :: pi = 3.14159265358979323846
 
 
-  integer :: TimeSteps, CurTimeStep
+  integer :: TimeSteps=1, CurTimeStep=1
   
   integer :: n1, n2, n ,i_wr
 
@@ -111,6 +111,7 @@ real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
 real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
+kpr=1
 
 print *,'DINA_EQUIL Enter'
 flush(6)
@@ -137,9 +138,9 @@ loop_count = loop_count + 1 ! number of times the iterative routine was entered
 
 write(*,*) 'dina_imas loop, first_call = ', first_call, loop_count
 
+print *,' Ip==',equilibrium0%time_slice(1)%global_quantities%ip
 
-
-if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 2.e3) then
+if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e6) then
 
 
       n_input1=2
@@ -171,6 +172,7 @@ if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 2.e3) then
      call dina_input(tt,tpl, n,pstab, pptab,fptab &
      & , ncam,tcam, npf,pf)
      
+     call read_equil()
      
      call dina2(&
 !-----------------------------------  inputs---
@@ -199,16 +201,12 @@ write(*,*) '!!!dina_outp enter'
     flush(6)
     
 
-	call cpu_time(cpu_new)
+	!call cpu_time(cpu_new)
+	!write(*,*) 'CPUTime = ', cpu_new-cpu_old
+	!call write_cputime1(cpu_new-cpu_old, cpu_new, 0)
+	!cpu_old = cpu_new
 
-	write(*,*) 'CPUTime = ', cpu_new-cpu_old
-
-	call write_cputime(cpu_new-cpu_old, cpu_new, 0)
-
-	cpu_old = cpu_new
-
-
-
+write(*,*) 'Allocations equilibrium...'
 ! Allocations equilibrium
 
     allocate(equilibrium%time_slice(TimeSteps))
@@ -220,8 +218,8 @@ write(*,*) '!!!dina_outp enter'
 
     !allocate(equilibrium%coordinate_system%grid%dim1(n1,TimeSteps))
     !allocate(equilibrium%coordinate_system%grid%dim2(n2,TimeSteps))
-    allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%r(ke,1))
-    allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%z(ke,1))
+    !allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%r(ke,1))
+    !allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%z(ke,1))
 
 
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(n))
@@ -241,7 +239,8 @@ write(*,*) '!!!dina_outp enter'
     
     
     allocate(equilibrium%vacuum_toroidal_field%b0(TimeSteps))
-  
+
+write(*,*) 'Filling equilibrium...'    
 ! Filling equilibrium 
 
     equilibrium%ids_properties%homogeneous_time = 1
@@ -283,11 +282,12 @@ write(*,*) '!!!dina_outp enter'
     equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nr)=x(1:nr)
 
 
-  !  call write_graf_imas0(nr,nz,ke, &
+  !  call write_graf_imas1(nr,nz,ke, &
   !   &	0.01d0,0.01d0,tt,&
   !   &  psi,x,y,xu,yu,&
   !   &  psi_ax,psi_bnd,psi_bnd,0.d0,0.d0) 
 
+write(*,*) 'Filling 2d profiles...'
 
 
     do i=1,nz
@@ -304,6 +304,8 @@ write(*,*) '!!!dina_outp enter'
     enddo
     enddo
 
+    
+    
     i_wr=0
     if(i_wr.eq.1)then
 
@@ -315,9 +317,10 @@ write(*,*) '!!!dina_outp enter'
 
     end if
     
-
-    equilibrium%time_slice(CurTimeStep)%coordinate_system%r(1:ke,1) = xu(1:ke)
-    equilibrium%time_slice(CurTimeStep)%coordinate_system%z(1:ke,1) = yu(1:ke)
+write(*,*) 'Filling limiter...'
+    
+    !equilibrium%time_slice(CurTimeStep)%coordinate_system%r(1:ke,1) = xu(1:ke)
+    !equilibrium%time_slice(CurTimeStep)%coordinate_system%z(1:ke,1) = yu(1:ke)
 
 
     equilibrium%time_slice(CurTimeStep)%time = tt
@@ -387,7 +390,8 @@ end subroutine
 	return
 	end
 
-	subroutine write_graf_imas0(nr,nz,ke,&
+	
+	subroutine write_graf_imas1(nr,nz,ke,&
      &	dx,dy,ttt,&
      &  psi,x,y,xu,yu,&
      &  pmag,pbound,p_s,um,vm) 
@@ -435,7 +439,7 @@ end subroutine
 	end
 
 
-	subroutine write_cputime(deltatime, time, flag_start)
+	subroutine write_cputime1(deltatime, time, flag_start)
 
 	real(8) :: deltatime, time
 	integer :: flag_start
@@ -462,260 +466,3 @@ end subroutine
 	end
 
 
-subroutine schedulefiles(schedule,equil)
-use ids_schemas
-use ids_routines
-implicit none
-type (ids_equilibrium) :: equil
-type (ids_pulse_schedule) :: schedule
-integer :: i,nt,io,iv, n_z
-real(8) :: t, v, u
-
-integer :: n1,n2,n3,n4,n5,n6,n7,n8
-real(8) :: x1,x2,x3,x4,x5,x6,x7,x8
-
-7000	format(4(1x,1pe14.7))
-
-
-open(unit=44,file='ech.dat',action='write',access='sequential')
-nt=size(schedule%ec%antenna(1)%power%reference%time)
-
-print *,' nt==',nt
-
-write(44,*) 'Time points'
-write(44,*) nt
-write(44,*) 'Time  Power'
-do i=1,nt
-t = schedule%ec%antenna(1)%power%reference%time(i)
-print *,'i t',i,t
-v = schedule%ec%antenna(1)%power%reference%data(i)*1.d-6
-print *,' v==',v
-write(44,*) t, v
-enddo
-close(44)
-
-
-open(unit=44,file='emo.dat',action='write',access='sequential')
-nt=size(schedule%ec%antenna(2)%power%reference%time)
-write(44,*) 'Time points'
-write(44,*) nt
-write(44,*) 'Time  Power'
-do i=1,nt
-t = schedule%ec%antenna(2)%power%reference%time(i)
-v = schedule%ec%antenna(2)%power%reference%data(i)*1.d-6
-u = schedule%ec%antenna(3)%power%reference%data(i)*1.d-6
-write(44,*) t, v, u
-enddo
-close(44)
-
-
-open(unit=44,file='dens.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(1)%flow_rate%reference%time)
-write(44,*) 'Time points'
-write(44,*) nt
-write(44,*) 'Time  Density'
-do i=1,nt
-t = schedule%density_control%valve(1)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(1)%flow_rate%reference%data(i)
-write(44,*) t, v
-enddo
-close(44)
-
-
-open(unit=44,file='n_d.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(7)%flow_rate%reference%time)
-write(44,*) 'Time_points  t_bar'
-write(44,*) nt
-write(44,*) 'Time  Density'
-do i=1,nt
-t = schedule%density_control%valve(7)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(7)%flow_rate%reference%data(i)
-write(44,*) t, v
-enddo
-close(44)
-
-
-iv = 2
-open(unit=44,file='gamma_z.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
-n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
-write(44,*) 'Time_points  t_bar'
-write(44,*) nt, n_z
-write(44,*) 'Time  Density'
-do i=1,nt
-t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
-write(44,*) t, v
-enddo
-close(44)
-
-
-iv = 3
-open(unit=44,file='gamma_z1.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
-n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
-write(44,*) 'Time_points  t_bar'
-write(44,*) nt, n_z
-write(44,*) 'Time  Density'
-do i=1,nt
-t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
-write(44,*) t, v
-enddo
-close(44)
-
-
-iv = 4
-open(unit=44,file='gamma_z2.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
-n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
-write(44,*) 'Time_points  t_bar'
-write(44,*) nt, n_z
-write(44,*) 'Time  Density'
-do i=1,nt
-t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
-write(44,*) t, v
-enddo
-close(44)
-
-
-iv = 5
-open(unit=44,file='gamma_z3.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
-n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
-write(44,*) 'Time_points  t_bar'
-write(44,*) nt, n_z
-write(44,*) 'Time  Density'
-do i=1,nt
-t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
-write(44,*) t, v
-enddo
-close(44)
-
-
-iv = 6
-open(unit=44,file='gamma_z4.dat',action='write',access='sequential')
-nt=size(schedule%density_control%valve(iv)%flow_rate%reference%time)
-n_z=schedule%density_control%valve(iv)%species(1)%element(1)%z_n
-write(44,*) 'Time_points  t_bar'
-write(44,*) nt, n_z
-write(44,*) 'Time  Density'
-do i=1,nt
-t = schedule%density_control%valve(iv)%flow_rate%reference%time(i)
-v = schedule%density_control%valve(iv)%flow_rate%reference%data(i)
-write(44,*) t, v
-enddo
-close(44)
-
-
-
-v = equil%vacuum_toroidal_field%r0*1.d2 !meters to sm
-u = equil%vacuum_toroidal_field%b0(1)*1.d1 !Tesla to kG
-
-     	open(unit=44,file='for002_tmp',action='write',access='sequential')
-
-	open(unit=2,file='for002',form='formatted',action='read')
-        print *,' begin for002 reading'
-
-	read (2,*) ; write(44,*) 'nrad(24)       mplasma    next(15)'
-	read (2,*)n1,n2,n3 ; write(44,*) n1,n2,n3
-	read (2,*) ; write(44,*) 'tt(2500.)    tay        t_end(900.)      RS0       psend'
-	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,v,x5 !x4 is R for toroidal field
-	read (2,*) ; write (44,*) 'i_graph'
-	read (2,*)n1 ; write (44,*) n1
-	read (2,*) ; write (44,*) 'ALFA0      BETA (0.01)     alfa1 (-1.3)  omega(0.33)'
-	read (2,*)x1,x2,x3,x4 ; write(44,*) x1,x2,x3,x4
-	read (2,*) ; write (44,*) 'iread      kzero      IWRITE     kEFIT'
-	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
-	read (2,*) ; write (44,*) 'alfax1     alfax2     betax1     betax2'
-	read (2,*)x1,x2,x3,x4 ; write(44,*) x1,x2,x3,x4
-	read (2,*) ; write (44,*) 'pw_1       pw_2'
-	read (2,*)x1,x2 ; write(44,*) x1,x2
-	read (2,*) ; write (44,*) 'te_a       ti_a       te_b      ti_b    pw_e'
-	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
-	read (2,*) ; write (44,*) 'pd0_a      pt0_a      pd0_b     pt0_b   pw_p'
-	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
-	read (2,*) ; write (44,*) 'zeff_a    zeff_b'
-	read (2,*)x1,x2 ; write(44,*) x1,x2
-	read (2,*) ; write (44,*) 'SIG0'
-	read (2,*)x1 ; write(44,*) x1
-	read (2,*) ; write (44,*) 'zhib,tego,zalfa,talfa,alp1'
-	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
-	read (2,*) ; write (44,*) 'ktp,kpin,ken,ken1,ken2,kd2,nal'
-	read (2,*)n1,n2,n3,n4,n5,n6,n7 ; write(44,*) n1,n2,n3,n4,n5,n6,n7
-	read (2,*) ; write (44,*) 'alpy,   ppp,    eee,    dd,     dt,     dh,     df'
-	read (2,*)x1,x2,x3,x4,x5,x6,x7 ; write(44,*) x1,x2,x3,x4,x5,x6,x7
-	read (2,*) ; write (44,*) 'lt,     ld,   lh,   ll, lm, it, id, ih'
-	read (2,*)n1,n2,n3,n4,n5,n6,n7,n8 ; write(44,*) n1,n2,n3,n4,n5,n6,n7,n8
-	read (2,*) ; write (44,*) 'eps0,eps1,eps2'
-	read (2,*)x1,x2,x3 ; write(44,*) x1,x2,x3
-	read (2,*) ; write (44,*) 'anom_e,anom_i,key_t11,kcchp'
-	read (2,*)x1,x2,n1,n2 ; write(44,*) x1,x2,n1,n2
-	read (2,*) ; write (44,*) 'edope   edopi'
-	read (2,*)x1,x2 ; write(44,*) x1,x2
-	read (2,*) ; write (44,*) 'udd'
-	read (2,*)x1 ; write(44,*) x1
-	read (2,*) ; write (44,*) 'k_ener    k_uv'
-	read (2,*)n1,n2 ; write(44,*) n1,n2
-	read (2,*) ; write (44,*) 't_dop'
-	read (2,*)x1 ; write(44,*) x1
-	read (2,*) ; write (44,*) 'r0,z0,zref'
-	read (2,*)x1,x2,x3 ; write(44,*) x1,x2,x3
-	read (2,*) ; write (44,*) 'kzref    krref(2)   key_b  i_pf'
-	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
-	read (2,*) ; write (44,*) 'i_c'
-	read (2,*)n1 ; write(44,*) n1
-	read (2,*) ; write (44,*) 'q_vde'
-	read (2,*)x1 ; write(44,*) x1
-	read (2,*) ; write (44,*) 'tay_00,tay_th,t_disr'
-	read (2,*)x1,x2,x3 ; write(44,*) x1,x2,x3
-	read (2,*) ; write (44,*) 'd_tpl,tpl_end'
-	read (2,*)x1,x2 ; write(44,*) x1,x2
-	read (2,*) ; write (44,*) 'c_h,d_halo'
-	read (2,*)x1,x2 ; write(44,*) x1,x2
-	read (2,*) ; write (44,*) 'kmaj,li_drop,ndisrup,n_dif,nmix'
-	read (2,*)n1,n2,n3,n4,n5 ; write(44,*) n1,n2,n3,n4,n5
-	read (2,*) ; write (44,*) 'hpart,te_h'
-	read (2,*)x1,x2 ; write(44,*) x1,x2
-	read (2,*) ; write (44,*) 'i_d3d,i_iter,i_smal'
-	read (2,*)n1,n2,n3 ; write(44,*) n1,n2,n3
-	read (2,*) ; write (44,*) 'ngra,i_ramp,i_v,i_con'
-	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
-	read (2,*) ; write (44,*) 'tpl     bt0    eu(200 or 50)  elong'
-	read (2,*)x1,x2,x3,x4 ; write(44,*) x1,u,x3,x4 !x2 is toroidal field
-	read (2,*) ; write (44,*) 'e_sep'
-	read (2,*)x1 ; write(44,*) x1
-	read (2,*) ; write (44,*) 'i_beta,i_gap5'
-	read (2,*)n1,n2 ; write(44,*) n1,n2
-	read (2,*) ; write (44,*) 'i_br'
-	read (2,*)n1 ; write(44,*) n1
-	read (2,*) ; write (44,*) 'ind_r1  ind_r2  ind_z1   ind_z2'
-	read (2,*)n1,n2,n3,n4 ; write(44,*) n1,n2,n3,n4
-	read (2,*) ; write (44,*) 'key_ef'
-	read (2,*)n1 ; write(44,*) n1
-	read (2,*) ; write (44,*) 'res_coef'
-	read (2,*)x1 ; write(44,*) x1
-	read (2,*) ; write (44,*) 'n_polar'
-	read (2,*)n1 ; write(44,*) n1
-
-io = 0
-do 
-	read (2,*,iostat=io)
-	if (io.eq.0) then
-		write(44,*)
-	else
-		exit
-	endif
-enddo
-	close(2)
-
-	close(44)
-
-call system("cp for002_tmp for002")
-call system("rm for002_tmp")
-
-
-return
-end

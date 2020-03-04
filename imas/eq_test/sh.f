@@ -1040,11 +1040,19 @@ c	 implicit real *8 (a-h,o-z)
 
 	character *20 apr
 
-71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
+71	FORMAT(5X,A10/,(2x,6(1PE14.6)))
 
       i_en=i_en+1
 
-      if(i_en.eq.1)then
+	apr='-pptab-'                                              
+!	if(kpr.eq.1)print 71,apr,(pptab(i),i=1,nutab)
+	apr='-fptab-'                                               
+	if(kpr.eq.1)print 71,apr,(fptab(i),i=1,nutab)
+	apr='--pf-'                                              
+	if(kpr.eq.1)print 71,apr,(pf(i),i=1,npf)
+
+      print *,' --tpl==',tpl
+      if(i_en.eq.-1)then
       
          open (unit=42,file='equil.txt',form='formatted')
             read (42,*)tt,tpl
@@ -1058,7 +1066,19 @@ c	 implicit real *8 (a-h,o-z)
             read (42,*)(pf(k),k=1,npf)
             
          close (42)
-            
+
+      print *,' ++tpl==',tpl
+
+	apr='++pptab-'                                              
+!	if(kpr.eq.1)print 71,apr,(pptab(i),i=1,nutab)
+	apr='++fptab-'                                               
+	if(kpr.eq.1)print 71,apr,(fptab(i),i=1,nutab)
+	apr='++pf-'                                              
+	if(kpr.eq.1)print 71,apr,(pf(i),i=1,npf)
+
+        end if
+
+        if(i_en.eq.1)then    
             tt_c=tt
             tpl_c=tpl
             npf_c=npf
@@ -1103,6 +1123,9 @@ c	 implicit real *8 (a-h,o-z)
         ppx(i)=pptab(i)
         pffx(i)=fptab(i)
       end do
+
+
+
 
       goto 5
       

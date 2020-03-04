@@ -23,6 +23,9 @@ c	include 'fgraph.fi'
 !------------------------------------outputs
      *  c_output1,c_output2,c_output3)
 
+     
+      print *,'main exit cleanly, i_en =', i_en
+     
 
       end
       

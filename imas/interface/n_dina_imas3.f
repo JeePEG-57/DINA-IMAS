@@ -279,8 +279,14 @@ c=================================================
 	   pne_xx(i)=pne(i)
 	   tok1_xx(i)=tok1(i)*1.d7
 	   q_xx(i)=q(i)
-	   pptab_xx(i)=pptab(i)
-	   fptab_xx(i)=fptab(i)
+
+!	   pptab_xx(i)=pptab(i)
+!	   fptab_xx(i)=fptab(i)
+
+	!   pptab_xx(i)=ppx(i)
+	!   fptab_xx(i)=pffx(i)
+
+
 	end do
 	
 	do i=1,n
@@ -362,22 +368,6 @@ c=================================================
 c=================================================
 
       i_en=i_en+1
-      if(i_en.eq.1)then
-
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
-        close ( unit=1)       
-
-        open (unit=1,file='tran_times.dat',form='formatted')
-        read (1,*)
-        read (1,*)tt_dina
-        read (1,*)
-        read (1,*)t_ret
-        close ( unit=1)       
-
-
-      end if
 
       tt_1=tt_1+tay
       
@@ -562,7 +552,7 @@ c	implicit real *8 (a-h,o-z)
      *	/c_add7/i_en4
 
 
-	real*8 pf_mat(kf),tcam_mat(mu)                                                                        
+	real*8 pf_mat(kf),tcam_mat(mu)  
 	dimension a_print(100)
 	character *20 apr
 
@@ -616,11 +606,11 @@ c----
 
                                                                         
 
-        write(41,*)' nre nze ',nre,nze                                  
+!        write(41,*)' nre nze ',nre,nze                                  
 
                                                                         
 
-        write (41,*)' dx dy ',dx,dy                                     
+!        write (41,*)' dx dy ',dx,dy                                     
 
                                                                         
 
@@ -630,7 +620,7 @@ c----
 
 	x(i)=re(i)                                                             
 
-        write(41,*)' i x ',i,x(i)                                       
+!        write(41,*)' i x ',i,x(i)                                       
 
 	end do                                                                 
 
@@ -640,7 +630,7 @@ c----
 
 	   y(i)=ze(i)                                                          
 
-        write(41,*)' i y ',i,y(i)                                       
+!        write(41,*)' i y ',i,y(i)                                       
 
 	end do                                                                 
 
@@ -683,7 +673,7 @@ c---------------------------------
 c	call out42(n_pr,a_print,num,apr)
                                                                         
 
-       write(41,*)' ncam npf kloop kprobe ke',ncam,npf,kloop,kprobe,ke  
+!       write(41,*)' ncam npf kloop kprobe ke',ncam,npf,kloop,kprobe,ke  
 
                                                                         
 
@@ -695,7 +685,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   yu(k)=yu_mat(k)*100.                                                
 
-        write(41,*)' k xu yu ',k,xu(k),yu(k)                            
+!        write(41,*)' k xu yu ',k,xu(k),yu(k)                            
 
 	end do                                                                 
 
@@ -715,7 +705,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k rcam pmj ',k,rcam(k),pmj(k,k)                    
+!        write(41,*)' k rcam pmj ',k,rcam(k),pmj(k,k)                    
 
 	end do                                                                 
 
@@ -733,7 +723,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k pfc ',k,pfc(k,1),pfc(k,2),pfc(k,3)               
+!        write(41,*)' k pfc ',k,pfc(k,1),pfc(k,2),pfc(k,3)               
 
 	end do                                                                 
 
@@ -752,7 +742,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k pfres pfind ',k,pfres(k),pfind(k,k)              
+!        write(41,*)' k pfres pfind ',k,pfres(k),pfind(k,k)              
 
 	end do                                                                 
 
@@ -772,7 +762,7 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)' k vesarr ',k,vesarr(1,k),vesarr(2,k),vesarr(3,k)   
+!        write(41,*)' k vesarr ',k,vesarr(1,k),vesarr(2,k),vesarr(3,k)   
 
 	end do                                                                 
 
@@ -789,9 +779,9 @@ c	call out42(n_pr,a_print,num,apr)
 
 	   end do                                                              
 
-        write(41,*)'k fluxarr',k,fluxarr(1,k),                          
+!        write(41,*)'k fluxarr',k,fluxarr(1,k),                          
 
-     *  fluxarr(2,k),fluxarr(3,k)                                       
+!     *  fluxarr(2,k),fluxarr(3,k)                                       
 
 	end do                                                                 
 

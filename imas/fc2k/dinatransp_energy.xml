@@ -1,5 +1,5 @@
 <org.iter.imas.fc2k.ActorGenerator>
-  <version>4.2.3</version>
+  <version>4.6.5</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
@@ -58,6 +58,15 @@
             <string>null</string>
           </vector>
           <vector>
+            <string>transport_solver_numerics</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
             <string>core_profiles</string>
             <string>0</string>
             <string>0</string>
@@ -94,4 +103,5 @@
   <BATCH>false</BATCH>
   <InitFunc>false</InitFunc>
   <fDiagnosticInfo>false</fDiagnosticInfo>
+  <useSandbox>false</useSandbox>
 </org.iter.imas.fc2k.ActorGenerator>

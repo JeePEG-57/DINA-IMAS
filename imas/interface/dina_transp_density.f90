@@ -1,5 +1,5 @@
 !subroutine dina_transp_density(equilibrium0, core_profiles0, core_sources0, core_profiles)
-subroutine dina_transp_density(equilibrium0, core_profiles0, src_in, core_profiles)
+subroutine dina_transp_density(equilibrium0, core_profiles0, src_in, bndcond_in, core_profiles)
 !subroutine dina_transp_density(equilibrium0, core_profiles0,  core_profiles)
 
 use ids_schemas
@@ -9,6 +9,7 @@ implicit none
 
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
+type (ids_transport_solver_numerics) :: bndcond_in
 !type (ids_core_sources) :: core_sources0
 real (ids_real) :: src_in(*)
 
@@ -23,13 +24,14 @@ real(ids_real), dimension(:) :: qqe(npo), qqd(npo), qqt(npo)
 
 real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
-
+real(ids_real) :: Yne, Yndt, YnHe
 real(ids_real) :: tt
 
 	character *20 apr
 
 
-
+n = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
+	
 !tt = core_sources0%source(1)%profiles_1d(1)%time
 
 !qqe(1:n) = core_sources0%source(1)%profiles_1d(1)%electrons%particles(1:n)
@@ -37,8 +39,6 @@ real(ids_real) :: tt
 !qqt(1:n) = core_sources0%source(1)%profiles_1d(1)%ion(2)%particles(1:n)
 
 call ids_copy(core_profiles0,core_profiles)
-
-n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
 
  print *,' transp20== n',n
 
@@ -53,6 +53,25 @@ qqt(1:n) = src_in(2*n+1:3*n)
       print 71,apr,(qqd(i),i=1,n) 
       apr='--qqt-' 
       print 71,apr,(qqt(i),i=1,n) 
+ 
+ 
+
+
+!Note *1.d-19 gain. Remember that below entire profile assignment will overwrite n-th value
+! if (associated(bndcond_in%solver_1d)) then
+!     write(*,*) 'dina_imas : boundary conditions are found'
+!  Yne = bndcond_in%solver_1d(1)%equation(2)%boundary_condition(1)%value(1)*1.d-19
+!  Yndt = bndcond_in%solver_1d(1)%equation(6)%boundary_condition(1)%value(1)*1.d-19
+!  YnHe = bndcond_in%solver_1d(1)%equation(8)%boundary_condition(1)%value(1)*1.d-19
+!  
+!  pne(n) = Yne
+!  pd0(n) = Yndt*0.5d0
+!  pt0(n) = Yndt*0.5d0
+!  
+!       write(*,*) 'pne(n) pd0(n) pt0(n)= ', pne(n), pd0(n), pt0(n)
+! 
+! end if
+
  
 !Transp2
  pne(1:n) = core_profiles%profiles_1d(1)%electrons%density(1:n)*1.d-19

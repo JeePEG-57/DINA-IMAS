@@ -1,4 +1,4 @@
-subroutine dina_transp_energy(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
+subroutine dina_transp_energy(equilibrium0, core_profiles0, core_sources0, bndcond_in, core_profiles, core_sources)
 
 use ids_schemas
 use ids_routines
@@ -8,6 +8,7 @@ implicit none
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
 type (ids_core_sources) :: core_sources0, core_sources
+type (ids_transport_solver_numerics) :: bndcond_in
 
 integer :: i,m,n,npo
 
@@ -24,12 +25,23 @@ real(ids_real) :: qe0(npo),qq0(npo)
 
 
 
-
 call ids_copy(core_profiles0,core_profiles)
 call ids_copy(core_sources0,core_sources)
 
 
 n = size(core_sources0%source(1)%profiles_1d(1)%grid%rho_tor_norm)
+
+
+!Maybe *1.d-3 needed? Remember that below entire profile assignment will overwrite n-th value
+! if (associated(bndcond_in%solver_1d)) then
+!     write(*,*) 'dina_imas : boundary conditions are found'
+!  te0(n) = bndcond_in%solver_1d(1)%equation(1)%boundary_condition(1)%value(1)
+!  tq0(n) = bndcond_in%solver_1d(1)%equation(3)%boundary_condition(1)%value(1)
+!  
+!      write(*,*) 'te0(n) tq0(n)= ', te0(n), tq0(n)
+! 
+! end if
+
 
     print *,' ENERGY== n',n
 

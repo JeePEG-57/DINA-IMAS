@@ -1,4 +1,4 @@
-subroutine astra_transp_density(equilibrium0, core_profiles0, core_profiles)
+subroutine astra_transp_density(equilibrium0, core_profiles0, bndcond_in, core_profiles)
 
 use ids_schemas
 use ids_routines
@@ -7,6 +7,7 @@ implicit none
 
 type (ids_equilibrium) :: equilibrium0
 type (ids_core_profiles) :: core_profiles0, core_profiles
+type (ids_transport_solver_numerics) :: bndcond_in
 
 integer :: i,n,n2,npo
 
@@ -15,9 +16,29 @@ parameter (npo=200)
 
 !integer, parameter :: DP = kind(1.0d0)
 real(ids_real) :: ai(npo),pne(npo),pd0(npo),pt0(npo)
-
+real(ids_real) :: Yne, Yndt, YnHe 
 real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
+
+
+
+n = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
+
+
+!Note *1.d-19 gain. Remember that below entire profile assignment will overwrite n-th value
+! if (associated(bndcond_in%solver_1d)) then
+!     write(*,*) 'dina_imas : boundary conditions are found'
+!  Yne = bndcond_in%solver_1d(1)%equation(2)%boundary_condition(1)%value(1)*1.d-19
+!  Yndt = bndcond_in%solver_1d(1)%equation(6)%boundary_condition(1)%value(1)*1.d-19
+!  YnHe = bndcond_in%solver_1d(1)%equation(8)%boundary_condition(1)%value(1)*1.d-19
+!  
+!  pne(n) = Yne
+!  pd0(n) = Yndt*0.5d0
+!  pt0(n) = Yndt*0.5d0
+!
+!      write(*,*) 'pne(n) pd0(n) pt0(n)= ', pne(n), pd0(n), pt0(n)
+! 
+! end if
 
 
 ! te0(1:n) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n)
@@ -40,7 +61,7 @@ call ids_copy(core_profiles0,core_profiles)
 ! 
 ! read (61,*)n2
 
-n = size(core_profiles%profiles_1d(1)%grid%rho_tor_norm)
+
 
 ! write(*,*) 'dina_transp2, n,n2=,', n, n2
 ! 
