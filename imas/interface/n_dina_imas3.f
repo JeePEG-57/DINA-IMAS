@@ -201,8 +201,8 @@ c ============ outputs ==============================================
      * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
      * x_xx,y_xx,psi_xx,psi_bnd_xx,curr_d_xx,
      * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
-     * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,
-     * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff_xx,vloop_xx,
+     * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,ajae_xx,zeff_xx,press_xx,qe0_xx,qq0_xx,
+     * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff0_xx,vloop_xx,
      * tene_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
      * pptab_xx,fptab_xx)
@@ -215,13 +215,14 @@ c ============ outputs ==============================================
 
 	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
-	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),
+	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),ajae_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
      
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
         dimension xbound_xx(*),ybound_xx(*)
         dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
         dimension pptab_xx(*),fptab_xx(*)
+        dimension press_xx(*),zeff_xx(*)
 
 
       n_xx=n
@@ -254,7 +255,7 @@ c ============ outputs ==============================================
         tqc_xx = tqc
         pec_xx = pcch*1.d19
 	pic_xx = pion*1.d19
-	zeff_xx = zeff_a
+	zeff0_xx = zeff_a
 	vloop_xx = vloop
 	tene_xx = tene
 	wfus_xx = w_fusion*1.d6
@@ -279,12 +280,14 @@ c=================================================
 	   pne_xx(i)=pne(i)
 	   tok1_xx(i)=tok1(i)*1.d7
 	   q_xx(i)=q(i)
+	   zeff_xx(i)=zeff(i)
 
 !	   pptab_xx(i)=pptab(i)
 !	   fptab_xx(i)=fptab(i)
 
 	   pptab_xx(i)=ppx(i)
 	   fptab_xx(i)=pffx(i)
+	   press_xx(i)=p(i)
 
 
 	end do
@@ -295,6 +298,7 @@ c=================================================
 	   sigk_xx(i)=sigk(i)
 	   ajb_xx(i)=ajb(i)
 	   aj0_xx(i)=aj0(i)
+	   ajae_xx(i)=ajae(i)
 	   qe0_xx(i)=qe0(i)
 	   qq0_xx(i)=qq0(i)
 	end do

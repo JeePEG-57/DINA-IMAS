@@ -91,13 +91,13 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,parea=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
   & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0 &
   & ,rmajor,rminor,elong,tri
-    real(ids_real) :: betap,betat,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag
+    real(ids_real) :: betap,betat,tec,tqc,pec,pic,zeff0,vloop,tene,wfus,emag
 
     real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
     real(ids_real) :: ai(npo),te0(npo),tq0(npo),pne(npo),tok1(npo),q(npo)
 
-    real(ids_real) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),qe0(npo),qq0(npo)
+    real(ids_real) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo),press(npo),qe0(npo),qq0(npo)
     
     real(ids_real) :: xbound(ntet),ybound(ntet)
     
@@ -442,8 +442,10 @@ first_call = first_call+1 ! cancel the initialisation for the next call
         print *,'from time_eq.dat  time_eq =',time_eq
 
 !    ih_imas=1
-    if(ih_imas.eq.1)then
+    if (ih_imas.eq.1) then
 	call ids_prof_jetto()
+    elseif (ih_imas.eq.2) then
+	call ids_prof_jetto_2()
     end if
 !stop
 
@@ -558,8 +560,8 @@ write(*,*) '!!!dina_outp enter'
      & ai,te0,tq0,pne,tok1,q,  &
      & x,y,psi,psi_bnd,curr_d,  &
      & xbound,ybound,rmajor,rminor,elong,tri, &
-     & pd0,pt0,sigk,jbut,aj0,qe0,qq0, &
-     & betap,betat,tec,tqc,pec,pic,zeff,vloop,tene,wfus,emag, &
+     & pd0,pt0,sigk,jbut,aj0,ajae,zeff,press,qe0,qq0, &
+     & betap,betat,tec,tqc,pec,pic,zeff0,vloop,tene,wfus,emag, &
      & vchopper,pf,tcam, &
      & pptab,fptab)
 
@@ -708,7 +710,7 @@ summary%volume_average%n_e%value(CurTimeStep) = pec
 summary%volume_average%n_i_total%value(CurTimeStep) = pic
 summary%volume_average%t_e%value(CurTimeStep) = tec
 summary%volume_average%t_i_average%value(CurTimeStep) = tqc
-summary%volume_average%zeff%value(CurTimeStep) = zeff
+summary%volume_average%zeff%value(CurTimeStep) = zeff0
 summary%global_quantities%energy_thermal%value(CurTimeStep) = wen2
 summary%global_quantities%energy_b_field_pol%value(CurTimeStep) = emag
 summary%fusion%power%value(CurTimeStep) = wfus
@@ -735,6 +737,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n))
 
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(n))
 
@@ -759,6 +762,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     equilibrium%ids_properties%homogeneous_time = 1
     equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n) = ai(1:n)
 
+    equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(1:n) = press(1:n) ![Pa]
     equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = pptab(1:n)
     equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = fptab(1:n)
     
@@ -863,6 +867,7 @@ write(*,*) 'Allocate core_profiles... '
 	
 	core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
 	core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
+	core_profiles%profiles_1d(CurTimeStep)%zeff(1:n) = zeff(1:n)
 
 
     
@@ -919,31 +924,47 @@ allocate(core_profiles%profiles_1d(1)%j_non_inductive(n))
 !Sources
 
 
-write(*,*) 'Allocate core_sources... '
-allocate(core_sources%source(1))
-    allocate(core_sources%source(1)%profiles_1d(TimeSteps))
-    allocate(core_sources%time(TimeSteps))
-
-    allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
-
+write(*,*) 'Allocate and write core_sources...'
 
     core_sources%ids_properties%homogeneous_time = 1
     
-    
-    core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
-
-    
-    core_sources%source(1)%profiles_1d(CurTimeStep)%time = tt
+       
+    allocate(core_sources%time(TimeSteps))
     core_sources%time(CurTimeStep) = tt ![s]
 
-write(*,*) 'Write core_sources...'
+    
+    allocate(core_sources%source(2))    
+   
+!Source 1
+allocate(core_sources%source(1)%profiles_1d(TimeSteps))
+
+  core_sources%source(1)%profiles_1d(CurTimeStep)%time = tt
+  
+allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))      
+  core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
 
 allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%electrons%energy(n))
 allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(n))
  core_sources%source(1)%profiles_1d(CurTimeStep)%electrons%energy(1:n) = qe0(1:n)
  core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(1:n) = qq0(1:n)
 
+allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%j_parallel(n))
+ core_sources%source(1)%profiles_1d(CurTimeStep)%j_parallel(1:n) = aj0(1:n)*1.d7 
+ 
+ 
+!Source 2 
+allocate(core_sources%source(2)%profiles_1d(TimeSteps))
 
+  core_sources%source(2)%profiles_1d(CurTimeStep)%time = tt
+  
+allocate(core_sources%source(2)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))      
+  core_sources%source(2)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
+  
+allocate(core_sources%source(2)%profiles_1d(CurTimeStep)%j_parallel(n))
+ core_sources%source(2)%profiles_1d(CurTimeStep)%j_parallel(1:n) = ajae(1:n)*1.d7
+ 
+ 
+ 
 !SOLPS
 write(*,*) 'Allocate core_transport... '
 allocate(core_transport%model(1))
@@ -1333,7 +1354,7 @@ u = equil%vacuum_toroidal_field%b0(1)*1.d1 !Tesla to kG
 	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
 	read (2,*) ; write (44,*) 'pd0_a      pt0_a      pd0_b     pt0_b   pw_p'
 	read (2,*)x1,x2,x3,x4,x5 ; write(44,*) x1,x2,x3,x4,x5
-	read (2,*) ; write (44,*) 'zeff_a    zeff_b'
+	read (2,*) ; write (44,*) 'zeff0_a    zeff0_b'
 	read (2,*)x1,x2 ; write(44,*) x1,x2
 	read (2,*) ; write (44,*) 'SIG0'
 	read (2,*)x1 ; write(44,*) x1
