@@ -1,3 +1,31 @@
+	subroutine ids_prof_jintrac()
+
+        integer :: pulse, run
+
+        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
+
+        read(2,*)
+        read(2,*) pulse
+        read(2,*)
+        read(2,*) run
+
+        close(2)
+
+        write(*,*) 'jetto_ids: pulse, run =',pulse,run
+
+	call wr_prof_astra_bs(pulse, run, 1.d0)
+        call wr_prof_astra_sigma(pulse, run, 1.d0)	
+	call wr_prof_astra_nb(pulse, run, 1.d0)
+	call wr_prof_astra_ecd(pulse, run, 1.d0)
+	call wr_prof_astra_te(pulse, run, 1.d0)
+	call wr_prof_astra_ti(pulse, run, 1.d0)
+	call wr_prof_astra_ne(pulse, run, 1.d0)
+	call wr_prof_astra_ndt(pulse, run, 1.d0)
+	call wr_prof_astra_zeff(pulse, run, 1.d0)
+	call wr_prof_astra_pres(pulse, run, 1.d0)
+	return
+    end
+
 	subroutine ids_prof_jetto()
 
         integer :: pulse, run
@@ -13,20 +41,20 @@
 
         write(*,*) 'jetto_ids: pulse, run =',pulse,run
 
-	call wr_prof_astra_bs(pulse, run)
-        call wr_prof_astra_sigma(pulse, run)	
-	call wr_prof_astra_nb(pulse, run)
-	call wr_prof_astra_ecd(pulse, run)
-	call wr_prof_astra_te(pulse, run)
-	call wr_prof_astra_ti(pulse, run)
-	call wr_prof_astra_ne(pulse, run)
-	call wr_prof_astra_ndt(pulse, run)
-	call wr_prof_astra_zeff(pulse, run)
-	call wr_prof_astra_pres(pulse, run)
+	call wr_prof_astra_bs(pulse, run, 1.d-7)
+        call wr_prof_astra_sigma(pulse, run, 1.d0)	
+	call wr_prof_astra_nb(pulse, run, 1.d-7)
+	call wr_prof_astra_ecd(pulse, run, 1.d-7)
+	call wr_prof_astra_te(pulse, run, 1.d0)
+	call wr_prof_astra_ti(pulse, run, 1.d0)
+	call wr_prof_astra_ne(pulse, run, 1.d-19)
+	call wr_prof_astra_ndt(pulse, run, 1.d-19)
+	call wr_prof_astra_zeff(pulse, run, 1.d0)
+	call wr_prof_astra_pres(pulse, run, 1.0d0) ! Calculated in DINA in [Pa]
 	return
     end
 
-	subroutine wr_prof_astra_bs(pulse, run)
+	subroutine wr_prof_astra_bs(pulse, run, coeff)
 
 	use ids_schemas
     use ids_routines	
@@ -45,6 +73,8 @@
     integer :: pulse, run, idx
 	integer :: it, ir, nt, nr, kpr
 
+	real(ids_real) :: coeff
+	
       common/ge5/kpr
           
       character (len=255) :: user
@@ -72,7 +102,7 @@
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%j_bootstrap)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%j_bootstrap(1:nr)	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%j_bootstrap(1:nr)*coeff	
 	end do
     
     call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -98,7 +128,7 @@
 	
 	
 	
-	subroutine wr_prof_astra_sigma(pulse, run)
+	subroutine wr_prof_astra_sigma(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -143,7 +173,7 @@
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%conductivity_parallel)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%conductivity_parallel(1:nr)	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%conductivity_parallel(1:nr)*coeff	
 	end do
     
 	    call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -168,7 +198,7 @@
 	
 	
 	
-	subroutine wr_prof_astra_nb(pulse, run)
+	subroutine wr_prof_astra_nb(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -220,7 +250,7 @@
     do it=1,nt
 	  t_tb(it) = cs%time(it)*1.d3
 	  nr = size(cs%source(1)%profiles_1d(it)%j_parallel)
-	  te0_tb(1:nr,it) = cs%source(1)%profiles_1d(it)%j_parallel(1:nr)	
+	  te0_tb(1:nr,it) = cs%source(1)%profiles_1d(it)%j_parallel(1:nr)*coeff	
 	end do
 
         call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -244,7 +274,7 @@
 	end
 
 	
-	subroutine wr_prof_astra_ecd(pulse, run)
+	subroutine wr_prof_astra_ecd(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -289,7 +319,7 @@
     do it=1,nt
 	  t_tb(it) = cs%time(it)*1.d3
 	  nr = size(cs%source(2)%profiles_1d(it)%j_parallel)
-	  te0_tb(1:nr,it) = cs%source(2)%profiles_1d(it)%j_parallel(1:nr)	
+	  te0_tb(1:nr,it) = cs%source(2)%profiles_1d(it)%j_parallel(1:nr)*coeff	
 	end do
 
         call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -313,7 +343,7 @@
 	end
 
 
-	subroutine wr_prof_astra_te(pulse, run)
+	subroutine wr_prof_astra_te(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -358,7 +388,7 @@
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%electrons%temperature)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%electrons%temperature(1:nr)	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%electrons%temperature(1:nr)*coeff	
 	end do
     
         call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -383,7 +413,7 @@
 	end
 	
 	
-	subroutine wr_prof_astra_ti(pulse, run)
+	subroutine wr_prof_astra_ti(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -427,7 +457,7 @@
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%t_i_average)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%t_i_average(1:nr)	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%t_i_average(1:nr)*coeff	
 	end do
         call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
 
@@ -451,7 +481,7 @@
 	end
 	
 	
-	subroutine wr_prof_astra_ndt(pulse, run)
+	subroutine wr_prof_astra_ndt(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -494,8 +524,8 @@
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%ion(1)%density)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%ion(1)%density(1:nr) &
-	  & + cp%profiles_1d(it)%ion(2)%density(1:nr)
+	  te0_tb(1:nr,it) = (cp%profiles_1d(it)%ion(1)%density(1:nr) &
+	  & + cp%profiles_1d(it)%ion(2)%density(1:nr))*coeff
 	end do
     
         call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -521,7 +551,7 @@
 	
 	
 	
-	subroutine wr_prof_astra_zeff(pulse, run)
+	subroutine wr_prof_astra_zeff(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -564,7 +594,7 @@
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%zeff)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%zeff(1:nr)	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%zeff(1:nr)*coeff	
 	end do
     
 	    call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -588,7 +618,7 @@
 	end
 	
 	
-	subroutine wr_prof_astra_pres(pulse, run)
+	subroutine wr_prof_astra_pres(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -631,7 +661,7 @@
     do it=1,nt
 	  t_tb(it) = eq%time(it)*1.d3
 	  nr = size(eq%time_slice(it)%profiles_1d%pressure)
-	  te0_tb(1:nr,it) = eq%time_slice(it)%profiles_1d%pressure(1:nr)	
+	  te0_tb(1:nr,it) = eq%time_slice(it)%profiles_1d%pressure(1:nr)*coeff	
 	end do
     
 	    call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -654,7 +684,7 @@
 	return
 	end
 	
-	subroutine wr_prof_astra_ne(pulse, run)
+	subroutine wr_prof_astra_ne(pulse, run, coeff)
 
 
 	use ids_schemas
@@ -696,7 +726,7 @@
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%electrons%density)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%electrons%density(1:nr)	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%electrons%density(1:nr)*coeff	
 	end do
 
  	    call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)

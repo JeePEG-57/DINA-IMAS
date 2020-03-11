@@ -444,8 +444,6 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 !    ih_imas=1
     if (ih_imas.eq.1) then
 	call ids_prof_jetto()
-    elseif (ih_imas.eq.2) then
-	call ids_prof_jetto_2()
     end if
 !stop
 
@@ -855,7 +853,8 @@ write(*,*) 'Allocate core_profiles... '
 
     allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
- 
+    allocate(core_profiles%profiles_1d(CurTimeStep)%zeff(n))
+    
 
 ! Filling core_profiles  
 
