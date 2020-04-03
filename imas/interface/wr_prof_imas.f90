@@ -3,14 +3,14 @@
         integer :: pulse, run
         real*8 :: coeff = 1.d0
 
-        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
+!        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
 
-        read(2,*)
-        read(2,*) pulse
-        read(2,*)
-        read(2,*) run
+        read(49,*)
+        read(49,*) pulse
+        read(49,*)
+        read(49,*) run
 
-        close(2)
+!        close(2)
 
         write(*,*) 'jetto_ids: pulse, run =',pulse,run
         
@@ -28,22 +28,29 @@
 	return
     end
 
-	subroutine ids_prof_jetto()
+	    subroutine ids_prof_jetto()
 
         integer :: pulse, run
         real*8 :: coeff
+    
+        integer   ::  ih_imas
+        common /c_imas_is/ih_imas
 
-        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
+!        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
 
-        read(2,*)
-        read(2,*) pulse
-        read(2,*)
-        read(2,*) run
+        read(49,*)
+        read(49,*) pulse
+        read(49,*)
+        read(49,*) run
 
-        close(2)
+!        close(2)
 
         write(*,*) 'jetto_ids: pulse, run =',pulse,run
+        write(*,*) 'jetto_ids: k_jetto =',ih_imas
 
+
+       if(ih_imas.eq.0)return
+       
         coeff = 1.d-7
 	call wr_prof_astra_bs(pulse, run, coeff)
 	

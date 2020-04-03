@@ -59,18 +59,55 @@ void read_volt_Outputs_wrapper(real_T *y0,
       y1[0].re = u1[0].re;
       y1[0].im = u1[0].im;
 */
-int i,j,k,N; static int kl; static double y[500][20];char b[1024];
+int i,j,k,N; static int kl; static double y[500][20];char b[256];
+int k_time, ii; double y2; 
 
 if(kl==0){
 	printf("---volt.dat \n");
 N=*n_mc; /*mexPrintf(" N %d\n",N);*/
-fgets(b,1023,f);i=0;
+fgets(b,255,f);
+	fscanf(f,"%d \n",&k_time);
+printf("---k_time N volt.dat  %d %d\n",k_time,N);
+
+fgets(b,255,f);
+
+printf("      %s \n",b);
+
+i=0;
 while(N==fscanf(f,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
 y[i],y[i]+1,y[i]+2,y[i]+3,y[i]+4,y[i]+5,y[i]+6,y[i]+7,y[i]+8,y[i]+9,y[i]+10,y[i]+11))i++;
 
+/*for(k=0;k<k_time;k++){
+printf("---k==   %d\n",k);
+for(i=0;i<N;i++){
+fscanf(f,"%lf",&y2);
+printf(" %g",y2);
+y[k][i]=y2;
+}
+fscanf(f, "\n");
+}*/
+
 fscanf(f, "\n");
 
-printf("---end volt.dat  N  i %d %d\n",N,i);
+k=1;
+printf("---k==   %d\n",k);
+for(ii=0;ii<N;ii++){
+printf(" %g",y[k][ii]);
+}
+printf("\n");
+k=10;
+printf("---k==   %d\n",k);
+for(ii=0;ii<N;ii++){
+printf(" %g",y[k][ii]);
+}
+printf("\n");
+k=k_time-1;
+printf("---k==   %d\n",k);
+for(ii=0;ii<N;ii++){
+printf(" %g",y[k][ii]);
+}
+printf("\n");
+printf("---i  N  ii k %d %d %d %d\n",i,N,ii,k);
 
 //fclose(f);
 /*mexPrintf(" i %d\n",i);*/

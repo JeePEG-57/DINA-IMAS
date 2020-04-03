@@ -210,6 +210,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #self.tabControlData.setLayout(layoutContr)
         
         
+        # Output tab 
         self.btnLoadIDS.clicked.connect(self.PlotOutput)
         
         self.textPulse.setPlainText('170')
@@ -351,8 +352,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
          
       
     def LoadSetups(self):
-      #dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder load from...", self.directoryLoad)
-      dirTmp = os.path.normpath(os.getcwd() + '/../../machines/iter/15MA_40ka')
+      dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder load from...", self.directoryLoad)
+      #dirTmp = os.path.normpath(os.getcwd() + '/../../machines/iter/15MA_40ka')
 
       if dirTmp: 
         self.directoryLoad = dirTmp
@@ -519,7 +520,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         f.close()
         
-        #1print('Control data:')
+        #print('Control data:')
         #for x in self.controlData:
         #  print(x)
         #print(self.controlData) 
@@ -574,6 +575,11 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         params = self.ReadParameters(f)
         self.DINAData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
+        
+        # jetto_ids.dat
+        params = self.ReadParametersSet(f, 2)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])        
         
         # kpr.dat
         params = self.ReadParameters(f)
@@ -901,8 +907,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
     def SaveSetups(self): 
-      #dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder save into...", self.directorySave)
-      dirTmp = self.directoryLoad + '/temp'
+      dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder save into...", self.directorySave)
+      #dirTmp = self.directoryLoad + '/temp'
 
       if dirTmp:
         self.directorySave = dirTmp

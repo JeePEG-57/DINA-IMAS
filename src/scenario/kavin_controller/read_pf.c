@@ -41,6 +41,9 @@ FILE*f2;
 
     fscanf(prob, "%d ",&nmax1);
 
+	fgets(b,1255,prob);
+	printf("%s  ",b);
+
 	printf(" nmax1===  %d \n ",nmax1);
 
 	for (i = 1; i <= nmax1; ++i) {

@@ -630,6 +630,7 @@ cc
 
       read (39,*)
       read (39,*)nn
+      read (39,*)
       read (39,*)(a(i),i=1,npf_2)
 c
 	do i=1,11

@@ -613,7 +613,11 @@
   0
 time_eq  ! time_eq.dat 
 5.037595e3
-  kpr  ! kpr.dat 
+shot     ! jetto_ids.dat
+170
+run
+20
+   kpr  ! kpr.dat 
  0 
 tay          rs0         key_t11        bt0  ! for002_kav
 2.           620.        1              53.0

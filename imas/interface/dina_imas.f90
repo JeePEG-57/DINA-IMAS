@@ -442,9 +442,9 @@ first_call = first_call+1 ! cancel the initialisation for the next call
         print *,'from time_eq.dat  time_eq =',time_eq
 
 !    ih_imas=1
-    if (ih_imas.eq.1) then
+!    if (ih_imas.eq.1) then
 	call ids_prof_jetto()
-    end if
+!   end if
 !stop
 
 else
@@ -452,6 +452,8 @@ else
 write(*,*) 'dina_input prepare...'
 
 n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
+
+n=n1
 
 ! Transp1
  te0(1:n1) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n1)
@@ -886,6 +888,10 @@ allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
 allocate(core_profiles%profiles_1d(1)%electrons%density(n))
  core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)*1.d19
 
+      apr='++pne-' 
+      print 71,apr,(pne(i),i=1,n) 
+
+
 !if (.not. allocated(core_profiles%profiles_1d(1)%ion)) then
    allocate(core_profiles%profiles_1d(1)%ion(2))
 !end if
@@ -901,6 +907,11 @@ allocate(core_profiles%profiles_1d(1)%ion(1)%density(n))
 ! end if
  core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)*1.d19
 
+
+      apr='++pd0-' 
+      print 71,apr,(pd0(i),i=1,n) 
+
+
 ! Tritium
 allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
  core_profiles%profiles_1d(1)%ion(2)%element(1)%a = 3
@@ -909,6 +920,10 @@ allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
 !core_profiles%profiles_1d(1)%ion(2)%label = 'T+'
 allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
  core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)*1.d19
+
+      apr='++pt0-' 
+      print 71,apr,(pt0(i),i=1,n) 
+
 
 !Transp3
 allocate(core_profiles%profiles_1d(1)%j_bootstrap(n))
@@ -1034,9 +1049,9 @@ allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2)%particles%flux(
 flush(6)
 
       apr='++te0-' 
-      print 71,apr,(te0(i),i=1,n1) 
+      print 71,apr,(te0(i),i=1,n) 
       apr='++tq0-' 
-      print 71,apr,(tq0(i),i=1,n1) 
+      print 71,apr,(tq0(i),i=1,n) 
       apr='++pne-' 
       print 71,apr,(pne(i),i=1,n) 
       apr='++pd0-' 
