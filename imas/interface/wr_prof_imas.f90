@@ -1,6 +1,7 @@
 	subroutine ids_prof_jintrac()
 
         integer :: pulse, run
+        real*8 :: coeff = 1.d0
 
         open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
 
@@ -12,23 +13,25 @@
         close(2)
 
         write(*,*) 'jetto_ids: pulse, run =',pulse,run
+        
 
-	call wr_prof_astra_bs(pulse, run, 1.d0)
-        call wr_prof_astra_sigma(pulse, run, 1.d0)	
-	call wr_prof_astra_nb(pulse, run, 1.d0)
-	call wr_prof_astra_ecd(pulse, run, 1.d0)
-	call wr_prof_astra_te(pulse, run, 1.d0)
-	call wr_prof_astra_ti(pulse, run, 1.d0)
-	call wr_prof_astra_ne(pulse, run, 1.d0)
-	call wr_prof_astra_ndt(pulse, run, 1.d0)
-	call wr_prof_astra_zeff(pulse, run, 1.d0)
-	call wr_prof_astra_pres(pulse, run, 1.d0)
+	call wr_prof_astra_bs(pulse, run, coeff)
+        call wr_prof_astra_sigma(pulse, run, coeff)	
+	call wr_prof_astra_nb(pulse, run, coeff)
+	call wr_prof_astra_ecd(pulse, run, coeff)
+	call wr_prof_astra_te(pulse, run, coeff)
+	call wr_prof_astra_ti(pulse, run, coeff)
+	call wr_prof_astra_ne(pulse, run, coeff)
+	call wr_prof_astra_ndt(pulse, run, coeff)
+	call wr_prof_astra_zeff(pulse, run, coeff)
+	call wr_prof_astra_pres(pulse, run, coeff)
 	return
     end
 
 	subroutine ids_prof_jetto()
 
         integer :: pulse, run
+        real*8 :: coeff
 
         open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
 
@@ -41,16 +44,35 @@
 
         write(*,*) 'jetto_ids: pulse, run =',pulse,run
 
-	call wr_prof_astra_bs(pulse, run, 1.d-7)
-        call wr_prof_astra_sigma(pulse, run, 1.d0)	
-	call wr_prof_astra_nb(pulse, run, 1.d-7)
-	call wr_prof_astra_ecd(pulse, run, 1.d-7)
-	call wr_prof_astra_te(pulse, run, 1.d0)
-	call wr_prof_astra_ti(pulse, run, 1.d0)
-	call wr_prof_astra_ne(pulse, run, 1.d-19)
-	call wr_prof_astra_ndt(pulse, run, 1.d-19)
-	call wr_prof_astra_zeff(pulse, run, 1.d0)
-	call wr_prof_astra_pres(pulse, run, 1.0d0) ! Calculated in DINA in [Pa]
+        coeff = 1.d-7
+	call wr_prof_astra_bs(pulse, run, coeff)
+	
+	coeff = 1.d0
+        call wr_prof_astra_sigma(pulse, run, coeff)
+        
+        coeff = 1.d-7
+	call wr_prof_astra_nb(pulse, run, coeff)
+	
+	coeff = 1.d-7
+	call wr_prof_astra_ecd(pulse, run, coeff)
+	
+	coeff = 1.d0
+	call wr_prof_astra_te(pulse, run, coeff)
+	
+	coeff = 1.d0
+	call wr_prof_astra_ti(pulse, run, coeff)
+	
+	coeff = 1.d-19
+	call wr_prof_astra_ne(pulse, run, coeff)
+	
+	coeff = 1.d-19
+	call wr_prof_astra_ndt(pulse, run, coeff)
+	
+	coeff = 1.d0
+	call wr_prof_astra_zeff(pulse, run, coeff)
+	
+	coeff = 1.d0 ! Calculated in DINA in [Pa]
+	call wr_prof_astra_pres(pulse, run, coeff) 
 	return
     end
 
@@ -168,7 +190,7 @@
 	nn_b = nr
 	n_tb = nt	
 
-	if(kpr.eq.1)print *,' nnb n_tb==',nn_b,n_tb
+	if(kpr.eq.1)print *,' nnb n_tb== coef',nn_b,n_tb,coeff
 	
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
@@ -192,6 +214,7 @@
 5001    format(4i4)
 5000    format (6(1pe14.6e3))
 
+    flush(6)
 
 	return
 	end
@@ -225,6 +248,7 @@
 
 
 	if(kpr.eq.1)print *,' imas open== pulse run ',pulse,run
+    flush(6)
 	
 ! 	call imas_open('ids', pulse, run, idx)
 	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
@@ -233,11 +257,15 @@
 	
 	nt = size(cs%time)
 	if(kpr.eq.1)print *,' nt==',nt
+    flush(6)
 
 	it = 1
     nr = size(cs%source(1)%profiles_1d(it)%grid%rho_tor_norm)  
-
+    
+    nr=50
+    
 	if(kpr.eq.1)print *,' nr==',nr
+    flush(6)
 
 
 	poa_b(1:nr) = cs%source(1)%profiles_1d(it)%grid%rho_tor_norm(1:nr)
@@ -247,21 +275,36 @@
 	
 	if(kpr.eq.1)print *,' nnb n_tb==',nn_b,n_tb
 
+        apr='++poa-' 
+       if(kpr.eq.1)print 71,apr,(poa_b(i),i=1,nr) 
+
+    flush(6)
+
     do it=1,nt
 	  t_tb(it) = cs%time(it)*1.d3
 	  nr = size(cs%source(1)%profiles_1d(it)%j_parallel)
+    !   print *,' it==nr t_tb(it)',it,nr,t_tb(it)
+    !flush(6)
+
 	  te0_tb(1:nr,it) = cs%source(1)%profiles_1d(it)%j_parallel(1:nr)*coeff	
+
+    !   apr='++nb-' 
+    !   if(kpr.eq.1)print 71,apr,(te0_tb(iprof,it),iprof=1,nr) 
+    !flush(6)
+
 	end do
+!       apr='++nb-' 
+!       if(kpr.eq.1)print 71,apr,(te0_tb(iprof,2),iprof=1,nr) 
+!    flush(6)
 
         call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
 
 	call ids_deallocate(cs)
 	 
-        apr='++poa-' 
-       if(kpr.eq.1)print 71,apr,(poa_b(i),i=1,nr) 
 
        apr='++nb-' 
        if(kpr.eq.1)print 71,apr,(te0_tb(iprof,2),iprof=1,nr) 
+    flush(6)
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
@@ -538,6 +581,8 @@
 
        apr='++ndt-' 
        if(kpr.eq.1)print 71,apr,(te0_tb(iprof,2),iprof=1,nr) 
+       apr='++ndt2-' 
+       if(kpr.eq.1)print 71,apr,(te0_tb(iprof,n_tb-1),iprof=1,nr) 
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
@@ -721,24 +766,30 @@
 	nn_b = nr
 	n_tb = nt	
 
-	if(kpr.eq.1)print *,' nnb n_tb==',nn_b,n_tb
+	if(kpr.eq.1)print *,' nnb n_tb coeff==',nn_b,n_tb, coeff
 	
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%electrons%density)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%electrons%density(1:nr)*coeff	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%electrons%density(1:nr)*1.d-19
 	end do
 
- 	    call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
-   
 	
-	call ids_deallocate(cp)
-	 
         apr='++poa-' 
        if(kpr.eq.1)print 71,apr,(poa_b(i),i=1,nr) 
 
        apr='++N_e-' 
        if(kpr.eq.1)print 71,apr,(te0_tb(iprof,2),iprof=1,nr) 
+       apr='++N_e2-' 
+       if(kpr.eq.1)print 71,apr,(te0_tb(iprof,n_tb-1),iprof=1,nr) 	
+	
+	
+ 	    call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
+   
+	
+	call ids_deallocate(cp)
+	 
+
 
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 

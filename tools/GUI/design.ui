@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1624</width>
-    <height>1087</height>
+    <width>1598</width>
+    <height>1102</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,749 +29,83 @@
          <rect>
           <x>10</x>
           <y>200</y>
-          <width>1551</width>
-          <height>741</height>
+          <width>1421</width>
+          <height>721</height>
          </rect>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
-        <widget class="QWidget" name="tabCurrents">
+        <widget class="QWidget" name="tabControlData">
          <attribute name="title">
-          <string>Currents</string>
+          <string>Controller Data</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QTableWidget" name="tableCurrents">
-            <property name="dragEnabled">
-             <bool>false</bool>
-            </property>
-            <property name="dragDropMode">
-             <enum>QAbstractItemView::NoDragDrop</enum>
-            </property>
-            <property name="rowCount">
-             <number>15</number>
-            </property>
-            <property name="columnCount">
-             <number>13</number>
-            </property>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-           </widget>
-          </item>
-         </layout>
         </widget>
-        <widget class="QWidget" name="tabVoltages">
+        <widget class="QWidget" name="tabExternalData">
          <attribute name="title">
-          <string>Voltages</string>
+          <string>External Data</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QTableWidget" name="tableVoltages">
-            <property name="dragEnabled">
-             <bool>false</bool>
-            </property>
-            <property name="dragDropMode">
-             <enum>QAbstractItemView::NoDragDrop</enum>
-            </property>
-            <property name="rowCount">
-             <number>15</number>
-            </property>
-            <property name="columnCount">
-             <number>12</number>
-            </property>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-            <column/>
-           </widget>
-          </item>
-         </layout>
         </widget>
-        <widget class="QWidget" name="tabGaps">
+        <widget class="QWidget" name="tabGeneralData">
          <attribute name="title">
-          <string>Gaps</string>
+          <string>General Data</string>
          </attribute>
-         <widget class="QTableWidget" name="tableGap1">
-          <property name="geometry">
-           <rect>
-            <x>20</x>
-            <y>60</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap2">
-          <property name="geometry">
-           <rect>
-            <x>200</x>
-            <y>60</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap3">
-          <property name="geometry">
-           <rect>
-            <x>390</x>
-            <y>60</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap4">
-          <property name="geometry">
-           <rect>
-            <x>580</x>
-            <y>60</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap5">
-          <property name="geometry">
-           <rect>
-            <x>770</x>
-            <y>60</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap6">
-          <property name="geometry">
-           <rect>
-            <x>960</x>
-            <y>60</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableElong">
-          <property name="geometry">
-           <rect>
-            <x>1190</x>
-            <y>60</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap1_term">
-          <property name="geometry">
-           <rect>
-            <x>20</x>
-            <y>270</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap5_term">
-          <property name="geometry">
-           <rect>
-            <x>770</x>
-            <y>270</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap6_term">
-          <property name="geometry">
-           <rect>
-            <x>960</x>
-            <y>270</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap3_term">
-          <property name="geometry">
-           <rect>
-            <x>390</x>
-            <y>270</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap4_term">
-          <property name="geometry">
-           <rect>
-            <x>580</x>
-            <y>270</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableGap2_term">
-          <property name="geometry">
-           <rect>
-            <x>200</x>
-            <y>270</y>
-            <width>171</width>
-            <height>201</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
         </widget>
-        <widget class="QWidget" name="tabDensities">
+        <widget class="QWidget" name="tabDINAData">
          <attribute name="title">
-          <string>Densities</string>
+          <string>DINA Data</string>
          </attribute>
-         <widget class="QTableWidget" name="tableCurrents_4">
-          <property name="geometry">
-           <rect>
-            <x>50</x>
-            <y>130</y>
-            <width>1451</width>
-            <height>641</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>15</number>
-          </property>
-          <property name="columnCount">
-           <number>10</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="tabHeating">
-         <attribute name="title">
-          <string>Heating</string>
-         </attribute>
-         <widget class="QTableWidget" name="tableCurrents_5">
-          <property name="geometry">
-           <rect>
-            <x>20</x>
-            <y>120</y>
-            <width>1451</width>
-            <height>641</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>15</number>
-          </property>
-          <property name="columnCount">
-           <number>10</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-          <column/>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="tabControl">
-         <attribute name="title">
-          <string>Controller</string>
-         </attribute>
-         <widget class="QTableWidget" name="tableControlMarg">
-          <property name="geometry">
-           <rect>
-            <x>60</x>
-            <y>50</y>
-            <width>291</width>
-            <height>531</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>13</number>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableControl1">
-          <property name="geometry">
-           <rect>
-            <x>420</x>
-            <y>50</y>
-            <width>171</width>
-            <height>241</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>6</number>
-          </property>
-          <property name="columnCount">
-           <number>1</number>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-         </widget>
-         <widget class="QTableWidget" name="tableControl2">
-          <property name="geometry">
-           <rect>
-            <x>660</x>
-            <y>50</y>
-            <width>171</width>
-            <height>311</height>
-           </rect>
-          </property>
-          <property name="dragEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::NoDragDrop</enum>
-          </property>
-          <property name="rowCount">
-           <number>7</number>
-          </property>
-          <property name="columnCount">
-           <number>1</number>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <row/>
-          <column/>
-         </widget>
         </widget>
        </widget>
        <widget class="QWidget" name="gridLayoutWidget_3">
         <property name="geometry">
          <rect>
-          <x>30</x>
-          <y>20</y>
-          <width>410</width>
-          <height>141</height>
+          <x>0</x>
+          <y>0</y>
+          <width>611</width>
+          <height>181</height>
          </rect>
         </property>
-        <layout class="QGridLayout" name="layoutInputSetup">
-         <item row="2" column="0">
-          <widget class="QPushButton" name="btnBrowse">
-           <property name="text">
-            <string>Load from DINA work directory...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
+        <layout class="QGridLayout" name="layoutInputSetup" rowstretch="0,0,0,0,0,0,0,0,0,0">
+         <item row="8" column="0">
           <widget class="QPushButton" name="btnSave">
            <property name="text">
-            <string>Save setups</string>
+            <string>Save to work directory</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="labelDir">
+         <item row="9" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QPushButton" name="btnLoad">
+           <property name="text">
+            <string>Load setups</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="labelDirSave">
            <property name="text">
             <string>Select DINA work directory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="labelDirLoad">
+           <property name="text">
+            <string>Select setups source folder</string>
            </property>
           </widget>
          </item>
@@ -848,7 +182,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1624</width>
+     <width>1598</width>
      <height>26</height>
     </rect>
    </property>

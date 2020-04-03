@@ -1,6 +1,7 @@
 
 import sys
 import os
+import shutil
 
 from PyQt5 import QtWidgets
 import design
@@ -42,10 +43,14 @@ class Graph():
 
 
 class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, app):
         super().__init__()
-        self.setupUi(self)  # Initialise design
-        self.initUi()
+        
+        screen_resolution = app.desktop().screenGeometry()
+        width, height = screen_resolution.width(), screen_resolution.height()
+        print("width = " + str(width), "height = " + str(height))
+        self.setupUi()  # Initialise design
+        self.resize(width*1.0, height*1.0)
         
     def initTableOfParameters(self, table, headers):
         nCol = len(headers)
@@ -55,19 +60,60 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
             table.verticalHeaderItem(i).setToolTip(captions.tooltip[headers[i]])
         
         
-    def initUi(self):
+    def setupUi(self):
+        super().setupUi(self)
+        
         self.setWindowTitle('DINA GUI')
+         
         
+        self.directoryLoad = os.path.normpath(os.getcwd() + '/../../machines/iter/')
+        self.directorySave = os.getenv('KEPLER')
+        self.labelDirLoad.setText(self.directoryLoad)
+        self.labelDirSave.setText(self.directorySave)
         
-        self.btnBrowse.clicked.connect(self.BrowseFolder)
+        self.btnLoad.clicked.connect(self.LoadSetups)
         self.btnSave.clicked.connect(self.SaveSetups)
         
         
+        
+        self.externalData = []
+        self.controlData = []
+        self.generalData = []
+        self.DINAData = []
+        
+        
+        self.tabExternalDataChild = QtWidgets.QTabWidget(self.tabExternalData)
+        self.tabExternalDataChild.setObjectName("tabExternalDataChild") 
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabExternalData)
+        verticalLayout.setObjectName("tabExternalDataLayout")       
+        verticalLayout.addWidget(self.tabExternalDataChild)
+        
+        
+        self.tabControlDataChild = QtWidgets.QTabWidget(self.tabControlData)
+        self.tabControlDataChild.setObjectName("tabControlDataChild")      
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabControlData)
+        verticalLayout.setObjectName("tabControlDataLayout")       
+        verticalLayout.addWidget(self.tabControlDataChild)
+        
+        
+        self.tabGeneralDataChild = QtWidgets.QTabWidget(self.tabGeneralData)
+        self.tabGeneralDataChild.setObjectName("tabGeneralDataChild")     
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabGeneralData)
+        verticalLayout.setObjectName("tabGeneralDataLayout")       
+        verticalLayout.addWidget(self.tabGeneralDataChild)      
+        
+        
+        self.tabDINADataChild = QtWidgets.QTabWidget(self.tabDINAData)
+        self.tabDINADataChild.setObjectName("tabDINADataChild") 
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabDINAData)
+        verticalLayout.setObjectName("tabDINADataLayout")       
+        verticalLayout.addWidget(self.tabDINADataChild)        
+        
+    
         self.CSHeaders = ['CSU3','CSU2','CS1','CSL2','CSL3']
         self.PFHeaders = ['PF1','PF2','PF3','PF4','PF5','PF6']
         self.coilNames = self.CSHeaders + self.PFHeaders
          
-        self.directory = ''
       
         #user = os.environ['USER']
         user = os.getenv('USER')
@@ -75,93 +121,93 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         print('user is ', user)
         #print('workdir is ', workdir)
       
-        self.tableCurrents.itemClicked.connect(self.TableClicked)
-        self.tableCurrents.itemSelectionChanged.connect(self.tableCurrentsSelectionChanged)                
-        self.dataCurrentsHeaders = ['Time, s', 'Iplasma, MA']
-        for i in range(len(self.coilNames)):
-          self.dataCurrentsHeaders = self.dataCurrentsHeaders + [self.coilNames[i] + ', MA*t']
-        #print(self.dataCurrentsHeaders)  
-        self.tableCurrents.setHorizontalHeaderLabels(self.dataCurrentsHeaders)         
+        #self.tableCurrents.itemClicked.connect(self.TableClicked)
+        #self.tableCurrents.itemSelectionChanged.connect(self.tableCurrentsSelectionChanged)                
+        #self.dataCurrentsHeaders = ['Time, s', 'Iplasma, MA']
+        #for i in range(len(self.coilNames)):
+          #self.dataCurrentsHeaders = self.dataCurrentsHeaders + [self.coilNames[i] + ', MA*t']
+        ##print(self.dataCurrentsHeaders)  
+        #self.tableCurrents.setHorizontalHeaderLabels(self.dataCurrentsHeaders)         
         
         
-        self.tableVoltages.itemSelectionChanged.connect(self.tableVoltagesSelectionChanged)                       
-        self.dataVoltagesHeaders = ['Time, s']
-        for i in range(len(self.coilNames)):
-          self.dataVoltagesHeaders = self.dataVoltagesHeaders + [self.coilNames[i] + ', V']
-        self.tableVoltages.setHorizontalHeaderLabels(self.dataVoltagesHeaders)
+        #self.tableVoltages.itemSelectionChanged.connect(self.tableVoltagesSelectionChanged)                       
+        #self.dataVoltagesHeaders = ['Time, s']
+        #for i in range(len(self.coilNames)):
+          #self.dataVoltagesHeaders = self.dataVoltagesHeaders + [self.coilNames[i] + ', V']
+        #self.tableVoltages.setHorizontalHeaderLabels(self.dataVoltagesHeaders)
         
         
-        gridGaps = QtWidgets.QGridLayout()
+        #gridGaps = QtWidgets.QGridLayout()
         
-        self.tableGap1.setHorizontalHeaderLabels(['Time, s', 'g1']) 
-        gridGaps.addWidget(self.tableGap1, 0, 0)
-        self.tableGap1.itemSelectionChanged.connect(self.tableGap1SelectionChanged) 
+        #self.tableGap1.setHorizontalHeaderLabels(['Time, s', 'g1']) 
+        #gridGaps.addWidget(self.tableGap1, 0, 0)
+        #self.tableGap1.itemSelectionChanged.connect(self.tableGap1SelectionChanged) 
 
-        self.tableGap2.setHorizontalHeaderLabels(['Time, s', 'g2']) 
-        gridGaps.addWidget(self.tableGap2, 0, 1)
-        self.tableGap2.itemSelectionChanged.connect(self.tableGap2SelectionChanged)
+        #self.tableGap2.setHorizontalHeaderLabels(['Time, s', 'g2']) 
+        #gridGaps.addWidget(self.tableGap2, 0, 1)
+        #self.tableGap2.itemSelectionChanged.connect(self.tableGap2SelectionChanged)
 
-        self.tableGap3.setHorizontalHeaderLabels(['Time, s', 'g3']) 
-        gridGaps.addWidget(self.tableGap3, 0, 2)
-        self.tableGap3.itemSelectionChanged.connect(self.tableGap3SelectionChanged)        
+        #self.tableGap3.setHorizontalHeaderLabels(['Time, s', 'g3']) 
+        #gridGaps.addWidget(self.tableGap3, 0, 2)
+        #self.tableGap3.itemSelectionChanged.connect(self.tableGap3SelectionChanged)        
         
-        self.tableGap4.setHorizontalHeaderLabels(['Time, s', 'g4']) 
-        gridGaps.addWidget(self.tableGap4, 0, 3)
-        self.tableGap4.itemSelectionChanged.connect(self.tableGap4SelectionChanged) 
+        #self.tableGap4.setHorizontalHeaderLabels(['Time, s', 'g4']) 
+        #gridGaps.addWidget(self.tableGap4, 0, 3)
+        #self.tableGap4.itemSelectionChanged.connect(self.tableGap4SelectionChanged) 
 
-        self.tableGap5.setHorizontalHeaderLabels(['Time, s', 'g5']) 
-        gridGaps.addWidget(self.tableGap5, 0, 4)
-        self.tableGap5.itemSelectionChanged.connect(self.tableGap5SelectionChanged)
+        #self.tableGap5.setHorizontalHeaderLabels(['Time, s', 'g5']) 
+        #gridGaps.addWidget(self.tableGap5, 0, 4)
+        #self.tableGap5.itemSelectionChanged.connect(self.tableGap5SelectionChanged)
 
-        self.tableGap6.setHorizontalHeaderLabels(['Time, s', 'g6'])  
-        gridGaps.addWidget(self.tableGap6, 0, 5)
-        self.tableGap6.itemSelectionChanged.connect(self.tableGap6SelectionChanged)        
+        #self.tableGap6.setHorizontalHeaderLabels(['Time, s', 'g6'])  
+        #gridGaps.addWidget(self.tableGap6, 0, 5)
+        #self.tableGap6.itemSelectionChanged.connect(self.tableGap6SelectionChanged)        
         
-        self.tableGap1_term.setHorizontalHeaderLabels(['Time, s', 'g1_term'])  
-        gridGaps.addWidget(self.tableGap1_term, 1, 0)
-        self.tableGap1_term.itemSelectionChanged.connect(self.tableGap1_termSelectionChanged) 
+        #self.tableGap1_term.setHorizontalHeaderLabels(['Time, s', 'g1_term'])  
+        #gridGaps.addWidget(self.tableGap1_term, 1, 0)
+        #self.tableGap1_term.itemSelectionChanged.connect(self.tableGap1_termSelectionChanged) 
 
-        self.tableGap2_term.setHorizontalHeaderLabels(['Time, s', 'g2_term']) 
-        gridGaps.addWidget(self.tableGap2_term, 1, 1)
-        self.tableGap2_term.itemSelectionChanged.connect(self.tableGap2_termSelectionChanged)
+        #self.tableGap2_term.setHorizontalHeaderLabels(['Time, s', 'g2_term']) 
+        #gridGaps.addWidget(self.tableGap2_term, 1, 1)
+        #self.tableGap2_term.itemSelectionChanged.connect(self.tableGap2_termSelectionChanged)
 
-        self.tableGap3_term.setHorizontalHeaderLabels(['Time, s', 'g3_term'])  
-        gridGaps.addWidget(self.tableGap3_term, 1, 2)
-        self.tableGap3_term.itemSelectionChanged.connect(self.tableGap3_termSelectionChanged)        
+        #self.tableGap3_term.setHorizontalHeaderLabels(['Time, s', 'g3_term'])  
+        #gridGaps.addWidget(self.tableGap3_term, 1, 2)
+        #self.tableGap3_term.itemSelectionChanged.connect(self.tableGap3_termSelectionChanged)        
         
-        self.tableGap4_term.setHorizontalHeaderLabels(['Time, s', 'g4_term']) 
-        gridGaps.addWidget(self.tableGap4_term, 1, 3)
-        self.tableGap4_term.itemSelectionChanged.connect(self.tableGap4_termSelectionChanged) 
+        #self.tableGap4_term.setHorizontalHeaderLabels(['Time, s', 'g4_term']) 
+        #gridGaps.addWidget(self.tableGap4_term, 1, 3)
+        #self.tableGap4_term.itemSelectionChanged.connect(self.tableGap4_termSelectionChanged) 
 
-        self.tableGap5_term.setHorizontalHeaderLabels(['Time, s', 'g5_term']) 
-        gridGaps.addWidget(self.tableGap5_term, 1, 4)
-        self.tableGap5_term.itemSelectionChanged.connect(self.tableGap5_termSelectionChanged)
+        #self.tableGap5_term.setHorizontalHeaderLabels(['Time, s', 'g5_term']) 
+        #gridGaps.addWidget(self.tableGap5_term, 1, 4)
+        #self.tableGap5_term.itemSelectionChanged.connect(self.tableGap5_termSelectionChanged)
 
-        self.tableGap6_term.setHorizontalHeaderLabels(['Time, s', 'g6_term']) 
-        gridGaps.addWidget(self.tableGap6_term, 1, 5)
-        self.tableGap6_term.itemSelectionChanged.connect(self.tableGap6_termSelectionChanged)        
+        #self.tableGap6_term.setHorizontalHeaderLabels(['Time, s', 'g6_term']) 
+        #gridGaps.addWidget(self.tableGap6_term, 1, 5)
+        #self.tableGap6_term.itemSelectionChanged.connect(self.tableGap6_termSelectionChanged)        
         
-        self.tableElong.setHorizontalHeaderLabels(['Time, s', 'Elongation'])  
-        gridGaps.addWidget(self.tableElong, 0, 6)
-        self.tableElong.itemSelectionChanged.connect(self.tableElongSelectionChanged)        
+        #self.tableElong.setHorizontalHeaderLabels(['Time, s', 'Elongation'])  
+        #gridGaps.addWidget(self.tableElong, 0, 6)
+        #self.tableElong.itemSelectionChanged.connect(self.tableElongSelectionChanged)        
         
-        self.tabGaps.setLayout(gridGaps)
-        
-        
-        layoutContr = QtWidgets.QHBoxLayout()
+        #self.tabGaps.setLayout(gridGaps)
         
         
-        self.tableControlMarg.setHorizontalHeaderLabels(['Max Voltage, V', 'Max current, kA']) 
-        self.tableControlMarg.setVerticalHeaderLabels(['VVS1', 'VVS3'] + self.coilNames) 
-        layoutContr.addWidget(self.tableControlMarg)
+        #layoutContr = QtWidgets.QHBoxLayout()
+        
+        
+        #self.tableControlMarg.setHorizontalHeaderLabels(['Max Voltage, V', 'Max current, kA']) 
+        #self.tableControlMarg.setVerticalHeaderLabels(['VVS1', 'VVS3'] + self.coilNames) 
+        #layoutContr.addWidget(self.tableControlMarg)
                 
-        self.initTableOfParameters(self.tableControl1, ['Time_cont2', 'Ip_div', 'Time_ref_ramp', 'Ip_rd', 'Time_rd_ref', 'Time_V'])
-        layoutContr.addWidget(self.tableControl1)
+        #self.initTableOfParameters(self.tableControl1, ['Time_cont2', 'Ip_div', 'Time_ref_ramp', 'Ip_rd', 'Time_rd_ref', 'Time_V'])
+        #layoutContr.addWidget(self.tableControl1)
                             
-        self.initTableOfParameters(self.tableControl2, ['c_a_tpl1', 'c_a_tpl1_EOB', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0'])       
-        layoutContr.addWidget(self.tableControl2)
+        #self.initTableOfParameters(self.tableControl2, ['c_a_tpl1', 'c_a_tpl1_EOB', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0'])       
+        #layoutContr.addWidget(self.tableControl2)
         
-        self.tabControl.setLayout(layoutContr)
+        #self.tabControlData.setLayout(layoutContr)
         
         
         self.btnLoadIDS.clicked.connect(self.PlotOutput)
@@ -225,6 +271,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
                       
     def TableClicked(self):
       print('\n')
+      #table.resizeColumnsToContents()
       for currItem in self.tableCurrents.selectedItems():
         print(currItem.row(), currItem.column(), currItem.text())
 
@@ -247,297 +294,632 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
           
         self.timeTraceGraph.Plot(time, data)              
         
+
+    def tableSelectionChanged(self, table):
+      table.resizeColumnsToContents()
+      self.tableColumnPlot(table, self.timeTraceGraph)  
+     
+   
+    def ReadTabData(self, data, parentObject):
+      params = self.ReadParameters(f)
+      data.append(params)
+      self.CreateInputTab(parentObject, [params], params["title"])
+      return data
+
+
+
+    def CreateInputTab(self, parentObject, setOfParams, title):
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+     
+      for i in range(len(setOfParams)):    
+        datarow = setOfParams[i]
+        table = QtWidgets.QTableWidget(tab)
+        table.setDragEnabled(False)
+        table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+        grid.addWidget(table, i, 0)
         
-
-    def tableCurrentsSelectionChanged(self):
-      self.tableColumnPlot(self.tableCurrents, self.timeTraceGraph)                  
-    def tableVoltagesSelectionChanged(self):
-      self.tableColumnPlot(self.tableVoltages, self.timeTraceGraph)
-      
-    def tableGap1SelectionChanged(self):
-      self.tableColumnPlot(self.tableGap1, self.timeTraceGraph)
-    def tableGap2SelectionChanged(self):
-      self.tableColumnPlot(self.tableGap2, self.timeTraceGraph)      
-    def tableGap3SelectionChanged(self):
-      self.tableColumnPlot(self.tableGap3, self.timeTraceGraph)
-    def tableGap4SelectionChanged(self):
-      self.tableColumnPlot(self.tableGap4, self.timeTraceGraph)       
-    def tableGap5SelectionChanged(self):
-      self.tableColumnPlot(self.tableGap5, self.timeTraceGraph)
-    def tableGap6SelectionChanged(self):
-      self.tableColumnPlot(self.tableGap6, self.timeTraceGraph)  
-      
-    def tableGap1_termSelectionChanged(self):
-      self.tableColumnPlot(self.tableGap1_term, self.timeTraceGraph)
-    def tableGap2_termSelectionChanged(self):
-      self.tableColumnPlot(self.tableGap2_term, self.timeTraceGraph)      
-    def tableGap3_termSelectionChanged(self):
-      self.tableColumnPlot(self.tableGap3_term, self.timeTraceGraph)
-    def tableGap4_termSelectionChanged(self):
-      self.tableColumnPlot(self.tableGap4_term, self.timeTraceGraph)       
-    def tableGap5_termSelectionChanged(self):
-      self.tableColumnPlot(self.tableGap5_term, self.timeTraceGraph)
-    def tableGap6_termSelectionChanged(self):
-      self.tableColumnPlot(self.tableGap6_term, self.timeTraceGraph)       
-      
-    def tableElongSelectionChanged(self):
-      self.tableColumnPlot(self.tableElong, self.timeTraceGraph)      
-      
-      
-    def BrowseFolder(self):
-      self.directory = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder", os.getenv('KEPLER'))
-
-      if self.directory: 
-        self.labelDir.setText(self.directory)
-        self.LoadTimeTable('scr_data.dat', self.tableCurrents)
-        self.LoadTimeTable('volt.dat', self.tableVoltages)
-        self.LoadTimeTableN('g1.dat', self.tableGap1)
-        self.LoadTimeTableN('g2.dat', self.tableGap2)
-        self.LoadTimeTableN('g3.dat', self.tableGap3)
-        self.LoadTimeTableN('g4.dat', self.tableGap4)
-        self.LoadTimeTableN('g5.dat', self.tableGap5)
-        self.LoadTimeTableN('g6.dat', self.tableGap6)
-        self.LoadTimeTableN('g1_term.dat', self.tableGap1_term)
-        self.LoadTimeTableN('g2_term.dat', self.tableGap2_term)
-        self.LoadTimeTableN('g3_term.dat', self.tableGap3_term)
-        self.LoadTimeTableN('g4_term.dat', self.tableGap4_term)
-        self.LoadTimeTableN('g5_term.dat', self.tableGap5_term)
-        self.LoadTimeTableN('g6_term.dat', self.tableGap6_term) 
-        self.LoadTimeTableN('elong_ref.dat', self.tableElong)
-        
-        self.LoadControlParameters()
-        
-
-    def LoadTimeTable(self, myfile, table):
-          filename = self.directory + '/' + myfile  
-          if os.path.isfile(filename): 
-            f = open(filename, 'rt')
-            lines0 = f.read().splitlines()
-            f.close()
-            
-            lines0.pop(0)           
-            
-            lines1 = []
-            for line in lines0:
-                sps0 = line.split(' ')
-                sps1 = []
-                for numb in sps0:
-                    if numb != ' ' and numb != '':
-                        sps1.append(numb)                      
-                lines1.append(sps1)
-                       
-            data = []
-            n = len(lines1)
-            for i in range(n):
-              a = []
-              m = len(lines1[i])
-              for j in range(m):
-                a.append(float(lines1[i][j]))
-              data.append(a)
-
-
-            table.setColumnCount(m) 
-            table.setRowCount(n) 
-                        
-                       
-            for i in range(len(data)):
-              for j in range(len(data[i])):
-                table.setItem(i, j, QtWidgets.QTableWidgetItem(str(data[i][j])))
-
-            table.resizeColumnsToContents() 
-                       
-
-    def LoadTimeTableN(self, myfile, table):
-          filename = self.directory + '/' + myfile  
-          if os.path.isfile(filename): 
-            f = open(filename, 'rt')
-            lines0 = f.read().splitlines()
-            f.close()
-            
-            lines0.pop(0)           
-            
-            nt = lines0.pop(0)
-            #print(myfile, 'nt =', nt)
-            lines0.pop(0)
-                   
-            lines1 = []
-            for line in lines0:
-                sps0 = line.split(' ')
-                sps1 = []
-                for numb in sps0:
-                    if numb != ' ' and numb != '':
-                        sps1.append(numb)                      
-                lines1.append(sps1)
-                       
-            data = []
-            n = len(lines1)
-            for i in range(n):
-              a = []
-              m = len(lines1[i])
-              for j in range(m):
-                a.append(float(lines1[i][j]))
-              data.append(a)
-
-
-            table.setColumnCount(m) 
-            table.setRowCount(n) 
-                        
-                       
-            for i in range(len(data)):
-              for j in range(len(data[i])):
-                table.setItem(i, j, QtWidgets.QTableWidgetItem(str(data[i][j])))
-
-            table.resizeColumnsToContents()       
-
-
-    def LoadControlParameters(self):
-          myfile = 'control_data.dat'
-          filename = self.directory + '/' + myfile  
-          if os.path.isfile(filename): 
-            f = open(filename, 'rt')
-            lines0 = f.read().splitlines()
-            f.close()
-            
-            lines0.pop(0)           
-            lines0.pop(1)
-                   
-            lines1 = []
-            for line in lines0:
-                sps0 = line.split(' ')
-                sps1 = []
-                for numb in sps0:
-                    if numb != ' ' and numb != '':
-                        sps1.append(numb)                      
-                lines1.append(sps1)
-                       
-            data1 = []
-            m = len(lines1[0])
+        if datarow["type"] == "timed":                     
+          n = len(datarow["items"])
+          m = len(datarow["items"][0])
+          if len(datarow["names2"]) == m:
+            header = datarow["names2"]
+          else:
+            header = ["Time"] + [str(j) for j in range(1,m+1)]
+          table.setRowCount(n)
+          table.setColumnCount(m)
+          table.setHorizontalHeaderLabels(header)
+          for i in range(n):
             for j in range(m):
-              data1.append(float(lines1[0][j]))
-
-            data2 = []
-            m = len(lines1[1])
-            for j in range(m):
-              data2.append(float(lines1[1][j]))              
+              table.setItem(i, j, datarow["items"][i][j])
+          table.itemSelectionChanged.connect(lambda x=table:self.tableSelectionChanged(x))
+        elif datarow["type"] == "params" or datarow["type"] == "paramsrow":
+          m = len(datarow["items"])
+          table.setColumnCount(m)
+          table.setRowCount(1)
+          table.setHorizontalHeaderLabels(datarow["names"])      
+          for j in range(m):
+            table.setItem(0, j, datarow["items"][j])
              
-            for j in range(len(data1)-1):
-              self.tableControlMarg.setItem(j, 0, QtWidgets.QTableWidgetItem(str(data1[j])))
-            for j in range(len(data2)):
-              self.tableControlMarg.setItem(j+1, 1, QtWidgets.QTableWidgetItem(str(data2[j])))
+        table.resizeColumnsToContents()
+         
+      
+    def LoadSetups(self):
+      #dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder load from...", self.directoryLoad)
+      dirTmp = os.path.normpath(os.getcwd() + '/../../machines/iter/15MA_40ka')
 
-            self.tableControlMarg.resizeColumnsToContents()
-            
-            
-          myfile = 'control_data2.dat'
-          filename = self.directory + '/' + myfile  
-          if os.path.isfile(filename): 
-            f = open(filename, 'rt')
-            lines0 = f.read().splitlines()
-            f.close()
-            
-            lines0.pop(0)           
-            lines0.pop(1)
-                   
-            lines1 = []
-            for line in lines0:
-                sps0 = line.split(' ')
-                sps1 = []
-                for numb in sps0:
-                    if numb != ' ' and numb != '':
-                        sps1.append(numb)                      
-                lines1.append(sps1)
-                       
+      if dirTmp: 
+        self.directoryLoad = dirTmp
+        self.labelDirLoad.setText(self.directoryLoad)
+        
+        self.tabInputs = []
+        
+        self.LoadExternalData()
+        self.LoadControlData()
+        self.LoadGeneralData()
+        self.LoadDINAData()
+       
+        
+        
+    def LoadExternalData(self):
+      filename = self.directoryLoad + '/external_data.dat'
+      if os.path.isfile(filename):
+        f = open(filename, 'rt')
+        
+        self.externalData = []
+        parentObject = self.tabExternalDataChild
+        parentObject.clear()
+    
+    
+        #setOfParams = self.ReadParametersSet(f, 2)       
+        #self.externalData.append(setOfParams)
+        #self.CreateInputTab(setOfParams["data"], setOfParams["title"])
 
-            data3 = []
-            m = len(lines1[0])
-            for j in range(m):
-              data3.append(float(lines1[0][j]))
-            data3.append(data1[-1])  
 
-            data4 = []
-            m = len(lines1[1])
-            for j in range(m):
-              data4.append(float(lines1[1][j]))              
-             
-            for j in range(len(data3)):
-              self.tableControl1.setItem(j, 0, QtWidgets.QTableWidgetItem(str(data3[j])))
+        params = self.ReadParameters(f)
+        self.externalData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        params = self.ReadParameters(f)
+        self.externalData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        timedData = self.ReadTimeTable(f)
+        self.externalData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        
+        #consist = setOfParams["data"] + [timedData]
+        #self.CreateInputTab(parentObject, consist, "together")
+        
+                        
+        heap = self.ReadHeap(f, 335)
+        self.externalData.append(heap)
+        
+        
+        f.close()
+        
+        #1print('External data:')
+        #for x in self.externalData:
+        #  print(x)
+        #print(self.externalData)
 
-            self.tableControl1.resizeColumnsToContents() 
-            
-            for j in range(len(data4)):
-              self.tableControl2.setItem(j, 0, QtWidgets.QTableWidgetItem(str(data4[j])))
+ 
+ 
+    def LoadControlData(self):
+      filename = self.directoryLoad + '/control_init.dat'
+      if os.path.isfile(filename):
+        f = open(filename, 'rt')
+        
+        self.controlData = []
+        parentObject = self.tabControlDataChild
+        parentObject.clear()
 
-            self.tableControl2.resizeColumnsToContents()            
+
+        params = self.ReadParametersSet(f, 2)
+        self.controlData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
+        
+        
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+
+
+        #elong.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+
+
+        #g1.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+
+        #g1_term.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        
+        
+        #g2.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        #g2_term.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        
+        
+        #g3.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        #g3_term.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])       
+        
+        
+        #g4.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        #g4_term.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        
+        
+        #g5.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        #g5_term.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        
+                
+        #g6.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        #g6_term.dat
+        timedData = self.ReadTimeTable(f)
+        self.controlData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        
+        
+        
+        params = self.ReadParametersSet(f, 2)
+        self.controlData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
+        
+        
+        
+        
+        #consist = setOfParams["data"] + [timedData]
+        #self.CreateInputTab(parentObject, consist, "together")
+        
+                               
+        
+        f.close()
+        
+        #1print('Control data:')
+        #for x in self.controlData:
+        #  print(x)
+        #print(self.controlData) 
+ 
+
+    def LoadGeneralData(self):
+      filename = self.directoryLoad + '/general_data.dat'
+      if os.path.isfile(filename):
+        f = open(filename, 'rt')
+        
+        self.generalData = []
+        parentObject = self.tabGeneralDataChild
+        parentObject.clear()
+        
+
+        #scr_data.dat
+        timedData = self.ReadTimeTable(f)
+        self.generalData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+ 
+ 
+        params = self.ReadParametersSet(f, 3)
+        self.generalData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
+        
+        
+        f.close()
+        
+        
+        
+    def LoadDINAData(self):
+      filename = self.directoryLoad + '/dina_data.dat'
+      if os.path.isfile(filename):
+        f = open(filename, 'rt')
+        
+        self.DINAData = []       
+        parentObject = self.tabDINADataChild
+        parentObject.clear()
+        
+        
+        # tokamakdata.dat
+        heap = self.ReadHeap(f, 611)
+        self.DINAData.append(heap)
+        
+        
+        # k_jetto.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+               
+        # time_eq.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        # kpr.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        # for002_kav.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        # gaps_data_ramp
+        params = self.ReadParametersSet(f, 3)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])        
+                
+        # tran_times.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])        
+        
+        #pfres.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+ 
+        #ech.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+ 
+        #n_d.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])  
+ 
+        #gamma_z.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+ 
+        #gamma_z2.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+
+        # init.dat
+        params = self.ReadParametersRow(f, 5)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        #emo.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        #dens.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+ 
+        #gamma_z1.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+ 
+        #gamma_z3.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+
+        #gamma_z4.dat
+        timedData = self.ReadTimeTable(f)
+        self.DINAData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+
+        # bohm_gbohm.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+
+        # tay_simul.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+
+        # dw.dat
+        params = self.ReadParametersSet(f, 2)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
+        
+        
+        f.close()
+        
+    
+    def ReadTokamakConfig(self, f):
+      pass  
+      
+
+      
+ 
+    def JoinListStr(self, lst):
+      s = ""
+      for x in lst:
+        s += str(x) + "   "
+      return s  
+
+ 
+ 
+    def SaveFilePart(self, f, record):
+      if isinstance(record, dict):
+        print("Dictionary found")
+        if record["type"] == "heap":
+          f.write(record["header"] + "\n")
+          data = record["data"]
+          for item in data:
+            s = ""
+            if isinstance(item, list):
+              for x in item:       
+                s += str(x) + "   "  
+              f.write(s + "\n") 
+            else:
+              f.write(str(item) + "\n") 
+        elif record["type"] == "params":
+          strWr = ""
+          for s in record["names"]:
+            strWr = strWr + s + "   "
+          if "title" in record:
+            strWr = strWr + "!" + record["title"]
+          f.write(strWr + "\n") 
+          strWr = ""
+          for item in record["items"]:
+            strWr = strWr + item.text() + "   "
+          f.write(strWr + "\n")  
+          
+        elif record["type"] == "paramsrow":
+          for i in range(len(record["items"])):
+            strWr = " " + record["items"][i].text() + "   " + record["names"][i]
+            if i == 0 and "title" in record:
+              strWr += "  !" + record["title"]
+            f.write(strWr + "\n")                     
+          
+        elif record["type"] == "timed":
+          n = len(record["items"])
+          s = self.JoinListStr(record["names1"])
+          if "title" in record:
+            s += "!" + record["title"]
+          f.write(s + "\n") 
+          s = str(n)
+          if "add" in record:
+            for x in record["add"]:
+              s += "  " + str(x)
+          f.write(s + "\n")
+          
+          f.write(self.JoinListStr(record["names2"]) + "\n")
+          
+          for i in range(n):
+            s = ""
+            for item in record["items"][i]:
+              s += item.text() + "  "
+            f.write(s + "\n")
+        elif record["type"] == "set":
+          for item in record["data"]:
+            self.SaveFilePart(f,item)
+      elif isinstance(record, list):
+        for item in record:
+          self.SaveFilePart(f,item)
             
-            
-            
+      
+    
+
+    def SaveDataToFile(self, data, filename):
+      f = open(filename, 'wt')
+      
+      for record in data:
+        self.SaveFilePart(f, record)
+          
+      f.close()
+
+
+
+    def ReadParametersRow(self, f, nrows):
+      output = {}
+      output["type"] = "paramsrow"
+      data = []
+      names = []
+      
+      for i in range(nrows):
+        line = f.readline().rstrip()
+        if i == 0:
+          header = line.split("!")
+          if len(header) > 1:
+            output["title"] = header[1]
+            line = header[0]
+        description = line.split()
+        data.append(float(description[0]))
+        names.append(description[1])
+      output["names"] = names
+      output["data"] = data
+      output["items"] = [QtWidgets.QTableWidgetItem(str(x)) for x in data]
+      return output      
+      
+
+       
+    def ReadParameters(self, f):     
+      output = {}
+      output["type"] = "params"
+      data = []
+      
+      line = f.readline().rstrip()
+      if not line:
+        print('Unexpected end of file')
+        return
+      #data.append(line)
+      
+      header = line.split("!")
+      params = header[0]
+      names = params.split()
+      print(names)
+      if len(header) > 1:
+        output["title"] = header[1]
+           
+      data = self.ReadRow(f)    
+      print(data)
+      
+      output["names"] = names
+      output["data"] = data 
+      output["items"] = [QtWidgets.QTableWidgetItem(str(x)) for x in data]
+      return output
+    
+    
+    
+    def ReadParametersSet(self, f, nset):
+      output = {}
+      data = []
+      
+      for i in range(nset):
+        data.append(self.ReadParameters(f))
+      
+      output["data"] = data
+      if "title" in data[0]:
+        print('Set Name = ' + data[0]["title"])
+        output["title"] = data[0]["title"]
+      else:
+        output["title"] = "none"
+        
+      output["type"] = "set"
+      return output
+        
+        
+        
+    def ReadTimeTable(self, f):
+      output = {}
+      
+      line = f.readline().rstrip()
+      if not line:
+        print('Unexpected end of file')
+        return
+      
+      header = line.split("!")
+      params = header[0]
+      names1 = params.split()
+      print(names1)
+      output["names1"] = names1
+      if len(header) > 1:
+        output["title"] = header[1]
+      
+      datant = self.ReadRow(f)     
+      if len(datant) == 0:
+        return []
+      nt = datant[0]
+
+      if len(datant) > 1:
+        output["add"] = datant[1:]
+      
+      names2 = f.readline().rstrip().split()
+      output["names2"] = names2
+      
+      items = []
+      for it in range(nt):
+        row = self.ReadRow(f)
+        items.append([QtWidgets.QTableWidgetItem(str(x)) for x in row])
+        
+        #lineFl = [float(dataStr[i]) for i in range(len(dataStr))]
+        #data.append(lineFl)
+      
+      output["type"] = "timed"
+      output["items"] = items  
+
+      return output
+    
+    
+    def ReadHeap(self, f, nrows):
+      record = {}
+      data = []
+      record["header"] = self.ReadLineStripped(f)
+      for i in range(nrows-1):
+        #data.append(self.ReadRow(f))
+        data.append(self.ReadLineStripped(f))
+      record["data"] = data 
+      record["type"] = "heap" 
+      return record
+    
+    
+    def ReadLineStripped(self, f):
+      line = f.readline()
+      if not line:
+        print('Unexpected end of file')
+        return ""
+      return line.rstrip()
+
+    
+    
+    def ReadRow(self, f):
+      line = self.ReadLineStripped(f)
+      data = []
+      dataStr = line.split()
+      for i in range(len(dataStr)):
+        if dataStr[i].isdigit():
+          data.append(int(dataStr[i]))
+        else:
+          data.append(float(dataStr[i]))   
+      return data
+ 
 
 
     def SaveSetups(self): 
-      if self.directory:
-        self.SaveTimeTable('scr_data.dat', self.tableCurrents)
-        self.SaveTimeTable('volt.dat', self.tableVoltages)
-        self.SaveTimeTableN('g1.dat', self.tableGap1)
-        self.SaveTimeTableN('g2.dat', self.tableGap2)
-        self.SaveTimeTableN('g3.dat', self.tableGap3)
-        self.SaveTimeTableN('g4.dat', self.tableGap4)
-        self.SaveTimeTableN('g5.dat', self.tableGap5)
-        self.SaveTimeTableN('g6.dat', self.tableGap6)
-        self.SaveTimeTableN('g1_term.dat', self.tableGap1_term)
-        self.SaveTimeTableN('g2_term.dat', self.tableGap2_term)
-        self.SaveTimeTableN('g3_term.dat', self.tableGap3_term)
-        self.SaveTimeTableN('g4_term.dat', self.tableGap4_term)
-        self.SaveTimeTableN('g5_term.dat', self.tableGap5_term)
-        self.SaveTimeTableN('g6_term.dat', self.tableGap6_term) 
-        self.SaveTimeTableN('elong_ref.dat', self.tableElong)
-        
+      #dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder save into...", self.directorySave)
+      dirTmp = self.directoryLoad + '/temp'
 
-    def SaveTimeTable(self, myfile, table): 
-        currentsFile = self.directory + '/' + myfile
-        f = open(currentsFile, 'wt')
-            
-        n = table.rowCount()
-        m = table.columnCount()
+      if dirTmp:
+        self.directorySave = dirTmp
+        self.labelDirSave.setText(self.directorySave)
         
-        for col in range(m):
-          f.write(table.horizontalHeaderItem(col).text() + '  ')
-        f.write('\n')        
         
-      
-        for i in range(n):
-          for j in range(m):
-            d = float(table.item(i,j).text())
-          
-            f.write('   ' + '{0:10e}'.format(d))
-          f.write('\n')
-      
-        f.close()
-
-
-    def SaveTimeTableN(self, myfile, table): 
-        currentsFile = self.directory + '/' + myfile
-        f = open(currentsFile, 'wt')
-            
-        n = table.rowCount()
-        m = table.columnCount()
+        self.SaveDataToFile(self.externalData, self.directorySave + '/external_data.dat')
+        self.SaveDataToFile(self.controlData, self.directorySave + '/control_init.dat')
+        self.SaveDataToFile(self.generalData, self.directorySave + '/general_data.dat')
+        self.SaveDataToFile(self.DINAData, self.directorySave + '/dina_data.dat')
         
-        f.write('ktime\n')
-        f.write('{0:4d}'.format(n))
-        f.write('\n')    
+        new_imp = self.directorySave + '/imp'
+        if os.path.exists(new_imp):
+          shutil.rmtree(new_imp)
+        shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
-        for col in range(m):
-          f.write(table.horizontalHeaderItem(col).text() + '  ')
-        f.write('\n')        
-              
-        for i in range(n):
-          for j in range(m):
-            d = float(table.item(i,j).text())
-          
-            f.write('   ' + '{0:10e}'.format(d))
-          f.write('\n')
-      
-        f.close()
-        
+     
 
     def PlotOutput(self):
       
@@ -584,7 +966,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 def main():
     app = QtWidgets.QApplication(sys.argv)  # New instance QApplication
-    window = ExampleApp()  # Create instance of ExampleApp
+    window = ExampleApp(app)  # Create instance of ExampleApp
     window.show() 
     sys.exit(app.exec_())  # Start application
 
