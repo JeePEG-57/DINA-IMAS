@@ -27,7 +27,7 @@ time    CSU3 CSU2 CS1 CSL2 CSL3   PF1 PF2 PF3 PF4 PF5 PF6
      9.000000e+08     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00     0.000000e+00 
 ktime  ! elong_ref.dat
  6
-time[S] elong_ref
+time[S],elong_ref.dat
   0.     1.1
   3.5    1.1
   7.5    1.3100

@@ -620,7 +620,7 @@ run
   kpr  ! kpr.dat 
   1
 tay          rs0         key_t11        bt0  ! for002_kav
-2.           620.        1              18.0
+2.           620.        0              18.0
 n_ga    !    gaps_data_ramp
 6      
 r coordinates
