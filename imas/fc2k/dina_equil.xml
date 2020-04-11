@@ -1,5 +1,5 @@
 <org.iter.imas.fc2k.ActorGenerator>
-  <version>4.6.5</version>
+  <version>4.6.6</version>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
@@ -32,7 +32,7 @@
         <tupleParams>
           <vector>
             <string>em_coupling</string>
-            <string>0</string>
+            <string>1</string>
             <string>0</string>
             <string>0</string>
             <string>1</string>
@@ -41,7 +41,7 @@
           </vector>
           <vector>
             <string>equilibrium</string>
-            <string>0</string>
+            <string>1</string>
             <string>0</string>
             <string>0</string>
             <string>1</string>
@@ -50,7 +50,7 @@
           </vector>
           <vector>
             <string>pf_active</string>
-            <string>0</string>
+            <string>1</string>
             <string>0</string>
             <string>0</string>
             <string>1</string>
@@ -59,7 +59,7 @@
           </vector>
           <vector>
             <string>pf_passive</string>
-            <string>0</string>
+            <string>1</string>
             <string>0</string>
             <string>0</string>
             <string>1</string>

@@ -40,8 +40,9 @@
 
 !     Arguments for computational routine:
       real*8 :: dshot,drun
-      integer :: shot,run
-      integer :: idx
+      integer*4 :: shot,run
+      integer*4 :: idx
+      character (len=255) :: user
       mwSize :: ntime,mtime,timeshape(1),tshape(1)
 
       type (ids_equilibrium) :: equilibrium
@@ -130,11 +131,13 @@
 
       shot = idnint(dshot)
       run = idnint(drun)
+      call getenv("USER", user)
 
 
       if (idsname.eq.'equilibrium') then
 
-        call imas_open('ids',shot,run,idx)
+        !call imas_open('ids',shot,run,idx)
+        call imas_open_env('ids',shot,run,idx,user,'test','3') 
         call ids_get(idx,'equilibrium',equilibrium)
         call imas_close(idx)
         call FillEquilibrium(plhs(1),equilibrium)
@@ -142,7 +145,8 @@
 
       elseif (idsname.eq.'pf_active') then
 
-        call imas_open('ids',shot,run,idx)
+        !call imas_open('ids',shot,run,idx)
+        call imas_open_env('ids',shot,run,idx,user,'test','3')
         call ids_get(idx,'pf_active',pf_active)
         call imas_close(idx)
         call FillPFActive(plhs(1),pf_active)
@@ -150,7 +154,8 @@
 
       elseif (idsname.eq.'pf_passive') then
 
-        call imas_open('ids',shot,run,idx)
+        !call imas_open('ids',shot,run,idx)
+        call imas_open_env('ids',shot,run,idx,user,'test','3')
         call ids_get(idx,'pf_passive',pf_passive)
         call imas_close(idx)
         call FillPFPassive(plhs(1),pf_passive)
@@ -158,7 +163,8 @@
 
       elseif (idsname.eq.'core_profiles') then
 
-        call imas_open('ids',shot,run,idx)
+        !call imas_open('ids',shot,run,idx)
+        call imas_open_env('ids',shot,run,idx,user,'test','3')
         call ids_get(idx,'core_profiles',core_profiles)
         call imas_close(idx)
         call FillCoreProfiles(plhs(1),core_profiles)

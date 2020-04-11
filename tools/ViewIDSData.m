@@ -244,22 +244,26 @@ IDSData = ViewIDSDataAccess();
 %disp('Loading pf_active...');
 set(handles.Main_LoadingStatus,'String', 'Loading pf_active...');
 pause(0.01);
-IDSData.pf_active = mexLoadIDS(handles.Shot, handles.Run, 'pf_active');
+%IDSData.pf_active = mexLoadIDS(handles.Shot, handles.Run, 'pf_active');
+IDSData.pf_active = LoadIDS(handles.Shot, handles.Run, 'pf_active');
 
 %disp('Loading pf_passive...');
 set(handles.Main_LoadingStatus,'String', 'Loading pf_passive...');
 pause(0.01);
 IDSData.pf_passive = mexLoadIDS(handles.Shot, handles.Run, 'pf_passive');
+IDSData.pf_passive = LoadIDS(handles.Shot, handles.Run, 'pf_passive');
 
 %disp('Loading equilibrium...');
 set(handles.Main_LoadingStatus,'String', 'Loading equilibrium...');
 pause(0.01);
 IDSData.equilibrium = mexLoadIDS(handles.Shot, handles.Run, 'equilibrium');
+IDSData.equilibrium = LoadIDS(handles.Shot, handles.Run, 'equilibrium');
 
 %disp('Loading core_profiles...');
 set(handles.Main_LoadingStatus,'String', 'Loading core_profiles...');
 pause(0.01);
 IDSData.core_profiles = mexLoadIDS(handles.Shot, handles.Run, 'core_profiles');
+IDSData.core_profiles = LoadIDS(handles.Shot, handles.Run, 'core_profiles');
 
 IDSData.Shot = handles.Shot;
 IDSData.Run = handles.Run;
