@@ -298,8 +298,8 @@ c	call shape_d3d()
       if(k_dens_ext.eq.1)call dens_corr()
 	end if
       
-      if(k_ener.eq.0)call prof_astra()
 	if(k_ener.ne.1)call enit(n)
+      if(k_ener.eq.0)call prof_astra()
 !      if(k_ener.eq.0)call prof_astra_hl()
 	call pp_calc()
 
@@ -889,8 +889,8 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 	end if
 	
 
-      if(k_ener.eq.0)call prof_astra()
 	if(k_ener.ne.1)call enit(n)
+      if(k_ener.eq.0)call prof_astra()
 !      if(k_ener.eq.0)call prof_astra_hl()
 	call pp_calc()
 
@@ -1532,6 +1532,7 @@ ccc     call ppx_pffx_save(2)
       if(kpr.eq.1)print *,'k_svd ntay n_svd=',k_svd,ntay,n_svd
 
 
+      if(k_ener.eq.0)call prof_astra()
 
 
 2000	continue
@@ -2100,8 +2101,8 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
       if(k_dens_ext.eq.1)call dens_corr()
 	end if
 
-      if(k_ener.eq.0)call prof_astra()
 	if(k_ener.ne.1)call enit(n)
+      if(k_ener.eq.0)call prof_astra()
 !      if(k_ener.eq.0)call prof_astra_hl()
 
 c	if(q(2).le.0.7)call zyb(n,ires)
@@ -2150,6 +2151,8 @@ c	      read(*,*)
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
       if(k_dens_ext.eq.1)call dens_corr()
       end if
+
+      if(k_ener.eq.0)call prof_astra()
       
 	   call pp_calc()
 	   call pff_calc()

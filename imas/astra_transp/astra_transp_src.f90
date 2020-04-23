@@ -72,7 +72,8 @@ print *,'  Astra sources tt n',tt,n
 !-----------------------------------  inputs---
      &  c_input1,c_input2, &
 !------------------------------------outputs
-     &  c_output1,c_output2,c_output3)
+     &  c_output1,c_output2,c_output3, &
+     &  tt)
 
 
 

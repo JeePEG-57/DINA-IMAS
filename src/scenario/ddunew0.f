@@ -80,7 +80,7 @@ c
 c
         sig0_new=9./(4.*pi*sig0)*1.e4
         
-        key_sig_coef=1.d0
+       ! key_sig_coef=1.d0
 
         if(kpr.eq.1)print *,' n rs0 next==',n,rs0,next
 
@@ -161,10 +161,13 @@ c       f(i)=0.5*(fx(i)+fx(i-1))
 	end do
 
 	mps='dmn'
-        if(kpr.eq.1)print 71,mps,(dmn(i),i=1,n)
+!        if(kpr.eq.1)print 71,mps,(dmn(i),i=1,n)
 	mps='dm0'
-        if(kpr.eq.1)print 71,mps,(dm0(i),i=1,n)
+!        if(kpr.eq.1)print 71,mps,(dm0(i),i=1,n)
         
+       	mps='sigk'
+        if(kpr.eq.1)print 71,mps,(sigk(i),i=1,n)
+
          DO  I=2,N
         psi(i)=(dm0(i)-dm0(i-1))/ha(i)
         Q(I)=-PFI(I)/PSI(I)
@@ -172,9 +175,14 @@ c       f(i)=0.5*(fx(i)+fx(i-1))
         end do
         
         	mps='q'
-        if(kpr.eq.1)print 71,mps,(q(i),i=1,n)
+!        if(kpr.eq.1)print 71,mps,(q(i),i=1,n)
 
-      if(k_ener.eq.0)then
+       	mps='zeff'
+        if(kpr.eq.1)print 71,mps,(zeff(i),i=1,n)
+
+
+
+      if(k_ener.eq.-1)then
 
 	mps='sigma_jetto'
         if(kpr.eq.1)print 71,mps,(sigma_jetto(i),i=1,n)
@@ -226,6 +234,9 @@ ccc        if(tt.gt.50.e3)coef_sigm=1.5
 
       end if ! k_ener=0
 
+	mps='sigk'
+      if(kpr.eq.1)print 71,mps,(sigk(i),i=1,n)
+
 c
 c
 	ajb(2)=0.5*ajb(3)
@@ -245,7 +256,7 @@ ccc	if(ntay.lt.999999)kbu=0
         if(kpr.eq.1)print *,'kuv kbu=',kuv,kbu
 
 
-      if(k_ener.eq.0)then
+      if(k_ener.eq.-1)then
       
         TXX=TE0(1)
         sigk_jetto1(1)=sigma_jetto(1)*1.2566e-7*sig0/txx**1.5
@@ -273,7 +284,7 @@ c********
 c	sigk(i)=1./zeff(i)
 c       sigk(i)=1.
 
-      if(k_ener.eq.0)then
+      if(k_ener.eq.-1)then
 
         sigk_jetto1(i)=sigma_jetto(i)*1.2566e-7*sig0/(txx**1.5)
 
@@ -291,9 +302,9 @@ c!!!!!!!!!!	if(tt.gt.150.e3)tsig(i)=txx**1.5*sigk(i)
 
       end if  ! k_ener=0
 
-      if(k_ener.eq.1)then
+!      if(k_ener.eq.1)then
 	tsig(i)=txx**1.5*sigk(i)/(1.+coef_sigk*ai(i))
-      end if  ! k_ener=1
+!      end if  ! k_ener=1
 
 	end do
 	mps='sigm'

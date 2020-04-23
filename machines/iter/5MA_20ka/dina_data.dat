@@ -750,6 +750,7 @@ tay_dw		!   dw.dat
    5.			
 pcchp_end
  0.4
-
+k_ener_ext k_dens_ext k_ajb_ext ! transp_ext 
+0          1          0
 
 

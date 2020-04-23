@@ -7,7 +7,7 @@ addpath ..
 
 if 1
     
-PSString = 'pulse_schedule';
+%PSString = 'pulse_schedule';
 EQString = 'equilibrium';
 
 
@@ -16,7 +16,7 @@ Run = 6;
 
 disp('Loading IDS...');
 
-pulse_schedule = LoadIDS(Shot, Run, PSString);
+%pulse_schedule = LoadIDS(Shot, Run, PSString);
 equilibrium = LoadIDS(Shot, Run, EQString);
 
 %assignin('base', 'pulse_schedule', pulse_schedule);

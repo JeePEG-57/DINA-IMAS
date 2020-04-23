@@ -90,7 +90,7 @@ yGLFS = 0.d0
 
 
      	if(kpr.eq.1)print *,' YTe,YTi=',YTe,YTi
-     	if(kpr.eq.1)print *,' YGsep,Yne=',YGsep,Yne
+     	if(kpr.eq.1)print *,' YGsep,Yne Yndt=',YGsep,Yne,Yndt
 
 
 
@@ -176,7 +176,7 @@ bndcond_out%solver_1d(1)%equation(8)%boundary_condition(1)%position = rho_tor_no
 !Write values to file
 5002    format (192(1x,1pe12.4e3))
 
-    return
+!    return
     
 	i_en=i_en+1
         if(i_en.eq.1)then

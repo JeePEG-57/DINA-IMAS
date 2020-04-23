@@ -63,8 +63,8 @@
 !           read (41,*)tt_kavin,tt_dw
 !  		   close (41)
 
-           tt_kavin=3500.
-           tt_dw=1.e+10
+           tt_kavin=3500.d0
+           tt_dw=1.d+10
 
         if(kpr.eq.1)print *,'tt_kavin,tt_dw =',
      *  tt_kavin,tt_dw
@@ -87,9 +87,10 @@
 !      if(kpr.eq.1)print 71,apr,(ai(i),i=1,n) 
 
 
-       if(k_jetto.eq.1.and.ih_imas.eq.0)then 
+       if(ih_imas.eq.1)then 
+        k_jetto=1
         call prof_astra()
-        ih_imas=1
+        ih_imas=2
        end if
 
       end if
@@ -146,10 +147,26 @@
       if(tt.gt.tt_dina.and.k_jetto.eq.0)then
 !      if(tt.gt.2250.)then
 !      if(tt.gt.5250.)then
+
+      i_en_ext=i_en_ext+1
+
+!      k_ener_ext=0
+!      k_dens_ext=0
+!      k_ajb_ext=0
+
+      if(i_en_ext.eq.1)then
+          read (49,*) 
+          read (49,*)k_ener_ext, k_dens_ext,k_ajb_ext
+      end if
+
+      if(kpr.eq.1)print *,' FOR_EXT k_ener_ext k_dens_ext k_ajb_ext=='
+
+      if(kpr.eq.1)print *,' k_ener_ext k_dens_ext k_ajb_ext==',
+     *   k_ener_ext,k_dens_ext,k_ajb_ext
       
-      k_ener_ext=1
-      k_dens_ext=1
-      k_ajb_ext=1
+!      k_ener_ext=1
+!      k_dens_ext=1
+!      k_ajb_ext=1
       
       nn2=n
       
@@ -287,7 +304,9 @@ c  i_fil=0  old case without reconstruction....
 	tt=tt+tay
 
 
-!      call write_tran1()
+        if(tt.gt.1520.)then
+        call write_tran1()
+        end if
 
 
 

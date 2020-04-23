@@ -94,6 +94,8 @@ print *,' run number =',prescribedrun
 print *,' Enter maximum steps number'
 !read (*,*)imax
 imax=1000000
+imax=16000
+
 print *,' imax =',imax
 
 print *,' Enter maximum time'

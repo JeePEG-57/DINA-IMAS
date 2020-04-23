@@ -35,6 +35,8 @@ real(ids_real) :: pd_b,pt_b
 
 n = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
 	
+tt=core_profiles0%time(1) 
+
 !tt = core_sources0%source(1)%profiles_1d(1)%time
 
 !qqe(1:n) = core_sources0%source(1)%profiles_1d(1)%electrons%particles(1:n)
@@ -111,7 +113,7 @@ qqe(1:n) = src_in(2*n+1:3*n)
 !-----------------------------------  inputs---
      &  c_input1,c_input2, &
 !------------------------------------outputs
-     &  c_output1,c_output2,c_output3)
+     &  c_output1,c_output2,c_output3, tt)
 
 
 

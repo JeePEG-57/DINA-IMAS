@@ -83,28 +83,28 @@ c      U=100.
 c	print *,' file in.dat is reading'
 
 !	open (unit=41,file='in.dat',form='formatted')
-        U=15.
-        tay_ee=0.
-        tay_ei=0.
+        U=15.d0
+        tay_ee=0.d0
+        tay_ei=0.d0
         alf_n=0.84
-        p=1e-3
-        R=5.68 
-        a=1.6 
-        R_ves=6.2
-        a_ves=2.09 
-        e_ves=1.9
-        Z=0.
-        psi_n=0.99
-        I_p=1e-3
-        T_e=2.e-3 
-        T_i=2.e-3 
-        gam=5.e-2
-        elong=1.
-        Bt=4.9
+        p=1.d-3
+        R=5.68d0 
+        a=1.6d0 
+        R_ves=6.2d0
+        a_ves=2.09d0 
+        e_ves=1.9d0
+        Z=0.d0
+        psi_n=0.99d0
+        I_p=1.d-3
+        T_e=2.d-3 
+        T_i=2.d-3 
+        gam=5.d-2
+        elong=1.d0
+        Bt=4.9d0
         i_temp=1 
-        alfa_loss=1.
-        g_gain=50.
-        tay_lo=2.000e5
+        alfa_loss=1.d0
+        g_gain=50.d0
+        tay_lo=2.000d5
 
 
 	t_a=tay_ei
@@ -172,6 +172,7 @@ c      e_ves=3.
 c------------------------------------
 
       V_v=2.*pi*R_ves*pi*a_ves**2*e_ves
+        print *,' pi r_ves a_ves e_ves=',pi,r_ves,a_ves,e_ves
 
 c	print *,' r a elong ==',r,a,elong
 

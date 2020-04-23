@@ -266,12 +266,12 @@ c	print *,' HYU!!!!'
 
 !           open (unit=41,file='t_end.dat',form='formatted') 
 !           read (41,*)
-           t_end=1.2e3 
+           t_end=1.2d3 
 !           read (41,*)
-           tt_br=101.99
+           tt_br=101.99d0
            
 !           read (41,*)
-           time_end=2.5e5
+           time_end=2.5d5
 
 	      next_in=1
 
@@ -356,8 +356,8 @@ c	stop
       end if
       
 
-!	CALL TOK()
 	CALL TOK_new()
+       ! call tok()
 
 	call cam_t()   
 
@@ -2422,20 +2422,20 @@ c	if(dabs(delzmag).ge.3.)then
 	next=1
 	
 !	read (49,*)
-	tt=0.
-	tay=2.
-	t_end=700.e5
-	rs0=620.
-	psend=-1.e4
+	tt=0.d0
+	tay=2.d0
+	t_end=700.d5
+	rs0=620.d0
+	psend=-1.d4
 	
 !	read (49,*)
 	i_graph=0	
 	
 !	read (49,*)
-	alfa0=4.E-2
-	beta=0.1
-	alfa1=-1.
-	omega=0.33
+	alfa0=4.d-2
+	beta=0.1d0
+	alfa1=-1.d0
+	omega=0.33d0
 	
 !	read (49,*)
 	iread=0 
@@ -2445,44 +2445,44 @@ c	if(dabs(delzmag).ge.3.)then
 	
 	
 !	read (49,*)
-	alfax(1)=1.00
-	alfax(2)=-1.22145 
-	betax(1)=17.4468
-	betax(2)=-21.31107
+	alfax(1)=1.00d0
+	alfax(2)=-1.22145d0 
+	betax(1)=17.4468d0
+	betax(2)=-21.31107d0
 
 
 !	read (49,*)
-	pw_1=4.
-	pw_2=0.8
+	pw_1=4.d0
+	pw_2=0.8d0
          
 !	read (49,*)
-	te_a=956.471
-	ti_a=214.0269
-	te_b=10. 
-	ti_b=10. 
-	pw_e=2.
+	te_a=956.471d0
+	ti_a=214.0269d0
+	te_b=10.d0 
+	ti_b=10.d0 
+	pw_e=2.d0
 
 
 !	read (49,*)
-	pd0_a=0.3
-	pt0_a=0.3
-	pd0_b=0.2
-	pt0_b=0.2 
-	pw_p=3.
+	pd0_a=0.3d0
+	pt0_a=0.3d0
+	pd0_b=0.2d0
+	pt0_b=0.2d0 
+	pw_p=3.d0
 	
 !	read (49,*)
-	zeff_a=1.8
-	zeff_b=1.8
+	zeff_a=1.8d0
+	zeff_b=1.8d0
 	
 !	read (49,*)
-	sig0=5.3715E3
+	sig0=5.3715d3
 	
 !	read (49,*)
-	zhib=4.5e-1
-	tego=100.
-	zalfa= 4. 
-	talfa= 500.
-	alp1=1.
+	zhib=4.5d-1
+	tego=100.d0
+	zalfa= 4.d0 
+	talfa= 500.d0
+	alp1=1.d0
 	
                       
 	
@@ -2498,13 +2498,13 @@ c	if(dabs(delzmag).ge.3.)then
 	
 	
 !	read (49,*)
-	edop=20.
-	ppp= 1.e-0
-	eee=40.e3 
-	dd=1.
-	dt=0.
-	dh=0.
-	df= 0.
+	edop=20.d0
+	ppp= 1.d-0
+	eee=40.d3 
+	dd=1.d0
+	dt=0.d0
+	dh=0.d0
+	df= 0.d0
                           
 
 !	read (49,*)
@@ -2519,24 +2519,24 @@ c	if(dabs(delzmag).ge.3.)then
 	
 	
 !	read (49,*)
-	eps0=1.e-8
-	eps1=1.e-3 
-	eps2=1.e-5
+	eps0=1.d-8
+	eps1=1.d-3 
+	eps2=1.d-5
 	
 !	read (49,*)
-	anom_e=1.
-	anom_i=1.0
+	anom_e=1.d0
+	anom_i=1.0d0
 	key_t11=1
 	kcchp=1
                   
 	
 !	read (49,*)
-	emoe=0.2
-	emoq=0.0
+	emoe=0.2d0
+	emoq=0.0d0
     
 	
 !	read (49,*)
-	udd=0.
+	udd=0.d0
 	
 !	read (49,*)
 	k_ener=1
@@ -2544,12 +2544,12 @@ c	if(dabs(delzmag).ge.3.)then
 	
 	
 !	read (49,*)
-	t_dop=5.
+	t_dop=5.d0
 
 !	read (49,*)
-	r0=588.
-	z0=0.
-	zref=0.
+	r0=588.d0
+	z0=0.d0
+	zref=0.d0
 
 	
 !	read (49,*)
@@ -2563,21 +2563,21 @@ c	if(dabs(delzmag).ge.3.)then
 	
 	
 !	read (49,*)
-	q_vde=3.0
+	q_vde=3.0d0
 	
 !	read (49,*)
-	tay_00=0.1
-	tay_th=0.05
-	t_disr=4.
+	tay_00=0.1d0
+	tay_th=0.05d0
+	t_disr=4.d0
 	
 !	read (49,*)
-	d_tpl=6.
-	tpl_end=1500.
+	d_tpl=6.d0
+	tpl_end=1500.d0
 
 	
 !	read (49,*)
-	c_h=1.
-	d_halo=10.
+	c_h=1.d0
+	d_halo=10.d0
 	
 !	read (49,*)
 	kmaj=-1
@@ -2587,8 +2587,8 @@ c	if(dabs(delzmag).ge.3.)then
 	nmix=13
 	
 !	read (49,*)
-	hpart=1.1
-	te_h=0.5
+	hpart=1.1d0
+	te_h=0.5d0
 
 !	read (49,*)
 	i_d3d=0
@@ -2602,13 +2602,13 @@ c	if(dabs(delzmag).ge.3.)then
 	i_con=0
 	
 !	read (49,*)
-	tpl=1.
-	bt0=53.0
-	eu=160.
-	eksk=1.
+	tpl=1.d0
+	bt0=53.0d0
+	eu=160.d0
+	eksk=1.d0
 	
 !	read (49,*)
-	e_sep=5.e-3
+	e_sep=5.d-3
 	
 !	read (49,*)
 	i_beta=0
@@ -2618,7 +2618,7 @@ c	if(dabs(delzmag).ge.3.)then
 	i_br=0
 	
 !	read (49,*)
-	ind_r(1)=14
+	ind_r(1)=15
 	ind_r(2)=16 
 	ind_z(1)=13
 	ind_z(2)=14 
@@ -2627,7 +2627,7 @@ c	if(dabs(delzmag).ge.3.)then
 	key_ef=0
 	
 !	read (49,*)
-	res_coef=1.
+	res_coef=1.d0
 	
 !	read (49,*)
 	n_polar=2
@@ -2687,8 +2687,8 @@ c	read (*,*)
  !    	open(unit=2,file='time',form='formatted')
         if(kpr.eq.1)print *,' begin time reading'
 !	read (49,*)
-        t_vde=1700.e5 
- 	  time_disr=9999.e5
+        t_vde=1700.d5 
+ 	  time_disr=9999.d5
 
         if(kpr.eq.1)print *,' t_vde time_disr',t_vde,time_disr
 

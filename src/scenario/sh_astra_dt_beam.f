@@ -23,7 +23,7 @@
       
       end if
       
-      if(i_en.eq.1)then
+      if(i_en.eq.-1)then
 
           open (unit=40,file='jetto_time.dat',form='formatted') 
           read (40,*) 
@@ -43,30 +43,16 @@
       end if
       
       if(kpr.eq.1)print *,' kpr k_elm==',kpr,k_elm
-      if(kpr.eq.1)print *,' tt_elm tt_dw=',tt_elm,tt_dw
+!      if(kpr.eq.1)print *,' tt_elm tt_dw=',tt_elm,tt_dw
       
       tt_prof=tt
-	if(tt.ge.tt_elm-tay)then
-	   tt_prof=tt_elm-tay
-      end if
-      
-	if(tt.ge.tt_dw)then
-	   tt_prof=tt+tt_elm-tt_dw
-      end if
-
-	if(k_elm.eq.1)then
-!	   tt_prof=tt-(75.d0-70.d0)*1.d3	   
-      end if
-      
-      if(tt_prof.le.1.d-1)then
-      tt_prof=1.d-1
-      end if
       
 !      kpr=0
       apr='+ai-' 
       if(kpr.eq.1)print 71,apr,(ai(i),i=1,n) 
 
-     	call prof_astra_sigma(tt_prof,n,sigma_jetto,ai,num,kpr)
+     	call prof_astra_sigma(tt_prof,n,sigk,ai,num,kpr)
+!     	call prof_astra_sigma(tt_prof,n,sigma_jetto,ai,num,kpr)
 
 
 	call prof_astra_nb(tt_prof,n,aj0,a,num,kpr)
@@ -218,7 +204,7 @@ ccccccc      coef_astra=1.28
 	i_sh=i_sh+ih_imas
       end if
 
-      coef=1.d-1
+      coef=1.d-0
 
 	if(i_sh.eq.1)then
 
@@ -330,7 +316,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
 
       end do
       
@@ -501,7 +488,8 @@ c
       
 	do i=2,n
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++a-' 
@@ -661,7 +649,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++aj0_b-' 
@@ -817,7 +806,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++aj0_ecd-' 
@@ -863,7 +853,8 @@ c	read (*,*)
 	i_sh=i_sh+ih_imas
       end if
 
-      coef=1.d3
+!      coef=1.d3
+      coef=1.d0
 	if(i_sh.eq.1)then
 
       n_t=9999
@@ -969,14 +960,15 @@ c
 	 end do
 
 
-      apr='++ppz-' 
-      if(kpr.eq.-1)print 71,apr,(ppz(i),i=1,nn) 
+      apr='++ppzTe-' 
+      if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nn) 
 
       te0(1)=ppz(1)
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++te0-' 
@@ -1022,7 +1014,8 @@ c	read (*,*)
 	i_sh=i_sh+ih_imas
       end if
 
-      coef=1.d3
+!      coef=1.d3
+      coef=1.d0
 
 	if(i_sh.eq.1)then
 
@@ -1132,7 +1125,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++tq0-' 
@@ -1291,7 +1285,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++pne-' 
@@ -1450,7 +1445,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++ndt-' 
@@ -1611,7 +1607,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++zeff-' 
@@ -1783,7 +1780,8 @@ c
       te0(n)=ppz(nn)
 	do i=2,n-1
 !           call feeti(nn,ppz,te0(i),poa,a(i))
-           call linear(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
       end do
       
         apr='++p-' 

@@ -1,8 +1,8 @@
-kpr  ! kpr.dat
+kpr  ! kpr_ext.dat
 1
 n    tay  t_end  G      d_G   tay1   dif_coef  ! tay_time.dat
 50   5.   5000.  500.   100.   10.   10.1
-ktime  !dens.dat
+ktime  !dens_ext.dat
 5
 time[s]  density[19]
   0.000000e+000    0.25357

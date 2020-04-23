@@ -1058,7 +1058,11 @@ flush(6)
       print 71,apr,(pd0(i),i=1,n) 
       apr='++pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
-    
+       apr='++zeff-' 
+      print 71,apr,(zeff(i),i=1,n1) 
+       apr='++sigk-' 
+      print 71,apr,(sigk(i),i=1,n1) 
+   
     print *,' end dina_imas'
 
       

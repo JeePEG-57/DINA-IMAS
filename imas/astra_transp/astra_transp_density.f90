@@ -20,25 +20,32 @@ real(ids_real) :: Yne, Yndt, YnHe
 real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 
+real(ids_real) :: tt
+real(ids_real) :: pd_b,pt_b
 
 
 n = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
 
+tt=core_profiles0%time(1) 
 
 !Note *1.d-19 gain. Remember that below entire profile assignment will overwrite n-th value
-! if (associated(bndcond_in%solver_1d)) then
-!     write(*,*) 'dina_imas : boundary conditions are found'
-!  Yne = bndcond_in%solver_1d(1)%equation(2)%boundary_condition(1)%value(1)*1.d-19
-!  Yndt = bndcond_in%solver_1d(1)%equation(6)%boundary_condition(1)%value(1)*1.d-19
-!  YnHe = bndcond_in%solver_1d(1)%equation(8)%boundary_condition(1)%value(1)*1.d-19
+ if (associated(bndcond_in%solver_1d)) then
+     write(*,*) 'dina_transp_density : boundary conditions are found'
+  Yne = bndcond_in%solver_1d(1)%equation(2)%boundary_condition(1)%value(1)*1.d-19
+  Yndt = bndcond_in%solver_1d(1)%equation(6)%boundary_condition(1)%value(1)*1.d-19
+  YnHe = bndcond_in%solver_1d(1)%equation(8)%boundary_condition(1)%value(1)*1.d-19
 !  
-!  pne(n) = Yne
-!  pd0(n) = Yndt*0.5d0
-!  pt0(n) = Yndt*0.5d0
-!
-!      write(*,*) 'pne(n) pd0(n) pt0(n)= ', pne(n), pd0(n), pt0(n)
+  pne(n) = Yne
+  pd0(n) = Yndt*0.5d0
+  pt0(n) = Yndt*0.5d0
+!  
+       write(*,*) 'pne(n) pd0(n) pt0(n)= ', pne(n), pd0(n), pt0(n)
+
+    pd_b= pd0(n)
+    pt_b=pt0(n)
+
 ! 
-! end if
+ end if
 
 
 ! te0(1:n) = core_profiles0%profiles_1d(1)%electrons%temperature(1:n)
@@ -49,7 +56,8 @@ n = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
 !-----------------------------------  inputs---
      &  c_input1,c_input2, &
 !------------------------------------outputs
-     &  c_output1,c_output2,c_output3)
+     &  c_output1,c_output2,c_output3, &
+     &  tt,pd_b,pt_b)
 
 
 call ids_copy(core_profiles0,core_profiles)

@@ -31,17 +31,27 @@
 	character *12 apr
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
-	ppch=0.
+	ppch1=0.
+	ppch2=0.
 	vv=0.
 	do i=2,n
       VV=VV+VI(I)*HA(I)
-      p_ion=0.5*(Pd0(I)+Pd0(I-1))
-      p_ion=p_ion+0.5*(Pt0(I)+Pt0(I-1))
+      p_ion1=0.5*(Pd0(I)+Pd0(I-1))
+      p_ion2=0.5*(Pt0(I)+Pt0(I-1))
 !      PPch=PPch+0.5*(PNE(I)+PNE(I-1))*VI(I)*HA(I)
-      PPch=PPch+p_ion*VI(I)*HA(I)
+      PPch1=PPch1+p_ion1*VI(I)*HA(I)
+      PPch2=PPch2+p_ion2*VI(I)*HA(I)
 	end do
-        PCch=PPch/VV
+        PCch1=PPch1/VV
+        PCch2=PPch2/VV
+        pcch=pcch1+pcch2
+        
+	if(kpr.eq.1)print *,'===1 pcch1 pcch2===',pcch1,pcch2
 	if(kpr.eq.1)print *,'===1 pcchp pcch=kcchp===',pcchp,pcch,kcchp
+	if(kpr.eq.1)print *,'===1 vv n===',vv*1.e-6,n
+
+        if(kpr.eq.1)print *,' pd1 pd2=',pd0(1),pd0(2)
+        if(kpr.eq.1)print *,' pt1 pt2=',pt0(1),pt0(2)
 
 !!!	if(ntay.lt.2)pcchp=pcch
 

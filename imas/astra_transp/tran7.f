@@ -3,7 +3,8 @@
      *  c_input1,c_input2,
 !     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
 !------------------------------------outputs
-     *  c_output1,c_output2,c_output3)
+     *  c_output1,c_output2,c_output3,
+     *  tt_in)
 
 cDEC$ ATTRIBUTES DLLEXPORT::  transp7
 
@@ -29,6 +30,9 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp7
 
 !------------------------------------inputs
             
+      tt=tt_in*1.d3
+
+      if(kpr.eq.1)print *,' tt_in tt=',tt_in,tt
 
 
       i_en=i_en+1

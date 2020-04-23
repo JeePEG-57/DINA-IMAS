@@ -3,7 +3,9 @@
      *  c_input1,c_input2,
 !     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
 !------------------------------------outputs
-     *  c_output1,c_output2,c_output3)
+     *  c_output1,c_output2,c_output3,
+     *  tt_in,pd_b,pt_b)
+
 
 cDEC$ ATTRIBUTES DLLEXPORT::  transp6
 
@@ -30,6 +32,13 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp6
 !------------------------------------inputs
 
 
+!      tt_in=c_input1(1)
+
+      tt=tt_in*1.d3
+
+
+      if(kpr.eq.1)print *,' tt_in tt=',tt_in,tt
+      if(kpr.eq.1)print *,' pd_b,pt_b=',pd_b,pt_b
 
       i_en=i_en+1
       if(i_en.eq.1)then
@@ -189,6 +198,9 @@ c-------
       yGNBI=0.1
       yL_OH=0
 
+      pd0(nn2)=pd_b
+      pt0(nn2)=pt_b
+      
       do i=1,nn2
       pne(i)=pd0(i)+pt0(i)
 	end do
@@ -224,6 +236,8 @@ c-------
       apr='sd0-' 
       if(kpr.eq.1)print 71,apr,(sd0(i),i=1,nn2) 
 
+      if(kpr.eq.1)print *,' pt_n pt_n=',pt0(nn2),pt0(nn2)
+
       CALL TP(N)
       apr='pd0-' 
       if(kpr.eq.1)print 71,apr,(pd0(i),i=1,nn2) 
@@ -252,6 +266,10 @@ c-------
 
 !      ntay=ntay+1
 
+      do i=1,nn2
+      pne(i)=pd0(i)+pt0(i)
+	end do
+
       DO I=1,n
     	c_output1(I)=pd0(i)
     	c_output2(I)=pt0(i)
@@ -261,7 +279,7 @@ c-------
       call DOPP()
       call time_out()
 
-        tt=tt+tay
+!        tt=tt+tay
         ntay=ntay+1
 
  !     stop      
