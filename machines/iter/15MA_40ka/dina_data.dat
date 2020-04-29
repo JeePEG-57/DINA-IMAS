@@ -763,7 +763,7 @@ tay_simul[ms]   ! tay_simul.dat
 10.             
 tay_dw[ms]              !   dw.dat
    5.                   
-pcchp_end[19]
+pcchp_end[19] ! pcchp_end.dat
  5.
 k_ener_ext k_dens_ext k_ajb_ext ! transp_ext.dat 
 0          1          0

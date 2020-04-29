@@ -667,11 +667,16 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.CreateInputTab(parentObject, [params], params["title"])
 
         # dw.dat
-        params = self.ReadParametersSet(f, 2)
+        params = self.ReadParameters(f)
         self.DINAData.append(params)
-        self.CreateInputTab(parentObject, params["data"], params["title"])
+        self.CreateInputTab(parentObject, [params], params["title"])
         
-        # transp_ext
+        # pcchp_end.dat
+        params = self.ReadParameters(f)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        # transp_ext.dat
         params = self.ReadParameters(f)
         self.DINAData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])        
