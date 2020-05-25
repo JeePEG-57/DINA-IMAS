@@ -140,7 +140,7 @@ write(*,*) 'dina_imas loop, first_call = ', first_call, loop_count
 
 print *,' Ip==',equilibrium0%time_slice(1)%global_quantities%ip
 
-if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e6) then
+if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e5) then
 
 
       n_input1=2
@@ -167,6 +167,81 @@ if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e6) then
 	do i=1,npf
 	  pf(i) =  pf_active0%coil(i)%current%data(1)
 	enddo
+     
+     
+  
+  
+  
+     
+ fluxarr(1:ngrid,1:nact) = em_coupling0%mutual_grid_active
+ vesarr(1:ngrid,1:npass) = em_coupling0%mutual_grid_passive
+
+ vesgreen(1:nflux,1:npass) = em_coupling0%mutual_loops_passive  
+ vesprobe(1:nbpol,1:npass) = em_coupling0%field_probes_passive 
+
+ pfgreen(1:nflux,1:nact) = em_coupling0%mutual_loops_active  
+ pfprobe(1:nbpol,1:nact) = em_coupling0%field_probes_active  
+
+ pfind(1:nact,1:nact) = em_coupling0%mutual_active_active 
+ pmj(1:npass,1:npass) = em_coupling0%mutual_passive_passive
+ pfc(1:npass,1:nact) = em_coupling0%mutual_passive_active 
+
+do j=1,nflux
+  pslgreen(1:ngrid,j) = em_coupling0%mutual_loops_grid(j,1:ngrid)
+end do
+do j=1,nbpol
+  bprgreen(1:ngrid,j) = em_coupling0%field_probes_grid(j,1:ngrid)
+end do     
+
+
+
+nact=size(em_coupling0%mutual_grid_active,2)
+print *,'size em_coupling0%mutual_grid_active',nact
+npass=size(em_coupling0%mutual_grid_passive,2)
+print *,'size em_coupling0%mutual_grid_passive',npass
+
+nflux=size(em_coupling0%mutual_loops_grid,1)
+print *,'em_coupling0%mutual_loops_grid 1',nflux
+nbpol=size(em_coupling0%field_probes_grid,1)
+print *,'em_coupling0%field_probes_grid 1',nbpol    
+    
+ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
+print *,'equilibrium0%coordinate_system%r 1',ke
+
+
+!        npf=nact
+!        ncam=npass
+        kloop=nflux
+        kprobe=nbpol  
+    
+    
+pfres(1:nact) = pf_active0%coil(1:nact)%resistance
+rcam(1:npass) = pf_passive0%loop(1:npass)%resistance
+
+
+xu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)
+yu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)
+
+x(1:nr)=equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr) ![m]
+y(1:nz)=equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz) ![m]
+
+gridrange(1)=y(1)
+gridrange(2)=y(nz)
+gridrange(3)=x(1)
+gridrange(4)=x(nr)    
+    
+    
+    
+     call  dina_v96_in(ncam,npf,kloop,kprobe,&
+&       gridrange,nact,npass,&
+&       fluxarr,vesarr, pslgreen,bprgreen,&
+&       pfind,pmj,pfc, pfres,rcam,&
+&       xu,yu,ke,key,&
+&   pfgreen,vesgreen,pfprobe,&
+&   vesprobe,ngrid)     
+     
+     
+     
      
      
      call dina_input(tt,tpl, n,pstab, pptab,fptab &

@@ -16,7 +16,7 @@ V=$(S)
 os=		a_dina_equi.o \
 		bispl.o bispla.o bound.o brz.o  bunema.o \
 		diter_1.o fit.o flux_pl.o gr_psi_d_pc.o green_imas.o inh.o \
-		map.o n_equi.o ndop_4.o neq0_sep_lim_32.o neqm.o obrm.o \
+		map.o n_dina_imas.o n_equi.o ndop_4.o neq0_sep_lim_32.o neqm.o obrm.o \
 		oosep_4.o out42_for.o pet.o pid.o pers2.o sh.o sh1_n2.o\
 		sh_d3d.o uuu.o zca_tsp.o zcam_d3d.o zcamit.o
 		 
@@ -81,7 +81,8 @@ map.o:		$(S)map.f
 		$(f2c) -c   -w    $(S)map.f
 n_equi.o:	n_equi.f new_com.inc
 		$(f2c) -c  -w  n_equi.f
-
+n_dina_imas.o:	n_dina_imas.f new_com.inc
+		$(f2c) -c  -w  n_dina_imas.f
 ndop_4.o:	$(S)ndop_4.f
 		$(f2c) -c   -w    $(S)ndop_4.f
 neq0_sep_lim_32.o:	$(S)neq0_sep_lim_32.f

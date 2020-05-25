@@ -9,7 +9,7 @@ subroutine dina_imas(&
   &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
-  & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+  & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
   & ,summary &
   & ,arr_in1, arr_out1 )
 
@@ -20,7 +20,7 @@ implicit none
 
 
 ! trees are static or dynamic; if not defined, they are static
-type (ids_em_coupling)  :: em_coupling0
+type (ids_em_coupling)  :: em_coupling0, em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
@@ -237,57 +237,6 @@ flush(6)
 
   flush(6)
 
-allocate(em_coupling0%mutual_grid_active(ngrid,nact))
-allocate(em_coupling0%mutual_grid_passive(ngrid,npass))
-
-allocate(em_coupling0%mutual_loops_passive(nflux,npass))
-allocate(em_coupling0%field_probes_passive(nbpol,npass))
-
-allocate(em_coupling0%mutual_loops_active(nflux,nact))
-allocate(em_coupling0%field_probes_active(nbpol,nact))
-
-allocate(em_coupling0%mutual_active_active(nact,nact))
-allocate(em_coupling0%mutual_passive_passive(npass,npass))
-allocate(em_coupling0%mutual_passive_active(npass,nact))
-
-allocate(em_coupling0%mutual_loops_grid(nflux,ngrid))
-allocate(em_coupling0%field_probes_grid(nbpol,ngrid))
-
-
-allocate(em_coupling0%time(1))
-
-
-print *,' end allocation em_coupling'
-
-flush(6)
-
-em_coupling0%ids_properties%homogeneous_time = 1
-
-em_coupling0%mutual_grid_active = fluxarr(1:ngrid,1:nact)
-em_coupling0%mutual_grid_passive = vesarr(1:ngrid,1:npass)
-
-em_coupling0%mutual_loops_passive = vesgreen(1:nflux,1:npass)
-em_coupling0%field_probes_passive = vesprobe(1:nbpol,1:npass)
-
-em_coupling0%mutual_loops_active = pfgreen(1:nflux,1:nact)
-em_coupling0%field_probes_active = pfprobe(1:nbpol,1:nact)
-
-em_coupling0%mutual_active_active = pfind(1:nact,1:nact) 
-em_coupling0%mutual_passive_passive = pmj(1:npass,1:npass)
-em_coupling0%mutual_passive_active = pfc(1:npass,1:nact)
-
-do j=1,nflux
-em_coupling0%mutual_loops_grid(j,1:ngrid)=pslgreen(1:ngrid,j)
-end do
-do j=1,nbpol
-em_coupling0%field_probes_grid(j,1:ngrid)=bprgreen(1:ngrid,j)
-end do
-
-em_coupling0%time(1) = 0.d0
-
-
-print *,' em_coupling filled'
-flush(6)
 
 pf_active0%ids_properties%homogeneous_time = 1
 pf_passive0%ids_properties%homogeneous_time = 1
@@ -340,11 +289,11 @@ print *,' equilibrium filled'
 flush(6)
 
     
-i=size(em_coupling0%mutual_loops_grid,1)
-print *,'em_coupling0%mutual_loops_grid',i
+i=size(em_coupling%mutual_loops_grid,1)
+print *,'em_coupling%mutual_loops_grid',i
 
-i=size(em_coupling0%field_probes_grid,1)
-print *,'em_coupling0%field_probes_grid',i
+i=size(em_coupling%field_probes_grid,1)
+print *,'em_coupling%field_probes_grid',i
 
 
 
@@ -610,6 +559,63 @@ write(*,*) '!!!solpsza enter'
 
 	cpu_old = cpu_new
 
+
+
+! Allocation em_coupling
+
+allocate(em_coupling%mutual_grid_active(ngrid,nact))
+allocate(em_coupling%mutual_grid_passive(ngrid,npass))
+
+allocate(em_coupling%mutual_loops_passive(nflux,npass))
+allocate(em_coupling%field_probes_passive(nbpol,npass))
+
+allocate(em_coupling%mutual_loops_active(nflux,nact))
+allocate(em_coupling%field_probes_active(nbpol,nact))
+
+allocate(em_coupling%mutual_active_active(nact,nact))
+allocate(em_coupling%mutual_passive_passive(npass,npass))
+allocate(em_coupling%mutual_passive_active(npass,nact))
+
+allocate(em_coupling%mutual_loops_grid(nflux,ngrid))
+allocate(em_coupling%field_probes_grid(nbpol,ngrid))
+
+
+allocate(em_coupling%time(1))
+
+
+print *,' end allocation em_coupling'
+
+flush(6)
+
+em_coupling%ids_properties%homogeneous_time = 1
+
+em_coupling%mutual_grid_active = fluxarr(1:ngrid,1:nact)
+em_coupling%mutual_grid_passive = vesarr(1:ngrid,1:npass)
+
+em_coupling%mutual_loops_passive = vesgreen(1:nflux,1:npass)
+em_coupling%field_probes_passive = vesprobe(1:nbpol,1:npass)
+
+em_coupling%mutual_loops_active = pfgreen(1:nflux,1:nact)
+em_coupling%field_probes_active = pfprobe(1:nbpol,1:nact)
+
+em_coupling%mutual_active_active = pfind(1:nact,1:nact) 
+em_coupling%mutual_passive_passive = pmj(1:npass,1:npass)
+em_coupling%mutual_passive_active = pfc(1:npass,1:nact)
+
+do j=1,nflux
+em_coupling%mutual_loops_grid(j,1:ngrid)=pslgreen(1:ngrid,j)
+end do
+do j=1,nbpol
+em_coupling%field_probes_grid(j,1:ngrid)=bprgreen(1:ngrid,j)
+end do
+
+em_coupling%time(1) = dina_time
+
+
+print *,' em_coupling filled'
+flush(6)	
+	
+	
 
 !write(*,*) '!!!ids_copy pf_active0 enter'
 call ids_copy(pf_active0,pf_active)
