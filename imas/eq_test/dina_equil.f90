@@ -28,7 +28,7 @@ integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
 integer,save :: kloop,kprobe, ke=57, ngrid2
 
-integer,save :: nact=30, npass=100 , nflux=60, nbpol=70, nelem = 1
+integer,save :: nact=30, npass=300 , nflux=60, nbpol=70, nelem = 1
 
 integer,save :: n_input1, n_input2, ng
 integer,save :: n_output1, n_output2
@@ -142,7 +142,6 @@ print *,' Ip==',equilibrium0%time_slice(1)%global_quantities%ip
 
 if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e5) then
 
-
       n_input1=2
 !      n_input2=15
       n_input2=38
@@ -158,16 +157,29 @@ if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e5) then
 	
 	fptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%f_df_dpsi(1:n)
 	
-	!ncam = size(pf_passive0%loop, 1)
+! 	ncam = size(pf_passive0%loop, 1)
 	do i=1,ncam
 	  tcam(i) = pf_passive0%loop(i)%current(1)
 	enddo
 	
-	!npf = size(pf_active0%coil, 1)
+! 	npf = size(pf_active0%coil, 1)
 	do i=1,npf
 	  pf(i) =  pf_active0%coil(i)%current%data(1)
 	enddo
-     
+ 
+nact=size(em_coupling0%mutual_grid_active,2)
+print *,'size em_coupling0%mutual_grid_active',nact
+npass=size(em_coupling0%mutual_grid_passive,2)
+print *,'size em_coupling0%mutual_grid_passive',npass
+
+nflux=size(em_coupling0%mutual_loops_grid,1)
+print *,'em_coupling0%mutual_loops_grid 1',nflux
+nbpol=size(em_coupling0%field_probes_grid,1)
+print *,'em_coupling0%field_probes_grid 1',nbpol    
+    
+ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
+print *,'equilibrium0%coordinate_system%r 1',ke
+	
      
 allocate(fluxarr(ngrid,nact))
 allocate(vesarr(ngrid,npass))
@@ -184,7 +196,6 @@ allocate(pfc(npass,nact))
 
 allocate(pslgreen(ngrid,nflux))
 allocate(bprgreen(ngrid,nbpol)) 
-  
   
      
  fluxarr(1:ngrid,1:nact) = em_coupling0%mutual_grid_active
@@ -207,19 +218,6 @@ do j=1,nbpol
   bprgreen(1:ngrid,j) = em_coupling0%field_probes_grid(j,1:ngrid)
 end do     
 
-nact=size(em_coupling0%mutual_grid_active,2)
-print *,'size em_coupling0%mutual_grid_active',nact
-npass=size(em_coupling0%mutual_grid_passive,2)
-print *,'size em_coupling0%mutual_grid_passive',npass
-
-nflux=size(em_coupling0%mutual_loops_grid,1)
-print *,'em_coupling0%mutual_loops_grid 1',nflux
-nbpol=size(em_coupling0%field_probes_grid,1)
-print *,'em_coupling0%field_probes_grid 1',nbpol    
-    
-ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
-print *,'equilibrium0%coordinate_system%r 1',ke
-
 !        npf=nact
 !        ncam=npass
         kloop=nflux
@@ -232,7 +230,6 @@ allocate(yu(ke))
    
 pfres(1:nact) = pf_active0%coil(1:nact)%resistance
 rcam(1:npass) = pf_passive0%loop(1:npass)%resistance
-
 
 xu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)
 yu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)

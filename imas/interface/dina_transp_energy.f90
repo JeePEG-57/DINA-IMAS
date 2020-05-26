@@ -137,8 +137,8 @@ n = size(core_sources0%source(1)%profiles_1d(1)%grid%rho_tor_norm)
 !if (allocated(core_profiles%profiles_1d(1)%ion)) then
 m = size(core_profiles%profiles_1d(1)%ion)
 do i=1,m
-	allocate(core_profiles%profiles_1d(1)%ion(m)%temperature(n))
-	core_profiles%profiles_1d(1)%ion(m)%temperature(1:n) = tq0(1:n)
+	allocate(core_profiles%profiles_1d(1)%ion(i)%temperature(n))
+	core_profiles%profiles_1d(1)%ion(i)%temperature(1:n) = tq0(1:n)
 end do
 !end if
 
