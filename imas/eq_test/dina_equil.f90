@@ -28,7 +28,7 @@ integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
 integer,save :: kloop,kprobe, ke=57, ngrid2
 
-integer,save :: nact=30, npass=300 , nflux=60, nbpol=70, nelem = 1
+integer,save :: nact=30, npass=100 , nflux=60, nbpol=70, nelem = 1
 
 integer,save :: n_input1, n_input2, ng
 integer,save :: n_output1, n_output2
@@ -169,7 +169,21 @@ if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e5) then
 	enddo
      
      
-  
+allocate(fluxarr(ngrid,nact))
+allocate(vesarr(ngrid,npass))
+
+allocate(vesgreen(nflux,npass))  
+allocate(vesprobe(nbpol,npass)) 
+
+allocate(pfgreen(nflux,nact)) 
+allocate(pfprobe(nbpol,nact))  
+
+allocate(pfind(nact,nact)) 
+allocate(pmj(npass,npass))
+allocate(pfc(npass,nact))
+
+allocate(pslgreen(ngrid,nflux))
+allocate(bprgreen(ngrid,nbpol)) 
   
   
      
@@ -193,8 +207,6 @@ do j=1,nbpol
   bprgreen(1:ngrid,j) = em_coupling0%field_probes_grid(j,1:ngrid)
 end do     
 
-
-
 nact=size(em_coupling0%mutual_grid_active,2)
 print *,'size em_coupling0%mutual_grid_active',nact
 npass=size(em_coupling0%mutual_grid_passive,2)
@@ -208,13 +220,16 @@ print *,'em_coupling0%field_probes_grid 1',nbpol
 ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
 print *,'equilibrium0%coordinate_system%r 1',ke
 
-
 !        npf=nact
 !        ncam=npass
         kloop=nflux
         kprobe=nbpol  
     
-    
+allocate(pfres(nact))
+allocate(rcam(npass))
+allocate(xu(ke))
+allocate(yu(ke))    
+   
 pfres(1:nact) = pf_active0%coil(1:nact)%resistance
 rcam(1:npass) = pf_passive0%loop(1:npass)%resistance
 
@@ -222,8 +237,10 @@ rcam(1:npass) = pf_passive0%loop(1:npass)%resistance
 xu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)
 yu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)
 
-x(1:nr)=equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr) ![m]
-y(1:nz)=equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz) ![m]
+! x(1:nr)=equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr) ![m]
+! y(1:nz)=equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz) ![m]
+x(1:nr)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim1(1:nr) ![m]
+y(1:nz)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim2(1:nz) ![m]
 
 gridrange(1)=y(1)
 gridrange(2)=y(nz)

@@ -94,5 +94,5 @@
   <BATCH>false</BATCH>
   <InitFunc>false</InitFunc>
   <fDiagnosticInfo>false</fDiagnosticInfo>
-  <useSandbox>false</useSandbox>
+  <useSandbox>true</useSandbox>
 </org.iter.imas.fc2k.ActorGenerator>
