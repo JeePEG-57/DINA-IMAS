@@ -28,13 +28,13 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>200</y>
+          <y>380</y>
           <width>1421</width>
-          <height>721</height>
+          <height>541</height>
          </rect>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="tabControlData">
          <attribute name="title">
@@ -56,17 +56,56 @@
           <string>DINA Data</string>
          </attribute>
         </widget>
+        <widget class="QWidget" name="tabTokamakData">
+         <attribute name="title">
+          <string>Tokamak Data</string>
+         </attribute>
+        </widget>
        </widget>
        <widget class="QWidget" name="gridLayoutWidget_3">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>611</width>
-          <height>181</height>
+          <width>591</width>
+          <height>351</height>
          </rect>
         </property>
-        <layout class="QGridLayout" name="layoutInputSetup" rowstretch="0,0,0,0,0,0,0,0,0,0">
+        <layout class="QGridLayout" name="layoutInputSetup" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
+         <item row="10" column="0">
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelInputPulse">
+             <property name="text">
+              <string>Pulse</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineInputRun"/>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineInputPulse"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelInputRun">
+             <property name="text">
+              <string>Run</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelInputTokamak">
+             <property name="text">
+              <string>Tokamak</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lineInputTokamak"/>
+           </item>
+          </layout>
+         </item>
          <item row="8" column="0">
           <widget class="QPushButton" name="btnSave">
            <property name="text">

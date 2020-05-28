@@ -266,27 +266,27 @@ print *,' pfs filled'
 flush(6)
 
 
-equilibrium0%ids_properties%homogeneous_time = 1
-
-equilibrium0%time_slice(1)%time = 0.0
-equilibrium0%time(1) = equilibrium0%time_slice(1)%time
-
-allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim1(nr))
-allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim2(nz))
-
-allocate(equilibrium0%time_slice(1)%coordinate_system%r(ke, 1))
-allocate(equilibrium0%time_slice(1)%coordinate_system%z(ke, 1))
-
-    equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr)=x(1:nr) ![m]
-    equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz)=y(1:nz) ![m]
-
-
-    equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)=xu(1:ke)
-    equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)=yu(1:ke)
-
-
-print *,' equilibrium filled'
-flush(6)
+! equilibrium0%ids_properties%homogeneous_time = 1
+! 
+! equilibrium0%time_slice(1)%time = 0.0
+! equilibrium0%time(1) = equilibrium0%time_slice(1)%time
+! 
+! allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim1(nr))
+! allocate(equilibrium0%time_slice(1)%coordinate_system%grid%dim2(nz))
+! 
+! allocate(equilibrium0%time_slice(1)%coordinate_system%r(ke, 1))
+! allocate(equilibrium0%time_slice(1)%coordinate_system%z(ke, 1))
+! 
+!     equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr)=x(1:nr) ![m]
+!     equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz)=y(1:nz) ![m]
+! 
+! 
+!     equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)=xu(1:ke)
+!     equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)=yu(1:ke)
+! 
+! 
+! print *,' equilibrium filled'
+! flush(6)
 
     
 i=size(em_coupling%mutual_loops_grid,1)

@@ -64,7 +64,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         super().setupUi(self)
         
         self.setWindowTitle('DINA GUI')
-         
+                
         
         self.directoryLoad = os.path.normpath(os.getcwd() + '/../../machines/iter/')
         self.directorySave = os.getenv('KEPLER')
@@ -110,6 +110,13 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         verticalLayout.addWidget(self.tabDINADataChild)        
         
     
+        self.tabTokamakDataChild = QtWidgets.QTabWidget(self.tabTokamakData)
+        self.tabTokamakDataChild.setObjectName("tabTokamakDataChild") 
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabTokamakData)
+        verticalLayout.setObjectName("tabTokamakDataLayout")       
+        verticalLayout.addWidget(self.tabTokamakDataChild) 
+
+
         self.CSHeaders = ['CSU3','CSU2','CS1','CSL2','CSL3']
         self.PFHeaders = ['PF1','PF2','PF3','PF4','PF5','PF6']
         self.coilNames = self.CSHeaders + self.PFHeaders
@@ -120,6 +127,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #workdir = os.environ['KEPLER_DIR']
         print('user is ', user)
         #print('workdir is ', workdir)
+         
+        self.lineInputPulse.setText('170')
+        self.lineInputRun.setText('1')
+        self.lineInputTokamak.setText('test')         
       
         #self.tableCurrents.itemClicked.connect(self.TableClicked)
         #self.tableCurrents.itemSelectionChanged.connect(self.tableCurrentsSelectionChanged)                
@@ -216,6 +227,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.textPulse.setPlainText('170')
         self.textRun.setPlainText('6')
         self.textUser.setPlainText(user)
+             
        
         self.outpGraph = []
         
@@ -294,6 +306,11 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
           data.append(float(table.item(i,col).text()))
           
         self.timeTraceGraph.Plot(time, data)              
+
+
+    def tableCoilsEdited(self, table):
+      table.resizeColumnsToContents()
+
         
 
     def tableSelectionChanged(self, table):
@@ -309,6 +326,120 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
 
+    def CreateInputTabCoils(self, parentObject, recordset):
+      # Coils tab
+      title = "Coils"
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+      
+      record = recordset["coils"]
+      # Table for coils data  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0)
+      
+      headerNames = [item["name"] for item in record["geometry"]]
+      headerMeta = ["Nr", "Nz", "Direction", "Circuit"]      
+      headerGeometry = ["Rc", "Zc", "dR", "dZ", "Alpha", "Beta"]
+      
+      n = len(record["geometry"])
+      m1 = 4
+      m2 = 6
+      table.setRowCount(n)
+      table.setColumnCount(m1 + m2)
+      table.setHorizontalHeaderLabels(headerMeta + headerGeometry)      
+      table.setVerticalHeaderLabels(headerNames)
+      for i in range(n):
+        for j in range(m1):
+          table.setItem(i, j, record["geometry"][i]["items_p"][j])
+        for j in range(m2):
+          table.setItem(i, m1+j, record["geometry"][i]["items_g"][j])
+      table.resizeColumnsToContents()
+      table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x))
+      
+      
+      # Table for circuit resistivities  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 1)
+      
+      n = len(record["resist"]["items"])
+      m = 1
+      table.setRowCount(n)
+      table.setColumnCount(m)
+      table.setHorizontalHeaderLabels(["Circuit Resistivity"])      
+      #table.setVerticalHeaderLabels(headerNames)
+      for i in range(n):
+        table.setItem(i, 0, record["resist"]["items"][i])
+      table.resizeColumnsToContents()
+            
+
+
+      # Vessel tab
+      title = "Vessel"
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+      
+      record = recordset["vessel"]
+      # Table for coils data  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0)
+      
+      n = len(record["geometry"])
+      
+      headerNames = [str(i+1) for i in range(n)]
+      headerMeta = ["Nr", "Nz", "Direction", "Circuit"]      
+      headerGeometry = ["Rc", "Zc", "dR", "dZ", "Alpha", "Beta"]
+           
+      m1 = 4
+      m2 = 6
+      table.setRowCount(n)
+      table.setColumnCount(m1 + m2)
+      table.setHorizontalHeaderLabels(headerMeta + headerGeometry)      
+      table.setVerticalHeaderLabels(headerNames)
+      for i in range(n):
+        for j in range(m1):
+          table.setItem(i, j, record["geometry"][i]["items_p"][j])
+        for j in range(m2):
+          table.setItem(i, m1+j, record["geometry"][i]["items_g"][j])
+      table.resizeColumnsToContents()
+      table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x))
+      
+      
+      # Table for circuit resistivities  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 1)
+      
+      n = len(record["resist"]["items"])
+      m = 1
+      table.setRowCount(n)
+      table.setColumnCount(m)
+      table.setHorizontalHeaderLabels(["Circuit Resistivity"])      
+      #table.setVerticalHeaderLabels(headerNames)
+      for i in range(n):
+        table.setItem(i, 0, record["resist"]["items"][i])
+      table.resizeColumnsToContents()
+
+
+
     def CreateInputTab(self, parentObject, setOfParams, title):
       tab = QtWidgets.QWidget()         
       tab.setObjectName("tab" + title)     
@@ -319,13 +450,13 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       self.tabInputs.append(tab)
       
      
-      for i in range(len(setOfParams)):    
-        datarow = setOfParams[i]
+      for i in range(len(setOfParams)):            
         table = QtWidgets.QTableWidget(tab)
         table.setDragEnabled(False)
         table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
         grid.addWidget(table, i, 0)
         
+        datarow = setOfParams[i]
         if datarow["type"] == "timed":                     
           n = len(datarow["items"])
           m = len(datarow["items"][0])
@@ -562,9 +693,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         
         # tokamakdata.dat
-        heap = self.ReadHeap(f, 611)
-        self.DINAData.append(heap)
-        
+        params = self.ReadTokamakConfig(f)
+        self.DINAData.append(params)
         
         # k_jetto.dat
         params = self.ReadParameters(f)
@@ -683,12 +813,229 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         f.close()
         
+   
     
-    def ReadTokamakConfig(self, f):
-      pass  
+    def ReadCoilData(self, f):
+      output = {}      
+      output["type"] = "coil"
       
+      output["name"] = f.readline().rstrip()
+      
+      props = self.ReadRow(f)
+      if len(props) != 4:
+        print("Incorrect properties amount: " + str(len(props)))
+      output["items_p"] = [QtWidgets.QTableWidgetItem(str(x)) for x in props]
+      
+      geometry = self.ReadRow(f)
+      if len(geometry) != 6:
+        print("Incorrect geometry items amount: " + str(len(geometry)))     
+      output["items_g"] = [QtWidgets.QTableWidgetItem(str(x)) for x in geometry]
+      return output
 
+
+
+    def ReadResistivityData(self, f, n):
+      output = {}
+      output["type"] = "resist-list"
+      data = []
       
+      for i in range(n):
+        line = f.readline().rstrip()
+        description = line.split()
+        data.append(float(description[0]))  
+        
+      output["items"] = [QtWidgets.QTableWidgetItem(str(x)) for x in data]      
+      return output
+    
+    
+    
+    def ReadTokamakConfig(self, f):  
+      parentObject = self.tabTokamakDataChild
+      parentObject.clear()
+      output = {}
+      
+      
+      # Coils
+      record = {}
+      data = []
+      NPF = self.ReadParameters(f)
+      record["common_geom"] = NPF     
+      npf = NPF["data"][0]
+      print("npf = " + str(npf))     
+      for i in range(npf):
+        data.append(self.ReadCoilData(f))
+      record["geometry"] = data
+      print(data)
+      
+      # Coil resistivities
+      data = []
+      NPF = self.ReadParameters(f)
+      record["common_res"] = NPF     
+      npf = NPF["data"][0]
+      print("npf res = " + str(npf))               
+      record["resist"] = self.ReadResistivityData(f, npf) 
+      
+      output["coils"] = record
+      
+      
+      # Vessel
+      record = {}
+      data = []
+      NCAM = self.ReadParameters(f)
+      record["common_geom"] = NCAM     
+      ncam = NCAM["data"][0]
+      print("ncam = " + str(ncam))     
+      for i in range(ncam):
+        data.append(self.ReadCoilData(f))
+      record["geometry"] = data 
+       
+      # Vessel resistivities
+      NCAM = self.ReadParameters(f)
+      record["common_res"] = NCAM     
+      ncam = NCAM["data"][0]
+      print("ncam res = " + str(ncam))      
+      record["resist"] = self.ReadResistivityData(f, ncam)     
+      
+      output["vessel"] = record
+      
+      
+      # Loops
+      record = {}
+      NLOOP = self.ReadParameters(f)
+      record["common"] = NLOOP     
+      nloop = NLOOP["data"][0]
+      print("nloop = " + str(nloop))        
+      loopR = []
+      loopZ = []
+      for i in range(nloop):
+        line = self.ReadRow(f)
+        loopR.append(line[0])
+        loopZ.append(line[1])         
+      record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in loopR] 
+      record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in loopZ] 
+      output["loops"] = record
+      
+      
+      # Probes
+      record = {}
+      NPROB = self.ReadParameters(f)
+      record["common"] = NPROB      
+      nprob = NPROB["data"][0]
+      print("nprob = " + str(nprob))     
+      probR = []
+      probZ = []
+      probA = []
+      probL = []
+      for i in range(nprob):
+        line = self.ReadRow(f)
+        probR.append(line[0])
+        probZ.append(line[1])    
+        probA.append(line[2])
+        probL.append(line[3]) 
+      record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probR] 
+      record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probZ] 
+      record["items_a"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probA] 
+      record["items_l"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probL] 
+      output["probes"] = record
+      
+      
+      # Limiter
+      record = {}
+      NLIM = self.ReadParameters(f)
+      record["common"] = NLIM     
+      nlim = NLIM["data"][0]
+      print("nlim = " + str(nlim))     
+      limR = []
+      limZ = []
+      for i in range(nlim):
+        line = self.ReadRow(f)
+        limR.append(line[0])
+        limZ.append(line[1])         
+      record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in limR] 
+      record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in limZ] 
+      output["limiter"] = record
+      
+      
+      # Area
+      record = {}
+      record["name"] = f.readline().rstrip()
+      lineR = self.ReadRow(f)
+      lineZ = self.ReadRow(f)
+      record["itemsR"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineR]
+      record["itemsZ"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineZ]
+      output["area"] = record
+      
+              
+      output["type"] = "tokamakdata"  
+      
+      self.CreateInputTabCoils(parentObject, output)
+      return output
+
+
+    
+    def SaveTokamakConfig(self, f, record):
+      
+      # Coils 
+      recsave = record["coils"]
+      self.SaveFilePart(f, recsave["common_geom"])
+      for coil in recsave["geometry"]:       
+        self.SaveFilePart(f, coil)     
+      self.SaveFilePart(f, recsave["common_res"])
+      self.SaveFilePart(f, recsave["resist"])
+         
+         
+      # Vessel
+      recsave = record["vessel"]
+      self.SaveFilePart(f, recsave["common_geom"])
+      for coil in recsave["geometry"]:       
+        self.SaveFilePart(f, coil)     
+      self.SaveFilePart(f, recsave["common_res"])
+      self.SaveFilePart(f, recsave["resist"])  
+
+
+      # Loops
+      recsave = record["loops"]
+      self.SaveFilePart(f, recsave["common"])
+      nloop = len(recsave["items_r"])
+      for i in range(nloop):
+        s1 = recsave["items_r"][i].text()
+        s2 = recsave["items_z"][i].text()
+        f.write("  " + s1 + "  " + s2 + "\n")
+      
+      
+      # Probes
+      recsave = record["probes"]
+      self.SaveFilePart(f, recsave["common"])
+      nprobes = len(recsave["items_r"])
+      for i in range(nprobes):
+        s1 = recsave["items_r"][i].text()
+        s2 = recsave["items_z"][i].text()
+        s3 = recsave["items_a"][i].text()
+        s4 = recsave["items_l"][i].text()
+        f.write("  " + s1 + "  " + s2 + "  " + s3 + "  " + s4 + "\n")
+
+
+      # Limiter
+      recsave = record["limiter"]
+      self.SaveFilePart(f, recsave["common"])
+      nlim = len(recsave["items_r"])
+      for i in range(nlim):
+        s1 = recsave["items_r"][i].text()
+        s2 = recsave["items_z"][i].text()
+        f.write("  " + s1 + "  " + s2 + "\n")
+        
+        
+      # Limiter
+      recsave = record["area"]
+      f.write(recsave["name"] + "\n")
+      s1 = recsave["itemsR"][0].text()
+      s2 = recsave["itemsR"][1].text()
+      f.write("  " + s1 + "  " + s2 + "\n")
+      s1 = recsave["itemsZ"][0].text()
+      s2 = recsave["itemsZ"][1].text()
+      f.write("  " + s1 + "  " + s2 + "\n") 
+ 
+ 
  
     def JoinListStr(self, lst):
       s = ""
@@ -750,6 +1097,21 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
             for item in record["items"][i]:
               s += item.text() + "  "
             f.write(s + "\n")
+            
+        elif record["type"] == "tokamakdata":
+          self.SaveTokamakConfig(f, record)
+        
+        elif record["type"] == "coil":
+          s = record["name"]
+          f.write(s + "\n") 
+          f.write("  " + self.JoinListStr([item.text() for item in record["items_p"]]) + "\n")
+          f.write("  " + self.JoinListStr([item.text() for item in record["items_g"]]) + "\n")
+        
+        elif record["type"] == "resist-list":
+          for item in record["items"]:
+            s = item.text()
+            f.write("  " + s + "\n")        
+        
         elif record["type"] == "set":
           for item in record["data"]:
             self.SaveFilePart(f,item)
@@ -914,6 +1276,50 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       return data
  
 
+    def SaveInputIDS(self):
+      # Create input ids
+      pulseText = self.lineInputPulse.text()
+      runText = self.lineInputRun.text()
+      
+      if (not pulseText.isnumeric()):
+        
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setWindowTitle("Saving IDS")
+        msg.setText("Saving IDS failed")
+        msg.setInformativeText("Pulse must be numeric.")
+          
+        retval = msg.exec_()
+        return
+  
+  
+      if (not runText.isnumeric()):
+        
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Critical)
+        msg.setWindowTitle("Saving IDS")
+        msg.setText("Saving IDS failed")
+        msg.setInformativeText("Run must be numeric.")
+        
+        retval = msg.exec_()
+        return     
+      
+      
+      pulse = int(pulseText)
+      run = int(runText)  
+        
+      user = os.getenv('USER')
+      tokamakname = self.lineInputTokamak.text()
+        
+      imas_obj1 = imas.ids(pulse, run)
+      imas_obj1.create_env(user, tokamakname, '3')  
+      
+      
+      
+      imas_obj1.close()
+
+
+
 
     def SaveSetups(self): 
       dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder save into...", self.directorySave)
@@ -934,7 +1340,9 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
           shutil.rmtree(new_imp)
         shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
-     
+        self.SaveInputIDS()
+        
+ 
 
     def PlotOutput(self):
       

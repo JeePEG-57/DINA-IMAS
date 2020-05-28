@@ -236,8 +236,8 @@ yu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)
 
 ! x(1:nr)=equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr) ![m]
 ! y(1:nz)=equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz) ![m]
-x(1:nr)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim1(1:nr) ![m]
-y(1:nz)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim2(1:nz) ![m]
+x(1:nr)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim2(1:nr) ![m]
+y(1:nz)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim1(1:nz) ![m]
 
 gridrange(1)=y(1)
 gridrange(2)=y(nz)
