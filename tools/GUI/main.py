@@ -821,15 +821,15 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
       output["name"] = f.readline().rstrip()
       
-      props = self.ReadRow(f)
+      props = self.ReadRowStr(f)
       if len(props) != 4:
         print("Incorrect properties amount: " + str(len(props)))
-      output["items_p"] = [QtWidgets.QTableWidgetItem(str(x)) for x in props]
+      output["items_p"] = [QtWidgets.QTableWidgetItem(x) for x in props]
       
-      geometry = self.ReadRow(f)
+      geometry = self.ReadRowStr(f)
       if len(geometry) != 6:
         print("Incorrect geometry items amount: " + str(len(geometry)))     
-      output["items_g"] = [QtWidgets.QTableWidgetItem(str(x)) for x in geometry]
+      output["items_g"] = [QtWidgets.QTableWidgetItem(x) for x in geometry]
       return output
 
 
@@ -1262,17 +1262,22 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         return ""
       return line.rstrip()
 
+
+    def ReadRowStr(self, f):
+      line = self.ReadLineStripped(f)
+      dataStr = line.split()    
+      return dataStr  
     
     
     def ReadRow(self, f):
-      line = self.ReadLineStripped(f)
+      dataStr = self.ReadRowStr(f)
       data = []
-      dataStr = line.split()
       for i in range(len(dataStr)):
         if dataStr[i].isdigit():
           data.append(int(dataStr[i]))
         else:
-          data.append(float(dataStr[i]))   
+          data.append(float(dataStr[i])) 
+                 
       return data
  
 

@@ -242,6 +242,7 @@ pf_active0%ids_properties%homogeneous_time = 1
 pf_passive0%ids_properties%homogeneous_time = 1
 
 !allocate(pf_active0%coil(nact))
+if(.NOT.associated(pf_active0%coil)) allocate(pf_active0%coil(nact))
 if(.NOT.associated(pf_passive0%loop)) allocate(pf_passive0%loop(npass))
 
 do i=1,nact
