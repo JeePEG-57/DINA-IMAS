@@ -82,7 +82,7 @@ elif [ $input == 'EqTest' ]; then
   cd imas/EqTestRegression
   # ---> Extract ids_1700020_EqTest.tgz artifact
   imasdb test
-  tar zxvf ids_1700020_EqTest.tgz 1 -C $MDSPLUS_TREE_BASE_0
+  tar zxvf ids_1700020_EqTest.tgz -C $MDSPLUS_TREE_BASE_0
    
   # create empty initial IDS_ref
   python initialIDS_EqTest.py
