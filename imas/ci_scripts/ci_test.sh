@@ -82,7 +82,7 @@ elif [ $input == 'EqTest' ]; then
   cd imas/EqTestRegression
   # ---> Extract ids_1700020_EqTest.tgz artifact
   imasdb test
-  tar zxvf ids_1700020_EqTest.tgz --strip 1 -C $MDSPLUS_TREE_BASE_0
+  tar zxvf ids_1700020_EqTest.tgz 1 -C $MDSPLUS_TREE_BASE_0
    
   # create empty initial IDS_ref
   python initialIDS_EqTest.py
@@ -90,17 +90,19 @@ elif [ $input == 'EqTest' ]; then
   # ---> Extract dina_wf SANDBOX artifact
   mkdir ~/public/KEPLER_SANDBOX
   mkdir ~/public/KEPLER_SANDBOX/dina_wf
-  tar -xzvf dina_wf_EqTest.tgz --strip 1 -C ~/public/KEPLER_SANDBOX/dina_wf || exit 1
+  tar -xzvf dina_wf_EqTest.tgz -C ~/public/KEPLER_SANDBOX/dina_wf || exit 1
 
   # Install Kepler and import actor
   yes | kepler_install $KEPLERMODULE
   # ---> Check if Kepler is correctly installed 
   ls $KEPLER/build-area/build.xml  || exit 1
+  source $(dirname ${BASH_SOURCE[0]})/ci_header.sh 
+  
   yes | kepler_actor_import dina_equil
 
   # execute Kepler without GUI
   cd ../kepler_wf
-  find . -type f -name "EqTest.xml" -exec sed -i "s/'medveds'/\'$USER\'/g" {} +
+  find . -type f -name "EqTest.xml" -exec sed -i "s/medveds/$USER/g" {} +
   kepler -runwf -nogui $PWD/EqTest.xml | tee EqTest.log
 
 #   # ---> Extract executable from the artifact and run the wrapper
