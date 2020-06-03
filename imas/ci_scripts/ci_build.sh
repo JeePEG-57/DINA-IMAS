@@ -66,6 +66,10 @@ elif [ $input == 'regression' ]; then
   
   # ---> test_circ artifact
   tar -czvf test_circ.tgz test_circ || exit 1
+  
+  # ---> dina_equil artifact  
+  cd ../EqTestRegression
+  yes | kepler_actor_export dina_equil
 
 # ----------------------------------------------------------------------------------------------------------
 

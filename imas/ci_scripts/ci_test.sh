@@ -77,6 +77,47 @@ elif [ $input == 'regression' ]; then
 #   test -z "$(grep -i 'ERROR' test_circ.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
   test -z "$(grep 'ERROR' test_circ.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
 
+elif [ $input == 'EqTest' ]; then
+
+  cd imas/EqTestRegression
+  # ---> Extract ids_1700020_EqTest.tgz artifact
+  imasdb test
+  tar zxvf ids_1700020_EqTest.tgz --strip 1 -C $MDSPLUS_TREE_BASE_0
+   
+  # create empty initial IDS_ref
+  python initialIDS_EqTest.py
+  
+  # ---> Extract dina_wf SANDBOX artifact
+  mkdir ~/public/KEPLER_SANDBOX
+  mkdir ~/public/KEPLER_SANDBOX/dina_wf
+  tar -xzvf dina_wf_EqTest.tgz --strip 1 -C ~/public/KEPLER_SANDBOX/dina_wf || exit 1
+
+  # Install Kepler and import actor
+  yes | kepler_install $KEPLERMODULE
+  # ---> Check if Kepler is correctly installed 
+  ls $KEPLER/build-area/build.xml  || exit 1
+  yes | kepler_actor_import dina_equil
+
+  # execute Kepler without GUI
+  cd ../kepler_wf
+  find . -type f -name "EqTest.xml" -exec sed -i "s/'medveds'/\'$USER\'/g" {} +
+  kepler -runwf -nogui $PWD/EqTest.xml | tee EqTest.log
+
+#   # ---> Extract executable from the artifact and run the wrapper
+#   if [ $input == 'exewrapper1' ]; then
+#     tar xzf physics_i_wrapper.tar.gz || exit 1
+#     ./wrapper_i.exe | tee -a wrapper.txt 
+#   elif [ $input == 'exewrapper2' ]; then
+#     tar xzf physics_ii_wrapper.tar.gz || exit 1
+#     ./wrapper_ii.exe | tee -a wrapper.txt 
+#   fi
+
+  # ---> If some magic string is not found. Then error!
+  test -n "$(grep 'Filling equilibrium' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
+  # ---> If some bloody string is found. Then error!
+#   test -z "$(grep -i 'ERROR' EqTest.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
+  test -z "$(grep 'ERROR' EqTest.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
+
 else
 
   # Error
