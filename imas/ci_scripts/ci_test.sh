@@ -96,7 +96,7 @@ elif [ $input == 'EqTest' ]; then
   yes | kepler_install $KEPLERMODULE
   # ---> Check if Kepler is correctly installed 
   ls $KEPLER/build-area/build.xml  || exit 1
-  source $(dirname ${BASH_SOURCE[0]})/ci_header.sh 
+  source ../ci_scripts/ci_header.sh 
   
   yes | kepler_actor_import dina_equil
 
