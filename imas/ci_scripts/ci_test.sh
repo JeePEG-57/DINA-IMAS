@@ -84,8 +84,8 @@ elif [ $input == 'EqTest' ]; then
   imasdb test
   tar zxvf ids_1700020_EqTest.tgz -C $MDSPLUS_TREE_BASE_0
    
-  # create empty initial IDS_ref
-  python initialIDS_EqTest.py
+  ## create empty initial IDS_ref
+  #python initialIDS_EqTest.py
   
   # ---> Extract dina_wf SANDBOX artifact
   mkdir ~/public/KEPLER_SANDBOX
@@ -104,6 +104,9 @@ elif [ $input == 'EqTest' ]; then
   cd ../kepler_wf
   find . -type f -name "EqTest.xml" -exec sed -i "s/medveds/$USER/g" {} +
   kepler -runwf -nogui $PWD/EqTest.xml | tee EqTest.log
+  
+  # check psi accuracy
+  python check_EqTest | tee -a EqTest.log 
 
 #   # ---> Extract executable from the artifact and run the wrapper
 #   if [ $input == 'exewrapper1' ]; then
@@ -115,7 +118,8 @@ elif [ $input == 'EqTest' ]; then
 #   fi
 
   # ---> If some magic string is not found. Then error!
-  test -n "$(grep 'Filling equilibrium' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
+#   test -n "$(grep 'Filling equilibrium' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
+  test -n "$(grep 'psi accuracy OK' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
   # ---> If some bloody string is found. Then error!
 #   test -z "$(grep -i 'ERROR' EqTest.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
   test -z "$(grep 'ERROR' EqTest.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
