@@ -106,7 +106,7 @@ elif [ $input == 'EqTest' ]; then
   kepler -runwf -nogui $PWD/EqTest.xml | tee EqTest.log
   
   # check psi accuracy
-  python check_EqTest | tee -a EqTest.log 
+  python check_EqTest.py | tee -a EqTest.log 
 
 #   # ---> Extract executable from the artifact and run the wrapper
 #   if [ $input == 'exewrapper1' ]; then
