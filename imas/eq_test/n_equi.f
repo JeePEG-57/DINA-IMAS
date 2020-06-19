@@ -196,6 +196,7 @@
                                                                         
 
 	character *30 apr                                                      
+	character *100 apr2
 
 	dimension a_print(200),a_print1(200)
 
@@ -208,15 +209,33 @@ c______________________________
 
 	i_en2=i_en2+1            
 
+      call system(" pwd")
+      call system(" ls -ll dina_data.dat ")
 
+     	open(unit=49,file='dina_data.dat',
+     *  form='formatted')
+	if(kpr.eq.1)print *,' opened file dina_data.dat'
 
-        open (unit=1,file='kpr.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
-        close (1)
+        write(*,*)' Before read'
+        flush(6)
+      
+      nnn=620
+        do i=1,nnn
+!        open (unit=1,file='kpr.dat',form='formatted')
+!        read (1,*)
+        flush(6)
+        read (49,*)apr2
+        write(6,*),' i apr2==',i,apr2
+        end do
+                      
+        read (49,*)kpr
+!        close (1)
 
-        if(kpr.eq.1)print *,'  kpr ',kpr
+        print *,'  kpr ',kpr
 
+        flush(6)
+
+        
 
       	ARG=1.d0                                     
 	  pi=4.d0*datan(ARG) 
@@ -224,6 +243,10 @@ c______________________________
 	  amu0=0.4*pi
 
         	call read_data() 
+
+        print *,' after Read data ',kpr
+
+!        stop
  
 
 	    call anglep_kav()
@@ -1183,91 +1206,229 @@ c
      
        
 
-     	open(unit=2,file='for002_kav',form='formatted')
+!      	open(unit=2,file='for002_kav',form='formatted')
         if(kpr.eq.1)print *,' begin for002_kav reading'
 
-	read (2,*)
-	read (2,*)n,m,next
-	read (2,*)
-	read (2,*)tt,tay,t_end,rs0,psend
-	read (2,*)
-	read (2,*)i_graph
-	read (2,*)
-	read (2,*)alfa0,beta,alfa1,omega
-	read (2,*)
-	read (2,*)iread,kzero,iwrite,kefit
-	read (2,*)
-	read (2,*)alfax,betax
-	read (2,*)
-	read (2,*)pw_1,pw_2
-	read (2,*)
-	read (2,*)te_a,ti_a,te_b,ti_b,pw_e
-	read (2,*)
-	read (2,*)pd0_a,pt0_a,pd0_b,pt0_b,pw_p
-	read (2,*)
-	read (2,*)zeff_a,zeff_b
-	read (2,*)
-	read (2,*)sig0
-	read (2,*)
-	read (2,*)zhib,tego,zalfa,talfa,alp1
-	read (2,*)
-	read(2,*)ktp,kpin,ken,ken1,ken2,kd2,nal
-	read (2,*)
-	read(2,*)edop,ppp,eee,dd,dt,dh,df
-	read (2,*)
-	read(2,*)lt,ld,lh,ll,lm,it,id,ih
-	read (2,*)
-	read(2,*)eps0,eps1,eps2
-	read (2,*)
-	read (2,*)anom_e,anom_i,key_t11,kcchp
-	read (2,*)
-	read (2,*)emoe,emoq
-	read (2,*)
-	read (2,*)udd
-	read (2,*)
-	read (2,*)k_ener,k_uv
-	read (2,*)
-	read (2,*)t_dop
-	read (2,*)
-	read (2,*)r0,z0,zref
-	read (2,*)
-	read (2,*)kzref,krref,key_b,i_pf
-	read (2,*)
-	read (2,*)i_c
-	read (2,*)
-	read (2,*)q_vde
-	read (2,*)
-	read (2,*)tay_00,tay_th,t_disr
-	read (2,*)
-	read (2,*)d_tpl,tpl_end
-	read (2,*)
-	read (2,*)c_h,d_halo
-	read (2,*)
-	read (2,*)kmaj,li_drop,ndisrup,n_dif,nmix
-	read (2,*)
-	read (2,*)hpart,te_h
-	read (2,*)
-	read (2,*)i_d3d,i_iter,i_smal
-	read (2,*)
-	read (2,*)ngra,i_ramp,i_v,i_con
-	read (2,*)
-	read (2,*)tpl,bt0,eu,eksk
-	read (2,*)
-	read (2,*)e_sep
-	read (2,*)
-	read (2,*)i_beta,i_gap5
-	read (2,*)
-	read (2,*)i_br
-	read (2,*)
-	read (2,*)ind_r,ind_z
-	read (2,*)
-	read (2,*)key_ef
-	read (2,*)
-	read (2,*)res_coef
-	read (2,*)
-	read (2,*)n_polar
-c	read (2,*)
-c        read (2,*)k_ion,pow_el,pow_ion
+
+!	read (49,*)
+	n=50
+	m=90
+	next=1
+	
+!	read (49,*)
+	tt=0.d0
+	tay=2.d0
+	t_end=700.d5
+	rs0=620.d0
+	psend=-1.d4
+	
+!	read (49,*)
+	i_graph=0	
+	
+!	read (49,*)
+	alfa0=4.d-2
+	beta=0.1d0
+	alfa1=-1.d0
+	omega=0.33d0
+	
+!	read (49,*)
+	iread=0 
+	kzero=0
+	iwrite=0
+	kefit=2
+	
+	
+!	read (49,*)
+	alfax(1)=1.00d0
+	alfax(2)=-1.22145d0 
+	betax(1)=17.4468d0
+	betax(2)=-21.31107d0
+
+
+!	read (49,*)
+	pw_1=4.d0
+	pw_2=0.8d0
+         
+!	read (49,*)
+	te_a=956.471d0
+	ti_a=214.0269d0
+	te_b=10.d0 
+	ti_b=10.d0 
+	pw_e=2.d0
+
+
+!	read (49,*)
+	pd0_a=0.3d0
+	pt0_a=0.3d0
+	pd0_b=0.2d0
+	pt0_b=0.2d0 
+	pw_p=3.d0
+	
+!	read (49,*)
+	zeff_a=1.8d0
+	zeff_b=1.8d0
+	
+!	read (49,*)
+	sig0=5.3715d3
+	
+!	read (49,*)
+	zhib=4.5d-1
+	tego=100.d0
+	zalfa= 4.d0 
+	talfa= 500.d0
+	alp1=1.d0
+	
+                      
+	
+!	read (49,*)
+	ktp=1
+	kpin=1
+	ken=0
+	ken1=0
+	ken2=1
+	kd2=0
+	nal=1
+	
+	
+	
+!	read (49,*)
+	edop=20.d0
+	ppp= 1.d-0
+	eee=40.d3 
+	dd=1.d0
+	dt=0.d0
+	dh=0.d0
+	df= 0.d0
+                          
+
+!	read (49,*)
+	lt=3
+	ld=3
+	lh=1 
+	ll=1
+	lm=3
+	it=1
+	id=1
+	ih=0
+	
+	
+!	read (49,*)
+	eps0=1.d-8
+	eps1=1.d-3 
+	eps2=1.d-5
+	
+!	read (49,*)
+	anom_e=1.d0
+	anom_i=1.0d0
+	key_t11=1
+	kcchp=1
+                  
+	
+!	read (49,*)
+	emoe=0.2d0
+	emoq=0.0d0
+    
+	
+!	read (49,*)
+	udd=0.d0
+	
+!	read (49,*)
+	k_ener=1
+	k_uv=1
+	
+	
+!	read (49,*)
+	t_dop=5.d0
+
+!	read (49,*)
+	r0=588.d0
+	z0=0.d0
+	zref=0.d0
+
+	
+!	read (49,*)
+	kzref=1
+	krref=1
+	key_b=2
+	i_pf=5
+	
+!	read (49,*)
+	i_c=0
+	
+	
+!	read (49,*)
+	q_vde=3.0d0
+	
+!	read (49,*)
+	tay_00=0.1d0
+	tay_th=0.05d0
+	t_disr=4.d0
+	
+!	read (49,*)
+	d_tpl=6.d0
+	tpl_end=1500.d0
+
+	
+!	read (49,*)
+	c_h=1.d0
+	d_halo=10.d0
+	
+!	read (49,*)
+	kmaj=-1
+	li_drop=99999
+	ndisrup= -16
+	n_dif=0
+	nmix=13
+	
+!	read (49,*)
+	hpart=1.1d0
+	te_h=0.5d0
+
+!	read (49,*)
+	i_d3d=0
+	i_iter=1
+	i_smal=0
+	
+!	read (49,*)
+	ngra=50
+	i_ramp=0
+	i_v=1
+	i_con=0
+	
+!	read (49,*)
+	tpl=1.d0
+	bt0=53.0d0
+	eu=160.d0
+	eksk=1.d0
+	
+!	read (49,*)
+	e_sep=5.d-3
+	
+!	read (49,*)
+	i_beta=0
+	i_gap5=0
+	
+!	read (49,*)
+	i_br=0
+	
+!	read (49,*)
+	ind_r(1)=15
+	ind_r(2)=16 
+	ind_z(1)=13
+	ind_z(2)=14 
+	
+!	read (49,*)
+	key_ef=0
+	
+!	read (49,*)
+	res_coef=1.d0
+	
+!	read (49,*)
+	n_polar=2
+
+
+	read (49,*)
+	read (49,*)tay,rs0,key_t11,bt0
 
 
 	if(kpr.eq.1)then

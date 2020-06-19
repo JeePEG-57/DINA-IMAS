@@ -106,8 +106,7 @@ elif [ $input == 'EqTest' ]; then
   kepler -runwf -nogui $PWD/EqTest.xml | tee EqTest.log
   
   # check psi accuracy
-  cd ../EqTestRegression
-  python check_EqTest.py | tee -a EqTest.log 
+  python ../EqTestRegression/check_EqTest.py | tee -a EqTest.log
 
 #   # ---> Extract executable from the artifact and run the wrapper
 #   if [ $input == 'exewrapper1' ]; then
@@ -119,7 +118,9 @@ elif [ $input == 'EqTest' ]; then
 #   fi
 
   # ---> If some magic string is not found. Then error!
-#   test -n "$(grep 'Filling equilibrium' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
+  test -n "$(grep 'Filling equilibrium' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
+  test -n "$(grep 'Filling 2d profiles' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
+  test -n "$(grep 'Filling limiter' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
   test -n "$(grep 'psi accuracy OK' EqTest.log)" || { echo "Test execution did not succeed.">&2 ; exit 1 ;}
   # ---> If some bloody string is found. Then error!
 #   test -z "$(grep -i 'ERROR' EqTest.log)" || { echo "Test did not succeed.">&2 ; exit 1 ;}
