@@ -3,7 +3,7 @@ import sys
 import os
 import shutil
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 import design
 import captions
 
@@ -245,14 +245,15 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         self.timeTraceGraph = Graph(self)
         
-        layGr = QtWidgets.QHBoxLayout()
+        layGr = QtWidgets.QGridLayout()       
+        layGr.addWidget(self.gridLayoutWidget_3, 0,0,1,1)
         #layGr.addStretch(1)
-        layGr.addWidget(self.gridLayoutWidget_3)
-        layGr.addLayout(self.timeTraceGraph.layout)
+        layGr.addLayout(self.timeTraceGraph.layout, 0,1,1,1)
         
-        layout = QtWidgets.QVBoxLayout()
-        layout.addLayout(layGr)
-        layout.addWidget(self.tabWidgetInput)
+        layout = QtWidgets.QGridLayout()
+        layout.addLayout(layGr,0,0,1,1)
+
+        layout.addWidget(self.tabWidgetInput, 1,0,1,1)
         self.tabInput.setLayout(layout)
         
         
@@ -437,7 +438,184 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       for i in range(n):
         table.setItem(i, 0, record["resist"]["items"][i])
       table.resizeColumnsToContents()
+      
+      
+      
+      # Loops tab
+      title = "Loops"
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+      
+      record = recordset["loops"]
+      # Table for coils data  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0)
+      
+      n = len(record["items_r"])
+      
+      headerNames = [str(i+1) for i in range(n)]
+      headerParameters = ["R", "Z"]      
+      
+      m = 2
 
+      table.setRowCount(n)
+      table.setColumnCount(m)
+      table.setHorizontalHeaderLabels(headerParameters)      
+      table.setVerticalHeaderLabels(headerNames)
+      for i in range(n):
+        table.setItem(i, 0, record["items_r"][i])
+        table.setItem(i, 1, record["items_z"][i])
+        table.resizeColumnsToContents()
+        table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x))      
+
+
+      # Probes tab
+      title = "Probes"
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+      
+      record = recordset["probes"]
+      # Table for coils data  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0, 1, 1)
+      
+      n = len(record["items_r"])
+      
+      headerNames = [str(i+1) for i in range(n)]
+      headerParameters = ["R", "Z", "Angle", "Length"]      
+      
+      m = 4
+      
+      table.setRowCount(n)
+      table.setColumnCount(m)
+      table.setHorizontalHeaderLabels(headerParameters)      
+      table.setVerticalHeaderLabels(headerNames)
+      for i in range(n):
+        table.setItem(i, 0, record["items_r"][i])
+        table.setItem(i, 1, record["items_z"][i])
+        table.setItem(i, 2, record["items_a"][i])
+        table.setItem(i, 3, record["items_l"][i])
+        table.resizeColumnsToContents()
+        table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x)) 
+
+      
+      
+      # Table for subdivisions data  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 1, 1, 1)      
+      table.setRowCount(1)
+      table.setColumnCount(1)
+      table.setItem(0, 0, record["common"]["items"][1])
+      table.setVerticalHeaderLabels(["Probe subdivisions"])
+      table.horizontalHeader().setVisible(False)
+      
+      
+      # Subdivision is specified using QLineEdit
+      #labelProbesDivision = QtWidgets.QLabel(tab)
+      #labelProbesDivision.setObjectName("labelProbesDivision")
+      #labelProbesDivision.setText("Probe subdivisions")
+      #grid.addWidget(labelProbesDivision, 0, 0, 1, 1)
+
+      #lineProbesDivision = QtWidgets.QLineEdit(tab)
+      #lineProbesDivision.setObjectName("lineProbesDivision")
+      #lineProbesDivision.setValidator(QtGui.QIntValidator(1,999))
+      ##lineProbesDivision.setPlaceholderText("Enter your text")
+      #lineProbesDivision.setText(str(record["common"]["data"][1]))
+      #grid.addWidget(lineProbesDivision, 0, 1, 1, 1)
+
+
+
+      # Limiter tab
+      title = "Limiter"
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+      
+      record = recordset["limiter"]
+      # Table for coils data  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0)
+      
+      n = len(record["items_r"])
+      
+      headerNames = [str(i+1) for i in range(n)]
+      headerParameters = ["R", "Z"]      
+      
+      m = 2
+      
+      table.setRowCount(n)
+      table.setColumnCount(m)
+      table.setHorizontalHeaderLabels(headerParameters)      
+      table.setVerticalHeaderLabels(headerNames)
+      for i in range(n):
+        table.setItem(i, 0, record["items_r"][i])
+        table.setItem(i, 1, record["items_z"][i])
+        table.resizeColumnsToContents()
+        table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x)) 
+
+
+      # Domain tab
+      title = "Domain"
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+      
+      record = recordset["domain"]
+      # Table for coils data  
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0)
+      
+      n = 2
+      
+      headerNames = ["Min", "Max"]
+      headerParameters = ["R", "Z"]      
+      
+      m = 2
+      
+      table.setRowCount(n)
+      table.setColumnCount(m)
+      table.setHorizontalHeaderLabels(headerNames)      
+      table.setVerticalHeaderLabels(headerParameters)
+
+      table.setItem(0, 0, record["items_r"][0])
+      table.setItem(0, 1, record["items_r"][1])
+      
+      table.setItem(1, 0, record["items_z"][0])
+      table.setItem(1, 1, record["items_z"][1])
+      table.resizeColumnsToContents()
+      table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x))
 
 
     def CreateInputTab(self, parentObject, setOfParams, title):
@@ -961,9 +1139,9 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       record["name"] = f.readline().rstrip()
       lineR = self.ReadRow(f)
       lineZ = self.ReadRow(f)
-      record["itemsR"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineR]
-      record["itemsZ"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineZ]
-      output["area"] = record
+      record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineR]
+      record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineZ]
+      output["domain"] = record
       
               
       output["type"] = "tokamakdata"  
@@ -1025,14 +1203,14 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         f.write("  " + s1 + "  " + s2 + "\n")
         
         
-      # Limiter
-      recsave = record["area"]
+      # Area
+      recsave = record["domain"]
       f.write(recsave["name"] + "\n")
-      s1 = recsave["itemsR"][0].text()
-      s2 = recsave["itemsR"][1].text()
+      s1 = recsave["items_r"][0].text()
+      s2 = recsave["items_r"][1].text()
       f.write("  " + s1 + "  " + s2 + "\n")
-      s1 = recsave["itemsZ"][0].text()
-      s2 = recsave["itemsZ"][1].text()
+      s1 = recsave["items_z"][0].text()
+      s2 = recsave["items_z"][1].text()
       f.write("  " + s1 + "  " + s2 + "\n") 
  
  
