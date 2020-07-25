@@ -118,4 +118,6 @@ time
   6e3           575.        2.1e3 2.1e3 4.2e3 2.1e3 2.1e3   2.1e3 3.15e3 3.15e3 3.15e3 3.15e3 2.1e3     0.04
  c_cur_max      CS3U_max(kA)  CS2U_max(kA)  CS1_max(kA)  CS2L_max(kA) CS3L_max(kA)        PF1_max(kA)  PF2_max(kA) PF3_max(kA) PF4_max(kA) PF5_max(kA) PF6_max(kA)
   0.98        45.  45.  45.  45.  45.   48.  55.  55.  55.  52.  52.
+CS3U CS2U CS1U CS1L CS2L CS3L PF1 PF2 PF3 PF4 PF5 PF6 VS3U VS3L TRI_SUPP COPP_CLAD INB_RAIL ! n_turn
+554. 554. 554. 554. 554. 248.6 115.2 185.9 169.9 216.8 459.4 1 1 1 1 1 1  
  

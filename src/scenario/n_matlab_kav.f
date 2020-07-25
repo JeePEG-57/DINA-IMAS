@@ -2411,6 +2411,7 @@ c	if(dabs(delzmag).ge.3.)then
 	common
      *  /ef_0/key_ef
      
+      common /c_for002_kav/tay_c,rs0_c,bt0_c,key_t11_c
        
 
 !     	open(unit=2,file='for002_kav',form='formatted')
@@ -2633,10 +2634,12 @@ c	if(dabs(delzmag).ge.3.)then
 	n_polar=2
 
 
-	read (49,*)
-	read (49,*)tay,rs0,key_t11,bt0
-
-
+!	read (49,*)
+!	read (49,*)tay,rs0,key_t11,bt0
+	tay=tay_c
+	rs0=rs0_c
+	key_t11=key_t11_c
+	bt0=bt0_c
 
       if(kpr.eq.1)print *,' n_polar==',n_polar
 

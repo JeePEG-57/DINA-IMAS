@@ -618,6 +618,9 @@ c	implicit real*8 (a-h,o-z)
      *  /ge5/kpr
 	CHARACTER*120 fshot,tmp
 	dimension a(190)
+
+      common /c_scr_data_c1/pf_c1(kf)
+
 cc
 
       kpr_help=kpr
@@ -626,34 +629,34 @@ cc
       
 	if(kpr.eq.1)PRINT*,'Open scr_data from TOK'
 !      open (unit=39,file='scr_data.dat',form='formatted')
-      open (unit=39,file='general_data.dat',form='formatted')
+!      open (unit=39,file='general_data.dat',form='formatted')
 
-      read (39,*)
-      read (39,*)nn
-      read (39,*)
-      read (39,*)(a(i),i=1,npf_2)
+!      read (39,*)
+!      read (39,*)nn
+!      read (39,*)
+!      read (39,*)(a(i),i=1,npf_2)
 c
 	do i=1,11
-      pf(i)=a(2+i)*1.e3
+      pf(i)=pf_c1(i)
 	pf0(i)=pf(i)
 	end do
 c
-      if(kpr.eq.1)print *,' nn npf=npf_2',nn,npf,npf_2
+!      if(kpr.eq.1)print *,' nn npf=npf_2',nn,npf,npf_2
       
 	if(kpr.eq.1)PRINT*,'CURRENTS'
-	if(kpr.eq.1)PRINT 7,(Pf(i),i=1,npf)
+	if(kpr.eq.1)PRINT 7,(Pf(i),i=1,11)
 7 	format (20(1p,E14.6))
 !	close(40)
 
       kpr=kpr_help
 
-	if(kpr.eq.1)PRINT*,'a'
-	if(kpr.eq.1)PRINT 7,(a(i),i=1,npf_2)
-      do ii=2,nn
-      if(kpr.eq.1)print *,' ii=',ii
-      read (39,*)(a(i),i=1,npf_2)
-	if(kpr.eq.1)PRINT 7,(a(i),i=1,npf_2)
-      end do
+!	if(kpr.eq.1)PRINT*,'a'
+!	if(kpr.eq.1)PRINT 7,(a(i),i=1,npf_2)
+!      do ii=2,nn
+!      if(kpr.eq.1)print *,' ii=',ii
+!      read (39,*)(a(i),i=1,npf_2)
+!	if(kpr.eq.1)PRINT 7,(a(i),i=1,npf_2)
+!      end do
 
 5000    format (8(1pe14.6))
       

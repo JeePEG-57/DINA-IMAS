@@ -46,6 +46,8 @@ c----------------------
 
 	common /c_neut1/p_n0
 
+      common /c_init_c6/p_c6,T_e_c6,T_i_c6,gam_c6,g_gain_c6
+
        dimension denz(2),
      * rin_zog(2),rre_zog(2),rcx_zog(2)
 
@@ -113,13 +115,17 @@ c	print *,' file in.dat is reading'
 !        close (41)
 
 !	open (unit=41,file='init.dat',form='formatted')
-        read (49,*)p
-        read (49,*)T_e
-        read (49,*)T_i
-        read (49,*)gam
-        read (49,*)g_gain
+!        read (49,*)p
+        p=p_c6
+!        read (49,*)T_e
+        T_e=T_e_c6
+!        read (49,*)T_i
+        T_i=T_i_c6
+!        read (49,*)gam
+        gam=gam_c6
+!        read (49,*)g_gain
+        g_gain=g_gain_c6
 !        close (41)
-
 
 
 
@@ -3056,6 +3062,9 @@ c	stop
 
       include 'double_break1.inc'
 
+      common /c_gamma_z_c4/t_t_c4(ntime),pn_d_t_c4(ntime),
+     *  n_t_c4,nz_imp_c4
+
 	dimension t_t(ntime),pn_d_t(ntime)
 	
 	character *12 apr
@@ -3065,15 +3074,19 @@ c	stop
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='gamma_z.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t,nz_imp 
-           read (49,*) 
+!           read (49,*) 
+!           read (49,*)n_t,nz_imp 
+           n_t=n_t_c4
+           nz_imp=nz_imp_c4 
+!           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp===',
      *  tay,tt,n_t,nz_imp
            
            do i=1,n_t 
-              read (49,*)t_t(i),pn_d_t(i)
+!              read (49,*)t_t(i),pn_d_t(i)
+              t_t(i)=t_t_c4(i)
+              pn_d_t(i)=pn_d_t_c4(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -5007,6 +5020,8 @@ c	   print *,' n_e n_i v_v0==',n_e,n_i,v_v0
       include 'double.inc'
  	include 'parf_mike' 
 
+      common /c_ech_c2/t_t_c2(ntime),udd_sol_t_c2(ntime),n_t_c2
+
 	dimension t_t(ntime),udd_sol_t(ntime)
       character * 30 apr
 
@@ -5016,13 +5031,16 @@ c	   print *,' n_e n_i v_v0==',n_e,n_i,v_v0
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='ech.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t 
-           read (49,*) 
+!           read (49,*) 
+!           read (49,*)n_t 
+           n_t=n_t_c2 
+!           read (49,*) 
 
 
            do i=1,n_t 
-              read (49,*)t_t(i),udd_sol_t(i)
+!              read (49,*)t_t(i),udd_sol_t(i)
+              t_t(i)=t_t_c2(i)
+              udd_sol_t(i)=udd_sol_t_c2(i)
               t_t(i)=t_t(i)*1000. 
            end do 
            
@@ -6674,6 +6692,8 @@ c     *  i,f_h(i),f_imp(i)
 
       include 'double_break1.inc'
 
+      common /c_nd_c3/t_t_c3(ntime),pn_d_t_c3(ntime),n_t_c3
+
 	dimension t_t(ntime),pn_d_t(ntime)
 	character *12 apr
 
@@ -6682,14 +6702,17 @@ c     *  i,f_h(i),f_imp(i)
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='n_d.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t 
-           read (49,*) 
+!           read (49,*) 
+!           read (49,*)n_t 
+           n_t=n_t_c3 
+!           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
            
            do i=1,n_t 
-              read (49,*)t_t(i),pn_d_t(i)
+ !             read (49,*)t_t(i),pn_d_t(i)
+              t_t(i)=t_t_c3(i)
+              pn_d_t(i)=pn_d_t_c3(i)
               t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_dd_t==',i,t_t(i),pn_d_t(i)
            end do 

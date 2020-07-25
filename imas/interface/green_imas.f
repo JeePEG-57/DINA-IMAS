@@ -2261,6 +2261,31 @@ c	implicit real*8 (a-h,o-z)
      *  /ge5/kpr
         common
      *  /c_area/r00,rk,z00,zk
+
+
+      common /c_tokamak_config1/
+     * npf_c,
+     * npf_res_c,
+     * ncam_c,
+     * kloop_c,
+     * kprobe_c,kpb_c,
+     * ke_c
+
+      common /c_tokamak_config2/
+     * nr_c(mu),nz_c(mu),nt_c(mu),n_pf_num_c(mu),
+     * R_c_c(mu),Z_c_c(mu),dr_c(mu),dz_c(mu),alpha_c(mu),beta_c(mu),
+     * pfres_c(mu),
+     * ndl_ves_c(mu),ndh_ves_c(mu),nt_ves_c(mu),n_ves_num_c(mu),
+     * Rc_c(mu),Zc_c(mu),dl_c(mu),hl_c(mu),alpha_ves_c(mu),
+     * beta_ves_c(mu),
+     * rcam_c(mu),
+     * Rl_c(mu),Zl_c(mu),
+     * R_prob_c(mu),Z_prob_c(mu),anglep_c(mu),smp_c(mu),
+     * xu_c(mu),yu_c(mu),
+     * r00_c,rk_c,
+     * z00_c,zk_c
+
+
            
         parameter ( n_max=100)
        dimension x(n_max,n_max),y(n_max,n_max),r0(n_max),z0(n_max)
@@ -2280,98 +2305,142 @@ c	implicit real*8 (a-h,o-z)
 
       kpr=0
 
-     	open(unit=49,file='dina_data.dat',
+!     	open(unit=49,file='dina_data.dat',
 !!!     	open(unit=41,file='tokamak_config.dat',
-     *  form='formatted')
+!!!     *  form='formatted')
 	if(kpr.eq.1)print *,' opened file tokamak_config.dat'
-	read(49,*)
-	if(kpr.eq.1)print *,' 1'
-	read(49,*)npf
+!	read(49,*)
+!	if(kpr.eq.1)print *,' 1'
+!	read(49,*)npf
+	npf=npf_c
 	if(kpr.eq.1)print *,'npf ',npf
 	do I=1,npf
-	read(49,*)
-	read(49,*)nr(i),nz(i),nt(i),n_pf_num(i)
+!	read(49,*)
+!	read(49,*)nr(i),nz(i),nt(i),n_pf_num(i)
+	nr(i)=nr_c(i)
+	nz(i)=nz_c(i)
+	nt(i)=nt_c(i)
+	n_pf_num(i)=n_pf_num_c(i)
 c
 	if(kpr.eq.1)PRINT*,'i Nr Nz nt pf_num',i,Nr(I),nz(i),nt(i),n_pf_num(i)
-	read(49,*)R_c(I),Z_c(I),dr(i),dz(i),alpha(i),beta(i)
+!	read(49,*)R_c(I),Z_c(I),dr(i),dz(i),alpha(i),beta(i)
+	R_c(I)=R_c_c(I)
+	Z_c(I)=Z_c_c(I)
+	dr(i)=dr_c(i)
+	dz(i)=dz_c(i)
+	alpha(i)=alpha_c(i)
+	beta(i)=beta_c(i)
+	
 	if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ',
      * r_c(i),z_c(i),dr(i),dz(i),alpha(i),beta(i)
 	END DO
 
 
-	read(49,*)
+!	read(49,*)
 	if(kpr.eq.1)print *,' res_pf'
-	read(49,*)npf_res
+!	read(49,*)npf_res
+	npf_res=npf_res_c
 	if(kpr.eq.1)print *,'npf_res ',npf_res
 	do I=1,npf_res
-	read(49,*)pfres(i)
+!	read(49,*)pfres(i)
+	pfres(i)=pfres_c(i)
 	if(kpr.eq.1)print *,' i pfres(i)',i,pfres(i)
       end do
       
-	read(49,*)
+!	read(49,*)
 	if(kpr.eq.1)print *,' Vessel'
-	read(49,*)ncam
+!	read(49,*)ncam
+	ncam=ncam_c
 	if(kpr.eq.1)print *,'ncam ',ncam
 	do I=1,ncam
-	read(49,*)
-	read(49,*)ndl_ves(i),ndh_ves(i),nt_ves(i),n_ves_num(i)
+!	read(49,*)
+!	read(49,*)ndl_ves(i),ndh_ves(i),nt_ves(i),n_ves_num(i)
+	ndl_ves(i)=ndl_ves_c(i)
+	ndh_ves(i)=ndh_ves_c(i)
+	nt_ves(i)=nt_ves_c(i)
+	n_ves_num(i)=n_ves_num_c(i)
 c
 	if(kpr.eq.1)PRINT*,'i N M nt ves_n',i,Ndl_ves(I),
      *  ndh_ves(i),nt_ves(i),n_ves_num(i)
-	read(49,*)Rc(I),Zc(I),dl(i),hl(i),alpha_ves(i),beta_ves(i)
+!	read(49,*)Rc(I),Zc(I),dl(i),hl(i),alpha_ves(i),beta_ves(i)
+	Rc(I)=Rc_c(I)
+	Zc(I)=Zc_c(I)
+	dl(i)=dl_c(i)
+	hl(i)=hl_c(i)
+	alpha_ves(i)=alpha_ves_c(i)
+	beta_ves(i)=beta_ves_c(i)
+
 	if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ',
      * rc(i),zc(i),dl(i),hl(i),alpha_ves(i),beta_ves(i)
 	END DO
 
 
-	read(49,*)
+!	read(49,*)
 	if(kpr.eq.1)print *,' res_ves'
-	read(49,*)ncam
+!	read(49,*)ncam
+	ncam=ncam_c
 	if(kpr.eq.1)print *,'ncam ',ncam
 	do I=1,ncam
-	read(49,*)rcam(i)
+!	read(49,*)rcam(i)
+	rcam(i)=rcam_c(i)
 	if(kpr.eq.1)print *,' i rcam(i)',i,rcam(i)
       end do
 
 
-	read(49,*)
+!	read(49,*)
 	if(kpr.eq.1)print *,' Flux loops'
-	read(49,*)kloop
+!	read(49,*)kloop
+	kloop=kloop_c
 	if(kpr.eq.1)print *,'kloop ',kloop
 	do I=1,kloop
 
-	read(49,*)Rl(I),Zl(I)
+!	read(49,*)Rl(I),Zl(I)
+	Rl(I)=Rl_c(I)
+	Zl(I)=Zl_c(I)
 	if(kpr.eq.1)print *,'r_l z_l ',rl(i),zl(i)
 	END DO
 
 
-	read(49,*)
+!	read(49,*)
 	if(kpr.eq.1)print *,' Probe'
-	read(49,*)kprobe,kpb
+!	read(49,*)kprobe,kpb
+	kprobe=kprobe_c
+	kpb=kpb_c
 	if(kpr.eq.1)print *,'kprobe,kpb ',kprobe,kpb
 	do I=1,kprobe
-	read(49,*)R_prob(I),Z_prob(I),anglep(i),smp(i)
+!	read(49,*)R_prob(I),Z_prob(I),anglep(i),smp(i)
+	R_prob(I)=R_prob_c(I)
+	Z_prob(I)=Z_prob_c(I)
+	anglep(i)=anglep_c(i)
+	smp(i)=smp_c(i)
 	if(kpr.eq.1)print *,'r_pr z_pr alpha smp ',
      * R_prob(I),Z_prob(I),anglep(i),smp(i)
 	END DO
 
-	read(49,*)
+!	read(49,*)
 	if(kpr.eq.1)print *,' limiter'
-	read(49,*)ke
+!	read(49,*)ke
+	ke=ke_c
 	if(kpr.eq.1)print *,'ke ',ke
 	do I=1,ke
 
-	read(49,*)xu(I),yu(I)
+!	read(49,*)xu(I),yu(I)
+	xu(I)=xu_c(I)
+	yu(I)=yu_c(I)
 	xu(I)=xu(I)*100.d0
 	yu(I)=yu(I)*100.d0
 	if(kpr.eq.1)print *,'xu yu ',xu(I),yu(I)
 	END DO
 
-      read(49,*)    
-	read(49,*)r00,rk
+!      read(49,*)    
+!	read(49,*)r00,rk
+	r00=r00_c
+	rk=rk_c
 	r00=r00*100.d0
 	rk=rk*100.d0
-      read(49,*)z00,zk
+!      read(49,*)z00,zk
+      z00=z00_c
+      zk=zk_c
 	z00=z00*100.d0
 	zk=zk*100.d0
 	if(kpr.eq.1)print *,'r00,rk ',r00,rk

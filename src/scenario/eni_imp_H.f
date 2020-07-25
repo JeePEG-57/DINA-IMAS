@@ -85,6 +85,8 @@ c
         common /vic_imp3/coef_imp3,nz_imp3
         common /vic_imp4/coef_imp4,nz_imp4
 
+        common /c_bohm_gbohm_c12/k_Bohm_c12
+
         dimension res(3),te_zrad(3)
         real res,te_zrad
 
@@ -208,8 +210,9 @@ C^M
 
       if(i_en.eq.1) then
 !                 open (unit=41,file='bohm_gbohm.dat',form='formatted')
-                read (49,*)
-                read (49,*) k_Bohm
+!                read (49,*)
+!                read (49,*) k_Bohm
+                k_Bohm=k_Bohm_c12
 !                read (41,*)
 !                close(41)
         end if
@@ -1468,6 +1471,9 @@ c	stop
 	include 'double.inc'
  	include 'parf_mike' 
 
+      common /c_gamma_z1_c9/t_t_c9(ntime),pn_d_t_c9(ntime),
+     *  n_t_c9,nz_imp1_c9
+
 
 	dimension t_t(ntime),pn_d_t(ntime)
 	character *12 apr
@@ -1476,16 +1482,21 @@ c	stop
 
 	if(i_sh.eq.1)then
 c-------
+c-------
 !           open (unit=41,file='gamma_z1.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t,nz_imp1 
-           read (49,*) 
+!           read (49,*) 
+!           read (49,*)n_t,nz_imp1 
+           n_t=n_t_c9
+           nz_imp1=nz_imp1_c9 
+!           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp1===',
      *  tay,tt,n_t,nz_imp1 
            
            do i=1,n_t 
-              read (49,*)t_t(i),pn_d_t(i)
+!              read (49,*)t_t(i),pn_d_t(i)
+              t_t(i)=t_t_c9(i)
+              pn_d_t(i)=pn_d_t_c9(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -1547,6 +1558,9 @@ c	stop
 	include 'double.inc'
  	include 'parf_mike' 
 
+      common /c_gamma_z2_c5/t_t_c5(ntime),pn_d_t_c5(ntime),
+     *  n_t_c5,nz_imp2_c5
+
 	dimension t_t(ntime),pn_d_t(ntime)
 	character *12 apr
 
@@ -1555,15 +1569,19 @@ c	stop
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='gamma_z2.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t,nz_imp2 
-           read (49,*) 
+!           read (49,*) 
+!           read (49,*)n_t,nz_imp2 
+           n_t=n_t_c5
+           nz_imp2=nz_imp2_c5 
+!           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp2===',
      *  tay,tt,n_t,nz_imp2
            
            do i=1,n_t 
-              read (49,*)t_t(i),pn_d_t(i)
+!              read (49,*)t_t(i),pn_d_t(i)
+              t_t(i)=t_t_c5(i)
+              pn_d_t(i)=pn_d_t_c5(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -1614,6 +1632,8 @@ c	stop
 
 	include 'double.inc'
  	include 'parf_mike' 
+      common /c_gamma_z3_c10/t_t_c10(ntime),pn_d_t_c10(ntime),
+     *  n_t_c10,nz_imp3_c10
 
 	dimension t_t(ntime),pn_d_t(ntime)
 	character *12 apr
@@ -1623,15 +1643,19 @@ c	stop
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='gamma_z3.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t,nz_imp3 
-           read (49,*) 
+!           read (49,*) 
+!           read (49,*)n_t,nz_imp3 
+           n_t=n_t_c10
+           nz_imp3=nz_imp3_c10 
+!           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp3===',
      *  tay,tt,n_t,nz_imp3
            
            do i=1,n_t 
-              read (49,*)t_t(i),pn_d_t(i)
+!              read (49,*)t_t(i),pn_d_t(i)
+              t_t(i)=t_t_c10(i)
+              pn_d_t(i)=pn_d_t_c10(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
@@ -1681,6 +1705,8 @@ c	stop
 
 	include 'double.inc'
  	include 'parf_mike' 
+      common /c_gamma_z4_c11/t_t_c11(ntime),pn_d_t_c11(ntime),
+     *  n_t_c11,nz_imp4_c11
 
 	dimension t_t(ntime),pn_d_t(ntime)
 	character *12 apr
@@ -1690,15 +1716,19 @@ c	stop
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='gamma_z4.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t,nz_imp4 
-           read (49,*) 
+!           read (49,*) 
+!           read (49,*)n_t,nz_imp4 
+           n_t=n_t_c11
+           nz_imp4=nz_imp4_c11 
+!           read (49,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t  nz_imp4===',
      *  tay,tt,n_t,nz_imp4
            
            do i=1,n_t 
-              read (49,*)t_t(i),pn_d_t(i)
+!              read (49,*)t_t(i),pn_d_t(i)
+              t_t(i)=t_t_c11(i)
+              pn_d_t(i)=pn_d_t_c11(i)
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 

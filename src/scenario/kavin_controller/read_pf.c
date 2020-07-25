@@ -3,6 +3,18 @@
 #define nmax 9997
 #define kf 15
 #define mexPrintf printf
+
+struct t15_mem6
+{
+	int kmax;
+	double pf[nmax][kf];
+	double t[nmax],tpl[nmax];
+};
+
+	  struct t15_mem6 mem6;
+
+
+
 FILE*prob;
 FILE*f2;
 
@@ -24,7 +36,7 @@ FILE*f2;
 
 
 
-	if(i_en > 1){goto l2;}
+	if(i_en > -1){goto l2;}
 
 	mexPrintf(" i_en  %d  \n ",i_en);
 	
@@ -107,12 +119,16 @@ l2:
 //	mexPrintf(" kmax= indx %d %d \n ",kmax,indx);
 
 //	return 0;
+	
+	kmax=mem6.kmax;
+
+	mexPrintf(" +++ kmax= npf  %d %d \n ",kmax,npf);
 
 	for (i = 0; i <= kmax; ++i) {
-		t_val[i]=t[i];
-		tpl_val[i]=tpl[i];
+		t_val[i]=mem6.t[i];
+		tpl_val[i]=mem6.tpl[i];
     	for (j = 1; j <= npf; ++j) {
-		pf_val[j+i*npf]=pf[i][j];}
+		pf_val[j+i*npf]=mem6.pf[i][j];}
 	}
 
 //	mexPrintf("  return \n   ");
@@ -122,3 +138,4 @@ l2:
 
     return 0;
 } /* scen_read */
+

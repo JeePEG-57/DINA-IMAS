@@ -36,6 +36,15 @@ extern FILE*f1;
 /* %%%-SFUNWIZ_wrapper_includes_Changes_END --- EDIT HERE TO _BEGIN */
 #define u_width 
 #define y_width 50
+
+struct t15_mem4
+{
+int N[7];
+double y_1[50][2],y_2[50][2],y_3[50][2],y_4[50][2],y_5[50][2],y_6[50][2];
+};
+
+	  struct t15_mem4 mem4;
+
 /*
  * Create external references here.  
  *
@@ -72,25 +81,9 @@ if(k1==0){
 
 	printf("---g1_term.dat \n");
 
-//f=fopen("g1_term.dat","r");
-//	fscanf(f1," %s ",b);
-//printf ("     %s",b);
+N=mem4.N[N_g];
 
-fgets(b,255,f1);
-printf ("     %s",b);
-
-
-fscanf(f1,"%d \n",&N); 
-printf("---g1_term.dat N  %d  \n",N);
-
-fgets(b,255,f1);
-printf ("     %s",b);
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_1[i],y_1[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_1[j][k]=0;
-for(j=i;j<50;j++)y_1[j][0]=y_1[j-1][0]+1;*/
-for(j=i;j<50;j++){y_1[j][0]=y_1[j-1][0]+1; y_1[j][1]=y_1[j-1][1];}
+for(k=0;k<2;k++)for(j=0;j<50;j++)y_1[j][k]=mem4.y_1[j][k];
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_1[j][k];
 
 j=1;
@@ -110,17 +103,9 @@ if(N_g==2){
 if(k2==0){
 
 	printf("---g2_term.dat \n");
+N=mem4.N[N_g];
 
-//f=fopen("g2_term.dat","r");
-//	fscanf(f1," %s ",b);
-//printf ("     %s",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_2[i],y_2[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_2[j][k]=0;
-for(j=i;j<50;j++)y_2[j][0]=y_2[j-1][0]+1;*/
-for(j=i;j<50;j++){y_2[j][0]=y_2[j-1][0]+1; y_2[j][1]=y_2[j-1][1];}
+for(k=0;k<2;k++)for(j=0;j<50;j++)y_2[j][k]=mem4.y_2[j][k];
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_2[j][k];
 
 j=1;
@@ -138,17 +123,11 @@ if(N_g==3){
 if(k3==0){
 
 	printf("---g3_term.dat \n");
+N=mem4.N[N_g];
 
-//f=fopen("g3_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_3[i],y_3[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_3[j][k]=0;
-for(j=i;j<50;j++)y_3[j][0]=y_3[j-1][0]+1;*/
-for(j=i;j<50;j++){y_3[j][0]=y_3[j-1][0]+1; y_3[j][1]=y_3[j-1][1];}
+for(k=0;k<2;k++)for(j=0;j<50;j++)y_3[j][k]=mem4.y_3[j][k];
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_3[j][k];
+
 j=1;
 printf("---g3_term.dat N y_01 y_02 %d %g %g \n",N,y_3[j-1][0],y_3[j-1][1]);
 j=N-1;
@@ -162,17 +141,11 @@ if(N_g==4){
 if(k4==0){
 
 	printf("---g4_term.dat \n");
+N=mem4.N[N_g];
 
-//f=fopen("g4_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_4[i],y_4[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_4[j][k]=0;
-for(j=i;j<50;j++)y_4[j][0]=y_4[j-1][0]+1;*/
-for(j=i;j<50;j++){y_4[j][0]=y_4[j-1][0]+1; y_4[j][1]=y_4[j-1][1];}
+for(k=0;k<2;k++)for(j=0;j<50;j++)y_4[j][k]=mem4.y_4[j][k];
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_4[j][k];
+
 j=1;
 printf("---g4_term.dat N y_01 y_02 %d %g %g \n",N,y_4[j-1][0],y_4[j-1][1]);
 j=N-1;
@@ -187,16 +160,11 @@ if(k5==0){
 
 	printf("---g5_term.dat \n");
 
-//f=fopen("g5_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_5[i],y_5[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_5[j][k]=0;
-for(j=i;j<50;j++)y_5[j][0]=y_5[j-1][0]+1;*/
-for(j=i;j<50;j++){y_5[j][0]=y_5[j-1][0]+1; y_5[j][1]=y_5[j-1][1];}
+N=mem4.N[N_g];
+
+for(k=0;k<2;k++)for(j=0;j<50;j++)y_5[j][k]=mem4.y_5[j][k];
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_5[j][k];
+
 j=1;
 printf("---g5_term.dat N y_01 y_02 %d %g %g \n",N,y_5[j-1][0],y_5[j-1][1]);
 j=N-1;
@@ -211,16 +179,11 @@ if(k6==0){
 
 	printf("---g6_term.dat \n");
 
-//f=fopen("g6_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_6[i],y_6[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_6[j][k]=0;
-for(j=i;j<50;j++)y_6[j][0]=y_6[j-1][0]+1;*/
-for(j=i;j<50;j++){y_6[j][0]=y_6[j-1][0]+1; y_6[j][1]=y_6[j-1][1];}
+N=mem4.N[N_g];
+
+for(k=0;k<2;k++)for(j=0;j<50;j++)y_6[j][k]=mem4.y_6[j][k];
 for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_6[j][k];
+
 j=1;
 printf("---g6_term.dat N y_01 y_02 %d %g %g \n",N,y_6[j-1][0],y_6[j-1][1]);
 j=N-1;

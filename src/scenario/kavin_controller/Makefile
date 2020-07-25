@@ -4,7 +4,7 @@ AR = ar
 ARFLAGS = -ru
 FC = gfortran
 
-f2c= cc -fpic
+f2c= cc -fpic -w
 
 FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
 

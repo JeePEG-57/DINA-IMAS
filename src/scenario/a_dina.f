@@ -34,6 +34,10 @@
       common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
       
             common /c_imas_is/ih_imas
+            common /c_kpr/kpr_c
+      common /c_tran_times/tt_dina_c
+
+      common /c_ext_c16/k_ener_ext_c16,k_dens_ext_c16,k_ajb_ext_c16
 
 !-----------------------------------  inputs---
 !     *  vchopper_x2,tpl_x2,tt_dw_x2)
@@ -48,8 +52,9 @@
       if(i_en.eq.1)then
 
 !        open (unit=1,file='kpr.dat',form='formatted')
-        read (49,*)
-        read (49,*)kpr
+!        read (49,*)
+!        read (49,*)kpr
+        kpr=kpr_c
 
         if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
         
@@ -133,8 +138,9 @@
       call vic_read_gaps()
 
 !        open (unit=1,file='tran_times.dat',form='formatted')
-        read (49,*)
-        read (49,*)tt_dina
+!        read (49,*)
+!        read (49,*)tt_dina
+        tt_dina=tt_dina_c
 
       end if
       
@@ -155,8 +161,11 @@
 !      k_ajb_ext=0
 
       if(i_en_ext.eq.1)then
-          read (49,*) 
-          read (49,*)k_ener_ext, k_dens_ext,k_ajb_ext
+!          read (49,*) 
+!          read (49,*)k_ener_ext, k_dens_ext,k_ajb_ext
+          k_ener_ext=k_ener_ext_c16
+          k_dens_ext=k_dens_ext_c16
+          k_ajb_ext=k_ajb_ext_c16
       end if
 
       if(kpr.eq.1)print *,' FOR_EXT k_ener_ext k_dens_ext k_ajb_ext=='

@@ -19,6 +19,23 @@ extern FILE*f;
 /* %%%-SFUNWIZ_wrapper_includes_Changes_END --- EDIT HERE TO _BEGIN */
 #define u_width 
 #define y_width 1
+
+
+struct t15_mem5
+{
+double y[25];
+};
+
+	  struct t15_mem5 mem5;
+
+struct t15_mem7
+{
+double y[25];
+};
+
+	  struct t15_mem7 mem7;
+
+
 /*
  * Create external references here.  
  *
@@ -46,34 +63,21 @@ double y[26],dd;
 char b[256];
 
 if(kl==0){
+
 kk=0;
-	printf("---tt_kavin2.dat \n");
-//f=fopen("tt_kavin2.dat","r");
-fgets(b,255,f2);
-printf (" 1) %s",b);
 
-fscanf(f2,"%lf \n ",&y[0]);
-y[0]=y[0]*1e-3; 
+for(i=0;i<=6;i++) {
+	y[i]=mem7.y[i];
+}
+printf("---tt_kavin2.dat \n");
 
-printf("---y[0]  %g \n",y[0]);
-
-fgets(b,255,f2);
-printf (" 2) %s",b);
-
-for(i=1;i<4;i++) fscanf(f2,"%lf %lf %lf \n",&y[i],&y[i]+1,&y[i]+2);
 y0[0]=y[0];y0[1]=y[2];y0[2]=y[3];y0[3]=y[1]; 
 
 printf("---y[1] y[2] y[3]  %g %g %g \n",y[1],y[2],y[3]);
 
-fgets(b,255,f2);
-printf (" 3)%s",b);
-
-fscanf(f2,"%lf %lf  \n",&y[4],&y[5]);
 y0[4]=y[4];y0[5]=y[5];
 
 printf("---y4 y5  %g %g  \n",y[4],y[5]);
-
-fclose(f2);
 
 printf("---tt_kavin2-- end.dat \n");
 
@@ -81,23 +85,10 @@ printf("---tt_kavin2-- end.dat \n");
 kk=5;
 
 	printf("---control_data.dat \n");
-//f=fopen("control_data.dat","r");
-fgets(b,255,f);
-printf (" 1) %s",b);
-for(i=0; i<=14; i++) fscanf(f,"%lf",&y[i]);
-
-fscanf(f, "\n");
-
-fgets(b,255,f);
-printf (" 2) %s",b);
-//fscanf(f,"%s",&b);
-//mexPrintf("%s\n",b);
-for(i=14; i<=25; i++) fscanf(f,"%lf",&y[i]);
-
-fscanf(f, "\n");
 
 for(i=0;i<=25;i++) {
 	kk=kk+1;
+	y[i]=mem5.y[i];
 	y0[kk]=y[i];
 }
 kk=kk+1;
@@ -127,3 +118,5 @@ printf("---control_data-- end.dat \n");
 kl=1;}
 /* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */
 }
+
+

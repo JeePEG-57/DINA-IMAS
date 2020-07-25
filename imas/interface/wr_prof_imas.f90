@@ -35,13 +35,16 @@
     
         integer   ::  ih_imas
         common /c_imas_is/ih_imas
+        common /c_jetto_ids/pulse_c,run_c
 
 !        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
 
-        read(49,*)
-        read(49,*) pulse
-        read(49,*)
-        read(49,*) run
+  !      read(49,*)
+  !      read(49,*) pulse
+        pulse=pulse_c
+!        read(49,*)
+!        read(49,*) run
+        run=run_c
 
 !        close(2)
 

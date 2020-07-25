@@ -36,6 +36,14 @@ extern FILE*f;
 /* %%%-SFUNWIZ_wrapper_includes_Changes_END --- EDIT HERE TO _BEGIN */
 #define u_width 
 #define y_width 500
+
+struct t15_mem2
+{
+int N; double y[500][20];
+int k_time; 
+};
+
+	  struct t15_mem2 mem2;
 /*
  * Create external references here.  
  *
@@ -63,51 +71,39 @@ int i,j,k,N; static int kl; static double y[500][20];char b[256];
 int k_time, ii; double y2; 
 
 if(kl==0){
-	printf("---volt.dat \n");
-N=*n_mc; /*mexPrintf(" N %d\n",N);*/
-fgets(b,255,f);
-	fscanf(f,"%d \n",&k_time);
-printf("---k_time N volt.dat  %d %d\n",k_time,N);
+	printf("+++volt.dat \n");
+	N=mem2.N; /*mexPrintf(" N %d\n",N);*/
+	k_time=mem2.k_time;
 
-fgets(b,255,f);
-
-printf("      %s \n",b);
-
-i=0;
-while(N==fscanf(f,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-y[i],y[i]+1,y[i]+2,y[i]+3,y[i]+4,y[i]+5,y[i]+6,y[i]+7,y[i]+8,y[i]+9,y[i]+10,y[i]+11))i++;
-
-/*for(k=0;k<k_time;k++){
-printf("---k==   %d\n",k);
-for(i=0;i<N;i++){
-fscanf(f,"%lf",&y2);
-printf(" %g",y2);
-y[k][i]=y2;
+for(k=0;k<k_time;k++){
+	printf("+++k==   %d\n",k);
+for(ii=0;ii<N;ii++){
+	y[k][ii]=mem2.y[k][ii];}
 }
-fscanf(f, "\n");
-}*/
 
-fscanf(f, "\n");
 
 k=1;
-printf("---k==   %d\n",k);
+printf("+++k==   %d\n",k);
 for(ii=0;ii<N;ii++){
 printf(" %g",y[k][ii]);
 }
 printf("\n");
 k=10;
-printf("---k==   %d\n",k);
+printf("+++k==   %d\n",k);
 for(ii=0;ii<N;ii++){
 printf(" %g",y[k][ii]);
 }
 printf("\n");
 k=k_time-1;
-printf("---k==   %d\n",k);
+printf("+++k==   %d\n",k);
 for(ii=0;ii<N;ii++){
 printf(" %g",y[k][ii]);
 }
 printf("\n");
-printf("---i  N  ii k %d %d %d %d\n",i,N,ii,k);
+
+i=k_time;
+
+printf("+++i  N  ii k %d %d %d %d\n",i,N,ii,k);
 
 //fclose(f);
 /*mexPrintf(" i %d\n",i);*/

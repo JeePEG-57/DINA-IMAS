@@ -131,6 +131,10 @@
        common /c_imas_time_eq/time_eq
            
       common /c_tran2/k_ener_ext,k_dens_ext,k_ajb_ext
+      common /c_dw_c14/tay_dw_c14
+
+      common /c_tt_kavin2_c1/tt_rampup_c1,dt_end_sim_c1,
+     * dtpl_term_l_c1,cIp_end_c1,CS1_eob_c1,rms_noise_c1
 
 	dimension tcam(*),tcam0(*),ind(kf),pfhelp(kf)
 
@@ -324,9 +328,10 @@ c* vic  To read tay_simul
 !          open (unit=40,file='dw.dat',form='formatted') 
 !          tay_dw=5.
 !          open (unit=40,file='dw.dat',form='formatted') 
-          read (49,*) 
+!          read (49,*) 
 !          read (40,*)tt_dw,tay_dw
-          read (49,*)tay_dw
+!          read (49,*)tay_dw
+          tay_dw=tay_dw_c14
 
 !	  close (40)
 
@@ -342,19 +347,27 @@ c* vic  To read tay_simul
 	   yu_dist(i)=yu(i)
 	end do
 !          open (unit=40,file='tt_kavin2.dat',form='formatted') 
-          read (39,*) 
-          read (39,*)tt_rampup
-          read (39,*) 
-          read (39,*)dt_end_sim,dtpl_term_l,cIp_end
+!          read (39,*) 
+!          read (39,*)tt_rampup
+!          read (39,*) 
+!          read (39,*)dt_end_sim,dtpl_term_l,cIp_end
+
+          tt_rampup=tt_rampup_c1
+          dt_end_sim=dt_end_sim_c1
+          dtpl_term_l=dtpl_term_l_c1
+          cIp_end=cIp_end_c1
           
 
           dtpl_term_h=0
           
-          read (39,*) 
-          read (39,*)CS1_eob,rms_noise
+!          read (39,*) 
+!          read (39,*)CS1_eob,rms_noise
 
-	  close (39)
+!	  close (39)
 
+          CS1_eob=CS1_eob_c1
+          rms_noise=rms_noise_c1
+          
 
         dt_term_h=dtpl_term_h*1e3
 

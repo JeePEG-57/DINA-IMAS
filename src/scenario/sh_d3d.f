@@ -1976,6 +1976,9 @@ c 	parameter (ntime=20)
         common
      *  /ge5/kpr
 
+      common /c_emo_c7/t_t_c7(ntime),emoe_t_c7(ntime),emoq_t_c7(ntime),
+     *  n_t_c7
+
 
 	dimension t_t(ntime),emoe_t(ntime),emoq_t(ntime)
 
@@ -1986,14 +1989,18 @@ c 	parameter (ntime=20)
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='emo.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t 
+!           read (49,*) 
+!           read (49,*)n_t 
+           n_t=n_t_c7 
 
  	 if(kpr.eq.1)print *,' tt n_t===',tt,n_t 
            
-           read (49,*) 
+!           read (49,*) 
            do i=1,n_t 
-              read (49,*)t_t(i),emoe_t(i),emoq_t(i)
+!              read (49,*)t_t(i),emoe_t(i),emoq_t(i)
+              t_t(i)=t_t_c7(i)
+              emoe_t(i)=emoe_t_c7(i)
+              emoq_t(i)=emoq_t_c7(i)
               t_t(i)=t_t(i)*1000. 
            end do 
            
@@ -2079,6 +2086,7 @@ c	pause 'from shape_emo'
         common
      *  /ge5/kpr
 
+      common /c_pfres/t_t_c1(ntime),pf_t_c1(kf,ntime),n_t_c1,npf_c1
 
 	dimension t_t(ntime),pf_t(kf,ntime)
 
@@ -2091,14 +2099,19 @@ c	pause 'from shape_emo'
 	if(i_sh.eq.1)then
 c-------
 !           open (unit=41,file='pfres.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)n_t 
+!           read (49,*) 
+!           read (49,*)n_t 
+           n_t=n_t_c1 
 
  	 if(kpr.eq.1)print *,' tt n_t===',tt,n_t 
-           read (49,*) 
+!           read (49,*) 
 
            do i=1,n_t 
-              read (49,*)t_t(i),(pf_t(k,i),k=1,npf)
+!              read (49,*)t_t(i),(pf_t(k,i),k=1,npf)
+              t_t(i)=t_t_c1(i)
+              do k=1,npf_c1
+              pf_t(k,i)=pf_t_c1(k,i)
+              end do
               t_t(i)=t_t(i)*1000. 
            end do 
 

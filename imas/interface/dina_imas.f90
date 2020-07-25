@@ -56,6 +56,8 @@ integer ::  kpr
 
 integer   ::  ih_imas
      common /c_imas_is/ih_imas
+integer   ::  ih_imas_c
+     common /c_k_jetto/ih_imas_c
 
 
 integer,save :: key(27)=(/ (0,i=1,27) /)
@@ -67,6 +69,8 @@ real (ids_real),save :: time_8,tt_8,tay_8
 real(ids_real) ::time_eq
 
      common /c_imas_time_eq/time_eq
+      common /c_time_eq/time_eq_c
+real(ids_real) ::time_eq_c
 
 ! DINA parameters
     integer,parameter :: npo = 500
@@ -153,6 +157,8 @@ call system(" pwd")
 
 !call fp_test()
 
+ call dina_data_read()
+ call general_data_read()
 
  call congig_calc()
 
@@ -378,15 +384,17 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 !    kpr=1
 ! 		 open (unit=41,file='k_jetto.dat',form='formatted') 
 ! 		 open (unit=49,file='dina_data.dat',form='formatted') 
-          read (49,*) 
-          read (49,*)ih_imas
+!          read (49,*) 
+!          read (49,*)ih_imas
+          ih_imas=ih_imas_c
  !        close (49)
          
         print *,'from k_jetto.dat  ih_imas =',ih_imas
 
 ! 		 open (unit=40,file='time_eq.dat',form='formatted') 
-          read (49,*) 
-          read (49,*)time_eq
+!          read (49,*) 
+!          read (49,*)time_eq
+          time_eq=time_eq_c
 !         close (41)
          
         print *,'from time_eq.dat  time_eq =',time_eq

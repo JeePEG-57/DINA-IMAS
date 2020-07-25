@@ -1013,20 +1013,30 @@ c*******************************************************
      *       n_ga,x_gaps,y_gaps)
 
 	include 'double.inc'
+      include 'parf1'
+      
         common
      *  /ge5/kpr
+
+      common /c_gaps_data_ramp/x_gaps_c(mu),y_gaps_c(mu),n_ga_c
 
         dimension x_gaps(*),y_gaps(*)
 
 
 c
 !	open(unit=40,status='old',file='gaps_data_ramp',form='formatted')
-	read (49,*)
-	read (49,*)n_ga
-	read (49,*)
-	read (49,*)(x_gaps(i),i=1,n_ga)
-	read (49,*)
-	read (49,*)(y_gaps(i),i=1,n_ga)
+!	read (49,*)
+!	read (49,*)n_ga
+	n_ga=n_ga_c
+      do i=1,n_ga
+!	read (49,*)
+!	read (49,*)(x_gaps(i),i=1,n_ga)
+	x_gaps(i)=x_gaps_c(i)
+!	read (49,*)
+!	read (49,*)(y_gaps(i),i=1,n_ga)
+	y_gaps(i)=y_gaps_c(i)
+	end do
+	
 !        close (40)
 c
 
@@ -1137,9 +1147,13 @@ c***************************************************
      *       tay_simul,tt_1,tt_2)
 
 	include 'double.inc'
+      common /c_tay_simul_c13/tay_simul_c13
+
 !           open (unit=41,file='tay_simul.dat',form='formatted') 
-           read (49,*) 
-           read (49,*)tay_simul
+!           read (49,*) 
+!           read (49,*)tay_simul
+           tay_simul=tay_simul_c13
+           
            tt_1=2500000.
            tt_2=2700000. 
 !           close (41)
@@ -2722,6 +2736,7 @@ c
 	include 'double.inc'
         common
      *  /ge5/kpr
+      common /c_pcchp_end_c15/pcchp_end_c15
 
 
 
@@ -2748,8 +2763,9 @@ c-------
            dt_1=4.e3
 
 !           open (unit=40,file='pcchp_end.dat',form='formatted') 
-        read (49,*)
-        read (49,*)pcchp_end
+!        read (49,*)
+!        read (49,*)pcchp_end
+        pcchp_end=pcchp_end_c15
 !           pcchp_end=4.
       if(kpr.eq.1)print*,'pcchp_end is read',pcchp_end
         end if
