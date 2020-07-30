@@ -579,8 +579,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x)) 
 
 
-      # Domain tab
-      title = "Domain"
+      # Area tab
+      title = "Area"
       tab = QtWidgets.QWidget()         
       tab.setObjectName("tab" + title)     
       grid = QtWidgets.QGridLayout()      
@@ -590,7 +590,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       self.tabInputs.append(tab)
       
       
-      record = recordset["domain"]
+      record = recordset["area"]
       # Table for coils data  
       table = QtWidgets.QTableWidget(tab)
       table.setDragEnabled(False)
@@ -820,6 +820,11 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.CreateInputTab(parentObject, params["data"], params["title"])
         
         
+        # number of coil turns
+        params = self.ReadParameters(f)
+        self.controlData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"]) 
+        
         
         
         #consist = setOfParams["data"] + [timedData]
@@ -1043,7 +1048,6 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       for i in range(npf):
         data.append(self.ReadCoilData(f))
       record["geometry"] = data
-      print(data)
       
       # Coil resistivities
       data = []
@@ -1141,7 +1145,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       lineZ = self.ReadRow(f)
       record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineR]
       record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in lineZ]
-      output["domain"] = record
+      output["area"] = record
       
               
       output["type"] = "tokamakdata"  
@@ -1204,7 +1208,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         
       # Area
-      recsave = record["domain"]
+      recsave = record["area"]
       f.write(recsave["name"] + "\n")
       s1 = recsave["items_r"][0].text()
       s2 = recsave["items_r"][1].text()
@@ -1225,7 +1229,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
  
     def SaveFilePart(self, f, record):
       if isinstance(record, dict):
-        print("Dictionary found")
+        #print("Dictionary found")
         if record["type"] == "heap":
           f.write(record["header"] + "\n")
           data = record["data"]
@@ -1308,7 +1312,17 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
           
       f.close()
 
-
+ 
+ 
+    def GetStuctWithFieldValue(self, record, field, value):
+      for item in record:
+        if field in item:
+          if item[field] == value:
+            return item
+      print("item does not found")    
+      return []  
+   
+   
 
     def ReadParametersRow(self, f, nrows):
       output = {}
@@ -1321,7 +1335,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if i == 0:
           header = line.split("!")
           if len(header) > 1:
-            output["title"] = header[1]
+            output["title"] = header[1].strip()
             line = header[0]
         description = line.split()
         data.append(float(description[0]))
@@ -1349,7 +1363,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       names = params.split()
       print(names)
       if len(header) > 1:
-        output["title"] = header[1]
+        output["title"] = header[1].strip()
            
       data = self.ReadRow(f)    
       print(data)
@@ -1394,7 +1408,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       print(names1)
       output["names1"] = names1
       if len(header) > 1:
-        output["title"] = header[1]
+        output["title"] = header[1].strip()
       
       datant = self.ReadRow(f)     
       if len(datant) == 0:
@@ -1493,11 +1507,173 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
       user = os.getenv('USER')
       tokamakname = self.lineInputTokamak.text()
-        
+      
+      for rec in self.DINAData:
+        if rec["type"] == "tokamakdata":
+          tokamakdata = rec
+      
+      if tokamakdata:
+        print("pfa get()")  
+      
+      
       imas_obj1 = imas.ids(pulse, run)
       imas_obj1.create_env(user, tokamakname, '3')  
       
       
+      
+      pfa1 = imas_obj1.pf_active     
+      pfa1.get()      
+      pfa1.ids_properties.homogeneous_time = 0
+      
+      #npf = len(tokamakdata["coils"]["geometry"])
+      
+      npfa = 12
+      
+      pfa1.coil.resize(npfa)
+      
+      #rrr = pfa1.coil.dtype()
+      rrr = type(pfa1.coil[0])
+      print("Coil type = " + rrr.__name__)
+      ggg = rrr()
+      
+      ncircuit = 0
+      for coil in tokamakdata["coils"]["geometry"]:
+        ncircuit = max(ncircuit, int(coil["items_p"][3].text()))
+      
+      print("ncircuit = " + str(ncircuit))
+      
+      turndata = self.GetStuctWithFieldValue(self.controlData, "title", "n_turn")
+      
+      for i in range(npfa):                   
+        ne = 0
+        icircuit = i + 1
+               
+        for coil in tokamakdata["coils"]["geometry"]:
+          if icircuit == int(coil["items_p"][3].text()):
+            ne = ne + 1
+                             
+        pfa1.coil[i].element.resize(ne)
+        
+        ie = -1
+        for coil in tokamakdata["coils"]["geometry"]:         
+          if icircuit == int(coil["items_p"][3].text()):
+            ie = ie + 1
+            
+            pfa1.coil[i].element[ie].name = coil["name"]
+            
+            pfa1.coil[i].element[ie].geometry.geometry_type = 3
+            pfa1.coil[i].element[ie].geometry.oblique.r = float(coil["items_g"][0].text())
+            pfa1.coil[i].element[ie].geometry.oblique.z = float(coil["items_g"][1].text())
+            pfa1.coil[i].element[ie].geometry.oblique.length = float(coil["items_g"][2].text())
+            pfa1.coil[i].element[ie].geometry.oblique.thickness = float(coil["items_g"][3].text())
+            pfa1.coil[i].element[ie].geometry.oblique.alpha = float(coil["items_g"][4].text())
+            pfa1.coil[i].element[ie].geometry.oblique.beta = float(coil["items_g"][5].text())
+            
+            pfa1.coil[i].element[ie].turns_with_sign = float(coil["items_p"][2].text())*float(turndata["items"][i].text())
+            print(str(pfa1.coil[i].element[ie].turns_with_sign))
+            
+            pfa1.coil[i].name += coil["name"]
+        
+        print("Coil" + str(i) + ":" + pfa1.coil[i].name)
+        pfa1.coil[i].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())
+      
+      pfa1.coil[2].name = "CS1"
+      pfa1.coil[11].name = "VS3"
+        
+           
+      pfa1.put()
+      
+      pfp1 = imas_obj1.pf_passive     
+      pfp1.get()      
+      pfp1.ids_properties.homogeneous_time = 0
+      
+      ncircuitcam = 0
+      for cam in tokamakdata["vessel"]["geometry"]:
+        ncircuitcam = max(ncircuitcam, int(cam["items_p"][3].text()))
+      #ncam = len(tokamakdata["vessel"]["geometry"])
+      
+      pfp1.loop.resize(ncircuit - npfa + ncircuitcam)
+      
+      
+      # Passive coils
+      iloop = -1
+      
+      for i in range(npfa, ncircuit):
+        iloop += 1
+        
+        ne = 0
+        icircuit = i + 1
+        
+        for coil in tokamakdata["coils"]["geometry"]:
+          if icircuit == int(coil["items_p"][3].text()):
+            ne = ne + 1
+            
+        pfp1.loop[iloop].element.resize(ne)
+            
+        ie = -1
+        for coil in tokamakdata["coils"]["geometry"]:         
+          if icircuit == int(coil["items_p"][3].text()):
+            ie = ie + 1           
+            
+            pfp1.loop[iloop].element[ie].name = coil["name"]
+            
+            pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
+            pfp1.loop[iloop].element[ie].geometry.oblique.r = float(coil["items_g"][0].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.z = float(coil["items_g"][1].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.length = float(coil["items_g"][2].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.thickness = float(coil["items_g"][3].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.alpha = float(coil["items_g"][4].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.beta = float(coil["items_g"][5].text())            
+      
+            pfp1.loop[iloop].element[ie].turns_with_sign = float(coil["items_p"][2].text())
+      
+            pfp1.loop[iloop].name += coil["name"]
+            
+        pfp1.loop[iloop].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())           
+        print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)
+      
+           
+      # Vessel passive elements
+      ncircuit = 0
+      for cam in tokamakdata["vessel"]["geometry"]:
+        ncircuit = max(ncircuit, int(cam["items_p"][3].text()))      
+      
+      for i in range(ncircuit):
+        iloop += 1
+        
+        ne = 0
+        icircuit = i + 1
+        
+        for cam in tokamakdata["vessel"]["geometry"]:
+          if icircuit == int(cam["items_p"][3].text()):
+            ne = ne + 1
+            
+        pfp1.loop[iloop].element.resize(ne)
+        
+        ie = -1
+        for cam in tokamakdata["vessel"]["geometry"]:         
+          if icircuit == int(cam["items_p"][3].text()):
+            ie = ie + 1           
+            
+            pfp1.loop[iloop].element[ie].name = cam["name"]
+            
+            pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
+            pfp1.loop[iloop].element[ie].geometry.oblique.r = float(cam["items_g"][0].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.z = float(cam["items_g"][1].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.length = float(cam["items_g"][2].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.thickness = float(cam["items_g"][3].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.alpha = float(cam["items_g"][4].text())
+            pfp1.loop[iloop].element[ie].geometry.oblique.beta = float(cam["items_g"][5].text()) 
+            
+            pfp1.loop[iloop].element[ie].turns_with_sign = float(cam["items_p"][2].text())
+                       
+            pfp1.loop[iloop].name += cam["name"]
+            
+        pfp1.loop[iloop].resistance = float(tokamakdata["vessel"]["resist"]["items"][i].text())            
+        print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)      
+      
+      
+      pfp1.put()
       
       imas_obj1.close()
 
