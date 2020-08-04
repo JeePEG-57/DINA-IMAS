@@ -77,6 +77,7 @@ real(ids_real) ::time_eq_c
     integer,parameter :: ntet = 134
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz
     integer,parameter :: npf = 15, ncam = 100
+    integer,parameter :: npfa = 12, npfx = npf-npfa, npfp = npfx+ncam
 
 
 real (ids_real),save :: vec(npo) = (/ (0,i=1,npo) /)
@@ -248,10 +249,10 @@ pf_active0%ids_properties%homogeneous_time = 1
 pf_passive0%ids_properties%homogeneous_time = 1
 
 !allocate(pf_active0%coil(nact))
-if(.NOT.associated(pf_active0%coil)) allocate(pf_active0%coil(nact))
-if(.NOT.associated(pf_passive0%loop)) allocate(pf_passive0%loop(npass))
+if(.NOT.associated(pf_active0%coil)) allocate(pf_active0%coil(npfa))
+if(.NOT.associated(pf_passive0%loop)) allocate(pf_passive0%loop(npfp))
 
-do i=1,nact
+do i=1,npfa
 
         allocate(pf_active0%coil(i)%current%data(1))
 !         allocate(pf_active0%coil(i)%current%time(1))
@@ -260,14 +261,15 @@ do i=1,nact
 !         allocate(pf_active0%coil(i)%voltage%time(1))
 enddo
 
-do i=1,npass
+do i=1,npfp
 
     allocate(pf_passive0%loop(i)%current(1))
 
 end do
 
-pf_active0%coil(1:nact)%resistance = pfres(1:nact)
-pf_passive0%loop(1:npass)%resistance = rcam(1:npass)  
+pf_active0%coil(1:npfa)%resistance = pfres(1:nact)
+pf_passive0%loop(1:npfx)%resistance = pfres(npfa+1:nact)
+pf_passive0%loop(npfx+1:npfp)%resistance = rcam(1:npass)  
 
 print *,' pfs filled'
 flush(6)
@@ -337,11 +339,11 @@ flush(6)
 i=size(pf_active0%coil%resistance)
 print *,'pf_active0%coil%resistance',i
 
-print *,pf_active0%coil(1:nact)%resistance
+print *,pf_active0%coil(1:npfa)%resistance
 
 i=size(pf_passive0%loop%resistance)
 print *,'pf_passive0%loop%resistance',i
-print *,pf_passive0%loop(1:nact)%resistance
+print *,pf_passive0%loop(1:npfp)%resistance
 
 write(*,100) shape(pf_active0%coil%resistance),shape(pf_passive0%loop%resistance)
 
@@ -636,7 +638,7 @@ call ids_copy(pf_passive0,pf_passive)
 
 
 print *,' nact=',nact
-do i=1,nact
+do i=1,npfa
 
         allocate(pf_active%coil(i)%current%data(1))
 !        allocate(pf_active%coil(i)%current%time(1))
@@ -650,7 +652,7 @@ allocate(pf_active%time(1))
 
 pf_active%ids_properties%homogeneous_time = 1
 
-do i=1,nact
+do i=1,npfa
 
     pf_active%coil(i)%current%data(1) = pf(i)
 !    pf_active%coil(i)%current%time(1) = dina_time
@@ -665,7 +667,7 @@ pf_active%time(1) = dina_time
 
 print *,' npass=',npass
     
-do i=1,npass
+do i=1,npfp
     allocate(pf_passive%loop(i)%current(1))
 end do
 
@@ -674,10 +676,15 @@ allocate(pf_passive%time(1))
 
 pf_passive%ids_properties%homogeneous_time = 1
 
-do i=1,npass
+do i=1,npfx
 !    print *,' i pass=',i
-    pf_passive%loop(i)%current(1) = tcam(i)
+    pf_passive%loop(i)%current(1) = pf(npfa+i)
 end do
+do i=1,ncam
+!    print *,' i pass=',i
+    pf_passive%loop(npfx+i)%current(1) = tcam(i)
+end do
+
 
 pf_passive%time(1) = dina_time
 
