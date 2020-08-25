@@ -1523,8 +1523,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
       pfa1 = imas_obj1.pf_active     
       pfa1.get()      
-      pfa1.ids_properties.homogeneous_time = 0
-      
+      pfa1.ids_properties.homogeneous_time = 1
+      pfa1.time.resize(1)
+
+
       #npf = len(tokamakdata["coils"]["geometry"])
       
       npfa = 12
@@ -1576,7 +1578,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         print("Coil" + str(i) + ":" + pfa1.coil[i].name)
         pfa1.coil[i].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())
-      
+
+        pfa1.coil[i].current.data.resize(1)
+        pfa1.coil[i].voltage.data.resize(1)
+
       pfa1.coil[2].name = "CS1"
       pfa1.coil[11].name = "VS3"
         
@@ -1585,7 +1590,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
       pfp1 = imas_obj1.pf_passive     
       pfp1.get()      
-      pfp1.ids_properties.homogeneous_time = 0
+      pfp1.ids_properties.homogeneous_time = 1
+      pfp1.time.resize(1)
       
       ncircuitcam = 0
       for cam in tokamakdata["vessel"]["geometry"]:
@@ -1629,9 +1635,11 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
             pfp1.loop[iloop].name += coil["name"]
             
+            pfp1.loop[iloop].current.resize(1)
+
         pfp1.loop[iloop].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())           
         print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)
-      
+
            
       # Vessel passive elements
       ncircuit = 0
@@ -1669,6 +1677,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
                        
             pfp1.loop[iloop].name += cam["name"]
             
+            pfp1.loop[iloop].current.resize(1)
+
         pfp1.loop[iloop].resistance = float(tokamakdata["vessel"]["resist"]["items"][i].text())            
         print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)      
       

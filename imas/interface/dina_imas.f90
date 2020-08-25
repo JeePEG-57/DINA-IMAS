@@ -245,29 +245,37 @@ flush(6)
   flush(6)
 
 
+if(.NOT.associated(pf_active0%time)) then
+    allocate(pf_active0%time(1))
+endif
 pf_active0%ids_properties%homogeneous_time = 1
+if(.NOT.associated(pf_passive0%time)) then
+    allocate(pf_passive0%time(1))
+endif
 pf_passive0%ids_properties%homogeneous_time = 1
 
 !allocate(pf_active0%coil(nact))
-if(.NOT.associated(pf_active0%coil)) allocate(pf_active0%coil(npfa))
-if(.NOT.associated(pf_passive0%loop)) allocate(pf_passive0%loop(npfp))
-
-do i=1,npfa
+if(.NOT.associated(pf_active0%coil)) then
+    allocate(pf_active0%coil(npfa))
+    do i=1,npfa
 
         allocate(pf_active0%coil(i)%current%data(1))
 !         allocate(pf_active0%coil(i)%current%time(1))
 
         allocate(pf_active0%coil(i)%voltage%data(1))
 !         allocate(pf_active0%coil(i)%voltage%time(1))
-enddo
+    enddo
+endif
+if(.NOT.associated(pf_passive0%loop)) then
+    allocate(pf_passive0%loop(npfp))
+    do i=1,npfp
 
-do i=1,npfp
+	allocate(pf_passive0%loop(i)%current(1))
 
-    allocate(pf_passive0%loop(i)%current(1))
+    enddo
+endif
 
-end do
-
-pf_active0%coil(1:npfa)%resistance = pfres(1:nact)
+pf_active0%coil(1:npfa)%resistance = pfres(1:npfa)
 pf_passive0%loop(1:npfx)%resistance = pfres(npfa+1:nact)
 pf_passive0%loop(npfx+1:npfp)%resistance = rcam(1:npass)  
 
@@ -638,16 +646,16 @@ call ids_copy(pf_passive0,pf_passive)
 
 
 print *,' nact=',nact
-do i=1,npfa
-
-        allocate(pf_active%coil(i)%current%data(1))
-!        allocate(pf_active%coil(i)%current%time(1))
-
-        allocate(pf_active%coil(i)%voltage%data(1))
-!        allocate(pf_active%coil(i)%voltage%time(1))
-enddo
-
-allocate(pf_active%time(1))
+! do i=1,npfa
+! 
+!         allocate(pf_active%coil(i)%current%data(1))
+! !        allocate(pf_active%coil(i)%current%time(1))
+! 
+!         allocate(pf_active%coil(i)%voltage%data(1))
+! !        allocate(pf_active%coil(i)%voltage%time(1))
+! enddo
+! 
+! allocate(pf_active%time(1))
 
 
 pf_active%ids_properties%homogeneous_time = 1
@@ -667,11 +675,11 @@ pf_active%time(1) = dina_time
 
 print *,' npass=',npass
     
-do i=1,npfp
-    allocate(pf_passive%loop(i)%current(1))
-end do
-
-allocate(pf_passive%time(1))
+! do i=1,npfp
+!     allocate(pf_passive%loop(i)%current(1))
+! end do
+! 
+! allocate(pf_passive%time(1))
 
 
 pf_passive%ids_properties%homogeneous_time = 1
