@@ -19,7 +19,7 @@ os=		a_main_dina.o add_dll.o main_astra.o \
 os_d= $(os) a_dina.o tran6.o
 os_s= $(os) a_dina_src.o tran7.o
 
-all: p_4dina p_4dina_src astra_transp_density.a astra_transp_src.a
+all: p_4dina p_4dina_src astra_transp_density.a astra_transp_src.a density_control_pellet.a density_control_valve.a astra_sources_pellet.a astra_sources_valve.a
 
 astra_transp_density.a: astra_transp_density.o $(os_d)
 	@echo "   * $^ -> $@"
@@ -28,6 +28,22 @@ astra_transp_density.a: astra_transp_density.o $(os_d)
 astra_transp_src.a: astra_transp_src.o $(os_s)
 	@echo "   * $^ -> $@"
 	ar -rcs astra_transp_src.a astra_transp_src.o $(os_s)
+
+density_control_pellet.a: density_control_pellet.o
+	@echo "   * $^ -> $@"
+	ar -rcs density_control_pellet.a density_control_pellet.o
+
+density_control_valve.a: density_control_valve.o
+	@echo "   * $^ -> $@"
+	ar -rcs density_control_valve.a density_control_valve.o
+
+astra_sources_pellet.a: astra_sources_pellet.o
+	@echo "   * $^ -> $@"
+	ar -rcs astra_sources_pellet.a astra_sources_pellet.o $(os_s)
+
+astra_sources_valve.a: astra_sources_valve.o
+	@echo "   * $^ -> $@"
+	ar -rcs astra_sources_valve.a astra_sources_valve.o $(os_s)
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
