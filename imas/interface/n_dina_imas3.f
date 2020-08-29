@@ -202,16 +202,23 @@ c ============ outputs ==============================================
      * x_xx,y_xx,psi_xx,psi_bnd_xx,curr_d_xx,
      * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
      * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,ajae_xx,zeff_xx,press_xx,qe0_xx,qq0_xx,
-     * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,zeff0_xx,vloop_xx,
+     * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,palf_xx,zeff0_xx,vloop_xx,
      * tene_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
-     * pptab_xx,fptab_xx)
+     * pptab_xx,fptab_xx,
+     * rsep2_xx,zsep2_xx, rsep2_r_xx,zsep2_r_xx, dsep_xx)
 
 
 	include 'double.inc'
 	include 'new_com.inc'
 
         common /c_imas_curr_d/curr_d(nr,nz)
+!     *  /c_ramp2/rsep2,zsep2,psep2
+!     *  /vic_008/rsep2_gr,zsep2_gr,rsep2_l,zsep2_l,
+!     *           rsep2_r,zsep2_r
+!     *  /cont21/n_ga,n_int
+!     *  /cont20/x_gaps(kf_c),y_gaps(kf_c),gaps(kf_c),n_gaps
+     
 
 	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
@@ -255,6 +262,7 @@ c ============ outputs ==============================================
         tqc_xx = tqc
         pec_xx = pcch*1.d19
 	pic_xx = pion*1.d19
+	palf_xx = palf*1.d19
 	zeff0_xx = zeff_a
 	vloop_xx = vloop
 	tene_xx = tene
@@ -266,6 +274,12 @@ c ============ outputs ==============================================
         elong_xx = elong
         tri_xx = tri
 
+        rsep2_xx = rsep2/100.
+        zsep2_xx = zsep2/100.
+        rsep2_r_xx = rsep2_r/100.
+        zsep2_r_xx = zsep2_r/100.
+        dsep_xx = gaps(n_ga+1)/100.
+        
         do i=1,ntet
            xbound_xx(i) = xbound(i)*1.d-2
            ybound_xx(i) = ybound(i)*1.d-2
@@ -344,6 +358,35 @@ c=================================================
       return
       end
 
+      
+! dina_wr_output is aimed to additional output parameters      
+        subroutine dina_wr_output(Pohm, Wdop, w_alfa, wtor, w_Be, w_W, w_Ar, w_Ne, w_imp, w_rad, w_heat)
+        
+        include 'double.inc'
+        
+        common/maksim_02/wr
+        dimension wr(150)
+
+!     * /c_br4/wdh,p_oh
+        
+        Pohm = wr(65)
+        wdop = wr(66)
+        w_alfa = wr(67)      
+        wtor = wr(84)
+        
+        w_Be = wr(86)
+        w_W = wr(87)
+        w_Ar = wr(88)
+        w_Ne = wr(89)
+        w_imp = wr(90)
+        w_rad = wr(91)
+        w_heat = wr(71)
+ 
+ 
+        return
+        end
+      
+      
       
 !> dina_input is the subroutine to collect the initial kinetic profiles before enter 
 !> to DINA to write them after that to DINA from IDSs in dina_imas subroutine

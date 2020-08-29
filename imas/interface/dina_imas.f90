@@ -38,7 +38,7 @@ real (ids_real) :: arr_in1(*), arr_out1(*)
 
 
 ! define local fixed size variables
-integer,save :: i, k,  j
+integer,save :: i, k, j, isrc
 integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
 integer,save :: kloop,kprobe, ke=57, ngrid2
@@ -96,7 +96,10 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,parea=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
   & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0 &
   & ,rmajor,rminor,elong,tri
-    real(ids_real) :: betap,betat,tec,tqc,pec,pic,zeff0,vloop,tene,wfus,emag
+  
+    real(ids_real) :: rsep2,zsep2, rsep2_r,zsep2_r, dsep
+  
+    real(ids_real) :: betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,wfus,emag
 
     real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
@@ -110,6 +113,8 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
     real(ids_real) :: pptab(npo),fptab(npo)
 
+    real(ids_real) :: Pohm,wdop,w_alfa,wtor, w_Be,w_W,w_Ar,w_Ne, w_imp,w_rad,w_heat
+    
     real(ids_real),parameter :: pi = 3.14159265358979323846
 
 
@@ -529,11 +534,14 @@ write(*,*) '!!!dina_outp enter'
      & x,y,psi,psi_bnd,curr_d,  &
      & xbound,ybound,rmajor,rminor,elong,tri, &
      & pd0,pt0,sigk,jbut,aj0,ajae,zeff,press,qe0,qq0, &
-     & betap,betat,tec,tqc,pec,pic,zeff0,vloop,tene,wfus,emag, &
+     & betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,wfus,emag, &
      & vchopper,pf,tcam, &
-     & pptab,fptab)
+     & pptab,fptab, &
+     & rsep2,zsep2, rsep2_r,zsep2_r, dsep)
+     
 
-
+        call dina_wr_output(Pohm, Wdop, w_alfa, wtor, w_Be, w_W, w_Ar, w_Ne, w_imp, w_rad, w_heat)
+        
 
 write(*,*) '!!!solpsza enter'
       call solpsza_example(yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx)
@@ -716,6 +724,7 @@ allocate(summary%global_quantities%v_loop%value(TimeSteps))
 allocate(summary%global_quantities%tau_energy%value(TimeSteps))
 allocate(summary%volume_average%n_e%value(TimeSteps))
 allocate(summary%volume_average%n_i_total%value(TimeSteps))
+allocate(summary%volume_average%n_i%helium_4%value(TimeSteps))
 allocate(summary%volume_average%t_e%value(TimeSteps))
 allocate(summary%volume_average%t_i_average%value(TimeSteps))
 allocate(summary%volume_average%zeff%value(TimeSteps))
@@ -738,6 +747,7 @@ summary%global_quantities%v_loop%value(CurTimeStep) = vloop
 summary%global_quantities%tau_energy%value(CurTimeStep) = tene
 summary%volume_average%n_e%value(CurTimeStep) = pec
 summary%volume_average%n_i_total%value(CurTimeStep) = pic
+summary%volume_average%n_i%helium_4%value(CurTimeStep) = palf
 summary%volume_average%t_e%value(CurTimeStep) = tec
 summary%volume_average%t_i_average%value(CurTimeStep) = tqc
 summary%volume_average%zeff%value(CurTimeStep) = zeff0
@@ -817,6 +827,15 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
         equilibrium%time_slice(CurTimeStep)%global_quantities%surface = ysbound_xx
         equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n) = ysbound_xx
 
+        allocate(equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1))
+          equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1)%r = rsep2
+          equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1)%z = zsep2
+        
+        allocate(equilibrium%time_slice(CurTimeStep)%boundary_separatrix%strike_point(1))
+          equilibrium%time_slice(CurTimeStep)%boundary_separatrix%strike_point(1)%r = rsep2_r
+          equilibrium%time_slice(CurTimeStep)%boundary_separatrix%strike_point(1)%z = zsep2_r
+        
+        
 	equilibrium%vacuum_toroidal_field%r0 = rs0 ![m]
 	equilibrium%vacuum_toroidal_field%b0(CurTimeStep) = bt0 ![T]
     
@@ -977,9 +996,9 @@ write(*,*) 'Allocate and write core_sources...'
     core_sources%time(CurTimeStep) = tt ![s]
 
     
-    allocate(core_sources%source(2))    
+    allocate(core_sources%source(13))    
    
-!Source 1
+isrc = 1
 allocate(core_sources%source(1)%profiles_1d(TimeSteps))
 
   core_sources%source(1)%profiles_1d(CurTimeStep)%time = tt
@@ -996,7 +1015,7 @@ allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%j_parallel(n))
  core_sources%source(1)%profiles_1d(CurTimeStep)%j_parallel(1:n) = aj0(1:n)*1.d7 
  
  
-!Source 2 
+isrc = 2 
 allocate(core_sources%source(2)%profiles_1d(TimeSteps))
 
   core_sources%source(2)%profiles_1d(CurTimeStep)%time = tt
@@ -1006,6 +1025,96 @@ allocate(core_sources%source(2)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
   
 allocate(core_sources%source(2)%profiles_1d(CurTimeStep)%j_parallel(n))
  core_sources%source(2)%profiles_1d(CurTimeStep)%j_parallel(1:n) = ajae(1:n)*1.d7
+ 
+
+ isrc = 3
+ core_sources%source(isrc)%identifier%index = 7
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = Pohm
+
+
+ isrc = 4
+ core_sources%source(isrc)%identifier%index = 100
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wdop
+  
+  
+ isrc = 5
+ core_sources%source(isrc)%identifier%index = 6
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_alfa  
+  
+  
+ isrc = 6
+ core_sources%source(isrc)%identifier%index = 8
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wtor   
+   
+ 
+ isrc = 7
+ core_sources%source(isrc)%identifier%index = 901
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_Be  
+ 
+ 
+ isrc = 8
+ core_sources%source(isrc)%identifier%index = 902
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_W  
+ 
+ 
+ isrc = 9
+ core_sources%source(isrc)%identifier%index = 903
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_Ar 
+ 
+ 
+ isrc = 10
+ core_sources%source(isrc)%identifier%index = 904
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_Ne 
+  
+  
+ isrc = 11
+ core_sources%source(isrc)%identifier%index = 10
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_imp 
+  
+ 
+ isrc = 12
+ core_sources%source(isrc)%identifier%index = 200
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_rad 
+ 
+ 
+ isrc = 13
+ core_sources%source(isrc)%identifier%index = 201
+allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
+
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_heat  
+ 
+ 
  
  
  

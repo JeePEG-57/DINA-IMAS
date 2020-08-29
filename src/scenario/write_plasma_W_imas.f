@@ -54,6 +54,7 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
      *  /vic_018/r_lh_new
 c*********************************************************
      *  /maksim_01/tqc_xx,emag
+     *  /maksim_02/wr
 	
         dimension dNB_xx(24),wr(150)
 
