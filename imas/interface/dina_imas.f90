@@ -653,7 +653,7 @@ call ids_copy(pf_passive0,pf_passive)
 
 
 
-print *,' nact=',nact
+print *,' nact, npfa=',nact,npfa
 ! do i=1,npfa
 ! 
 !         allocate(pf_active%coil(i)%current%data(1))
@@ -668,20 +668,25 @@ print *,' nact=',nact
 
 pf_active%ids_properties%homogeneous_time = 1
 
+!print *, 'coils size ', size(pf_active%coil)
+!print *, 'coils size ', size(pf_active%coil(1)%current%data)
+
 do i=1,npfa
 
     pf_active%coil(i)%current%data(1) = pf(i)
 !    pf_active%coil(i)%current%time(1) = dina_time
 
+
     pf_active%coil(i)%voltage%data(1) = vchopper(i)
 !    pf_active%coil(i)%voltage%time(1) = dina_time
+
 
 end do
 
 pf_active%time(1) = dina_time
 
 
-print *,' npass=',npass
+print *,' npass,npfp=',npass,npfp
     
 ! do i=1,npfp
 !     allocate(pf_passive%loop(i)%current(1))
