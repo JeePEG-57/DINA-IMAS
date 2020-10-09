@@ -1,11 +1,16 @@
 <org.iter.imas.fc2k.ActorGenerator>
-  <version>4.6.5</version>
+  <version> </version>
+  <isKeplerActorGenerated>true</isKeplerActorGenerated>
+  <isPythonActorGenerated>true</isPythonActorGenerated>
+  <isDummyActorGenerated>false</isDummyActorGenerated>
   <paramFile>empty</paramFile>
   <defaultparamFile>empty</defaultparamFile>
   <paramXsdFile>empty</paramXsdFile>
   <fFile>../interface/dina_transp_density.a</fFile>
   <mainLibraryOptim></mainLibraryOptim>
   <HasOptim>false</HasOptim>
+  <headerPath></headerPath>
+  <useHeader>false</useHeader>
   <subrt>dina_transp_density</subrt>
   <tupleParams serialization="custom">
     <unserializable-parents/>
@@ -49,6 +54,15 @@
             <string>null</string>
           </vector>
           <vector>
+            <string>summary</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
             <string>double</string>
             <string>0</string>
             <string>1</string>
@@ -75,6 +89,15 @@
             <string>1</string>
             <string>null</string>
           </vector>
+          <vector>
+            <string>summary</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>null</string>
+          </vector>
         </tupleParams>
       </default>
     </org.iter.imas.fc2k.TupleP>
@@ -84,6 +107,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/dinatransp_density</actorFolder>
   <semantic>ITER</semantic>
+  <pythonActorDir>$HOME/public/PYTHON_ACTORS</pythonActorDir>
   <compiler>gfortran</compiler>
   <libraries/>
   <systemLibraries/>

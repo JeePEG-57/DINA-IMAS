@@ -70,7 +70,10 @@ real(ids_real) ::time_eq
 
      common /c_imas_time_eq/time_eq
       common /c_time_eq/time_eq_c
-real(ids_real) ::time_eq_c
+      
+      common /c_teit_98/teit_98
+      
+real(ids_real) ::time_eq_c,teit_98
 
 ! DINA parameters
     integer,parameter :: npo = 500
@@ -131,6 +134,8 @@ real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
 real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
+ real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
+ 
 	character *20 apr
 
 
@@ -467,11 +472,16 @@ end if
  pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)*1.d-19
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)*1.d-19
  pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)*1.d-19
-      apr='--pne-' 
+ 
+ pne_cop(1:n1) = pne(1:n1) 
+ pd0_cop(1:n1) = pd0(1:n1) 
+ pt0_cop(1:n1) = pt0(1:n1) 
+ 
+      apr='--&pne-' 
       print 71,apr,(pne(i),i=1,n1) 
-      apr='--pd0-' 
+      apr='--&pd0-' 
       print 71,apr,(pd0(i),i=1,n1) 
-      apr='--pt0-' 
+      apr='--&pt0-' 
       print 71,apr,(pt0(i),i=1,n1) 
 !Transp3
  jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)*1.d-7
@@ -524,7 +534,8 @@ write(*,*) '!!!dina0 enter'
      &	output_1,output_2,output_3,output_4,ng)
 
 
-
+        print *,' teit_98==',teit_98
+        
 
 write(*,*) '!!!dina_outp enter'
 	call dina_outp(n,  &
@@ -713,26 +724,32 @@ flush(6)
 
 
 ! Allocations summary
-allocate(summary%time(TimeSteps))
+if(.NOT.associated(summary%time)) then 
+  allocate(summary%time(TimeSteps))
+  print *,'dina_imas summary reallocation, loop_count = ', loop_count
+endif
 
-allocate(summary%global_quantities%ip%value(TimeSteps))
-allocate(summary%global_quantities%li%value(TimeSteps))
-allocate(summary%global_quantities%beta_pol%value(TimeSteps))
-allocate(summary%global_quantities%beta_tor%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%ip%value)) allocate(summary%global_quantities%ip%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%li%value)) allocate(summary%global_quantities%li%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%beta_pol%value)) allocate(summary%global_quantities%beta_pol%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%beta_tor%value)) allocate(summary%global_quantities%beta_tor%value(TimeSteps))
 
-allocate(summary%global_quantities%v_loop%value(TimeSteps))
-allocate(summary%global_quantities%tau_energy%value(TimeSteps))
-allocate(summary%volume_average%n_e%value(TimeSteps))
-allocate(summary%volume_average%n_i_total%value(TimeSteps))
-allocate(summary%volume_average%n_i%helium_4%value(TimeSteps))
-allocate(summary%volume_average%t_e%value(TimeSteps))
-allocate(summary%volume_average%t_i_average%value(TimeSteps))
-allocate(summary%volume_average%zeff%value(TimeSteps))
-allocate(summary%global_quantities%energy_thermal%value(TimeSteps))
-allocate(summary%global_quantities%energy_b_field_pol%value(TimeSteps))
-allocate(summary%fusion%power%value(TimeSteps))
-allocate(summary%local%magnetic_axis%position%r(TimeSteps))
-allocate(summary%local%magnetic_axis%position%z(TimeSteps))
+if(.NOT.associated(summary%global_quantities%v_loop%value)) allocate(summary%global_quantities%v_loop%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%tau_energy%value)) allocate(summary%global_quantities%tau_energy%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%n_e%value)) allocate(summary%volume_average%n_e%value(TimeSteps))
+
+if(.NOT.associated(summary%volume_average%n_i_total%value)) allocate(summary%volume_average%n_i_total%value(TimeSteps))
+  
+if(.NOT.associated(summary%volume_average%n_i_total%value)) allocate(summary%volume_average%n_i_total%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%n_i%helium_4%value)) allocate(summary%volume_average%n_i%helium_4%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%t_e%value)) allocate(summary%volume_average%t_e%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%t_i_average%value)) allocate(summary%volume_average%t_i_average%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%zeff%value)) allocate(summary%volume_average%zeff%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%energy_thermal%value)) allocate(summary%global_quantities%energy_thermal%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%energy_b_field_pol%value)) allocate(summary%global_quantities%energy_b_field_pol%value(TimeSteps))
+if(.NOT.associated(summary%fusion%power%value)) allocate(summary%fusion%power%value(TimeSteps))
+if(.NOT.associated(summary%local%magnetic_axis%position%r)) allocate(summary%local%magnetic_axis%position%r(TimeSteps))
+if(.NOT.associated(summary%local%magnetic_axis%position%z)) allocate(summary%local%magnetic_axis%position%z(TimeSteps))
 
 ! Filling summary
 summary%ids_properties%homogeneous_time = 1
@@ -746,7 +763,18 @@ summary%global_quantities%beta_tor%value(CurTimeStep) = betat
 summary%global_quantities%v_loop%value(CurTimeStep) = vloop
 summary%global_quantities%tau_energy%value(CurTimeStep) = tene
 summary%volume_average%n_e%value(CurTimeStep) = pec
-summary%volume_average%n_i_total%value(CurTimeStep) = pic
+
+
+!summary%volume_average%n_i_total%value(CurTimeStep) = pic
+if(loop_count .le.2)then
+summary%volume_average%n_i_total%value(CurTimeStep) = 1.d0
+end if
+
+write(*,*) 'summary%volume_average%n_i_total%value... ',summary%volume_average%n_i_total%value(CurTimeStep)
+
+
+
+
 summary%volume_average%n_i%helium_4%value(CurTimeStep) = palf
 summary%volume_average%t_e%value(CurTimeStep) = tec
 summary%volume_average%t_i_average%value(CurTimeStep) = tqc
@@ -804,7 +832,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 
     equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(1:n) = press(1:n) ![Pa]
     equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = pptab(1:n)
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = fptab(1:n)
+    equilibrium%time_slice(CurTimeStep)%profiles_1d %f_df_dpsi(1:n) = fptab(1:n)
     
     
     equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
@@ -893,7 +921,6 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     
 ! Allocations core_profiles    
 
-! call ids_copy(core_profiles0,core_profiles)
 
 write(*,*) 'Allocate core_profiles... '
 
@@ -926,19 +953,55 @@ write(*,*) 'Allocate core_profiles... '
 
 
 write(*,*) 'Write core_profiles transp... '
+flush(6)
 ! Transp1
 allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
 allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
  core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(1:n) = te0(1:n)
  core_profiles%profiles_1d(CurTimeStep)%t_i_average(1:n) = tq0(1:n)
 
+write(*,*) 'Write core_profiles transp..1. '
+flush(6)
+
+
 !Transp2
 !Electrons
+if(.NOT.associated(core_profiles%profiles_1d(1)%electrons%density)) then
 allocate(core_profiles%profiles_1d(1)%electrons%density(n))
- core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)*1.d19
+end if
 
-      apr='++pne-' 
+write(*,*) 'Write core_profiles transp..2. '
+flush(6)
+
+if(tt .gt.1.62e9)then
+
+write(*,*) 'tt .gt.1.62 ',tt
+flush(6)
+! pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)*1.d-19
+ pne(1:n1) = pne_cop(1:n1)
+       apr='++00pne-' 
       print 71,apr,(pne(i),i=1,n) 
+flush(6)
+
+! pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)*1.d-19
+ pd0(1:n1) =  pd0_cop(1:n1) 
+       apr='++00pd0-' 
+      print 71,apr,(pd0(i),i=1,n) 
+flush(6)
+ !pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)*1.d-19   
+ pt0(1:n1) = pt0_cop(1:n1)   
+       apr='++00pt0-' 
+      print 71,apr,(pt0(i),i=1,n) 
+flush(6)
+end if
+write(*,*) 'Write core_profiles transp..3. '
+flush(6)
+ core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)*1.d19
+flush(6)
+
+      apr='++00pne-' 
+      print 71,apr,(pne(i),i=1,n) 
+flush(6)
 
 
 !if (.not. allocated(core_profiles%profiles_1d(1)%ion)) then
@@ -951,13 +1014,12 @@ allocate(core_profiles%profiles_1d(1)%ion(1)%element(1))
  core_profiles%profiles_1d(1)%ion(1)%z_ion = 1
  core_profiles%profiles_1d(1)%ion(1)%element(1)%z_n = 1
 !core_profiles%profiles_1d(1)%ion(1)%label = 'D+'
-! if (.not. allocated(core_profiles%profiles_1d(1)%ion(1)%n_i)) then
+if (.not. associated(core_profiles%profiles_1d(1)%ion(1)%density)) then
 allocate(core_profiles%profiles_1d(1)%ion(1)%density(n))
-! end if
- core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)*1.d19
+end if
+core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)*1.d19
 
-
-      apr='++pd0-' 
+      apr='++00pd0-' 
       print 71,apr,(pd0(i),i=1,n) 
 
 
@@ -967,10 +1029,12 @@ allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
  core_profiles%profiles_1d(1)%ion(2)%z_ion = 1
  core_profiles%profiles_1d(1)%ion(2)%element(1)%z_n = 1
 !core_profiles%profiles_1d(1)%ion(2)%label = 'T+'
+if (.not. associated(core_profiles%profiles_1d(1)%ion(2)%density)) then
 allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
- core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)*1.d19
+end if
 
-      apr='++pt0-' 
+core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)*1.d19
+      apr='++00pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
 
 
@@ -1201,9 +1265,9 @@ flush(6)
       print 71,apr,(zeff(i),i=1,n1) 
        apr='++sigk-' 
       print 71,apr,(sigk(i),i=1,n1) 
-   
+   flush(6)
     print *,' end dina_imas'
-
+flush(6)
       
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 

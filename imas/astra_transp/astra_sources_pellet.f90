@@ -24,6 +24,8 @@ real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 real(ids_real) :: te0(npo),tq0(npo)
 
 real(ids_real) :: tt
+real(ids_real) :: tt_in,GHFS
+integer :: n_xx,kpr_xx
 
         character *20 apr
 
@@ -33,6 +35,8 @@ ai(1:n) = core_profiles0%profiles_1d(1)%grid%rho_tor_norm(1:n)
 
 
 tt = core_profiles0%time(1)
+tt_in=tt
+kpr_xx=1
 
 
 print *,'  Astra sources tt n',tt,n
@@ -66,14 +70,24 @@ print *,'  Astra sources tt n',tt,n
         c_input1(i)=pd0(i)
         c_input2(i)=pt0(i)
         end do
-
-
-      call transp7( &
+        
+        GHFS= ctrl_in(1)
+        n_xx=n
+        
+      call tran_pel( &
 !-----------------------------------  inputs---
      &  c_input1,c_input2, &
 !------------------------------------outputs
      &  c_output1,c_output2,c_output3, &
-     &  tt)
+     &  tt_in,GHFS,n_xx,kpr_xx)
+ 
+
+!      call transp7( &
+!-----------------------------------  inputs---
+!     &  c_input1,c_input2, &
+!------------------------------------outputs
+!     &  c_output1,c_output2,c_output3, &
+!     &  tt)
 
 
 
@@ -109,9 +123,9 @@ print *,'  Astra sources tt n',tt,n
 !       pne(i)=c_output3(i)
 ! enddo
 
-        pd0=c_output1
-        pt0=c_output2
-        pne=c_output3
+        pd0(1:n)=c_output1(1:n)
+        pt0(1:n)=c_output2(1:n)
+        pne(1:n)=c_output3(1:n)
 
 
 !   core_sources%ids_properties%homogeneous_time = 1
@@ -157,11 +171,21 @@ print *,'  Astra sources tt n',tt,n
 !     core_sources%time(1) = tt ![s]
     
 
+      apr='--sd0_p-' 
+      print 71,apr,(pd0(i),i=1,n) 
+      apr='--sd0_n-' 
+      print 71,apr,(pt0(i),i=1,n) 
+
+
 src_out(1:n) = pd0(1:n)
 src_out(n+1:2*n) = pt0(1:n)
-src_out(2*n+1:3*n) = pne(1:n)
+src_out(2*n+1:3*n) = 1.
 
-    
+!src_out(1:n) = 5.
+!src_out(n+1:2*n) = 30.
+!src_out(2*n+1:3*n) = 1.
+
+      
     
 ! pd0(1:n)=core_sources%source(1)%profiles_1d(1)%ion(1)%particles(1:n)
 ! pt0(1:n)=core_sources%source(1)%profiles_1d(1)%ion(2)%particles(1:n)

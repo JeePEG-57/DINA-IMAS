@@ -226,6 +226,7 @@ c
      .	yGELM,yGLFS
 
 	common /c_temp6/wdr_d,wdr_t,WEL,wio
+      common /c_teit_98/teit_98
 
 
 4010    format(6e12.3)

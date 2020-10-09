@@ -26,6 +26,7 @@
 	dimension vchopper_x2(kint),shape_out(kint)
 
 	character *30 apr,filename
+	character *70 apr2
 
 	dimension a_print(200)
 
@@ -306,15 +307,30 @@ c  i_fil=0  old case without reconstruction....
 	call separ_coor()                                                
 	call separ_coor2()                                                
       call get_gaps()
+      i_en3=i_en3+1
       end if
+ 
+         if(i_en3.eq.1)then
+         open (unit=1,file='gaps.dat',form='formatted')
+          apr2='tt[s]	gap1[m]	gap2[m]	gap3[m]	gap4[m]	gap5[m]	gap6[m]'
+          write (1,*)apr2
+         end if
+         if(i_en3.gt.1)then
+         open (unit=1,file='gaps.dat',access='append',form='formatted')
+         end if
+         
+         
+      write (1,*)tt*1.e-3,(gaps(i)*1.e-2,i=1,n_ga)
+      close(1)
       
-
+      
 	ntay=ntay+1
 	tt=tt+tay
 
 
         if(tt.gt.1520.)then
         call write_tran1()
+        call write_eq_in()
         end if
 
 
@@ -597,7 +613,7 @@ c  EXTRA for KTM
 
       if(tt.gt.3450.d0)then 
       
-      if(kpr.eq.1)print *,' STOP'
+!      if(kpr.eq.1)print *,' STOP'
       	
 !      stop
       end if
@@ -1001,4 +1017,168 @@ c-------
 
 
       return
+      end
+	subroutine write_eq_in()
+      
+      include 'double.inc'
+	include 'new_com.inc'                                                  
+
+	character * 20 apr,filename
+
+      real *8 mu2(npo),ipl
+      
+      dimension ya(ntet),yelon(ntet),ytria(ntet),yshif(ntet),
+     * yshiv(ntet),
+     * AMETR(npo),RHO(npo),FP(npo),elon(npo),tria(npo),
+     * shif(npo),shiv(npo),vr(npo),yrr1(npo),yrr2(npo)
+
+
+71	format(20x,a6/,(6(1pe10.3)))
+
+
+      BTOR=bt0*0.1d0
+      RTOR=rs0*1.d-2
+      ipl=tpl*1.d-3
+      m1=m-1
+      na1=n
+      abc=a_m(n)*1.d-2
+      ab=abc+0.5
+      
+      jneql=na1
+      jnteta=m1
+      
+      nb1=na1
+
+      kpr2=0
+      if(kpr2.eq.1)then
+
+        print *,' btor rtor na1',btor,rtor,na1
+        print *,' abc ab1 nb1n jneql ',abc,ab,nb1,jneql
+       end if
+              
+      
+      	do ji=jneql,2,-1
+		yrmax=-99999.d0
+		yrmin=99999.d0
+		yzmax=-99999.d0
+		yzmin=99999.d0
+
+	do jj=1,jnteta
+		if(yzmin.ge.ypl(ji,jj)) then 
+			yzmin=ypl(ji,jj)
+			yrzmin=xpl(ji,jj)
+		endif
+		if(yzmax.le.ypl(ji,jj)) then 
+			yzmax=ypl(ji,jj)
+			yrzmax=xpl(ji,jj)
+		endif
+		if(yrmin.ge.xpl(ji,jj)) then 
+			yrmin=xpl(ji,jj)
+
+		endif
+		if(yrmax.le.xpl(ji,jj)) then 
+			yrmax=xpl(ji,jj)
+		endif
+c		yrmin=min(yrout(ji,jj),yrmin)
+c		yrmax=max(yrout(ji,jj),yrmax)
+	enddo
+		yrr=.5d0*(yrmax+yrmin)
+
+	if(ji.eq.jneql) then
+		yRTOR=yrr
+		SHIFT=yrr-yRTOR
+	endif
+		ya(ji)=.5d0*(yrmax-yrmin)
+!	write(*,*) 'yrmax,yrmin,YR',yrmax,yrmin,yRr
+		yshif(ji)=yrr-yRTOR
+		yshiv(ji)=.5d0*(yzmin+yzmax)
+		yelon(ji)=(yzmax-yzmin)/(yrmax-yrmin)
+c===============================================
+C
+		ytria(ji)=(yrr-0.5d0*(yrzmin+yrzmax))/ya(ji)
+		yrr1(ji)=yrr
+		yrr2(ji)=0.5d0*(yrzmin+yrzmax)
+	enddo
+		ya(1)=0.d0
+		yelon(1)=yelon(2)
+		ytria(1)=0.d0
+		yshif(1)=xpl(1,1)-yRTOR
+		yshiv(1)=ypl(1,1)
+
+      do i=1,na1
+      AMETR(i)=a_m(i)*1.d-2
+      mu2(i)=1.d0/q(i)
+      elon(i)=yelon(i)
+      tria(i)=ytria(i)
+      shif(i)=yshif(i)*1.d-2
+      shiv(i)=yshiv(i)*1.d-2
+      FP(i)=2*pi*psval(i)*1.d-5
+       FP(i)= -FP(i)
+      RHO(i)=sqrt(dfmax(i)*1.d-5/(pi*BTOR))
+      end do
+
+      do i=2,na1
+      vr(i)=2.d0*pi*vi(i)*ha(i)*1.d-6/(RHO(i)-RHO(i-1))
+      end do
+      vr(1)=0.5d0*vr(2)
+      i=na1
+      hro=RHO(i)-RHO(i-1)
+      ROC=RHO(NA1) 
+      
+      		updwn=ypl(1,1)*1.d-2
+  
+      if(kpr2.eq.1)then
+      print *,'  hro roc ', hro,roc
+      print *,'  ipl updwn m1', ipl,updwn,m1
+      end if
+  
+	  open(1,file='equil_in_dina.dat')
+      	  
+	  	write(1,*)
+     3	BTOR,RTOR,ABC,AB,ROC,SHIFT,UPDWN,HRO,NA1,NB1,
+     4	VR(1:na1),SHIF(1:na1),SHIV(1:na1),ELON(1:na1),TRIA(1:na1),
+     5  AMETR(1:na1),RHO(1:na1),FP(1:na1),MU2(1:na1),IPL
+
+	  close(1)
+
+      nn2  =na1
+       
+      if(kpr2.eq.1)then
+      
+      apr='VR-' 
+      if(kpr.eq.1)print 71,apr,(VR(i),i=1,nn2) 
+      apr='SHIF-' 
+      if(kpr.eq.1)print 71,apr,(SHIF(i),i=1,nn2) 
+      apr='SHIFV-' 
+      if(kpr.eq.1)print 71,apr,(SHIV(i),i=1,nn2) 
+      apr='ELON-' 
+      if(kpr.eq.1)print 71,apr,(ELON(i),i=1,nn2) 
+      apr='TRIA-' 
+      if(kpr.eq.1)print 71,apr,(TRIA(i),i=1,nn2) 
+      apr='AMETR-' 
+      if(kpr.eq.1)print 71,apr,(AMETR(i),i=1,nn2) 
+      apr='ya-' 
+      if(kpr.eq.1)print 71,apr,(ya(i),i=1,nn2) 
+      apr='yrr1-' 
+      if(kpr.eq.1)print 71,apr,(yrr1(i),i=1,nn2) 
+      apr='yrr2-' 
+      if(kpr.eq.1)print 71,apr,(yrr2(i),i=1,nn2) 
+      apr='RHO-' 
+      if(kpr.eq.1)print 71,apr,(RHO(i),i=1,nn2) 
+      apr='FP-' 
+      if(kpr.eq.1)print 71,apr,(FP(i),i=1,nn2) 
+      apr='MU-' 
+      if(kpr.eq.1)print 71,apr,(MU2(i),i=1,nn2) 
+      apr='q-' 
+      if(kpr.eq.1)print 71,apr,(q(i),i=1,nn2) 
+
+      end if
+
+
+ 5000 format (50(1pe14.5))
+
+      if(kpr2.eq.1)print*,'END of writing equil_in_dina.dat'
+ !     stop
+      
+	return
       end
