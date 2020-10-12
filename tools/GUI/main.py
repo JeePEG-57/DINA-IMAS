@@ -687,18 +687,14 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         parentObject.clear()
     
     
-        #setOfParams = self.ReadParametersSet(f, 2)       
-        #self.externalData.append(setOfParams)
-        #self.CreateInputTab(setOfParams["data"], setOfParams["title"])
-
 
         params = self.ReadParameters(f)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
         
-        params = self.ReadParameters(f)
-        self.externalData.append(params)
-        self.CreateInputTab(parentObject, [params], params["title"])
+        params = self.ReadParametersSet(f, 2)
+        self.controlData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
         
         timedData = self.ReadTimeTable(f)
         self.externalData.append(timedData)
@@ -709,8 +705,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #self.CreateInputTab(parentObject, consist, "together")
         
                         
-        heap = self.ReadHeap(f, 335)
-        self.externalData.append(heap)
+        #heap = self.ReadHeap(f, 335)
+        #self.externalData.append(heap)
         
         
         f.close()
