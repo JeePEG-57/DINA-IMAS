@@ -10,6 +10,9 @@ import captions
 import numpy
 import random
 
+import tarfile
+import datetime
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
@@ -1707,7 +1710,16 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         self.SaveInputIDS()
         
- 
+        # archive the saved setup files
+        tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
+        tar = tarfile.open(tarname, "w:gz")
+        tar.add(self.directorySave + '/external_data.dat')
+        tar.add(self.directorySave + '/control_init.dat')
+        tar.add(self.directorySave + '/general_data.dat')
+        tar.add(self.directorySave + '/dina_data.dat')
+        tar.add(new_imp)
+        tar.close()
+        print(tarname+' saved')
 
     def PlotOutput(self):
       
