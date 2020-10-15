@@ -758,7 +758,7 @@ if(.NOT.associated(summary%local%magnetic_axis%position%z)) allocate(summary%loc
 !if(.NOT.associated(summary%global_quantities%fusion_gain%value)) allocate(summary%global_quantities%fusion_gain%value(TimeSteps))
 if(.NOT.associated(summary%global_quantities%greenwald_fraction%value)) allocate(summary%global_quantities%greenwald_fraction%value(TimeSteps))
 !if(.NOT.associated(summary%global_quantities%power_loss%value)) allocate(summary%global_quantities%power_loss%value(TimeSteps))
-if(.NOT.associated(summary%fusion%neutron_power_total%value)) allocate(summary%fusion%neutron_power_total%value(TimeSteps))
+!if(.NOT.associated(summary%fusion%neutron_power_total%value)) allocate(summary%fusion%neutron_power_total%value(TimeSteps))
 
 
 
@@ -796,7 +796,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 !summary%global_quantities%fusion_gain%value(CurTimeStep) = qtep
 summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
 !summary%global_quantities%power_loss%value(CurTimeStep) = p_sep
-summary%fusion%neutron_power_total%value(CurTimeStep) = gfus
+!summary%fusion%neutron_power_total%value(CurTimeStep) = gfus
 
 
 
