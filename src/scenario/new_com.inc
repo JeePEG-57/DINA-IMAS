@@ -686,3 +686,9 @@ c  BEAM Commons...
 c************************************************
 	common
      *  /maksim_01/tqc,emag
+     *  /maksim_02/qtep,gfus,gamma
+
+        common /c_teit_98/teit_98
+
+     
+     
