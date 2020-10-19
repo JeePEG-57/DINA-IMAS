@@ -437,6 +437,8 @@ n=n1
       apr='--tq0-' 
       print 71,apr,(tq0(i),i=1,n1) 
 
+      flush(6)
+      
 ! if (associated(bndcond_in%profiles_1d)) then
 !     write(*,*) 'dina_imas : boundary conditions are found'
 !  te0(n1) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
