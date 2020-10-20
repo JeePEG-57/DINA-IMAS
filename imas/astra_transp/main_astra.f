@@ -1,5 +1,5 @@
        subroutine main_astra(a_dina,pd0,pt0,pne,te0,tq0,n_dina,
-     *  sd0_p,sd0_n,GHFS)
+     *  sd0_p,sd0_n,GHFS,yGpuf)
       
       	implicit none
 	include  'for/parameter.inc'
@@ -78,7 +78,9 @@
 !          ne(i)=0.01*ne(i)
 !          ni(i)=0.01*ni(i)
           end do
+!       write(*,*) 'STOP' 
 
+!      stop
 
       end if
 
@@ -132,7 +134,7 @@
 !      	close (1) 
 
         if(kpr.eq.1)print *,'TE2 TI2==',te(2),ti(2)
-        if(kpr.eq.1)print *,'TE TI==',te(90),ti(90)
+!        if(kpr.eq.1)print *,'TE TI==',te(90),ti(90)
         if(kpr.eq.1)print *,'TE TI==',te(na1),ti(na1)
 
         yL_OH=0.
@@ -159,10 +161,10 @@
 !      print *,'ySsep',(ySsep(i),i=1,na1)
 
         if(kpr.eq.1)print *,'NE2 NI2==',ne(2),ni(2)
-        if(kpr.eq.1)print *,'NE NI==',ne(90),ni(90)
+!        if(kpr.eq.1)print *,'NE NI==',ne(90),ni(90)
 
         if(kpr.eq.1)print *,'TE2 TI2==',te(2),ti(2)
-        if(kpr.eq.1)print *,'TE TI==',te(90),ti(90)
+!        if(kpr.eq.1)print *,'TE TI==',te(90),ti(90)
 
 !	  open(1,file='te_data.dat')
 
@@ -323,8 +325,10 @@
 !    	  write(*,*) 'F2in'
 !    	  write(*,*) (F0(j),j=1,na1)
 !    	  write(*,*) F3(1:na1)
-!   	  write(*,*) TE(1:na1)
-!    	  write(*,*) TI(1:na1)
+ !       print *,' TE=='
+ !  	  write(*,*) TE(1:na1)
+ !       print *,' Ti=='
+ !   	  write(*,*) TI(1:na1)
     	  
 	return
  2	write(*,*) 'problem in reading of prfl_in.dat'
@@ -347,10 +351,15 @@
      3	BTOR,RTOR,ABC,AB,ROC,SHIFT,UPDWN,HRO,HROA,
      4	VR(*),SHIF(*),SHIV(*),ELON(*),TRIA(*),
      5  AMETR(*),RHO(*),FP(*),MU(*),IPL
-        integer NA1,NB1,NAB,NA,j,j1,kpr
+        integer NA1,NB1,NAB,NA,j,j1,kpr,nn2,kpr2,i
 
+	character * 20 apr,filename
+
+	  open(1,file='equil_in_dina.dat',err=2)
 !	  open(1,file='equil_in.dat',err=2)
 
+      write(*,*) 'reading of equil_in_dina.dat'
+      
 	  	read(1,*,err=2,end=2)
      3	BTOR,RTOR,ABC,AB,ROC,SHIFT,UPDWN,HRO,NA1,NB1,
      4	VR(1:na1),SHIF(1:na1),SHIV(1:na1),ELON(1:na1),TRIA(1:na1),
@@ -365,12 +374,45 @@
 !	  	write(*,*) 'read of equil_in.dat is finished'
         if(kpr.eq.1)print *,' RO=='
 	  if(kpr.eq.1)write(*,*) (rho(j),j=1,na1)
+71	format(20x,a6/,(6(1pe10.3)))
 
+      nn2=na1
+      
+      
+      AMETR(1)=0.5*AMETR(2)
+      
+      kpr2=1
+      kpr=1
+      if(kpr2.eq.1)then
+      
+      apr='VR-' 
+      if(kpr.eq.1)print 71,apr,(VR(i),i=1,nn2) 
+      apr='SHIF-' 
+      if(kpr.eq.1)print 71,apr,(SHIF(i),i=1,nn2) 
+      apr='SHIFV-' 
+      if(kpr.eq.1)print 71,apr,(SHIV(i),i=1,nn2) 
+      apr='ELON-' 
+      if(kpr.eq.1)print 71,apr,(ELON(i),i=1,nn2) 
+      apr='TRIA-' 
+      if(kpr.eq.1)print 71,apr,(TRIA(i),i=1,nn2) 
+      apr='AMETR-' 
+      if(kpr.eq.1)print 71,apr,(AMETR(i),i=1,nn2) 
+      apr='RHO-' 
+      if(kpr.eq.1)print 71,apr,(RHO(i),i=1,nn2) 
+      apr='FP-' 
+      if(kpr.eq.1)print 71,apr,(FP(i),i=1,nn2) 
+      apr='MU-' 
+      if(kpr.eq.1)print 71,apr,(MU(i),i=1,nn2) 
+      apr='q-' 
+ !     if(kpr.eq.1)print 71,apr,(q(i),i=1,nn2) 
 
+      end if
+
+	  close(1)
 		  return
  2	write(*,*) 'problem in reading of equil_in.dat'
 
-!	  close(1)
+	  close(1)
 	return
 	end 
  

@@ -50,6 +50,8 @@ c
 	common /c_data_in_time2/i_c_data,i_c_data1
      *  /vic_psi_av/psipl_av,psiext_av
      * /ge7/eu,rout,zout,elong
+     
+      common /c_teit_98/teit_98
 
 	                                         
 

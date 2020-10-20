@@ -265,7 +265,7 @@ C*NEW
  2	continue
 
 
-	if(kpr.eq.1)write(*,*) 'after 1 J YRP1 ',J,YRP1
+	if(kpr.eq.1)write(*,*) 'after 1 J YRP1 yrp ap  ',J,YRP1,yrp,ap
 
 c*NEW-1 vvvvvvvvvvvvv
 !        write(*,*) 'NA,JABS,na1=',NA,JABS,na1
@@ -521,6 +521,10 @@ c*6-OCT-15 vvvv
 	do j=1,na1
 	YPELSRS(j) = YPELSRS(j)-NE(j)
 	enddo
+	
+	flush(6)
+	print *,' HERE'
+	
 	return
 	end
 C======================================================================|

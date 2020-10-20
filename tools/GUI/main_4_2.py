@@ -11,6 +11,10 @@ import numpy
 import random
 import matplotlib
 matplotlib.use('Qt5Agg')
+
+import tarfile
+import datetime
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
@@ -1003,18 +1007,14 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         parentObject.clear()
     
     
-        #setOfParams = self.ReadParametersSet(f, 2)       
-        #self.externalData.append(setOfParams)
-        #self.CreateInputTab(setOfParams["data"], setOfParams["title"])
-
 
         params = self.ReadParameters(f)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
         
-        params = self.ReadParameters(f)
+        params = self.ReadParametersSet(f, 2)
         self.externalData.append(params)
-        self.CreateInputTab(parentObject, [params], params["title"])
+        self.CreateInputTab(parentObject, params["data"], params["title"])
         
         timedData = self.ReadTimeTable(f)
         self.externalData.append(timedData)
@@ -1025,8 +1025,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #self.CreateInputTab(parentObject, consist, "together")
         
                         
-        heap = self.ReadHeap(f, 335)
-        self.externalData.append(heap)
+        #heap = self.ReadHeap(f, 335)
+        #self.externalData.append(heap)
         
         
         f.close()
@@ -2027,7 +2027,16 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         self.SaveInputIDS()
         
- 
+        # archive the saved setup files
+        tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
+        tar = tarfile.open(tarname, "w:gz")
+        tar.add(self.directorySave + '/external_data.dat')
+        tar.add(self.directorySave + '/control_init.dat')
+        tar.add(self.directorySave + '/general_data.dat')
+        tar.add(self.directorySave + '/dina_data.dat')
+        tar.add(new_imp)
+        tar.close()
+        print(tarname+' saved')
 
     def PlotOutput(self):
       

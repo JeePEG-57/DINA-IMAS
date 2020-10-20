@@ -108,7 +108,9 @@ c
      *  /vic_018/r_lh_new
 c************************************************
      *  /maksim_01/tqc,emag
-
+     *  /c_ener5/tene,ptot_dop
+     
+     
 	character *10 mgr(iy),mt(iy)
 	character *70 apr
 	character *12 yy(iy)
@@ -226,7 +228,9 @@ c
      .	yGELM,yGLFS
 
 	common /c_temp6/wdr_d,wdr_t,WEL,wio
-
+        common /c_teit_98/teit_98
+        common /maksim_02/qtep,gfus,gamma
+      
 
 4010    format(6e12.3)
 

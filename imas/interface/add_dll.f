@@ -169,17 +169,8 @@ c       implicit real*8 (a-h,o-z)
 
         common /c_src/src
         common /c_src1/dif_coef
+        common /c_src2/src1,src2,sd0_p(npo),sd0_n(npo)
 
-      if(nij.eq.0)then
-
-         do i=1,n
-            
-            sd0(i)=0.1*(1.-ai(i))
-            
-            st0(i)=0.1*(1.-ai(i))
-            
-         end do
-      end if
 
 
 
@@ -196,21 +187,29 @@ c       implicit real*8 (a-h,o-z)
 
      	xii(i)=x11*gra2(i)*dif_coef
 
- 	sd0(i)=sd0(i)-sal(i)
-	st0(i)=st0(i)-sal(i)
 	src=src+sd0(i)+st0(i)
-	src1=src1+sd0(i)
-	src2=src2+st0(i)
+	src1=src1+sd0_p(i)
+	src2=src2+sd0_n(i)
       DIF(I)=0.4*XII(I)
       
 !      print *,' i dif=',i,dif(i)
       
     1 CONTINUE
+      src=src/float(n)
+      src1=src1/float(n)
+      src2=src2/float(n)
+      
+      n05=0.5*n
+      
+      DO I=1,n05
+      DIF(I)=0.4*XII(n05+1)
+      end do
+
 
 	if(kpr.eq.1)print *,' pne1 pne2======',pne(1),pne(2)
 	if(kpr.eq.1)print *,' source1 source2======',src1,src2
 	if(kpr.eq.1)print *,' dif_coef source======',dif_coef,src
-	if(kpr.eq.1)print *,' eu rs======',eu,rs
+	if(kpr.eq.1)print *,' eu rs n05======',eu,rs,n05
 	
 !	stop
 	

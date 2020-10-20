@@ -1,5 +1,5 @@
 !subroutine dina_transp_density(equilibrium0, core_profiles0, core_sources0, core_profiles)
-subroutine dina_transp_density(equilibrium0, core_profiles0, src_in, bndcond_in, core_profiles)
+subroutine dina_transp_density(equilibrium0, core_profiles0, summary_in, src_in, bndcond_in, core_profiles, summary_out)
 !subroutine dina_transp_density(equilibrium0, core_profiles0,  core_profiles)
 
 use ids_schemas
@@ -12,6 +12,7 @@ type (ids_core_profiles) :: core_profiles0, core_profiles
 type (ids_transport_solver_numerics) :: bndcond_in
 !type (ids_core_sources) :: core_sources0
 real (ids_real) :: src_in(*)
+type (ids_summary) :: summary_in, summary_out
 
 
 integer :: i,n,n2,npo
@@ -27,6 +28,8 @@ real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 real(ids_real) :: Yne, Yndt, YnHe
 real(ids_real) :: tt
 real(ids_real) :: pd_b,pt_b
+real(ids_real) :: Ne,Ni,pcch_xx
+
 
       common /cc_tran2/pd_b,pt_b
 
@@ -44,6 +47,15 @@ tt=core_profiles0%time(1)
 !qqt(1:n) = core_sources0%source(1)%profiles_1d(1)%ion(2)%particles(1:n)
 
 call ids_copy(core_profiles0,core_profiles)
+call ids_copy(summary_in, summary_out)
+
+
+!Ne = summary_in%volume_average%n_e%value(1)
+!Ni = summary_in%volume_average%n_i_total%value(1)
+
+
+!summary_out%volume_average%n_e%value(1) = Ne
+!summary_out%volume_average%n_i_total%value(1) = Ni
 
  print *,' transp20== n',n
 
@@ -59,7 +71,7 @@ qqe(1:n) = src_in(2*n+1:3*n)
       apr='--qqe-' 
       print 71,apr,(qqe(i),i=1,n) 
  
- 
+  
 
 
 !Note *1.d-19 gain. Remember that below entire profile assignment will overwrite n-th value
@@ -69,6 +81,9 @@ qqe(1:n) = src_in(2*n+1:3*n)
   Yndt = bndcond_in%solver_1d(1)%equation(6)%boundary_condition(1)%value(1)*1.d-19
   YnHe = bndcond_in%solver_1d(1)%equation(8)%boundary_condition(1)%value(1)*1.d-19
 !  
+
+  if(Yndt.le.0.1)Yndt=0.1
+  
   pne(n) = Yne
   pd0(n) = Yndt*0.5d0
   pt0(n) = Yndt*0.5d0
@@ -77,6 +92,9 @@ qqe(1:n) = src_in(2*n+1:3*n)
 
     pd_b= pd0(n)
     pt_b=pt0(n)
+
+ !   pd_b= 0.1
+ !   pt_b=0.1
 
 ! 
  end if
@@ -104,16 +122,16 @@ qqe(1:n) = src_in(2*n+1:3*n)
 !pd0(1:n)=core_sources0%source(1)%profiles_1d(1)%ion(1)%particles(1:n)
 !pt0(1:n)=core_sources0%source(1)%profiles_1d(1)%ion(2)%particles(1:n)
     
-      apr='--sd0-' 
-      print 71,apr,(pd0(i),i=1,n) 
-      apr='--st0-' 
-      print 71,apr,(pt0(i),i=1,n) 
+      apr='--sd0_p-' 
+      print 71,apr,(qqd(i),i=1,n) 
+      apr='--sd0_n-' 
+      print 71,apr,(qqt(i),i=1,n) 
     
       call transp20( &
 !-----------------------------------  inputs---
      &  c_input1,c_input2, &
 !------------------------------------outputs
-     &  c_output1,c_output2,c_output3, tt)
+     &  c_output1,c_output2,c_output3, tt, pcch_xx,n)
 
 
 
@@ -192,7 +210,14 @@ allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
       print 71,apr,(pd0(i),i=1,n) 
       apr='--pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
- 
+      
+!summary_out%volume_average%n_e%value(1) = pcch_xx
+summary_out%volume_average%n_i_total%value(1) = pcch_xx*1.e19
+!summary_in%volume_average%n_i_total%value(1) = pcch_xx
+
+print *,' pcch_xx',pcch_xx
+
+
  print *,' end transp_density'
 
 return
