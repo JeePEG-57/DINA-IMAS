@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabInput">
        <attribute name="title">
@@ -212,6 +212,22 @@
         </layout>
        </widget>
       </widget>
+      <widget class="QWidget" name="tabVIZ">
+       <attribute name="title">
+        <string>VIZ</string>
+       </attribute>
+       <widget class="QWidget" name="gridLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1571</width>
+          <height>1011</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3"/>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -222,7 +238,7 @@
      <x>0</x>
      <y>0</y>
      <width>1598</width>
-     <height>26</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
