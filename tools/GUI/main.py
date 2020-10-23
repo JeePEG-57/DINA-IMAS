@@ -1009,18 +1009,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.externalData = []
         parentObject = self.tabExternalDataChild
         parentObject.clear()
-    
-    
-
-        #setOfParams = self.ReadParametersSet(f, 2)       
-        #self.externalData.append(setOfParams)
-        #self.CreateInputTab(setOfParams["data"], setOfParams["title"])
-
-
-
-        params = self.ReadParameters(f)
-        self.externalData.append(params)
-        self.CreateInputTab(parentObject, [params], params["title"])
+        
+        
 
         params = self.ReadParameters(f)
         self.externalData.append(params)
@@ -1029,8 +1019,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         params = self.ReadParametersSet(f, 2)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, params["data"], params["title"])
-
-        
+      
         timedData = self.ReadTimeTable(f)
         self.externalData.append(timedData)
         self.CreateInputTab(parentObject, [timedData], timedData["title"])
