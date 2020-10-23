@@ -20,14 +20,14 @@ import matplotlib.pyplot as plt
 
 #--------------new class for equilibrium window
 class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
-    def __init__(self, parent=None):
+    def __init__(self, pulse, run, user, base):
         super().__init__()
         #self.timestep=time_step
         self.buildUI()
         
-        pulse = 170
-        run = 7
-        user = 'khayrue'
+        #pulse = 170
+        #run = 7
+        #user = 'khayrue'
         
         #pulse = int(self.textPulse.toPlainText(), 10)
         #run = int(self.textRun.toPlainText(), 10)
@@ -37,7 +37,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
 
         
         imas_obj1 = imas.ids(pulse, run)
-        imas_obj1.open_env(user, 'test3', '3')
+        imas_obj1.open_env(user, base, '3')
      
         self.sum1 = imas_obj1.summary
         self.cp1 = imas_obj1.core_profiles
@@ -183,7 +183,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.psi_sep=self.eq1.time_slice[10].boundary_separatrix.psi
         #for i in range(self.tor):
             #self.psi_sep.append(self.eq1.time_slice[i].boundary_separatrix.psi)
-        print(self.psi_sep)
+        #print(self.psi_sep)
         #2 -d profiles--------------------------------------------------------------------------
         #ACTIVE zone(changed)
         self.axy=[]
