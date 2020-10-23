@@ -31,27 +31,17 @@
 	character *12 apr
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
-	ppch1=0.
-	ppch2=0.
+	ppch=0.
 	vv=0.
 	do i=2,n
       VV=VV+VI(I)*HA(I)
-      p_ion1=0.5*(Pd0(I)+Pd0(I-1))
-      p_ion2=0.5*(Pt0(I)+Pt0(I-1))
+      p_ion=0.5*(Pd0(I)+Pd0(I-1))
+      p_ion=p_ion+0.5*(Pt0(I)+Pt0(I-1))
 !      PPch=PPch+0.5*(PNE(I)+PNE(I-1))*VI(I)*HA(I)
-      PPch1=PPch1+p_ion1*VI(I)*HA(I)
-      PPch2=PPch2+p_ion2*VI(I)*HA(I)
+      PPch=PPch+p_ion*VI(I)*HA(I)
 	end do
-        PCch1=PPch1/VV
-        PCch2=PPch2/VV
-        pcch=pcch1+pcch2
-        
-	if(kpr.eq.1)print *,'===1 pcch1 pcch2===',pcch1,pcch2
+        PCch=PPch/VV
 	if(kpr.eq.1)print *,'===1 pcchp pcch=kcchp===',pcchp,pcch,kcchp
-	if(kpr.eq.1)print *,'===1 vv n===',vv*1.e-6,n
-
-        if(kpr.eq.1)print *,' pd1 pd2=',pd0(1),pd0(2)
-        if(kpr.eq.1)print *,' pt1 pt2=',pt0(1),pt0(2)
 
 !!!	if(ntay.lt.2)pcchp=pcch
 
@@ -163,6 +153,7 @@ c       implicit real*8 (a-h,o-z)
      *  PTN(npo),PHN(npo)
      *  /en2/TE0(npo),TQ0(npo),TEN(npo),TQN(npo),WE0(npo),WQ0(npo)
      *  /en5/SD0(npo),ST0(npo),SH0(npo)
+     *  /en6/VI(npo)
      *  /en22/XII(npo)
      *  /en4/WD0(npo),WT0(npo),WH0(npo),VD(npo),DIF(npo),
      *  GGT(npo),GGTN(npo)
@@ -173,27 +164,23 @@ c       implicit real*8 (a-h,o-z)
      *  /dfm4/Q(npo),ANU(npo),P(npo),F(npo),PP(npo),PFF(npo)
      *  /mid3/GRA1(npo),GRA2(npo)
         common
+     *  /ge1/PI
      *  /ge3/AI(npo),AA0(npo),HA2(npo),a(npo),ha(npo)
      *  /ge5/kpr
      *  /ge7/eu,rs,zact,elong
 
         common /c_src/src
         common /c_src1/dif_coef
-
-      if(nij.eq.0)then
-
-         do i=1,n
-            
-            sd0(i)=0.1*(1.-ai(i))
-            
-            st0(i)=0.1*(1.-ai(i))
-            
-         end do
-      end if
+        parameter (kint=200)
+        common /c_src2/sd0_p(kint),sd0_n(kint)
+        common /c_src3/src_pel,src_puff
 
 
 
 	src=0.
+	src_pel=0.
+	src_puff=0.
+	
       pot=1.
       DO 1 I=2,N
 
@@ -206,16 +193,23 @@ c       implicit real*8 (a-h,o-z)
 
  	sd0(i)=sd0(i)-sal(i)
 	st0(i)=st0(i)-sal(i)
-	src=src+sd0(i)+st0(i)
+	src=src+(sd0(i)+st0(i))*vi(i)*ha(i)*2.d0*pi
+	
+	src_pel=src_pel+(sd0_p(i)*1.d-3)*vi(i)*ha(i)*2.d0*pi
+	src_puff=src_puff+(sd0_n(i)*1.d-3)*vi(i)*ha(i)*2.d0*pi
+	
       DIF(I)=0.4*XII(I)
       
 !      print *,' i dif=',i,dif(i)
       
     1 CONTINUE
 
+      src_tot=src_pel+src_puff
 	if(kpr.eq.1)print *,' pne1 pne2======',pne(1),pne(2)
 	if(kpr.eq.1)print *,' dif_coef source======',dif_coef,src
+	if(kpr.eq.1)print *,' src_pel src_puff',src_pel,src_puff
 	if(kpr.eq.1)print *,' eu rs======',eu,rs
+	if(kpr.eq.1)print *,' src_tot src',src_tot,src
 	
 !	stop
 	

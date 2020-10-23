@@ -11,6 +11,12 @@ import numpy
 import random
 import matplotlib
 matplotlib.use('Qt5Agg')
+
+
+import tarfile
+import datetime
+
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
@@ -533,6 +539,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.textRun.setPlainText('6')
         self.textUser.setPlainText(user)
         self.textBase.setPlainText('test')
+
              
        
         self.outpGraph = []
@@ -1004,18 +1011,25 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         parentObject.clear()
     
     
+
         #setOfParams = self.ReadParametersSet(f, 2)       
         #self.externalData.append(setOfParams)
         #self.CreateInputTab(setOfParams["data"], setOfParams["title"])
 
 
+
         params = self.ReadParameters(f)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
-        
+
         params = self.ReadParameters(f)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
+
+        params = self.ReadParametersSet(f, 2)
+        self.externalData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
+
         
         timedData = self.ReadTimeTable(f)
         self.externalData.append(timedData)
@@ -1025,9 +1039,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #consist = setOfParams["data"] + [timedData]
         #self.CreateInputTab(parentObject, consist, "together")
         
-                        
-        heap = self.ReadHeap(f, 335)
-        self.externalData.append(heap)
+
+        #heap = self.ReadHeap(f, 335)
+        #self.externalData.append(heap)
+
         
         
         f.close()
@@ -2028,6 +2043,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         self.SaveInputIDS()
         
+
  
 
     def PlotOutput(self):
@@ -2043,6 +2059,19 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         imas_obj1 = imas.ids(self.pulseout, self.runout)
         imas_obj1.open_env(self.userout, self.baseout, '3')
+
+        # archive the saved setup files
+        tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
+        tar = tarfile.open(tarname, "w:gz")
+        tar.add(self.directorySave + '/external_data.dat')
+        tar.add(self.directorySave + '/control_init.dat')
+        tar.add(self.directorySave + '/general_data.dat')
+        tar.add(self.directorySave + '/dina_data.dat')
+        tar.add(new_imp)
+        tar.close()
+        print(tarname+' saved')
+
+
         
         sum1 = imas_obj1.summary
         cp1 = imas_obj1.core_profiles
@@ -2073,8 +2102,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.outpGraph[3].Plot(t1, t_i, 'T_i, eV')
         self.outpGraph[4].Plot(t1, li_3, 'li_3')
         
+
         #if not self.EQUIL_win:
         self.EQUIL_win = Second_window(self.pulseout,self.runout,self.userout,self.baseout)
+
         self.EQUIL_win.show()
 
 

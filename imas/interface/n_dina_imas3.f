@@ -198,15 +198,16 @@ c ============ outputs ==============================================
 	subroutine dina_outp(n_xx,
      * tpl_xx,uli_xx,v_xx,parea_xx,psi_ax_xx,rmag_xx,zmag_xx,
      * q_ax_xx,q_95_xx,rs0_xx,bt0_xx,wen2_xx,tt_xx,
-     * ai_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
-     * x_xx,y_xx,psi_xx,psi_bnd_xx,curr_d_xx,
+     * ai_xx,psi_1D_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
+     * x_xx,y_xx,psi_xx,psi_bnd_xx,psi_sep_xx,curr_d_xx,
      * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
      * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,ajae_xx,zeff_xx,press_xx,qe0_xx,qq0_xx,
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,palf_xx,zeff0_xx,vloop_xx,
-     * tene_xx,wfus_xx,emag_xx,
+     * tene_xx,teit_98_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
      * pptab_xx,fptab_xx,
-     * rsep2_xx,zsep2_xx, rsep2_r_xx,zsep2_r_xx, dsep_xx)
+     * rsep_xx,zsep_xx, rsep2_xx,zsep2_xx, rsep2_r_xx,zsep2_r_xx, dsep_xx,
+     * p_sep_xx,greenwald_xx,gfus_xx,qtep_xx)
 
 
 	include 'double.inc'
@@ -220,7 +221,7 @@ c ============ outputs ==============================================
 !     *  /cont20/x_gaps(kf_c),y_gaps(kf_c),gaps(kf_c),n_gaps
      
 
-	dimension ai_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
+	dimension ai_xx(*),psi_1D_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
 	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),ajae_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
@@ -247,6 +248,7 @@ c ============ outputs ==============================================
 	parea_xx=surface
 	psi_ax_xx=pmag*1.d-5*2.*pi
 	psi_bnd_xx=pbound*1.d-5*2.*pi
+	psi_sep_xx=psep*1.d-5*2.*pi
 	rmag_xx=rmag/100.d0
 	zmag_xx=zmag/100.d0
 	q_ax_xx=q(2)
@@ -265,7 +267,8 @@ c ============ outputs ==============================================
 	palf_xx = palf*1.d19
 	zeff0_xx = zeff_a
 	vloop_xx = vloop
-	tene_xx = tene
+	tene_xx = tene*1.d-3
+	teit_98_xx = teit_98*1.d-3
 	wfus_xx = w_fusion*1.d6
 	emag_xx = emag*1.d6
 
@@ -274,11 +277,18 @@ c ============ outputs ==============================================
         elong_xx = elong
         tri_xx = tri
 
+        rsep_xx = rsep/100.
+        zsep_xx = zsep/100.
         rsep2_xx = rsep2/100.
         zsep2_xx = zsep2/100.
         rsep2_r_xx = rsep2_r/100.
         zsep2_r_xx = zsep2_r/100.
         dsep_xx = gaps(n_ga+1)/100.
+               
+        p_sep_xx = p_sep_tot*1.d6
+        greenwald_xx = gamma
+        gfus_xx = gfus*1.d6
+        qtep_xx = qtep
         
         do i=1,ntet
            xbound_xx(i) = xbound(i)*1.d-2
@@ -288,6 +298,7 @@ c=================================================
 
 	do i=1,n
 	   ai_xx(i)=ai(i)
+	   psi_1D_xx(i)=psval(i)*1.d-5*2.*pi
 	   te0_xx(i)=te0(i)
 	   tq0_xx(i)=tq0(i)
 !	   pne_xx(i)=pne(i)*1.e19
