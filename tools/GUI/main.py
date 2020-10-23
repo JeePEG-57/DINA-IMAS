@@ -2042,7 +2042,16 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
         self.SaveInputIDS()
-        
+        # archive the saved setup files
+        tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
+        tar = tarfile.open(tarname, "w:gz")
+        tar.add(self.directorySave + '/external_data.dat')
+        tar.add(self.directorySave + '/control_init.dat')
+        tar.add(self.directorySave + '/general_data.dat')
+        tar.add(self.directorySave + '/dina_data.dat')
+        tar.add(new_imp)
+        tar.close()
+        print(tarname+' saved')
 
  
 
@@ -2060,16 +2069,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         imas_obj1 = imas.ids(self.pulseout, self.runout)
         imas_obj1.open_env(self.userout, self.baseout, '3')
 
-        # archive the saved setup files
-        tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
-        tar = tarfile.open(tarname, "w:gz")
-        tar.add(self.directorySave + '/external_data.dat')
-        tar.add(self.directorySave + '/control_init.dat')
-        tar.add(self.directorySave + '/general_data.dat')
-        tar.add(self.directorySave + '/dina_data.dat')
-        tar.add(new_imp)
-        tar.close()
-        print(tarname+' saved')
+
 
 
         
