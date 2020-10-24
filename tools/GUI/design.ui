@@ -160,23 +160,41 @@
          <rect>
           <x>40</x>
           <y>30</y>
-          <width>221</width>
-          <height>350</height>
+          <width>401</width>
+          <height>271</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <property name="horizontalSpacing">
+          <number>6</number>
+         </property>
          <item row="3" column="1">
-          <widget class="QPlainTextEdit" name="textUser"/>
-         </item>
-         <item row="5" column="1">
-          <widget class="QPushButton" name="btnLoadIDS">
-           <property name="text">
-            <string>Load IDS</string>
+          <widget class="QPlainTextEdit" name="textUser">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>50</height>
+            </size>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="labelRun">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="text">
             <string>Run</string>
            </property>
@@ -184,29 +202,55 @@
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="labelPulse">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="text">
             <string>Pulse</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QTextEdit" name="textPulse"/>
+          <widget class="QTextEdit" name="textPulse">
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>50</height>
+            </size>
+           </property>
+          </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QPlainTextEdit" name="textRun"/>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="labelIDSInfo">
-           <property name="text">
-            <string/>
+          <widget class="QPlainTextEdit" name="textRun">
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>50</height>
+            </size>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QPlainTextEdit" name="textBase"/>
+          <widget class="QPlainTextEdit" name="textBase">
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>50</height>
+            </size>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="labelBase">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="text">
             <string>Database</string>
            </property>
@@ -214,8 +258,40 @@
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="labelUser">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="text">
             <string>User</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QPushButton" name="btnLoadIDS">
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Load IDS</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="labelIDSInfo">
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </item>

@@ -2073,25 +2073,25 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
         
-        sum1 = imas_obj1.summary
-        cp1 = imas_obj1.core_profiles
-        eq1 = imas_obj1.equilibrium
+        self.sum1 = imas_obj1.summary
+        self.cp1 = imas_obj1.core_profiles
+        self.eq1 = imas_obj1.equilibrium
         
-        sum1.get()
-        cp1.get()
-        eq1.get()
+        self.sum1.get()
+        self.cp1.get()
+        self.eq1.get()
         
         imas_obj1.close()
         
         
-        t1 = sum1.time
-        ipl1 = sum1.global_quantities.ip.value
-        li_3 = sum1.global_quantities.li.value
-        beta_pol = sum1.global_quantities.beta_pol.value
-        n_e = sum1.volume_average.n_e.value
-        t_e = sum1.volume_average.t_e.value
-        t_i = sum1.volume_average.t_i_average.value
-        z_eff = sum1.volume_average.zeff.value
+        t1 = self.sum1.time
+        ipl1 = self.sum1.global_quantities.ip.value
+        li_3 = self.sum1.global_quantities.li.value
+        beta_pol = self.sum1.global_quantities.beta_pol.value
+        n_e = self.sum1.volume_average.n_e.value
+        t_e = self.sum1.volume_average.t_e.value
+        t_i = self.sum1.volume_average.t_i_average.value
+        z_eff = self.sum1.volume_average.zeff.value
 
         #li_3 = eq1.time_slice[:].global_quantities.li_3;
 
@@ -2104,7 +2104,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
 
         #if not self.EQUIL_win:
-        self.EQUIL_win = Second_window(self.pulseout,self.runout,self.userout,self.baseout)
+        self.EQUIL_win = Second_window(self.pulseout,self.runout,self.userout,self.baseout, self.sum1, self.cp1, self.eq1)
 
         self.EQUIL_win.show()
 

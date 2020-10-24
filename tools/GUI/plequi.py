@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 #--------------new class for equilibrium window
 class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
-    def __init__(self, pulse, run, user, base):
+    def __init__(self, pulse, run, user, base, isum1, icp1, ieq1):
         super().__init__()
         #self.timestep=time_step
         self.buildUI()
@@ -32,22 +32,25 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         #pulse = int(self.textPulse.toPlainText(), 10)
         #run = int(self.textRun.toPlainText(), 10)
         #user = self.textUser.toPlainText()
-        print('selected pulse = ', pulse)
-        print('selected run = ', run)
+        #print('selected pulse = ', pulse)
+        #print('selected run = ', run)
 
         
         imas_obj1 = imas.ids(pulse, run)
         imas_obj1.open_env(user, base, '3')
      
-        self.sum1 = imas_obj1.summary
-        self.cp1 = imas_obj1.core_profiles
-        self.eq1 = imas_obj1.equilibrium
+        #self.sum1 = imas_obj1.summary
+        #self.cp1 = imas_obj1.core_profiles
+        #self.eq1 = imas_obj1.equilibrium
+        self.sum1 = isum1
+        self.cp1 = icp1
+        self.eq1 = ieq1
         self.pfa1 = imas_obj1.pf_active
         self.pfp1 = imas_obj1.pf_passive
          
-        self.sum1.get()
-        self.cp1.get()
-        self.eq1.get()
+        #self.sum1.get()
+        #self.cp1.get()
+        #self.eq1.get()
         self.pfa1.get()
         self.pfp1.get()
            
