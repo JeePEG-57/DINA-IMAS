@@ -1794,7 +1794,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       return data
  
 
-    def SaveInputIDS(self):
+    def SaveInputIDS(self,nameSaveSetups):
       # Create input ids
       pulseText = self.lineInputPulse.text()
       runText = self.lineInputRun.text()
@@ -2006,6 +2006,15 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
       pfp1.put()
       
+      
+      dat1 = imas_obj1.dataset_description
+      dat1.ids_properties.homogeneous_time = 1
+      dat1.time.resize(1)
+      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
+      dat1.simulation.workflow = nameSaveSetups
+      dat1.put()
+      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
+     
       imas_obj1.close()
 
 
@@ -2030,7 +2039,6 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
           shutil.rmtree(new_imp)
         shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
-        self.SaveInputIDS()
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
         tar = tarfile.open(tarname, "w:gz")
@@ -2042,8 +2050,9 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         tar.close()
         print(tarname+' saved')
 
- 
+        self.SaveInputIDS(tarname)
 
+ 
     def PlotOutput(self):
       
         self.pulseout = int(self.textPulse.toPlainText(), 10)
