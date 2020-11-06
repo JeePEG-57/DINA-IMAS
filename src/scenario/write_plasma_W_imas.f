@@ -1,3 +1,134 @@
+!>  write_data_in_time is a subroutine to output the 0D DINA-IMAS parameters
+!>  through the internal array wr:
+!>  wr(1)-time,[s]
+!>  wr(2)-plasma current,[MA]
+!>  wr(3)-plasma major radius,[m]
+!>  wr(4)-plasma minor radius,[m]
+!>  wr(5)-plasma elongation
+!>  wr(6)-plasma triangularity
+!>  wr(7)-plasma volume,[m3]
+!>  wr(8)-plasma poloidal cross section,[m2]
+!>  wr(9)-plasma surface area,[m2]
+!>  wr(10)-R coordinate of the plasma current center,[m]
+!>  wr(11)-Z coordinate of the plasma current center,[m]
+!>  wr(12)-vertical speed of the plasma current center,[m*s^-1]
+!>  wr(13)-R coordinate of the magnetic axis,[m]
+!>  wr(14)-Z coordinate of the magnetic axis,[m]
+!>  wr(15)-in case of divertor plasma-R coordinate of the X-point and in  
+!! case of limiter plasma-R coordinate of the plasma-wall touching point,[m]
+!>  wr(16)-in case of divertor plasma-Z coordinate of the X-point and in  
+!!  case of limiter plasma-Z coordinate of the plasma-wall touching point,[m]
+!>  wr(17)-the value of q on the magnetic surface where PSI/PSIbnd=0.95
+!>  wr(18)-the value of q on the magnetic axis
+!>  wr(19)-li(3)
+!>  wr(20)-BETA poloidal
+!>  wr(21)-volume averaged electron density,[19m^-3]
+!>  wr(22)-Greenwald ratio
+!>  wr(23)-volume averaged density of the main ion species,[19m^-3]
+!>  wr(24)-volume averaged electron temperature,[keV]
+!>  wr(25)-picking factor of the electron temperature
+!>  wr(26)-volume averaged ion temperature,[keV]
+!>  wr(27)-picking factor of the ion temperature
+!>  wr(28)-Zeff
+!>  wr(29)-plasma loop voltage
+!>  wr(30)-resistive losses of the poloidal magnetic flux,[Wb]
+!>  wr(31)-Ejima coefficient
+!>  wr(32)-averaged over the plasma poloidal magnetic flux, produced
+!! by all external circuits,[Wb]
+!>  wr(33)-averaged over the plasma poloidal magnetic flux, produced
+!! by the CS and PF coils,[Wb]
+!>  wr(34)-averaged over the plasma poloidal magnetic flux, produced
+!! by all extrenal circuits and plasma,[Wb]
+!>  wr(35)-current in the coil CS3U,[kA]
+!>  wr(36)-current in the coil CS2U,[kA]
+!>  wr(37)-current in the coils CS1U and CS1L connected in series,[kA]
+!>  wr(38)-current in the coil CS2L,[kA]
+!>  wr(39)-current in the coil CS3L,[kA]
+!>  wr(40)-current in the coil PF1,[kA]
+!>  wr(41)-current in the coil PF2,[kA]
+!>  wr(42)-current in the coil PF3,[kA]
+!>  wr(43)-current in the coil PF4,[kA]
+!>  wr(44)-current in the coil PF5,[kA]
+!>  wr(45)-current in the coil PF6,[kA]
+!>  wr(46)-voltage produced by the converter CS3U,[kV]
+!>  wr(47)-voltage produced by the converter CS2U,[kV]
+!>  wr(48)-voltage produced by the converter CS1U and CS1L connected 
+!! in series,[kV]
+!>  wr(49)-voltage produced by the converter CS2L,[kV]
+!>  wr(50)-voltage produced by the converter CS3L,[kV]
+!>  wr(51)-voltage produced by the converter PF1,[kV]
+!>  wr(52)-voltage produced by the converter PF2,[kV]
+!>  wr(53)-voltage produced by the converter PF3,[kV]
+!>  wr(54)-voltage produced by the converter PF4,[kV]
+!>  wr(55)-voltage produced by the converter PF5,[kV]
+!>  wr(56)-voltage produced by the converter PF6,[kV]
+!>  wr(57)-current of the converter VS1,[kA]
+!>  wr(58)-current of the converter VS2,[kA]
+!>  wr(59)-current of the converter VS3,[kA]
+!>  wr(60)-voltage produced by the converter VS1,[kV]
+!>  wr(61)-voltage produced by the converter VS2,[kV]
+!>  wr(62)-voltage produced by the converter VS3,[kV]
+!>  wr(63)-total power of the converters in the circuits CS,PF,VS1 and VS2,[MW]
+!>  wr(64)-power requested from the electric grid,[MW]
+!>  wr(65)-power of the Ohmic heating,[MW]
+!>  wr(66)-power of the auxiliary heating,[MW]
+!>  wr(67)-power of theplasma heating by alfa-particle,[MW]
+!>  wr(68)-fusion power,[MW]
+!>  wr(69)-neutron fluence,[MW*h]
+!>  wr(70)-power gain Q
+!>  wr(71)-total heating power,[MW]
+!>  wr(72)-power threshold for L to H mode transition Plh,[MW]
+!>  wr(73)-ratio Psep/Plh
+!>  wr(74)-plasma magnetic energy,[MJ]
+!>  wr(75)-plasma inductance,[H]
+!>  wr(76)-plasma thermal energy,[MJ]
+!>  wr(77)-plasma resistance,[mkOhm]
+!>  wr(78)-L/R plasma current decay time,[s]
+!>  wr(79)-content of He
+!>  wr(80)-content of Be
+!>  wr(81)-content of W
+!>  wr(82)-content of Ar
+!>  wr(83)-content of Ne
+!>  wr(84)-power of the bremsstrahlung radiation,[MW]
+!>  wr(85)-power of the cyclotron radiation,[MW]
+!>  wr(86)-power of Be radiation,[MW]
+!>  wr(87)-power of W radiation,[MW]
+!>  wr(88)-power of Ar radiation,[MW]
+!>  wr(89)-power of Ne radiation,[MW]
+!>  wr(90)-total power of the impurity radiation,[MW]
+!>  wr(91)-total power of the radiation,[MW]
+!>  wr(92)-power loss through the plasma boundary due to conductivity 
+!! and convection,[MW]
+!>  wr(93)-plasma energy confinement time,[s]
+!>  wr(94)-in divertor phase R coordinate of the upper X-point (belonging 
+!! to the outer separatrix); in limiter phase =0
+!>  wr(95)-in divertor phase Z coordinate of the upper X-point (belonging 
+!! to the outer separatrix); in limiter phase =0
+!>  wr(96)-in divertor phase is the distance between the inner and outer 
+!! separatrix in the plasma mid plane (in the outboard region); <0 when 
+!! the inner separatrix has upper X-point; in limiter phase =0
+!>  wr(97)-in divertor phase, if the upper X-point is located inside of 
+!! first wall, is R coordinate of the outer strike point; otherwise =0,[m]
+!>  wr(98)-in divertor phase, if the upper X-point is located inside of 
+!! first wall, is Z coordinate of the outer strike point; otherwise =0,[m]
+!>  wr(99)-vertical component of the poloidal magnetic field in the inboard 
+!! points of the plasma boundary belonging to the plane Z=Zmag,[T] 
+!>  wr(100)-vertical component of the poloidal magnetic field in the outboard 
+!! points of the plasma boundary belonging to the plane Z=Zmag,[T] 
+!>  wr(101)-minimum distance between the plasma boundary and the first wall,[m]
+!>  wr(102)-R coordinate of the point of the first wall which is the 
+!! closest to plasma boundary,[m]  
+!>  wr(103)-Z coordinate of the point of the first wall which is the 
+!! closest to plasma boundary,[m]
+!>  wr(104)-distance between the separatrix inner strike point and the bottom 
+!! of the divertor inner vertical target plate; =0 means that the separatrix 
+!! inner leg strikes the inner reflector plate,[m]   
+!>  wr(105)-distance between the separatrix inner strike point and the bottom 
+!! of the divertor outer vertical target plate; =0 means that the separatrix 
+!! inner leg strikes the outer reflector plate,[m]
+!>  wr(106)-wr(129)- additional gaps between plasma boundary and 
+!! fixed points,[m]   
+
       subroutine write_data_in_time(
      *	tt,tpl,betpj,eu_xx,uli,r_cur,z_cur,p_sep,wel,wio,eksk,
 c     *	pcch,zeff_a,tec,te_ax,tqc,tq_ax,tene,zsep,c_e_old,c_e_new,

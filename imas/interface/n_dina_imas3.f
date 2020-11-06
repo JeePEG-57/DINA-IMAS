@@ -1263,6 +1263,9 @@ c	call out42(n_pr,a_print,num,apr)
 	return
 	end
 
+!> dina_data_read is the main subroutine to read the input
+!! dina_data.dat and general_data.dat files
+
   	subroutine dina_data_read()
 	include 'double.inc'
 c-----------------------------------------
