@@ -16,13 +16,13 @@ V=$(S)
 os=		a_main_dina.o add_dll.o main_astra.o \
 		solsrs_IMAS.o neutex_IMAS.o pelsrs1_IMAS.o solpsz3.o nbicomR_IMAS.o
 
-os1=		add_dll.o main_astra.o \
-		solsrs_IMAS.o neutex_IMAS.o pelsrs1_IMAS.o solpsz3.o nbicomR_IMAS.o
+os1=		add_dll.o \
+	        neutex_IMAS.o pelsrs1_IMAS.o solpsz3.o nbicomR_IMAS.o
 
 
 os_d= $(os) a_dina.o tran6.o
-os_s_pel= $(os1) tran_pel.o
-os_s_puff= $(os1) tran_neut.o
+os_s_pel= $(os1) tran_pel.o mainp_astra.o solsrsP_IMAS.o
+os_s_puff= $(os1) tran_neut.o main_astra.o solsrs_IMAS.o
 
 os_pel= feed_pel.o 
 os_puff= feed_src.o 
@@ -86,9 +86,13 @@ tran_neut.o:	$(S)tran_neut.f
 
 main_astra.o:	$(S)main_astra.f
 		$(f2c) -c   -w    $(S)main_astra.f
+mainp_astra.o:	$(S)mainp_astra.f
+		$(f2c) -c   -w    $(S)mainp_astra.f
 
 solsrs_IMAS.o:	$(S)solsrs_IMAS.f
 		$(f2c) -c   -w    $(S)solsrs_IMAS.f
+solsrsP_IMAS.o:	$(S)solsrsP_IMAS.f
+		$(f2c) -c   -w    $(S)solsrsP_IMAS.f
 
 neutex_IMAS.o:	$(S)neutex_IMAS.f
 		$(f2c) -c   -w    $(S)neutex_IMAS.f

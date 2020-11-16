@@ -1,12 +1,14 @@
-kpr  ! kpr_ext.dat
+kpr  ! kpr.dat
 1
-G_pel    d_G_pel    tay1_pel    coefInt_pel   !tay_time.dat  
-5.e-0    500.e-10   1.e-10      10.e-10
-G_puff   d_G_puff   tay1_puff   coefInt_puff
-5.       1.e10      1.          1.e1
-ktime  !dens_ext.dat
+key_bound d_G_pel   tay1_pel    coefInt_pel   ! tay_time.dat   
+1.     	  500.e0    1.e-10      50.
+alfa_bound    d_G_n   tay1_n    coefI
+0.8     1.e-10    1.        1.e-8
+yMu, Ycnim, Yseng, yL_OH, yVpelH, yVpelL, yfLFS, yCpel, yMpel, yCOST, yDL
+0.7  0.01   37.    0.     33.e0   33.e0   0.     0.3    1.     0.8    1.67   	
+ktime  !dens.dat
           10
- Time[s]  Density[19]
+ Time  !dens_ext.dat
    0.0000000000000000        0.0000000000000000     
    1.5000000000000000        0.0000000000000000     
    3.5000000000000000        0.3200000000000000     

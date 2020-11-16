@@ -335,13 +335,9 @@ class GUIFrame(QTabWidget):
 
 
 #--------------------------------------------------------------------------_END_
-        
-        
-        
-        
-        
-        
-        
+
+
+
 class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(ExampleApp, self).__init__()
@@ -1016,7 +1012,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.externalData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
 
-        params = self.ReadParametersSet(f, 2)
+        params = self.ReadParametersSet(f, 3)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, params["data"], params["title"])
       

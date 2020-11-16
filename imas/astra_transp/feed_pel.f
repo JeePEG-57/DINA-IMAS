@@ -33,6 +33,9 @@ c---  we think ....???
 
         read (1,*)
         read (1,*)GHFS_uu,d_GHFS_uu,tay1_uu,coefI_uu
+
+        read (1,*)
+        read (1,*)
         
     !    close ( unit=1)       
 

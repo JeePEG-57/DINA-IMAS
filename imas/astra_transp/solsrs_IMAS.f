@@ -186,9 +186,12 @@
 
 		yGLFS	= 0.d0
 		yfpel	= yfHFS	 
-!	write(*,*) 'yGELM,yGHFS,yGsol,yGsep,yfHS= ',
-!     .	yGELM,yGHFS,yGsol,yGsep,yfHFS
 	endif
+
+	write(*,*) 'ss--> yGELM,yGHFS,yGsol,yGsep,yfHS= ',
+     .	yGELM,yGHFS,yGsol,yGsep,yfHFS
+
+
 !============================================================================
 
 	if(jiter.eq.1) YGpel=0.
@@ -205,7 +208,7 @@
      .	(1.d0,0.3d0,YVpelH,0.8d0,1.d0,1.67d0,YDABL,YDDEP,ySpel,yswitch)
 		ySRS0	=VINT(ySpel,ROC)
 	
-!	write(*,*) '---------ySpel', (ySpel(j),j=1,na1)
+	write(*,*) '---------ySpel', (ySpel(j),j=1,na1)
 	
 	
 !	   write(*,*) 'ENCL,ENWM,Spel =',ENCL,ENWM,ySRS0

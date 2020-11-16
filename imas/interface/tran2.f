@@ -1,7 +1,3 @@
-!> transp20 is the main subroutine to read the input 
-!! external_data.dat file
-
-
 	subroutine transp20(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
@@ -44,7 +40,7 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp20
 
 
       if(kpr.eq.1)print *,' tt_in tt=',tt_in,tt
-      if(kpr.eq.1)print *,' pd_b,pt_b=',pd_b,pt_b
+  !    if(kpr.eq.1)print *,' pd_b,pt_b=',pd_b,pt_b
 
 
       i_en=i_en+1
@@ -61,10 +57,16 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp20
         read (1,*)
         read (1,*)kpr
         read (1,*)
-        read (1,*)GHFS,d_GHFS,tay1
+        read (1,*)p_key,d_GHFS,tay1
+        
+        key_bound=p_key
+        
 
         read (1,*)
-        read (1,*)GHFS_uu,d_GHFS_uu,tay1_uu
+        read (1,*)alf_bound,d_GHFS_uu,tay1_uu
+
+        read (1,*)
+        read (1,*)
       
 !        close ( unit=1)       
 
@@ -80,7 +82,10 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp20
       end if
 
  
-      
+         
+       if(kpr.eq.1)print *,' TRANSP20 key_bound alf_bound ==',
+     *  key_bound,alf_bound
+   
       
       filename='metric.dat'
 
@@ -125,11 +130,19 @@ c-------
       pt_b=pt0(n)
       end if
        
+
+  
+
         if(i_en.gt.1)then
         do i=1,nn2
         pd0(i)=pdn(i)
         pt0(i)=ptn(i)
 	  end do
+	  
+          if(i_en.gt.1.and.key_bound.eq.1)then
+            pd_b=alf_bound*pd0(1)
+            pt_b=alf_bound*pt0(1)
+          end if
 
        end if
 
@@ -192,7 +205,8 @@ c-------
       pd0(n)=pd_b
       pt0(n)=pt_b
 
-      print *,' pd_b pt_b',pd_b,pt_b
+      if(kpr.eq.1)print *,' pd_a pt_a',pd0(1),pt0(1)
+      if(kpr.eq.1)print *,' pd_b pt_b',pd_b,pt_b
 
 
       apr='pdn-' 

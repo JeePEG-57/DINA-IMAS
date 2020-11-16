@@ -32,6 +32,11 @@ c---  we think ....???
 
         read (1,*)
         read (1,*)gPuff,d_gPuff,tay1,coefI
+
+        read (1,*)
+        read (1,*)
+
+
         gPuff0=gPuff
            
       end if
@@ -51,6 +56,8 @@ c---  we think ....???
       del_int=del_int+del
       V=del0/tay
       dgPuff=-d_gPuff*( del+V*tay1 )-coefI*del_int
+      dgPuff1=-d_gPuff*( del+V*tay1 )
+      dgPuff2=-coefI*del_int
 
       if(kpr.eq.1)print *,' gPuff0 pcch0 --',gPuff0,pcch0
       if(kpr.eq.1)print *,' coefI del_int-',coefI,del_int
@@ -62,10 +69,15 @@ c---  we think ....???
       if(kpr.eq.1)print *,' pcchp  pcch',pcchp,pcch
       if(kpr.eq.1)print *,' gPuff  del',gPuff,del
       if(kpr.eq.1)print *,' d_gPuff dgPuff',d_gPuff,dgPuff
+      if(kpr.eq.1)write(6,'("dgPuff1 dgPuff2", 
+     *  8(1pe11.4))'),dgPuff1,dgPuff2
+
+      
       pcchp_src=pcchp
       
       gPuff0=gPuff
-      
+5000    format (16(1p,1e16.7e3))
+   
       return
       end
 	subroutine den_read()
