@@ -9,9 +9,13 @@ import captions
 
 import numpy
 import random
+import matplotlib
+matplotlib.use('Qt5Agg')
+
 
 import tarfile
 import datetime
+
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -20,6 +24,54 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
  
 import imas # UAL library
+
+
+
+from plequi import Second_window
+#import eq_win2
+#from equil_script_2 import Second_window
+#from MyCanvaseq import MyCanvas
+#------------------------NEW IMPORT
+#from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from functools import partial
+#from matplotlib.figure import Figure
+from pathlib import Path
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
+                             QMenu, QMainWindow, QDockWidget,QMenuBar,QSizePolicy,
+                             QLineEdit, QPushButton, QVBoxLayout, QComboBox,
+                             QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView, QAction) 
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
+                            QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
+                            QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
+
+
+#from PyQt5.QtWidgets import QMdiSubWindow
+
+sys.path.append((os.environ['VIZ_HOME']))
+
+from imasviz.Viz_API import Viz_API
+from imasviz.VizUtils import QVizGlobalOperations, QVizGlobalValues
+
+from imasviz.VizDataSource.QVizDataSourceFactory import QVizDataSourceFactory
+
+from imasviz.VizGUI.VizGuiCustomization import QVizDefault
+from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
+from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
+                              QVizGlobalOperations, QVizLogger)
+from imasviz.VizGUI.VizWidgets.QVizAvailableIDSBrowserWidget import QVizAvailableIDSBrowserWidget
+from imasviz.VizGUI.VizGUICommands.VizMenusManagement.QVizSignalHandling \
+    import QVizSignalHandling
+  #----------------------------------------------
+from imasviz.VizPlugins.VizPlugin import VizPlugin
+
+# Project python modules
+from imasviz.VizPlugins.viz_equi.ids_read_multiprocess import \
+    ids_read_multiprocess
+
+
+#--------------------------END NEW IMPORT
 
 
 class Graph():
@@ -35,7 +87,6 @@ class Graph():
       self.layout.addWidget(self.toolbar)
     self.layout.addWidget(self.canvas) 
     
-  
   def Plot(self, x, y, name = ''):
     self.figure.clear()
     ax = self.figure.add_subplot(111)
@@ -43,18 +94,275 @@ class Graph():
     ax.set_xlabel('time, s')
     ax.set_ylabel(name)
     self.canvas.draw()
+#-----------NEW CLASSes
+class QVizMDI(QMdiArea):
+    """Class for Multiple Document Interface (MDI) area.
+    """
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setWindowTitle("MDI")
+        self.setObjectName("MDI")
 
 
+
+class GUIFrame(QTabWidget):
+    def __init__(self, parent):
+        super(GUIFrame, self).__init__(parent)
+
+        #self.setGeometry(300, 300, 300, 200)
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+
+        self.addTab(self.tab1, "Local data source")
+        self.addTab(self.tab2, "Experiment data source")
+
+        self.tabOne()
+        self.tabTwo()
+
+        title = "IMAS_VIZ (version " + str(QVizGlobalValues.IMAS_VIZ_VERSION) + ")"
+        self.setWindowTitle(title)
+
+        self.mainMenuController = QVizMainMenuController(parent)
+        self.contextMenu = None
+        
+    def logPanel(self):
+        #LOG WIDGET
+        self.logWidget = QPlainTextEdit(parent=self)
+        #self.logWidget.resize(QSize(500, 300))
+        self.logWidget.setReadOnly(True)
+        logging.getLogger().setLevel(logging.INFO)
+        handler = QVizLogger.getHandler()
+        handler.new_record.connect(self.logWidget.appendHtml)
+        layout = QVBoxLayout()
+        layout.addWidget(self.logWidget)
+        return layout
+
+    def tabOne(self):
+        layout = QVBoxLayout()
+        default_user_name, default_machine, default_run = \
+            QVizDefault().getGUIEntries()
+        vboxLayout = QFormLayout()
+        """Set static text for each GUI box (left from the box itself) """
+        self.userName = QLineEdit(default_user_name)
+        self.userName.setStatusTip("Name of the user under which the case is "
+                                   "being stored.")
+        self.userName.setToolTip("Name of the user under which the case is "
+                                 "being stored.")
+        vboxLayout.addRow('User name', self.userName)
+        self.imasDbName = QLineEdit(default_machine)
+        self.imasDbName.setStatusTip("Database label under which the case is "
+                                     "being stored.")
+        self.imasDbName.setToolTip("Database label under which the case is "
+                                   "being stored.")
+        vboxLayout.addRow('Database', self.imasDbName)
+        self.shotNumber = QLineEdit()
+        self.shotNumber.setStatusTip("Shot case identifier.")
+        self.shotNumber.setToolTip("Shot case identifier.")
+        vboxLayout.addRow('Shot number', self.shotNumber)
+        self.runNumber = QLineEdit(default_run)
+        self.runNumber.setStatusTip("Run case identifier.")
+        self.runNumber.setToolTip("Run case identifier.")
+        vboxLayout.addRow('Run number', self.runNumber)
+
+        self.AvailableIDSBrowserWidget = QVizAvailableIDSBrowserWidget(parent=self)
+        self.AvailableIDSBrowserWidget.onItemDoubleClick.connect(self.updateIDSparam)
+        self.userName.editingFinished.connect(self.onUserNameEditFinished)
+
+        button_open1 = QPushButton('Open', self)
+        button_open1.setStatusTip("Open the case for the given parameters.")
+        button_open1.setToolTip("Open the case for the given parameters.")
+        button_open1.clicked.connect(self.OpenDataSourceFromTab1)
+
+        layout.addLayout(vboxLayout)
+        layout.addWidget(self.AvailableIDSBrowserWidget)
+
+        vboxLayout2 = QVBoxLayout()
+        vboxLayout2.addWidget(button_open1)
+
+        layout.addLayout(vboxLayout2)
+        self.tab1.setLayout(layout)
+
+    def OpenDataSourceFromTab1(self, evt):
+        try:
+            self.CheckInputsFromTab1()
+            tokens = self.shotNumber.text().split()
+            try:
+                for shotNumber in tokens:
+                    val = int(shotNumber)
+
+                    """Check if data source is available"""
+                    QVizGlobalOperations.check(QVizGlobalValues.IMAS_NATIVE,
+                                               val)
+
+                    self.mainMenuController.openShotView.Open(evt, dataSourceName=QVizGlobalValues.IMAS_NATIVE,
+                                                              imasDbName=self.imasDbName.text(),
+                                                              userName=self.userName.text(),
+                                                              runNumber=self.runNumber.text(),
+                                                              shotNumber=str(val))
+
+            except Exception as e:
+                raise ValueError(str(e))
+
+        except ValueError as e:
+            logging.error(str(e))
+
+    def CheckInputsFromTab1(self):
+        """Display warning message if the required parameter was not specified"""
+        if self.userName.text() == '':
+            raise ValueError("'User name' field is empty.")
+
+        if self.imasDbName.text() == '':
+            raise ValueError("'Database' field is empty.")
+
+        if self.shotNumber.text() == '' or self.runNumber.text() == '':
+            raise ValueError("'Shot number' or 'run number' field is empty.")
+
+    def updateIDSparam(self):
+        """Update IDS parameters widgets.
+        """
+        self.userName.setText(self.AvailableIDSBrowserWidget.getActiveUsername())
+        self.imasDbName.setText(self.AvailableIDSBrowserWidget.getActiveDatabase())
+        self.shotNumber.setText(self.AvailableIDSBrowserWidget.getActiveShot())
+        self.runNumber.setText(self.AvailableIDSBrowserWidget.getActiveRun())
+
+    def onUserNameEditFinished(self):
+        self.AvailableIDSBrowserWidget.addContentsForUsername(self.userName.text())
+
+    def tabTwo(self):
+
+        layout = QVBoxLayout()
+        vboxlayout = QFormLayout()
+        """Set static text for each GUI box (left from the box itself) """
+        self.shotNumber2 = QLineEdit()
+        vboxlayout.addRow('Shot number', self.shotNumber2)
+        default_user_name, default_machine, default_run = QVizDefault().getGUIEntries()
+        self.runNumber2 = QLineEdit(default_run)
+        vboxlayout.addRow('Run number', self.runNumber2)
+
+        publicDatabases = []
+
+        if os.environ.get('UDA_DISABLED') != '1':
+            udaConfigFilePath = Path(os.environ['VIZ_HOME'] + '/config/UDA_machines')
+            if udaConfigFilePath.is_file():
+                udaConfigFile = open(udaConfigFilePath)
+                UDAmachines = udaConfigFile.readline()
+                udaConfigFile.close()
+                publicDatabases = UDAmachines.split()
+            else:
+                logging.warning("Missing UDA_machines file in /config directory. UDA will be disabled!")
+                os.environ.get['UDA_DISABLED'] = '1'
+                self.tab2.setDisabled(True)
+        else:
+            print('UDA will be disabled (UDA_DISABLED=1)')
+            self.tab2.setDisabled(True)
+
+        self.cb = QComboBox()
+        self.cb.addItems(publicDatabases)
+        vboxlayout.addRow('Unified Data Access', self.cb)
+        # self.cb.currentIndexChanged.connect(self.cbSelectionchange)
+
+        button_open2 = QPushButton('Open', self)
+        button_open2.clicked.connect(self.OpenDataSourceFromTab2)
+        layout.addLayout(vboxlayout)
+
+        vboxLayout2 = QVBoxLayout()
+        vboxLayout2.addWidget(button_open2)
+        layout.addLayout(vboxLayout2)
+        self.tab2.setLayout(layout)
+        # self.tab2.setDisabled(True)
+
+    def OpenDataSourceFromTab2(self, evt):
+        try:
+            try:
+                self.CheckInputsFromTab2()
+                self.mainMenuController.openShotView.Open(evt,
+                                                          dataSourceName=QVizGlobalValues.IMAS_UDA,
+                                                          imasDbName='',
+                                                          userName='',
+                                                          runNumber=self.runNumber2.text(),
+                                                          shotNumber=self.shotNumber2.text(),
+                                                          UDAMachineName=self.cb.currentText())
+            except Exception as e:
+                raise ValueError(str(e))
+
+        except ValueError as e:
+            logging.error('Unable to open UDA data source, the reason is: ' +
+                          str(e))
+
+    def CheckInputsFromTab2(self):
+        machineName = \
+            self.cb.currentText()
+
+        if machineName == '':
+            raise ValueError("'UDA name' field is empty.")
+
+        if self.shotNumber2.text() == '':
+            raise ValueError("'Shot number' field is empty.")
+
+        if self.runNumber2.text() == '':
+            raise ValueError("'Run number' field is empty.")
+
+        QVizGlobalOperations.check(QVizGlobalValues.IMAS_UDA,
+                                   int(self.shotNumber2.text()))
+
+    def contextMenuEvent(self, event):
+
+        # Get position
+        self.pos = event.pos()
+        self.showPopUpMenu()
+
+    def showPopUpMenu(self):
+        """Display the popup menu .
+        """
+        self.contextMenu = QMenu()
+        # Set new popup menu
+        self.mainMenuController.updateMenu(self.contextMenu, self)
+
+        # Map the menu (in order to show it)
+        self.contextMenu.exec_(self.mapToGlobal(self.pos))
+        return 1
+
+    def getMDI(self):
+        """ Get MDI area through the root IMASViz main window.
+        """
+        if self.window().objectName() == "IMASViz root window":
+            return self.window().getMDI()
+        return None
+
+#-------------END NEW CLASSes
+ 
+
+
+#--------------------------------------------------------------------------_END_
+        
+        
+        
+        
+        
+        
+        
 class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
-    def __init__(self, app):
-        super().__init__()
-        
-        screen_resolution = app.desktop().screenGeometry()
-        width, height = screen_resolution.width(), screen_resolution.height()
-        print("width = " + str(width), "height = " + str(height))
+    def __init__(self):
+        super(ExampleApp, self).__init__()
+        self.MDI = QVizMDI(self)
+        self.GUIVIZ = GUIFrame(self)
+        self.EQUIL_win = None
+        #self.setupUi(self)  # Initialise design
+        #self.initUi()      MAYBE DELETE
+        #screen_resolution = app.desktop().screenGeometry()
+        #width, height = screen_resolution.width(), screen_resolution.height()
+        #print("width = " + str(width), "height = " + str(height))
         self.setupUi()  # Initialise design
-        self.resize(width*1.0, height*1.0)
+        #self.resize(width*1.0, height*1.0)
+        self.showMaximized()
         
+    #--------------------
+    def getMDI(self):
+      if self.MDI != None:
+          return self.MDI
+      return None
+    #-------------------------------
     def initTableOfParameters(self, table, headers):
         nCol = len(headers)
         table.setRowCount(nCol)
@@ -230,6 +538,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.textPulse.setPlainText('170')
         self.textRun.setPlainText('6')
         self.textUser.setPlainText(user)
+        self.textBase.setPlainText('test')
+
              
        
         self.outpGraph = []
@@ -258,6 +568,17 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         layout.addWidget(self.tabWidgetInput, 1,0,1,1)
         self.tabInput.setLayout(layout)
+        
+        
+        #---------------new
+        layout1 = QGridLayout()
+        #layout1.addLayout(GUIFrame)
+        layout1.setColumnStretch(0, 1)
+        layout1.setColumnStretch(1, 7)
+        layout1.addWidget(self.MDI, 0, 1, 1, 1)
+        layout1.addWidget(self.GUIVIZ, 0, 0, 1, 1)
+        self.tabVIZ.setLayout(layout1)
+        #--------------------------------
         
         
     def AddCanvas(self, i, toolbar = 1):
@@ -688,17 +1009,17 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.externalData = []
         parentObject = self.tabExternalDataChild
         parentObject.clear()
-    
-    
+        
+        
 
         params = self.ReadParameters(f)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
-        
+
         params = self.ReadParametersSet(f, 2)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, params["data"], params["title"])
-        
+      
         timedData = self.ReadTimeTable(f)
         self.externalData.append(timedData)
         self.CreateInputTab(parentObject, [timedData], timedData["title"])
@@ -707,9 +1028,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #consist = setOfParams["data"] + [timedData]
         #self.CreateInputTab(parentObject, consist, "together")
         
-                        
+
         #heap = self.ReadHeap(f, 335)
         #self.externalData.append(heap)
+
         
         
         f.close()
@@ -1472,7 +1794,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       return data
  
 
-    def SaveInputIDS(self):
+    def SaveInputIDS(self,nameSaveSetups):
       # Create input ids
       pulseText = self.lineInputPulse.text()
       runText = self.lineInputRun.text()
@@ -1684,6 +2006,15 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
       pfp1.put()
       
+      
+      dat1 = imas_obj1.dataset_description
+      dat1.ids_properties.homogeneous_time = 1
+      dat1.time.resize(1)
+      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
+      dat1.simulation.workflow = nameSaveSetups
+      dat1.put()
+      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
+     
       imas_obj1.close()
 
 
@@ -1708,8 +2039,6 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
           shutil.rmtree(new_imp)
         shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
-        self.SaveInputIDS()
-        
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
         tar = tarfile.open(tarname, "w:gz")
@@ -1721,37 +2050,46 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         tar.close()
         print(tarname+' saved')
 
+        self.SaveInputIDS(tarname)
+
+ 
     def PlotOutput(self):
       
-        pulse = int(self.textPulse.toPlainText(), 10)
-        run = int(self.textRun.toPlainText(), 10)
-        user = self.textUser.toPlainText()
-        print('selected pulse = ', pulse)
-        print('selected run = ', run)
+        self.pulseout = int(self.textPulse.toPlainText(), 10)
+        self.runout = int(self.textRun.toPlainText(), 10)
+        self.userout = self.textUser.toPlainText()
+        self.baseout = self.textBase.toPlainText()
+        print('selected pulse = ', self.pulseout)
+        print('selected run = ', self.runout)
+        print('selected base = ', self.baseout)
 
         
-        imas_obj1 = imas.ids(pulse, run)
-        imas_obj1.open_env(user, 'test', '3')
+        imas_obj1 = imas.ids(self.pulseout, self.runout)
+        imas_obj1.open_env(self.userout, self.baseout, '3')
+
+
+
+
         
-        sum1 = imas_obj1.summary
-        cp1 = imas_obj1.core_profiles
-        eq1 = imas_obj1.equilibrium
+        self.sum1 = imas_obj1.summary
+        self.cp1 = imas_obj1.core_profiles
+        self.eq1 = imas_obj1.equilibrium
         
-        sum1.get()
-        cp1.get()
-        eq1.get()
+        self.sum1.get()
+        self.cp1.get()
+        self.eq1.get()
         
         imas_obj1.close()
         
         
-        t1 = sum1.time
-        ipl1 = sum1.global_quantities.ip.value
-        li_3 = sum1.global_quantities.li.value
-        beta_pol = sum1.global_quantities.beta_pol.value
-        n_e = sum1.volume_average.n_e.value
-        t_e = sum1.volume_average.t_e.value
-        t_i = sum1.volume_average.t_i_average.value
-        z_eff = sum1.volume_average.zeff.value
+        t1 = self.sum1.time
+        ipl1 = self.sum1.global_quantities.ip.value
+        li_3 = self.sum1.global_quantities.li.value
+        beta_pol = self.sum1.global_quantities.beta_pol.value
+        n_e = self.sum1.volume_average.n_e.value
+        t_e = self.sum1.volume_average.t_e.value
+        t_i = self.sum1.volume_average.t_i_average.value
+        z_eff = self.sum1.volume_average.zeff.value
 
         #li_3 = eq1.time_slice[:].global_quantities.li_3;
 
@@ -1761,12 +2099,20 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.outpGraph[2].Plot(t1, t_e, 'T_e, eV')
         self.outpGraph[3].Plot(t1, t_i, 'T_i, eV')
         self.outpGraph[4].Plot(t1, li_3, 'li_3')
+        
+
+        #if not self.EQUIL_win:
+        self.EQUIL_win = Second_window(self.pulseout,self.runout,self.userout,self.baseout, self.sum1, self.cp1, self.eq1)
+
+        self.EQUIL_win.show()
 
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)  # New instance QApplication
-    window = ExampleApp(app)  # Create instance of ExampleApp
+    QVizGlobalOperations.checkEnvSettings()
+    QVizPreferences().build()
+    window = ExampleApp()  # Create instance of ExampleApp
     window.show() 
     sys.exit(app.exec_())  # Start application
 
