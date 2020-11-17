@@ -443,9 +443,10 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         plt.cla()
 
         plt.plot (self.limiterx, self.limitery,'bo', linewidth=3,  label='equilibrium')
-        plt.plot(self.r_x[a],self.z_x[a],'rx')
-        #plt.plot (self.gran_z[a],self.gran_r[a],'m')
-        plt.plot (self.gran_r[a],self.gran_z[a],'m')
+        if self.r_x[a] != 0.0:
+          plt.plot(self.r_x[a],self.z_x[a],'rx')
+          #plt.plot (self.gran_z[a],self.gran_r[a],'m')
+          plt.plot (self.gran_r[a],self.gran_z[a],'m')
         #psi_sep_ax=plt.contour(self.axx, self.axy, self.psi2d_t[a], [self.psi_sep/(2*math.pi)])
         #plt.plot (factx[0], facty[0], 'ro', linewidth=2)             #NE RABOTAET ESHE
         psi_ax = plt.contourf(self.axx,self.axy,self.psi2d_t[a],20)
