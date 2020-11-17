@@ -51,8 +51,9 @@ import viz_plug
 #import QtVIZ_GUI
 
 
-'''
+
 sys.path.append((os.environ['VIZ_HOME']))
+'''
 #import QtVIZ_GUI
 from imasviz.Viz_API import Viz_API
 
