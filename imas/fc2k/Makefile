@@ -8,7 +8,7 @@ pyworkspace = ../python_wf/actors
 
 usepy = -pyworkspace $(pyworkspace)
 usekep = -nokepler
-usekep = ""
+#usekep = ""
 
 
 all: $(dina_actors) $(astra_actors)
