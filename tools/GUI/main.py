@@ -46,30 +46,48 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetI
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
 
+#from viz_plug import GUIFrame, QVizStartWindow, QVizMDI, QVizMainWindow
+import viz_plug
+#import QtVIZ_GUI
 
-#from PyQt5.QtWidgets import QMdiSubWindow
 
+'''
 sys.path.append((os.environ['VIZ_HOME']))
-
+#import QtVIZ_GUI
 from imasviz.Viz_API import Viz_API
-from imasviz.VizUtils import QVizGlobalOperations, QVizGlobalValues
 
+from imasviz.VizUtils import QVizGlobalOperations, QVizGlobalValues
+'''
+'''
 from imasviz.VizDataSource.QVizDataSourceFactory import QVizDataSourceFactory
 
 from imasviz.VizGUI.VizGuiCustomization import QVizDefault
 from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
+'''
+'''
 from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
                               QVizGlobalOperations, QVizLogger)
-from imasviz.VizGUI.VizWidgets.QVizAvailableIDSBrowserWidget import QVizAvailableIDSBrowserWidget
-from imasviz.VizGUI.VizGUICommands.VizMenusManagement.QVizSignalHandling \
-    import QVizSignalHandling
+
+
+from imasviz.VizGUI.VizGuiCustomization import QVizDefault
+from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
+'''
+from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
+                              QVizGlobalOperations, QVizLogger)
+'''
+from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
+'''
+'''
+from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
+#from imasviz.VizGUI.VizWidgets.QVizAvailableIDSBrowserWidget import QVizAvailableIDSBrowserWidget
+from imasviz.VizGUI.VizGUICommands.VizMenusManagement.QVizSignalHandling import QVizSignalHandling
   #----------------------------------------------
 from imasviz.VizPlugins.VizPlugin import VizPlugin
 
 # Project python modules
 from imasviz.VizPlugins.viz_equi.ids_read_multiprocess import \
     ids_read_multiprocess
-
+'''
 
 #--------------------------END NEW IMPORT
 
@@ -95,6 +113,7 @@ class Graph():
     ax.set_ylabel(name)
     self.canvas.draw()
 #-----------NEW CLASSes
+
 class QVizMDI(QMdiArea):
     """Class for Multiple Document Interface (MDI) area.
     """
@@ -104,7 +123,7 @@ class QVizMDI(QMdiArea):
         self.setWindowTitle("MDI")
         self.setObjectName("MDI")
 
-
+'''
 
 class GUIFrame(QTabWidget):
     def __init__(self, parent):
@@ -120,8 +139,8 @@ class GUIFrame(QTabWidget):
         self.tabOne()
         self.tabTwo()
 
-        title = "IMAS_VIZ (version " + str(QVizGlobalValues.IMAS_VIZ_VERSION) + ")"
-        self.setWindowTitle(title)
+        #title = "IMAS_VIZ (version " + str(QVizGlobalValues.IMAS_VIZ_VERSION) + ")"
+        #self.setWindowTitle(title)
 
         self.mainMenuController = QVizMainMenuController(parent)
         self.contextMenu = None
@@ -165,8 +184,8 @@ class GUIFrame(QTabWidget):
         self.runNumber.setToolTip("Run case identifier.")
         vboxLayout.addRow('Run number', self.runNumber)
 
-        self.AvailableIDSBrowserWidget = QVizAvailableIDSBrowserWidget(parent=self)
-        self.AvailableIDSBrowserWidget.onItemDoubleClick.connect(self.updateIDSparam)
+        self.IMASdbBrowserWidget = QVizIMASdbBrowserWidget(parent=self)
+        self.IMASdbBrowserWidget.onItemDoubleClick.connect(self.updateIDSparam)
         self.userName.editingFinished.connect(self.onUserNameEditFinished)
 
         button_open1 = QPushButton('Open', self)
@@ -175,7 +194,7 @@ class GUIFrame(QTabWidget):
         button_open1.clicked.connect(self.OpenDataSourceFromTab1)
 
         layout.addLayout(vboxLayout)
-        layout.addWidget(self.AvailableIDSBrowserWidget)
+        layout.addWidget(self.IMASdbBrowserWidget)
 
         vboxLayout2 = QVBoxLayout()
         vboxLayout2.addWidget(button_open1)
@@ -221,10 +240,10 @@ class GUIFrame(QTabWidget):
     def updateIDSparam(self):
         """Update IDS parameters widgets.
         """
-        self.userName.setText(self.AvailableIDSBrowserWidget.getActiveUsername())
-        self.imasDbName.setText(self.AvailableIDSBrowserWidget.getActiveDatabase())
-        self.shotNumber.setText(self.AvailableIDSBrowserWidget.getActiveShot())
-        self.runNumber.setText(self.AvailableIDSBrowserWidget.getActiveRun())
+        self.userName.setText(self.IMASdbBrowserWidget.getActiveUsername())
+        self.imasDbName.setText(self.IMASdbBrowserWidget.getActiveDatabase())
+        self.shotNumber.setText(self.IMASdbBrowserWidget.getActiveShot())
+        self.runNumber.setText(self.IMASdbBrowserWidget.getActiveRun())
 
     def onUserNameEditFinished(self):
         self.AvailableIDSBrowserWidget.addContentsForUsername(self.userName.text())
@@ -326,23 +345,32 @@ class GUIFrame(QTabWidget):
     def getMDI(self):
         """ Get MDI area through the root IMASViz main window.
         """
-        if self.window().objectName() == "IMASViz root window":
-            return self.window().getMDI()
+        if self.tabVIZ().objectName() == "tabVIZ":
+            return self.tabVIZ().getMDI()
         return None
 
 #-------------END NEW CLASSes
  
-
+'''
 
 #--------------------------------------------------------------------------_END_
-
-
-
-class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
+        
+        
+        
+        
+        
+        
+        
+class ExampleApp(QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(ExampleApp, self).__init__()
+        #self.MDI = QVizMDI(self)
+        #self.GUIVIZ = GUIFrame(self)
+        self.setObjectName("IMASViz root window")
         self.MDI = QVizMDI(self)
-        self.GUIVIZ = GUIFrame(self)
+        self.startWindow = viz_plug.QVizStartWindow(self)
+        #self.viz_plug.QVizStartWindow.setStatusBar()
+        #self.GUIVIZ = viz_plug.QVizMainWindow(self)
         self.EQUIL_win = None
         #self.setupUi(self)  # Initialise design
         #self.initUi()      MAYBE DELETE
@@ -352,13 +380,9 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.setupUi()  # Initialise design
         #self.resize(width*1.0, height*1.0)
         self.showMaximized()
-        
-    #--------------------
-    def getMDI(self):
-      if self.MDI != None:
-          return self.MDI
-      return None
-    #-------------------------------
+        #-------------------------------------------------testing--------------------------------
+
+
     def initTableOfParameters(self, table, headers):
         nCol = len(headers)
         table.setRowCount(nCol)
@@ -371,6 +395,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         super().setupUi(self)
         
         self.setWindowTitle('DINA GUI')
+        self.setObjectName("DINA-VIZ GUI")
                 
         
         self.directoryLoad = os.path.normpath(os.getcwd() + '/../../machines/iter/')
@@ -567,12 +592,18 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         
         #---------------new
-        layout1 = QGridLayout()
+        centralWidget = QWidget(self)
+        ###layout1 = QVBoxLayout()
+        layout1 = QGridLayout(centralWidget)
         #layout1.addLayout(GUIFrame)
         layout1.setColumnStretch(0, 1)
         layout1.setColumnStretch(1, 7)
+        layout1.addWidget(self.startWindow, 0, 0, 1, 1)
         layout1.addWidget(self.MDI, 0, 1, 1, 1)
-        layout1.addWidget(self.GUIVIZ, 0, 0, 1, 1)
+        #self.setCentralWidget(centralWidget)
+        QVizGlobalOperations.checkEnvSettings()
+        QVizPreferences().build()
+        #layout1.addWidget(self.GUIVIZ)
         self.tabVIZ.setLayout(layout1)
         #--------------------------------
         
@@ -1012,7 +1043,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.externalData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
 
-        params = self.ReadParametersSet(f, 3)
+        params = self.ReadParametersSet(f, 2)
         self.externalData.append(params)
         self.CreateInputTab(parentObject, params["data"], params["title"])
       
@@ -1790,7 +1821,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       return data
  
 
-    def SaveInputIDS(self,nameSaveSetups):
+    def SaveInputIDS(self):
       # Create input ids
       pulseText = self.lineInputPulse.text()
       runText = self.lineInputRun.text()
@@ -2002,15 +2033,6 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
       
       pfp1.put()
       
-      
-      dat1 = imas_obj1.dataset_description
-      dat1.ids_properties.homogeneous_time = 1
-      dat1.time.resize(1)
-      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
-      dat1.simulation.workflow = nameSaveSetups
-      dat1.put()
-      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
-     
       imas_obj1.close()
 
 
@@ -2035,6 +2057,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
           shutil.rmtree(new_imp)
         shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
+        self.SaveInputIDS()
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
         tar = tarfile.open(tarname, "w:gz")
@@ -2046,9 +2069,8 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         tar.close()
         print(tarname+' saved')
 
-        self.SaveInputIDS(tarname)
-
  
+
     def PlotOutput(self):
       
         self.pulseout = int(self.textPulse.toPlainText(), 10)
@@ -2098,17 +2120,24 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
 
         #if not self.EQUIL_win:
+        #QVizGlobalOperations.checkEnvSettings()
+        #QVizPreferences().build()
         self.EQUIL_win = Second_window(self.pulseout,self.runout,self.userout,self.baseout, self.sum1, self.cp1, self.eq1)
-
         self.EQUIL_win.show()
-
+    #--------------------
+    def getMDI(self):
+      if self.MDI != None:
+          return self.MDI
+      return None
+    #-------------------------------
 
 
 def main():
-    app = QtWidgets.QApplication(sys.argv)  # New instance QApplication
-    QVizGlobalOperations.checkEnvSettings()
-    QVizPreferences().build()
+    app = QApplication(sys.argv)  # New instance QApplication
+    #QVizGlobalOperations.checkEnvSettings()
+    #QVizPreferences().build()
     window = ExampleApp()  # Create instance of ExampleApp
+    window.setObjectName("IMASViz root window")
     window.show() 
     sys.exit(app.exec_())  # Start application
 

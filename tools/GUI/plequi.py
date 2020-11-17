@@ -196,8 +196,26 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.pmag=[]
         self.pbound=[]
         self.psi2d_t=[]
+
+        self.gran_r=[]
+        self.gran_z=[]
+        self.test_gran2d=[]
         self.axy=self.eq1.time_slice[25].profiles_2d[0].grid.dim1
         self.axx=self.eq1.time_slice[25].profiles_2d[0].grid.dim2
+        for i  in range(self.tor):
+          j0 = len(self.eq1.time_slice[i].boundary.outline.r)
+          for j in range(len(self.eq1.time_slice[i].boundary.outline.r)):
+              if self.eq1.time_slice[i].boundary.outline.r[j]==0.0:
+     
+                j0=j
+         
+                break
+          self.gran_r.append(self.eq1.time_slice[i].boundary.outline.r[0:j0-1])
+          self.gran_z.append(self.eq1.time_slice[i].boundary.outline.z[0:j0-1])
+          print(j0)
+        print(self.gran_r[25])
+        #print(j0)
+
         #print(len(eq1.time_slice[20].profiles_2d))
         #print('HERE!!!!!!')
         #for i  in range():
@@ -423,11 +441,18 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         #---------------EQUILIBRIUM-------------------------------------------------------
         ax9=plt.subplot (1, 3, 2)
         plt.cla()
-        plt.plot (self.limiterx, self.limitery,'bo', linewidth=3,  label='equilibrium(dummy data)')
+
+        plt.plot (self.limiterx, self.limitery,'bo', linewidth=3,  label='equilibrium')
         plt.plot(self.r_x[a],self.z_x[a],'rx')
+        #plt.plot (self.gran_z[a],self.gran_r[a],'m')
+        plt.plot (self.gran_r[a],self.gran_z[a],'m')
         #psi_sep_ax=plt.contour(self.axx, self.axy, self.psi2d_t[a], [self.psi_sep/(2*math.pi)])
         #plt.plot (factx[0], facty[0], 'ro', linewidth=2)             #NE RABOTAET ESHE
         psi_ax = plt.contourf(self.axx,self.axy,self.psi2d_t[a],20)
+        #psi_axxx = plt.contour(self.axx,self.axy,self.test_gran2d[a])
+        #psi_gran = plt.contour(self.gran_r,)
+        
+
         plt.title ('equil \n time %f sec.'%self.t2[a])
         #plt.gca().set_aspect('square', adjustable='box')
         plt.axis('scaled')
