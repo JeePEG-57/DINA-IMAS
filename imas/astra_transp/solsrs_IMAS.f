@@ -208,7 +208,7 @@
      .	(1.d0,0.3d0,YVpelH,0.8d0,1.d0,1.67d0,YDABL,YDDEP,ySpel,yswitch)
 		ySRS0	=VINT(ySpel,ROC)
 	
-	write(*,*) '---------ySpel', (ySpel(j),j=1,na1)
+!	write(*,*) '---------ySpel', (ySpel(j),j=1,na1)
 	
 	
 !	   write(*,*) 'ENCL,ENWM,Spel =',ENCL,ENWM,ySRS0

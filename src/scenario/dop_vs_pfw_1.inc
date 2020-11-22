@@ -212,11 +212,19 @@ c***********************************************
 	ygr(38,igr)=YGpuf
 	yy(38)='YGpuf'
 
-	ygr(39,igr)=YGpel
-	yy(39)='YGpel'
+!	ygr(39,igr)=YGpel
+!	yy(39)='YGpel'
 
-	ygr(40,igr)=YGhe
-	yy(40)='YGhe'
+!	ygr(40,igr)=YGhe
+1	yy(40)='YGhe'
+
+
+	ygr(39,igr)=pd0(n)
+	yy(39)='D bnd'
+
+	ygr(40,igr)=pd0(1)/pd0(n)
+	yy(40)='D ax bnd'
+
 
 c***********************************************
 !     	Ypn,YnHe,yGELM,yGLFS

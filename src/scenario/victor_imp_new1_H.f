@@ -2865,3 +2865,41 @@ c	read(*,*)
         return
         end
 
+     	subroutine vic_prof_chg2()
+	include 'double.inc'
+	include 'new_com.inc'
+
+	call vic_prof_chg2_c(
+     *  n,pd0_a,pt0_a,pd0_b,pt0_b,a,pd0,pt0,pne,tt)
+
+	return
+	end
+
+	subroutine vic_prof_chg2_c(
+     *  n,pd0_a,pt0_a,pd0_b,pt0_b,a,pd0,pt0,pne,tt)
+	include 'double.inc'
+
+	dimension a(*),pd0(*),pt0(*),pne(*)
+
+
+	alfa=1.d0
+	beta=1.d0
+      pd0_b=0.25*pd0_a
+      pt0_b=0.25*pt0_a
+
+	do i=1,n
+           psix=a(i)
+           pd0(i)=pd0_b+((1.-psix**alfa))**beta*(pd0_a-pd0_b)
+           pt0(i)=pt0_b+((1.-psix**alfa))**beta*(pt0_a-pt0_b)
+	   pne(i)=pd0(i)+pt0(i)
+	end do
+
+c	print*,'!!!alfa beta=',alfa,beta
+
+	print*,'!!!pd0 pd0_a pd0_b tt=',tt,pd0_a,pd0_b
+	print*,(pd0(i),i=1,n)
+	print*,'!!!pt0 pt0_a pt0_b tt=',tt,pt0_a,pt0_b
+	print*,(pt0(i),i=1,n)
+
+	return
+	end

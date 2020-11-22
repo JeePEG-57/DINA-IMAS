@@ -1351,7 +1351,7 @@ c**** pcchp calculations with regards Greenwald limit
         call vic_dens_dt()
          if(k_dens_ext.eq.1.and.k_ener.eq.1)call dens_corr()
 c*** Input of Zeff waveform and ***
-        if(k_ener.eq.1)call vic_zeff_read()
+c!!!!!!        if(k_ener.eq.1)call vic_zeff_read()
 c$
 c*vic  	call shape_pf_iam() 
   
@@ -2066,6 +2066,8 @@ c----------------------------
 	if(k_ener.eq.1)then
 
       if(kcchp.eq.1)then      
+
+!      call vic_prof_chg2()
 
 	if(tt.gt.tt_h-500.)then
 	   call vic_prof_chg()
