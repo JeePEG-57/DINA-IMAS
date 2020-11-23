@@ -226,7 +226,9 @@ c
      .	yGELM,yGLFS
 
 	common /c_temp6/wdr_d,wdr_t,WEL,wio
+      common /c_teit_98/teit_98
 
+	character *70 apr2
 
 4010    format(6e12.3)
 
@@ -607,6 +609,39 @@ c#####           if(ntay.gt.31)tepr=(f_t/teoh**2+1./teit**2)**(-0.5)
 		if(ntay.le.30)tepr=teoh
         end if
 
+
+
+		if(key_t11.eq.2.or.key_t11.eq.3)then
+
+		if(r_lh_new.ge.1.d0.and.tt.gt.tt_rampup)then
+		k_r_lh_new=1
+		end if
+
+		if(k_r_lh_new.eq.1)then
+		tepr=teit_98
+		else
+!		tepr=teit_95
+        tepr=0.5d0*teit_98
+        end if
+
+        p_aux=(wde+wdq)
+
+		if(k_r_lh_new.eq.1.and.p_aux.le.1.d0)then
+!		tepr=teit_95
+        tepr=0.5d0*teit_98
+        end if
+
+
+        print*,' r_lh_new k_r_lh_new p_aux',
+     *  r_lh_new,k_r_lh_new,p_aux
+
+        print*,' teit_98 teit_95 tepr',
+     *  teit_98,teit_95,tepr
+
+        end if
+
+  		if(ntay.le.30)tepr=teoh
+      
 c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if(kpr.eq.1)print*,'ntay tt',tt,ntay
         if(kpr.eq.1)print*,'ppch',ppch
@@ -665,10 +700,61 @@ c###        zhib=zhib*tene_e/tepr
         zhib=0.5*(zhib0+zhib)
         end if
 
-        if(kpr.eq.1)print *,' alf_zhib zhib ==',alf_zhib,zhib
+        if(ntay.gt.1.and.k_ener.eq.1.and.key_t11.eq.2)then
+c!!!        zhib=zhib*(0.5+0.5*tene/tepr)
+
+c        zhib=zhib*(0.5+0.5*tene_e/tepr)
+        zhib=zhib*(0.5+0.5*tene/tepr)
+
+c###        zhib=zhib*tene_e/tepr
+
+        zhib=0.5*(zhib0+zhib)
+        end if
+        
+        if(ntay.gt.1.and.k_ener.eq.1.and.key_t11.eq.3)then
+c!!!        zhib=zhib*(0.5+0.5*tene/tepr)
+
+c        zhib=zhib*(0.5+0.5*tene_e/tepr)
+        zhib=zhib*(0.5+0.5*tene/tepr)
+
+c###        zhib=zhib*tene_e/tepr
+
+        zhib=0.5*(zhib0+zhib)
+        end if
+
+
+
+
+        print *,' ntay k_ener key_t11==',ntay, k_ener, key_t11
+        print *,' tene tepr zhib zhib0 ==',tene,tepr,zhib,zhib0
+
+
+        if(kpr.eq.1)print *,' i_en zhib ==',i_en,zhib
 
         if(kpr.eq.1)print *,' te_ax ti_ax  ==',te0(1),tq0(1)
         if(kpr.eq.1)print *,' p_dop p_oh ==',ptot-wdh,wdh
+
+
+
+
+         if(i_en.eq.1)then
+         open (unit=1,file='tau98.dat',form='formatted')
+          apr2='tt[s]	tau_e tau_95 tau_98'
+          write (1,*)apr2
+         end if
+         if(i_en.gt.1)then
+         open (unit=1,file='tau98.dat',access='append',form='formatted')
+         end if
+         
+         
+      write (1,*)tt*1.e-3,tene,teit_95,teit_98
+      close(1)
+   
+
+
+
+
+
 
 55      continue
         wznam=(Wde+Wdq+Wpe+wpq+wdh)

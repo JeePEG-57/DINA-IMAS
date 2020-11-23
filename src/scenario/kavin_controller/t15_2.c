@@ -1,3 +1,6 @@
+//! t15_2.c is the main subroutine to read the input 
+//! control_init.dat file
+
 #if 1
 
 # define t15_2_initialize t15_2_initialize_

@@ -18,6 +18,8 @@ real*8 :: YMU,YPsol,YPalp,Yalp,YSeng,YdNdt,YAIM,Ycnim,YPedPi &
      	&,Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi &
      	&,yGELM,yGLFS
 
+real*8 :: flux_d,flux_t
+
 
 ! Fixed parameters
 YPedPi=1.d0
@@ -64,7 +66,11 @@ yGLFS = 0.d0
     YGsol = (Dpflux + Tpflux)*1.0d-19
 
     if(YPsol.le.1.d-5)YPsol=1.d-5
-
+    flux_d=core_transport%model(1)%profiles_1d(1)%ion(1)%particles%flux(nrho)
+    flux_t=core_transport%model(1)%profiles_1d(1)%ion(2)%particles%flux(nrho)
+    
+     if(kpr.eq.1)print *,'SOLPS-IMAS: Dpflux Tpflux n=',flux_d,flux_t,nrho
+     
      			
      if(kpr.eq.1)print *,'SOLPS-IMAS: YGsol YPsol=',YGsol,YPsol
      			

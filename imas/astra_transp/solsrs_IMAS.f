@@ -165,9 +165,12 @@
 ! pellets only for fuelling
 		yGELM	= yALP*yPsol*yneped/1.5*(1.d3/yPped)	! New
 !!!		yGHFS	= max((yGELM+yGsol-yGsep-yGNBI),.0d0)
+
+
+      if(kpr.eq.1)print *,' yGELM= yL_OH=',yGELM,yL_OH
          
 		 yGHFS1=216.*54.
-         if(kpr.eq.1)print *,' yGHFS yGHFS1=',yGHFS,yGHFS1
+!         if(kpr.eq.1)print *,' yGHFS yGHFS1=',yGHFS,yGHFS1
          
 		if(yGHFS.gt.(216.*54.)) then
 		yGHFS=216.*54.
@@ -178,11 +181,17 @@
         end if
 		endif
 		yfHFS	= max((yGHFS/yNpelH),.0d0) 
+
+!         if(kpr.eq.1)print *,' yGHFS yNpelH=',yGHFS,yNpelH
+
 		yGLFS	= 0.d0
 		yfpel	= yfHFS	 
-!	write(*,*) 'yGELM,yGHFS,yGsol,yGsep,yfHS= ',
-!     .	yGELM,yGHFS,yGsol,yGsep,yfHFS
 	endif
+
+	write(*,*) 'ss--> yGELM,yGHFS,yGsol,yGsep,yfHS= ',
+     .	yGELM,yGHFS,yGsol,yGsep,yfHFS
+
+
 !============================================================================
 
 	if(jiter.eq.1) YGpel=0.
@@ -194,17 +203,23 @@
 !	call pelsrs(YAM,YVP,YVOL,YCOS0,YEFF,YDL,YDABL,YDDEP,YPELSRS)
 ! source from pellet
 	yswitch=-1.	!permanent ELM
-!	write(*,*) 'before pelsrs1_IMAS'
+!	if(kpr.eq.1)write(*,*) 'before pelsrs1_IMAS'
 	call pelsrs1_IMAS
      .	(1.d0,0.3d0,YVpelH,0.8d0,1.d0,1.67d0,YDABL,YDDEP,ySpel,yswitch)
 		ySRS0	=VINT(ySpel,ROC)
-!	write(*,*) 'ySpel', (ySpel(j),j=1,na1)
+	
+!	write(*,*) '---------ySpel', (ySpel(j),j=1,na1)
+	
+	
 !	   write(*,*) 'ENCL,ENWM,Spel =',ENCL,ENWM,ySRS0
 !	
 ! Source from the edge
-!	write(*,*) 'before neutex_imas'
+!	if(kpr.eq.1)write(*,*) 'before neutex_imas'
 	call neutex_imas
 !=========================
+
+      
+      
 	do j=1,na1 
 !	include 'fml/snneu'
 	include	'fml/svie'
@@ -225,15 +240,32 @@
 	do j=1,NA1
 		ySsep(j)	=ySsep(j)*NNCL
 	enddo
-!		write(*,*) 'before solpsz2'
+	
+!	if(kpr.eq.1)write(*,*) 'before solpsz2'
 
+ !     YGpuf=100.
+      if(kpr.eq.1)then
+      print *,' YGpuf YGHFS =',YGpuf,YGHFS
+      print *,' yGELM yGLFS =',yGELM,yGLFS
+       print *,' NNCL =',NNCL
+ 	
+!	write(*,*) '---------ySsep', (ySsep(j),j=1,na1)
+     
+!	write(*,*) '---------NN', (NN(j),j=1,na1)
 
+!	write(*,*) '---------NE', (NE(j),j=1,na1)
+      end if
+      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	call 	solpsz2(
+	call 	solpsz3(
+!	call 	solpsz2(
      .			YMU,YPsol,YPalp,YSeng,YdNdt,YAim,Ycnim,YPedPi,
      .			YGdt,YGpuf,YGHFS,YGhe,YGsol,YGsep,
      .			Ypn,Yqpk,Yndt,YnHe,Yne,YTe,YTi
      .		,yGELM,yGLFS)
+
+      if(kpr.eq.1)print *,' Yndt =',Yndt
+
 !          new
          ENCL=max(ENCL,YTi)
          ENWM=ENCL

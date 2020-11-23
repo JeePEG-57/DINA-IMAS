@@ -1,10 +1,13 @@
+!> transp20 is the main subroutine to read the input
+!! external_data.dat file
+
 	subroutine transp20(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !     *  te0,tq0,pd0,pt0,ph0,pne,q,zeff,dm0,
 !------------------------------------outputs
      *  c_output1,c_output2,c_output3,
-     *  tt_in)
+     *  tt_in,pcch_xx,n_xx)
 
 cDEC$ ATTRIBUTES DLLEXPORT::  transp20
 
@@ -18,13 +21,14 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp20
 
 	dimension pf_xx(kint),gaps_xx(kint),pf_turns_xx(kint)
 
-	dimension vchopper_x2(kint),sd0_p(kint),sd0_n(kint)
+	dimension vchopper_x2(kint)
 
 	character *20 apr,filename
 
 
       common /c_GHFS/GHFS
         common /c_src1/dif_coef
+        common /c_src2/src1,src2,sd0_p(npo),sd0_n(npo)
 
       common /cc_tran2/pd_b,pt_b
       
@@ -32,34 +36,45 @@ cDEC$ ATTRIBUTES DLLEXPORT::  transp20
 
 !------------------------------------inputs
 
-
+      tt0=tt
       tt=tt_in*1.d3
+      tay=tt-tt0
+
 
 
       if(kpr.eq.1)print *,' tt_in tt=',tt_in,tt
-      if(kpr.eq.1)print *,' pd_b,pt_b=',pd_b,pt_b
+  !    if(kpr.eq.1)print *,' pd_b,pt_b=',pd_b,pt_b
 
 
       i_en=i_en+1
       if(i_en.eq.1)then
-!        open (unit=1,file='kpr.dat',form='formatted')
-        open (unit=1,file='external_data.dat',form='formatted')
-        read (1,*)
-        read (1,*)kpr
-!        close ( unit=1)       
-c---  we think ....???
-	ARG=1.
+      
+ 	ARG=1.
 	pi=4.*atan(ARG)
 !      call read_data2()
 
       nij=1
 
-!        open (unit=1,file='tay_time.dat',form='formatted')
+!        open (unit=1,file='kpr.dat',form='formatted')
+        open (unit=1,file='external_data.dat',form='formatted')
         read (1,*)
-        read (1,*)n,tay,tt_end, GHFS,d_GHFS,tay1,dif_coef
+        read (1,*)kpr
+        read (1,*)
+        read (1,*)p_key,d_GHFS,tay1
         
+        key_bound=p_key
+        
+
+        read (1,*)
+        read (1,*)alf_bound,d_GHFS_uu,tay1_uu
+
+        read (1,*)
+        read (1,*)
+      
 !        close ( unit=1)       
 
+      dif_coef=1.
+      tay=5.
       eu=160.
       rout=620.
       ktp=1
@@ -69,13 +84,17 @@ c---  we think ....???
       id=1
       end if
 
-       if(kpr.eq.1)print *,' CALL TRANSP20'
-
-      
+ 
+         
+       if(kpr.eq.1)print *,' TRANSP20 key_bound alf_bound ==',
+     *  key_bound,alf_bound
+   
       
       filename='metric.dat'
 
+      n=n_xx
       nn2=n
+      if(kpr.eq.1)print *,' CALL TRANSP20 n==',n
 
       do i=1,nn2
       sd0_p(i)=c_input1(i)
@@ -108,12 +127,25 @@ c-------
            read (41,*,err=2000,end=2000)(spo(i),i=1,nn2)
 
            close (41)
-           
+      
+      if(i_en.eq.1)then
+      pd_b=pd0(n)
+      pt_b=pt0(n)
+      end if
+       
+
+  
+
         if(i_en.gt.1)then
         do i=1,nn2
         pd0(i)=pdn(i)
         pt0(i)=ptn(i)
 	  end do
+	  
+          if(i_en.gt.1.and.key_bound.eq.1)then
+            pd_b=alf_bound*pd0(1)
+            pt_b=alf_bound*pt0(1)
+          end if
 
        end if
 
@@ -164,7 +196,7 @@ c-------
       call den_read()
 
       if(i_en.eq.1)then
-      read (1,*)
+!      read (1,*)
       close (unit=1)
       end if
       
@@ -176,7 +208,8 @@ c-------
       pd0(n)=pd_b
       pt0(n)=pt_b
 
-      print *,' pd_b pt_b',pd_b,pt_b
+      if(kpr.eq.1)print *,' pd_a pt_a',pd0(1),pt0(1)
+      if(kpr.eq.1)print *,' pd_b pt_b',pd_b,pt_b
 
 
       apr='pdn-' 
@@ -205,6 +238,15 @@ c-------
       st0(i)=sd0(i)
 	end do
 
+      do i=1,5
+      sd0(i)=sd0(6)
+      st0(i)=sd0(i)
+	end do
+
+       apr='sd0_p-' 
+      if(kpr.eq.1)print 71,apr,(sd0_p(i),i=1,nn2) 
+       apr='sd0_n-' 
+      if(kpr.eq.1)print 71,apr,(sd0_n(i),i=1,nn2) 
 
       apr='sd0-' 
       if(kpr.eq.1)print 71,apr,(sd0(i),i=1,nn2) 
@@ -243,7 +285,7 @@ c-------
 
 !        tt=tt+tay
         ntay=ntay+1
-
+         pcch_xx=pcch
  !     stop      
 
 	return
@@ -339,9 +381,10 @@ c
      */igr/ygr(iy,ny),tgr(ny),igr
 	common
      *	/ng_igr/ng
+        common /c_src2/src1,src2,sd0_p(npo),st0_n(npo)
 
 	character *10 mgr(iy),mt(iy)
-	character *70 apr
+	character *70 apr,apr2
 	character *18 yy(iy)
 	character *50 tmp
 
@@ -362,16 +405,35 @@ c       -------ne average-----
 	yy(2)='N prog'
 c
 c       -----te average-----
-	ygr(3,igr)=src
-	yy(3)=' S0'
+	ygr(3,igr)=src1
+	yy(3)=' S pel'
 	
 	if(kpr.eq.1)print *,' S0==',src
 	
 c       -----te average-----
-	ygr(4,igr)=GHFS
-	yy(4)=' GHFS'
+	ygr(4,igr)=src2
+	yy(4)=' S puff'
 
       ng=4
+      
+      i_en3=i_en3+1
+      
+         if(i_en3.eq.1)then
+         open (unit=1,file='source_ext.dat',form='formatted')
+         apr2='tt[s]	S_pel[19m-3s-1]		S_puf[19m-3s-1]'
+         
+         write (1,*)apr2
+         end if
+         if(i_en3.gt.1)then
+         open (unit=1,file='source_ext.dat',
+     *  access='append',form='formatted')
+         end if
+         
+      write (1,*)tt*1.e-3,src1,src2
+      
+      close(1)
+
+	 
 
 
 	tmp='names_md5'

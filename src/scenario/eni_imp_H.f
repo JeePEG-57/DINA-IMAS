@@ -739,7 +739,7 @@ c        higo=zhib/tego*eu*eu
 c**********************************************************
 	xig=higo
 
-	if(key_t11.eq.0)then
+	if(key_t11.eq.0.or.key_t11.eq.2)then
 	x_e(i)=0.1*xig
 	dxe(i)=xig*gra2(i)
 	end if
@@ -752,7 +752,7 @@ c
         x11=x11*anom_e
 c
 c  in m2/s
-	if(key_t11.eq.1)then
+	if(key_t11.eq.1.or.key_t11.eq.3)then
 c	x_e(i)=0.1*x11+3.*x_e(i)
 c	dxe(i)=x11*gra2(i)+3.*dxe(i)
 	x_e(i)=0.1*x11
@@ -775,6 +775,7 @@ c-------------
 
 c!!!        dxq(i)=2.*dxe(i)
 
+
 c=====================================================
         if (k_Bohm .eq. 1) then
 
@@ -784,8 +785,17 @@ C
                 dxq(i) = 10. * xi_bgb(i) * gra2(i) + dxq(i)
 ! in \  cm^2/ms^M
 ccc         dxq(i) = 10. * xi_bgb(i) * gra2(i)
+
+  	if(key_t11.eq.3)then
+               dxe(i) =  dxe(i)*zhib
+               dxq(i) =  dxq(i)*zhib
+      end if
              else 
                 dxq(i)=2.*dxe(i)
+  	       if(key_t11.eq.3)then
+               dxe(i) =  dxe(i)*zhib
+               dxq(i) =  dxq(i)*zhib
+              end if
         end if
 C
 C =====================================================================^M
@@ -793,7 +803,7 @@ C                               The     end of Bohm/gyroBohm patch ^M
 C =====================================================================^M
 
 
-
+      
 c-----------------
 
     1 CONTINUE
@@ -838,7 +848,8 @@ c      read(*,*)
        dxe(i)=alf_bar*dxe(i)
        dxq(i)=alf_bar*dxq(i)
 	end if
-	
+
+
        dxe(i)=dabs(dxe(i))
        dxq(i)=dabs(dxq(i))
 
@@ -873,7 +884,7 @@ c     *    ntay,key_t11,key_lh,key_h_to_l
 c        read (*,*)
 
 c&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-	if(key_t11.eq.0)return
+	if(key_t11.eq.0.or.key_t11.eq.2)return
         if(key_lh.eq.0.or.key_h_to_l.eq.1)return
 c&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
@@ -981,6 +992,10 @@ ccccccc        coef_core=1.45
 	end if
 	end if
 
+  	if(key_t11.eq.3)then
+               dxe(i) =  dxe(i)*zhib
+               dxq(i) =  dxq(i)*zhib
+      end if
 
 	end do
 c
@@ -1006,7 +1021,7 @@ c
       if(kpr.eq.1)print 71,apr,(dxq(i),i=1,n)
 
 	do i=2,n
-
+      
        dxe(i)=dabs(dxe(i))
        dxq(i)=dabs(dxq(i))
 

@@ -70,6 +70,8 @@ real(ids_real) ::time_eq
 
      common /c_imas_time_eq/time_eq
       common /c_time_eq/time_eq_c
+      
+      
 real(ids_real) ::time_eq_c
 
 ! DINA parameters
@@ -94,16 +96,16 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
     
     real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,parea=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
-  & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0 &
+  & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0,psi_sep &
   & ,rmajor,rminor,elong,tri
   
-    real(ids_real) :: rsep2,zsep2, rsep2_r,zsep2_r, dsep
+    real(ids_real) :: rsep,zsep, rsep2,zsep2, rsep2_r,zsep2_r, dsep
   
-    real(ids_real) :: betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,wfus,emag
+    real(ids_real) :: betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,teit_98,wfus,emag
 
     real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
-    real(ids_real) :: ai(npo),te0(npo),tq0(npo),pne(npo),tok1(npo),q(npo)
+    real(ids_real) :: ai(npo),psi_1D(npo),te0(npo),tq0(npo),pne(npo),tok1(npo),q(npo)
 
     real(ids_real) :: pd0(npo),pt0(npo),sigk(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo),press(npo),qe0(npo),qq0(npo)
     
@@ -114,6 +116,8 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: pptab(npo),fptab(npo)
 
     real(ids_real) :: Pohm,wdop,w_alfa,wtor, w_Be,w_W,w_Ar,w_Ne, w_imp,w_rad,w_heat
+    
+    real(ids_real) :: p_sep,greenwald,gfus,qtep
     
     real(ids_real),parameter :: pi = 3.14159265358979323846
 
@@ -131,6 +135,8 @@ real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
 real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
+ real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
+ 
 	character *20 apr
 
 
@@ -437,8 +443,6 @@ n=n1
       apr='--tq0-' 
       print 71,apr,(tq0(i),i=1,n1) 
 
-      flush(6)
-      
 ! if (associated(bndcond_in%profiles_1d)) then
 !     write(*,*) 'dina_imas : boundary conditions are found'
 !  te0(n1) = bndcond_in%profiles_1d(1)%electrons%energy%boundary_condition%value(1)
@@ -469,11 +473,16 @@ end if
  pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)*1.d-19
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)*1.d-19
  pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)*1.d-19
-      apr='--pne-' 
+ 
+ pne_cop(1:n1) = pne(1:n1) 
+ pd0_cop(1:n1) = pd0(1:n1) 
+ pt0_cop(1:n1) = pt0(1:n1) 
+ 
+      apr='--&pne-' 
       print 71,apr,(pne(i),i=1,n1) 
-      apr='--pd0-' 
+      apr='--&pd0-' 
       print 71,apr,(pd0(i),i=1,n1) 
-      apr='--pt0-' 
+      apr='--&pt0-' 
       print 71,apr,(pt0(i),i=1,n1) 
 !Transp3
  jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)*1.d-7
@@ -526,20 +535,22 @@ write(*,*) '!!!dina0 enter'
      &	output_1,output_2,output_3,output_4,ng)
 
 
-
+        !print *,' teit_98==',teit_98
+        
 
 write(*,*) '!!!dina_outp enter'
 	call dina_outp(n,  &
      & tpl,uli,v,parea,psi_ax,rmag,zmag,  &
      & q_ax,q_95,rs0,bt0,wen2,tt,  &
-     & ai,te0,tq0,pne,tok1,q,  &
-     & x,y,psi,psi_bnd,curr_d,  &
+     & ai,psi_1D,te0,tq0,pne,tok1,q,  &
+     & x,y,psi,psi_bnd,psi_sep,curr_d,  &
      & xbound,ybound,rmajor,rminor,elong,tri, &
      & pd0,pt0,sigk,jbut,aj0,ajae,zeff,press,qe0,qq0, &
-     & betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,wfus,emag, &
+     & betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,teit_98,wfus,emag, &
      & vchopper,pf,tcam, &
      & pptab,fptab, &
-     & rsep2,zsep2, rsep2_r,zsep2_r, dsep)
+     & rsep,zsep, rsep2,zsep2, rsep2_r,zsep2_r, dsep, &
+     & p_sep,greenwald,gfus,qtep)
      
 
         call dina_wr_output(Pohm, Wdop, w_alfa, wtor, w_Be, w_W, w_Ar, w_Ne, w_imp, w_rad, w_heat)
@@ -655,7 +666,7 @@ call ids_copy(pf_passive0,pf_passive)
 
 
 
-print *,' nact, npfa=',nact,npfa
+print *,' nact=',nact
 ! do i=1,npfa
 ! 
 !         allocate(pf_active%coil(i)%current%data(1))
@@ -670,25 +681,20 @@ print *,' nact, npfa=',nact,npfa
 
 pf_active%ids_properties%homogeneous_time = 1
 
-!print *, 'coils size ', size(pf_active%coil)
-!print *, 'coils size ', size(pf_active%coil(1)%current%data)
-
 do i=1,npfa
 
     pf_active%coil(i)%current%data(1) = pf(i)
 !    pf_active%coil(i)%current%time(1) = dina_time
 
-
     pf_active%coil(i)%voltage%data(1) = vchopper(i)
 !    pf_active%coil(i)%voltage%time(1) = dina_time
-
 
 end do
 
 pf_active%time(1) = dina_time
 
 
-print *,' npass,npfp=',npass,npfp
+print *,' npass=',npass
     
 ! do i=1,npfp
 !     allocate(pf_passive%loop(i)%current(1))
@@ -720,26 +726,41 @@ flush(6)
 
 
 ! Allocations summary
-allocate(summary%time(TimeSteps))
+if(.NOT.associated(summary%time)) then 
+  allocate(summary%time(TimeSteps))
+  print *,'dina_imas summary reallocation, loop_count = ', loop_count
+endif
 
-allocate(summary%global_quantities%ip%value(TimeSteps))
-allocate(summary%global_quantities%li%value(TimeSteps))
-allocate(summary%global_quantities%beta_pol%value(TimeSteps))
-allocate(summary%global_quantities%beta_tor%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%ip%value)) allocate(summary%global_quantities%ip%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%li%value)) allocate(summary%global_quantities%li%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%beta_pol%value)) allocate(summary%global_quantities%beta_pol%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%beta_tor%value)) allocate(summary%global_quantities%beta_tor%value(TimeSteps))
 
-allocate(summary%global_quantities%v_loop%value(TimeSteps))
-allocate(summary%global_quantities%tau_energy%value(TimeSteps))
-allocate(summary%volume_average%n_e%value(TimeSteps))
-allocate(summary%volume_average%n_i_total%value(TimeSteps))
-allocate(summary%volume_average%n_i%helium_4%value(TimeSteps))
-allocate(summary%volume_average%t_e%value(TimeSteps))
-allocate(summary%volume_average%t_i_average%value(TimeSteps))
-allocate(summary%volume_average%zeff%value(TimeSteps))
-allocate(summary%global_quantities%energy_thermal%value(TimeSteps))
-allocate(summary%global_quantities%energy_b_field_pol%value(TimeSteps))
-allocate(summary%fusion%power%value(TimeSteps))
-allocate(summary%local%magnetic_axis%position%r(TimeSteps))
-allocate(summary%local%magnetic_axis%position%z(TimeSteps))
+if(.NOT.associated(summary%global_quantities%v_loop%value)) allocate(summary%global_quantities%v_loop%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%tau_energy%value)) allocate(summary%global_quantities%tau_energy%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%tau_energy_98%value)) allocate(summary%global_quantities%tau_energy_98%value(TimeSteps))
+
+if(.NOT.associated(summary%volume_average%n_e%value)) allocate(summary%volume_average%n_e%value(TimeSteps))
+
+if(.NOT.associated(summary%volume_average%n_i_total%value)) allocate(summary%volume_average%n_i_total%value(TimeSteps))
+  
+if(.NOT.associated(summary%volume_average%n_i_total%value)) allocate(summary%volume_average%n_i_total%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%n_i%helium_4%value)) allocate(summary%volume_average%n_i%helium_4%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%t_e%value)) allocate(summary%volume_average%t_e%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%t_i_average%value)) allocate(summary%volume_average%t_i_average%value(TimeSteps))
+if(.NOT.associated(summary%volume_average%zeff%value)) allocate(summary%volume_average%zeff%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%energy_thermal%value)) allocate(summary%global_quantities%energy_thermal%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%energy_b_field_pol%value)) allocate(summary%global_quantities%energy_b_field_pol%value(TimeSteps))
+if(.NOT.associated(summary%fusion%power%value)) allocate(summary%fusion%power%value(TimeSteps))
+if(.NOT.associated(summary%local%magnetic_axis%position%r)) allocate(summary%local%magnetic_axis%position%r(TimeSteps))
+if(.NOT.associated(summary%local%magnetic_axis%position%z)) allocate(summary%local%magnetic_axis%position%z(TimeSteps))
+
+!if(.NOT.associated(summary%global_quantities%fusion_gain%value)) allocate(summary%global_quantities%fusion_gain%value(TimeSteps))
+if(.NOT.associated(summary%global_quantities%greenwald_fraction%value)) allocate(summary%global_quantities%greenwald_fraction%value(TimeSteps))
+!if(.NOT.associated(summary%global_quantities%power_loss%value)) allocate(summary%global_quantities%power_loss%value(TimeSteps))
+!if(.NOT.associated(summary%fusion%neutron_power_total%value)) allocate(summary%fusion%neutron_power_total%value(TimeSteps))
+
+
 
 ! Filling summary
 summary%ids_properties%homogeneous_time = 1
@@ -752,8 +773,16 @@ summary%global_quantities%beta_tor%value(CurTimeStep) = betat
 
 summary%global_quantities%v_loop%value(CurTimeStep) = vloop
 summary%global_quantities%tau_energy%value(CurTimeStep) = tene
+summary%global_quantities%tau_energy_98%value(CurTimeStep) = teit_98
 summary%volume_average%n_e%value(CurTimeStep) = pec
-summary%volume_average%n_i_total%value(CurTimeStep) = pic
+
+
+!summary%volume_average%n_i_total%value(CurTimeStep) = pic
+if(loop_count .le.2)then
+summary%volume_average%n_i_total%value(CurTimeStep) = 1.d0
+end if
+write(*,*) 'summary%volume_average%n_i_total%value... ',summary%volume_average%n_i_total%value(CurTimeStep)
+
 summary%volume_average%n_i%helium_4%value(CurTimeStep) = palf
 summary%volume_average%t_e%value(CurTimeStep) = tec
 summary%volume_average%t_i_average%value(CurTimeStep) = tqc
@@ -763,6 +792,12 @@ summary%global_quantities%energy_b_field_pol%value(CurTimeStep) = emag
 summary%fusion%power%value(CurTimeStep) = wfus
 summary%local%magnetic_axis%position%r(CurTimeStep) = rmag
 summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
+
+!summary%global_quantities%fusion_gain%value(CurTimeStep) = qtep
+summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
+!summary%global_quantities%power_loss%value(CurTimeStep) = p_sep
+!summary%fusion%neutron_power_total%value(CurTimeStep) = gfus
+
 
 
 
@@ -782,6 +817,7 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 
 
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(n))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%psi(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n))
 
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(n))
@@ -808,10 +844,11 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 
     equilibrium%ids_properties%homogeneous_time = 1
     equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n) = ai(1:n)
+    equilibrium%time_slice(CurTimeStep)%profiles_1d%psi(1:n) = psi_1D(1:n)
 
     equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(1:n) = press(1:n) ![Pa]
     equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = pptab(1:n)
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = fptab(1:n)
+    equilibrium%time_slice(CurTimeStep)%profiles_1d %f_df_dpsi(1:n) = fptab(1:n)
     
     
     equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
@@ -820,6 +857,8 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
 	equilibrium%time_slice(CurTimeStep)%global_quantities%area = parea ![m2]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%psi_axis= psi_ax ![Wb]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%psi_boundary = psi_bnd ![Wb]
+	equilibrium%time_slice(CurTimeStep)%boundary%psi = psi_bnd ![Wb]
+	equilibrium%time_slice(CurTimeStep)%boundary_separatrix%psi = psi_sep ! [Wb]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%r = rmag ![m]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%z = zmag ![m]
 	equilibrium%time_slice(CurTimeStep)%global_quantities%q_axis = q_ax
@@ -834,6 +873,9 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
         equilibrium%time_slice(CurTimeStep)%global_quantities%surface = ysbound_xx
         equilibrium%time_slice(CurTimeStep)%profiles_1d%surface(n) = ysbound_xx
 
+        equilibrium%time_slice(CurTimeStep)%boundary_separatrix%active_limiter_point%r = rsep
+        equilibrium%time_slice(CurTimeStep)%boundary_separatrix%active_limiter_point%z = zsep
+        
         allocate(equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1))
           equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1)%r = rsep2
           equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1)%z = zsep2
@@ -900,7 +942,6 @@ summary%local%magnetic_axis%position%z(CurTimeStep) = zmag
     
 ! Allocations core_profiles    
 
-! call ids_copy(core_profiles0,core_profiles)
 
 write(*,*) 'Allocate core_profiles... '
 
@@ -933,19 +974,55 @@ write(*,*) 'Allocate core_profiles... '
 
 
 write(*,*) 'Write core_profiles transp... '
+flush(6)
 ! Transp1
 allocate(core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(n))
 allocate(core_profiles%profiles_1d(CurTimeStep)%t_i_average(n))
  core_profiles%profiles_1d(CurTimeStep)%electrons%temperature(1:n) = te0(1:n)
  core_profiles%profiles_1d(CurTimeStep)%t_i_average(1:n) = tq0(1:n)
 
+write(*,*) 'Write core_profiles transp..1. '
+flush(6)
+
+
 !Transp2
 !Electrons
+if(.NOT.associated(core_profiles%profiles_1d(1)%electrons%density)) then
 allocate(core_profiles%profiles_1d(1)%electrons%density(n))
- core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)*1.d19
+end if
 
-      apr='++pne-' 
+write(*,*) 'Write core_profiles transp..2. '
+flush(6)
+
+if(tt .gt.1.62e9)then
+
+write(*,*) 'tt .gt.1.62 ',tt
+flush(6)
+! pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)*1.d-19
+ pne(1:n1) = pne_cop(1:n1)
+       apr='++00pne-' 
       print 71,apr,(pne(i),i=1,n) 
+flush(6)
+
+! pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)*1.d-19
+ pd0(1:n1) =  pd0_cop(1:n1) 
+       apr='++00pd0-' 
+      print 71,apr,(pd0(i),i=1,n) 
+flush(6)
+ !pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)*1.d-19   
+ pt0(1:n1) = pt0_cop(1:n1)   
+       apr='++00pt0-' 
+      print 71,apr,(pt0(i),i=1,n) 
+flush(6)
+end if
+write(*,*) 'Write core_profiles transp..3. '
+flush(6)
+ core_profiles%profiles_1d(1)%electrons%density(1:n) = pne(1:n)*1.d19
+flush(6)
+
+      apr='++00pne-' 
+      print 71,apr,(pne(i),i=1,n) 
+flush(6)
 
 
 !if (.not. allocated(core_profiles%profiles_1d(1)%ion)) then
@@ -958,13 +1035,12 @@ allocate(core_profiles%profiles_1d(1)%ion(1)%element(1))
  core_profiles%profiles_1d(1)%ion(1)%z_ion = 1
  core_profiles%profiles_1d(1)%ion(1)%element(1)%z_n = 1
 !core_profiles%profiles_1d(1)%ion(1)%label = 'D+'
-! if (.not. allocated(core_profiles%profiles_1d(1)%ion(1)%n_i)) then
+if (.not. associated(core_profiles%profiles_1d(1)%ion(1)%density)) then
 allocate(core_profiles%profiles_1d(1)%ion(1)%density(n))
-! end if
- core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)*1.d19
+end if
+core_profiles%profiles_1d(1)%ion(1)%density(1:n) = pd0(1:n)*1.d19
 
-
-      apr='++pd0-' 
+      apr='++00pd0-' 
       print 71,apr,(pd0(i),i=1,n) 
 
 
@@ -974,10 +1050,12 @@ allocate(core_profiles%profiles_1d(1)%ion(2)%element(1))
  core_profiles%profiles_1d(1)%ion(2)%z_ion = 1
  core_profiles%profiles_1d(1)%ion(2)%element(1)%z_n = 1
 !core_profiles%profiles_1d(1)%ion(2)%label = 'T+'
+if (.not. associated(core_profiles%profiles_1d(1)%ion(2)%density)) then
 allocate(core_profiles%profiles_1d(1)%ion(2)%density(n))
- core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)*1.d19
+end if
 
-      apr='++pt0-' 
+core_profiles%profiles_1d(1)%ion(2)%density(1:n) = pt0(1:n)*1.d19
+      apr='++00pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
 
 
@@ -1006,32 +1084,34 @@ write(*,*) 'Allocate and write core_sources...'
     allocate(core_sources%source(13))    
    
 isrc = 1
-allocate(core_sources%source(1)%profiles_1d(TimeSteps))
+  core_sources%source(isrc)%identifier%index = 2
+allocate(core_sources%source(isrc)%profiles_1d(TimeSteps))
 
-  core_sources%source(1)%profiles_1d(CurTimeStep)%time = tt
+  core_sources%source(isrc)%profiles_1d(CurTimeStep)%time = tt
   
-allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))      
-  core_sources%source(1)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
+allocate(core_sources%source(isrc)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))      
+  core_sources%source(isrc)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
 
-allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%electrons%energy(n))
-allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(n))
- core_sources%source(1)%profiles_1d(CurTimeStep)%electrons%energy(1:n) = qe0(1:n)
- core_sources%source(1)%profiles_1d(CurTimeStep)%total_ion_energy(1:n) = qq0(1:n)
+allocate(core_sources%source(isrc)%profiles_1d(CurTimeStep)%electrons%energy(n))
+allocate(core_sources%source(isrc)%profiles_1d(CurTimeStep)%total_ion_energy(n))
+ core_sources%source(isrc)%profiles_1d(CurTimeStep)%electrons%energy(1:n) = qe0(1:n)
+ core_sources%source(isrc)%profiles_1d(CurTimeStep)%total_ion_energy(1:n) = qq0(1:n)
 
-allocate(core_sources%source(1)%profiles_1d(CurTimeStep)%j_parallel(n))
- core_sources%source(1)%profiles_1d(CurTimeStep)%j_parallel(1:n) = aj0(1:n)*1.d7 
+allocate(core_sources%source(isrc)%profiles_1d(CurTimeStep)%j_parallel(n))
+ core_sources%source(isrc)%profiles_1d(CurTimeStep)%j_parallel(1:n) = aj0(1:n)*1.d7 
  
  
 isrc = 2 
-allocate(core_sources%source(2)%profiles_1d(TimeSteps))
+  core_sources%source(isrc)%identifier%index = 3
+allocate(core_sources%source(isrc)%profiles_1d(TimeSteps))
 
-  core_sources%source(2)%profiles_1d(CurTimeStep)%time = tt
+  core_sources%source(isrc)%profiles_1d(CurTimeStep)%time = tt
   
-allocate(core_sources%source(2)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))      
-  core_sources%source(2)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
+allocate(core_sources%source(isrc)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))      
+  core_sources%source(isrc)%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
   
-allocate(core_sources%source(2)%profiles_1d(CurTimeStep)%j_parallel(n))
- core_sources%source(2)%profiles_1d(CurTimeStep)%j_parallel(1:n) = ajae(1:n)*1.d7
+allocate(core_sources%source(isrc)%profiles_1d(CurTimeStep)%j_parallel(n))
+ core_sources%source(isrc)%profiles_1d(CurTimeStep)%j_parallel(1:n) = ajae(1:n)*1.d7
  
 
  isrc = 3
@@ -1208,9 +1288,9 @@ flush(6)
       print 71,apr,(zeff(i),i=1,n1) 
        apr='++sigk-' 
       print 71,apr,(sigk(i),i=1,n1) 
-   
+   flush(6)
     print *,' end dina_imas'
-
+flush(6)
       
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 

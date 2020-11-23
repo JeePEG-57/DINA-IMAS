@@ -19,6 +19,11 @@
      .	ySsep(nrd),ySpel(nrd),yPfus(nrd),
      .	ySd,ySt,ySh,ySHe,ySNe,ySBe,yPd,yPt,yPh,yFd,yFt,yFh
      
+      real *8
+     . yCpel,yMpel,yCOST,yDL,
+     . yVpelH,yVpelL,yfLFS,yfHFS,yNNHe,ySHep
+
+
          integer j,i,i_en, na11, kpr
          
         double precision VINT
@@ -140,20 +145,65 @@
         yL_OH=0.
 
       if(kpr.eq.1)print *,' i_en,yGHFS= yL_OH=',i_en,yGHFS,yL_OH
+      
+      if(i_en.eq.1)then
+	  yMu=0.7	!Normalised pressure in DIV range in ITER: 0-1 (detached)
+	  Ycnim = 0.01	! nNe(a)/ne(a) in SOLPS (range in SOLPS 0.002-0.02)
+!!!	  Yseng=57.	! engennering pumping [m3/s] range in ITER: 0-75
+	  Yseng=37.	! engennering pumping [m3/s] range in ITER: 0-75
+
+	  yL_OH=0.
+	  yVpelH=33.d0 
+	  yVpelL=33.d0
+	  yfLFS=0
+	  yCpel=0.3 
+	  yMpel=1 
+	  yCOST=0.8 
+	  yDL=1.67   
+	  
+	          open (unit=1,file='external_data.dat',form='formatted')
+
+        read (1,*)
+        read (1,*)    
+        read (1,*)
+        read (1,*)
+
+        read (1,*)
+        read (1,*)
+
+        read (1,*)
+        read (1,*)yMu,Ycnim,Yseng,yL_OH,yVpelH,yVpelL,yfLFS,
+     *  yCpel,yMpel,yCOST,yDL
         
-        call solsrs_IMAS( 
+        close ( unit=1)       
+
+	  
+      end if
+      
+      
+!
+!NEW  
+  	call solsrsP_IMAS(
      1  yMu,Ycnim,ySeng,yGsol,yPsol,yPalp,yGNBI,
      2  yL_OH,
      2  yNe,yndt,ynHe,yTe,yTi,yGdt,yGHFS,yGELM,ySpel,
-     3  yGpuf,yGsep,ySsep,yqpk)
+     3  yGpuf,yGsep,ySsep,yqpk,
+  
+  
+     4	ySHep,yNNHe,yGHe,yVpelH,yVpelL,yfHFS,yfLFS,
+     5  yCpel,yMpel,yCOST,yDL)
+ 
+  
+!  OLD         
+      goto 44
+!        call solsrs_IMAS( 
+!     1  yMu,Ycnim,ySeng,yGsol,yPsol,yPalp,yGNBI,
+!     2  yL_OH,
+!     2  yNe,yndt,ynHe,yTe,yTi,yGdt,yGHFS,yGELM,ySpel,
+!     3  yGpuf,yGsep,ySsep,yqpk)
+
+ 44   continue
      
-!solsrs(yMu,Ycnim,ySeng,yGsol,yPsol,yPalp,yGNBI,yL_OH,yNe,ynHe,yTe,yTi,yGdt,yGHFS,yGELM,ySpel,yGpuf,yGsep,ySsep,yqpk)::.001;
-!            write(*,*) 'passed solsrs_IMAS' 
-!               	  write(*,*) 'NNWM,NNCL =', NNWM,NNCL
-!               	   write(*,*) 'Sep',VINT(ySsep,ROC)
-!               	   write(*,*) 'Spel',VINT(ySpel,ROC) 
-!               	   write(*,*) 'SepR',ySsep(1:na1)
-!               	   write(*,*) 'SpelR',ySpel(1:na1)
       if(kpr.eq.1)print *,' yndt== yNe ',yndt,yNe
       if(kpr.eq.1)print *,' yTe== yTi ',yTe,yTi
       

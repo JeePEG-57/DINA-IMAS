@@ -24,6 +24,8 @@ real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 real(ids_real) :: te0(npo),tq0(npo)
 
 real(ids_real) :: tt
+real(ids_real) :: tt_in,yGpuf
+integer :: n_xx,kpr_xx
 
         character *20 apr
 
@@ -33,7 +35,8 @@ ai(1:n) = core_profiles0%profiles_1d(1)%grid%rho_tor_norm(1:n)
 
 
 tt = core_profiles0%time(1)
-
+tt_in=tt
+kpr_xx=1
 
 print *,'  Astra sources tt n',tt,n
 
@@ -66,112 +69,50 @@ print *,'  Astra sources tt n',tt,n
         c_input1(i)=pd0(i)
         c_input2(i)=pt0(i)
         end do
+        
+        yGpuf= ctrl_in(2)
+        n_xx=n
 
+    print *,'  tran_neut --> n_xx kpr_xx',n_xx,kpr_xx
 
-      call transp7( &
+      call tran_neut( &
 !-----------------------------------  inputs---
      &  c_input1,c_input2, &
 !------------------------------------outputs
      &  c_output1,c_output2,c_output3, &
-     &  tt)
+     &  tt_in,yGpuf,n_xx,kpr_xx)
+ 	
+
+!      call transp7( &
+!-----------------------------------  inputs---
+ !    &  c_input1,c_input2, &
+!------------------------------------outputs
+ !    &  c_output1,c_output2,c_output3, &
+ !    &  tt)
 
 
 
-!7000   format(1x,1pe14.7)
 
-! open (unit=61,file='dina_transp2.dat',action='read',form='formatted')
-! 
-! read (61,*)n2
-
+        pd0(1:n)=c_output1(1:n)
+        pt0(1:n)=c_output2(1:n)
+        pne(1:n)=c_output3(1:n)
 
 
-! write(*,*) 'dina_transp2, n,n2=,', n, n2
-! 
-! do i=1,n2
-! read (61,*) ai(i)
-! enddo
-! do i=1,n2
-! read (61,*) pne(i)
-! enddo
-! do i=1,n2
-! read (61,*) pd0(i)
-! enddo
-! do i=1,n2
-! read (61,*) pt0(i)
-! enddo
-! 
-! close (61)
-
-
-! do i=1,n
-!       pd0(i)=c_output1(i)
-!       pt0(i)=c_output2(i)
-!       pne(i)=c_output3(i)
-! enddo
-
-        pd0=c_output1
-        pt0=c_output2
-        pne=c_output3
-
-
-!   core_sources%ids_properties%homogeneous_time = 1
-! 
-!    
-! !allocate(core_sources%time(1))   
-!     
-!     
-! !allocate(core_sources%source(1))    
-! !allocate(core_sources%source(1)%profiles_1d(1)) 
-!  
-! !allocate(core_sources%source(1)%profiles_1d(1)%grid%rho_tor_norm(n))
-!  core_sources%source(1)%profiles_1d(1)%grid%rho_tor_norm(1:n) = ai(1:n)
-! 
-! !Electrons
-! allocate(core_sources%source(1)%profiles_1d(1)%electrons%particles(n))
-!  core_sources%source(1)%profiles_1d(1)%electrons%particles(1:n) = pne(1:n)
-! 
-! 
-! ! Ions 
-! allocate(core_sources%source(1)%profiles_1d(1)%ion(2))
-! 
-! ! Deuterium
-! allocate(core_sources%source(1)%profiles_1d(1)%ion(1)%element(1))
-!  core_sources%source(1)%profiles_1d(1)%ion(1)%element(1)%a = 2
-!  core_sources%source(1)%profiles_1d(1)%ion(1)%z_ion = 1
-!  core_sources%source(1)%profiles_1d(1)%ion(1)%element(1)%z_n = 1
-! !core_sources%source(1)%profiles_1d(1)%ion(1)%label = 'D+'
-! allocate(core_sources%source(1)%profiles_1d(1)%ion(1)%particles(n))
-!  core_sources%source(1)%profiles_1d(1)%ion(1)%particles(1:n) = pd0(1:n)
-! 
-! ! Tritium
-! allocate(core_sources%source(1)%profiles_1d(1)%ion(2)%element(1))
-!  core_sources%source(1)%profiles_1d(1)%ion(2)%element(1)%a = 3
-!  core_sources%source(1)%profiles_1d(1)%ion(2)%z_ion = 1
-!  core_sources%source(1)%profiles_1d(1)%ion(2)%element(1)%z_n = 1
-! !core_sources%source(1)%profiles_1d(1)%ion(2)%label = 'T+'
-! allocate(core_sources%source(1)%profiles_1d(1)%ion(2)%particles(n))
-!  core_sources%source(1)%profiles_1d(1)%ion(2)%particles(1:n) = pt0(1:n)
-! 
-!  
-!     core_sources%source(1)%profiles_1d(1)%time = tt
-!     core_sources%time(1) = tt ![s]
-    
+      apr='--sd0_p-' 
+      print 71,apr,(pd0(i),i=1,n) 
+      apr='--sd0_n-' 
+      print 71,apr,(pt0(i),i=1,n) 
 
 src_out(1:n) = pd0(1:n)
 src_out(n+1:2*n) = pt0(1:n)
-src_out(2*n+1:3*n) = pne(1:n)
+src_out(2*n+1:3*n) =2.
+    
 
-    
-    
-! pd0(1:n)=core_sources%source(1)%profiles_1d(1)%ion(1)%particles(1:n)
-! pt0(1:n)=core_sources%source(1)%profiles_1d(1)%ion(2)%particles(1:n)
-!     
-!       apr='--sd0-' 
-!       print 71,apr,(pd0(i),i=1,n) 
-!       apr='--st0-' 
-!       print 71,apr,(pt0(i),i=1,n) 
-! 
-! print *,' end astra_sources'
+!src_out(1:n) = 10.
+!src_out(n+1:2*n) = 20.
+!src_out(2*n+1:3*n) =2.
+
+
     
 return
 end subroutine

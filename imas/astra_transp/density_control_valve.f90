@@ -20,6 +20,9 @@ real(ids_real) :: Ne, Ni
 
 real(ids_real) :: tt
 
+real(ids_real) :: tt_in,yGpuf,pcch,pcchp_src
+
+
 	character *20 apr
 
 
@@ -33,11 +36,16 @@ print *,'  Density controller tt Ne Ni',tt,Ne,Ni
 
    71 FORMAT(20X,A20/,(6(1pE10.3)))
 
+tt_in=tt
+pcch=Ni*1.d-19
 
+call feed_src(yGpuf,pcch,pcchp_src,tt_in)
 
     
-ctrl_out(1) = 1.d0
-ctrl_out(2) = 1.d0    
+ctrl_out(1) = 1.0
+ctrl_out(2) = yGpuf   
+
+print *,'  Density controller yGpuf,pcch,pcchp_src',yGpuf,pcch,pcchp_src
     
     
 return

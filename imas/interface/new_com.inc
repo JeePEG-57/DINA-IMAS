@@ -81,6 +81,7 @@
      *  /pol4/UM,VM,UK(ntet),VK(ntet)
      *  /pol5/psend
      *  /pol6/ppx(npo),pffx(npo)
+     *  /pol6d/ppxd(npo),pffxd(npo)
 
 	common
      *	/efit4/coef_efit
@@ -664,6 +665,7 @@ c*** Victor's common blocks
      *  /c_grib2/rp1,zp1,dist1,rp2,zp2,dist2
 
         common /c_imas1/dxe0(npo),dxq0(npo),ajb0(npo)
+     *  /c_imas2/pd0_p,pt0_p
 
         common /c_tran1/te0_tran(npo),tq0_tran(npo)
         common /c_tran3/pd0_tran(npo),pt0_tran(npo),pne_tran(npo)
@@ -688,3 +690,6 @@ c  BEAM Commons...
 c************************************************
 	common
      *  /maksim_01/tqc,emag
+     *  /maksim_02/qtep,gfus,gamma
+
+        common /c_teit_98/teit_98
