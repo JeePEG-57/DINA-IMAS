@@ -1,3 +1,6 @@
+!> transp20 is the main subroutine to read the input
+!! external_data.dat file
+
 	subroutine transp20(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
