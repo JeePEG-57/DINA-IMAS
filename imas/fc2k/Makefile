@@ -7,8 +7,8 @@ astra_actors = solps_imas.xml astra_transp_density.xml astra_transp_sources.xml 
 pyworkspace = ../python_wf/actors
 
 usepy = -pyworkspace $(pyworkspace)
-usekep = -nokepler
-#usekep = ""
+#usekep = -nokepler
+usekep = ""
 
 
 all: $(dina_actors) $(astra_actors)
@@ -42,4 +42,4 @@ dinaimas: dinaimas21.xml
 
 
 clean:
-	rm -rf $(pyworkspace)/dinaimas21
+	rm -rf $(pyworkspace)/*

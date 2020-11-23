@@ -5,6 +5,10 @@
 # module use /work/imas/etc/attic
 module use /work/imas/etc/modulefiles
 module use /work/imas/etc/modules/all
+
+
+
+
 shopt -s expand_aliases
 
 # # THE HOME AND USER ENVIRONMENT VARIABLES DO NOT EXIST IN BAMBOO!!! (NEEDED BY KEPLER)
@@ -18,6 +22,7 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 module load IMAS/3.30.0-4.8.4
+#module load IMAS/3.29.0-4.8.4
 # module load IMAS/3.26.0-4.5.0
 
 # KEPLER ENVIRONMENT VARIABLES
@@ -50,11 +55,14 @@ else
 fi
 
 
-module load FC2K/4.13.0-Java-1.8
-# module load FC2K/4.6.6
+module load FC2K/4.13.2-Java-1.8
+
+#module use /home/ITER/hoeneno/public/imas/etc/modulefiles
+#module load FC2K/4.13.1-7-g674246d
+
 
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
-module load MATLAB/2018a
+#module load MATLAB/2018a
 
 imasdb test
 
