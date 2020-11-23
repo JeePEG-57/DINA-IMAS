@@ -171,7 +171,7 @@
 
       if(kpr.eq.1)print *,' FOR_EXT k_ener_ext k_dens_ext k_ajb_ext=='
 
-      if(kpr.eq.1)print *,' k_ener_ext k_dens_ext k_ajb_ext==',
+       print *,' k_ener_ext k_dens_ext k_ajb_ext==',
      *   k_ener_ext,k_dens_ext,k_ajb_ext
       
 !      k_ener_ext=1
@@ -189,7 +189,7 @@
      *  c_output1,c_output2)
  	
 
-
+      if(k_ener_ext.eq.1)then
 	do i=1,n
 	
 	qde0(I)=c_output1(i)
@@ -206,6 +206,8 @@
       if(kpr.eq.1)print 71,apr,(QDE0(i),i=1,nn2) 
       apr='+QDQ0-' 
       if(kpr.eq.1)print 71,apr,(QDQ0(i),i=1,nn2) 
+      
+      
       
       call transp100(
 !-----------------------------------  inputs---
@@ -227,7 +229,9 @@
       apr='+tq0-' 
       if(kpr.eq.1)print 71,apr,(tq0(i),i=1,nn2) 
 
-
+      end if
+      
+      if(k_dens_ext.eq.1)then
       call transp200(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
@@ -250,6 +254,10 @@
       apr='+pt0-' 
       if(kpr.eq.1)print 71,apr,(pt0(i),i=1,nn2) 
 
+      end if
+      
+       if(k_ajb_ext.eq.1)then
+       
       call transp300(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
@@ -283,9 +291,21 @@
       apr='+aj0-' 
       if(kpr.eq.1)print 71,apr,(aj0(i),i=1,nn2) 
 
+      end if
+      
+
  	end if
 
       if(kpr.eq.1)print *,' tt==tt_kavin=',tt,tt_kavin
+ 
+        apr= 'd te0 '
+        print 71,apr,(te0(i),i=1,n)
+        apr= 'd tq0 '
+        print 71,apr,(tq0(i),i=1,n)
+        apr= 'd pd0 '
+        print 71,apr,(pd0(i),i=1,n)
+        apr= 'd pt0 '
+        print 71,apr,(pt0(i),i=1,n)
 
       
       if(tt.le.tt_kavin)then
