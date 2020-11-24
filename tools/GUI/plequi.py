@@ -18,6 +18,8 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
+import numpy as np
+
 #--------------new class for equilibrium window
 class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
     def __init__(self, pulse, run, user, base, isum1, icp1, ieq1):
@@ -196,6 +198,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.pmag=[]
         self.pbound=[]
         self.psi2d_t=[]
+        self.psi_sep_t=[]
 
         self.gran_r=[]
         self.gran_z=[]
@@ -223,6 +226,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         for i  in range(self.tor):
             self.psi2d_t.append(self.eq1.time_slice[i].profiles_2d[0].psi)
             #psi2d.append([])
+            self.psi_sep_t.append(self.eq1.time_slice[i].boundary_separatrix.psi)
             #for j  in range(65):
   
             #psi2d.append([eq1.time_slice[i].profiles_2d[0].grid.dim1,eq1.time_slice[i].profiles_2d[0].grid.dim2])
@@ -442,18 +446,18 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         ax9=plt.subplot (1, 3, 2)
         plt.cla()
 
-        plt.plot (self.limiterx, self.limitery,'bo', linewidth=3,  label='equilibrium')
+        plt.plot (np.array(self.limiterx).T, np.array(self.limitery).T,'k-', linewidth=1,  label='equilibrium')
         if self.r_x[a] != 0.0:
           plt.plot(self.r_x[a],self.z_x[a],'rx')
           #plt.plot (self.gran_z[a],self.gran_r[a],'m')
-          plt.plot (self.gran_r[a],self.gran_z[a],'m')
+          plt.plot (self.gran_r[a],self.gran_z[a],'m', linewidth=0.5)
         #psi_sep_ax=plt.contour(self.axx, self.axy, self.psi2d_t[a], [self.psi_sep/(2*math.pi)])
         #plt.plot (factx[0], facty[0], 'ro', linewidth=2)             #NE RABOTAET ESHE
         psi_ax = plt.contourf(self.axx,self.axy,self.psi2d_t[a],20)
+        dpsi = 1e-10+1e-5*(np.max(self.psi2d_t[a])-np.min(self.psi2d_t[a]))
+        psi_sep_ax=plt.contourf(self.axx, self.axy, self.psi2d_t[a], levels=[self.psi_sep_t[a],dpsi+self.psi_sep_t[a]]) 
         #psi_axxx = plt.contour(self.axx,self.axy,self.test_gran2d[a])
-        #psi_gran = plt.contour(self.gran_r,)
         
-
         plt.title ('equil \n time %f sec.'%self.t2[a])
         #plt.gca().set_aspect('square', adjustable='box')
         plt.axis('scaled')

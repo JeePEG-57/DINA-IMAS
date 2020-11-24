@@ -64,7 +64,8 @@ export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
 module load PyQt5
 
-module load Viz 
+#module load Viz 
+module load Viz/2.4.2-intel-2018a-Python-3.6.4
 
 export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
