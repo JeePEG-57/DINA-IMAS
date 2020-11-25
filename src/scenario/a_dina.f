@@ -182,6 +182,8 @@
       
 !      if(tt.gt.tt_kavin)then
 
+      if(k_ener_ext.eq.1)then
+
       call transp500(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
@@ -189,13 +191,13 @@
      *  c_output1,c_output2)
  	
 
-      if(k_ener_ext.eq.1)then
 	do i=1,n
 	
 	qde0(I)=c_output1(i)
 	qdq0(I)=c_output2(i)
 	
       end do
+
 
       DO I=1,n
     	c_input1(I)=qde0(i)
@@ -207,15 +209,22 @@
       apr='+QDQ0-' 
       if(kpr.eq.1)print 71,apr,(QDQ0(i),i=1,nn2) 
       
-      
+      end if
+
+       if(k_ener_ext.eq.1)then
       
       call transp100(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !------------------------------------outputs
      *  c_output1,c_output2)
+
+      TE0(n)=c_output1(n)
+	Tq0(n)=c_output2(n)
+
+      print *,' Boundary Energy te0 tq0=',TE0(n),Tq0(n)
  	
-	do i=1,n
+		do i=1,n
 	
 	TE0(I)=c_output1(i)
 	Tq0(I)=c_output2(i)
@@ -228,16 +237,19 @@
       if(kpr.eq.1)print 71,apr,(te0(i),i=1,nn2) 
       apr='+tq0-' 
       if(kpr.eq.1)print 71,apr,(tq0(i),i=1,nn2) 
-
+ 
       end if
       
       if(k_dens_ext.eq.1)then
+      
+      
       call transp200(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !------------------------------------outputs
      *  c_output1,c_output2,c_output3)
  	
+
 	do i=1,n
 	
 	pd0(I)=c_output1(i)
@@ -256,14 +268,15 @@
 
       end if
       
-       if(k_ajb_ext.eq.1)then
-       
+      if(k_ajb_ext.eq.1)then
+      
       call transp300(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !------------------------------------outputs
      *  c_output1,c_output2)
  	
+
 	do i=1,n
 	
 	ajb(I)=c_output1(i)
@@ -277,7 +290,9 @@
       if(kpr.eq.1)print 71,apr,(ajb(i),i=1,nn2) 
       apr='+sigk-' 
       if(kpr.eq.1)print 71,apr,(sigk(i),i=1,nn2) 
+      end if
 
+       if(k_ajb_ext.eq.1)then
 
       call transp400(
 !-----------------------------------  inputs---
