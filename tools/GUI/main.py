@@ -46,49 +46,17 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetI
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
 
-#from viz_plug import GUIFrame, QVizStartWindow, QVizMDI, QVizMainWindow
+
 import viz_plug
-#import QtVIZ_GUI
+
 
 
 
 sys.path.append((os.environ['VIZ_HOME']))
-'''
-#import QtVIZ_GUI
-from imasviz.Viz_API import Viz_API
 
-from imasviz.VizUtils import QVizGlobalOperations, QVizGlobalValues
-'''
-'''
-from imasviz.VizDataSource.QVizDataSourceFactory import QVizDataSourceFactory
-
-from imasviz.VizGUI.VizGuiCustomization import QVizDefault
-from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
-'''
-'''
 from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
                               QVizGlobalOperations, QVizLogger)
 
-
-from imasviz.VizGUI.VizGuiCustomization import QVizDefault
-from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
-'''
-from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-                              QVizGlobalOperations, QVizLogger)
-'''
-from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
-'''
-'''
-from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
-#from imasviz.VizGUI.VizWidgets.QVizAvailableIDSBrowserWidget import QVizAvailableIDSBrowserWidget
-from imasviz.VizGUI.VizGUICommands.VizMenusManagement.QVizSignalHandling import QVizSignalHandling
-  #----------------------------------------------
-from imasviz.VizPlugins.VizPlugin import VizPlugin
-
-# Project python modules
-from imasviz.VizPlugins.viz_equi.ids_read_multiprocess import \
-    ids_read_multiprocess
-'''
 
 #--------------------------END NEW IMPORT
 
@@ -124,244 +92,6 @@ class QVizMDI(QMdiArea):
         self.setWindowTitle("MDI")
         self.setObjectName("MDI")
 
-'''
-
-class GUIFrame(QTabWidget):
-    def __init__(self, parent):
-        super(GUIFrame, self).__init__(parent)
-
-        #self.setGeometry(300, 300, 300, 200)
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
-
-        self.addTab(self.tab1, "Local data source")
-        self.addTab(self.tab2, "Experiment data source")
-
-        self.tabOne()
-        self.tabTwo()
-
-        #title = "IMAS_VIZ (version " + str(QVizGlobalValues.IMAS_VIZ_VERSION) + ")"
-        #self.setWindowTitle(title)
-
-        self.mainMenuController = QVizMainMenuController(parent)
-        self.contextMenu = None
-        
-    def logPanel(self):
-        #LOG WIDGET
-        self.logWidget = QPlainTextEdit(parent=self)
-        #self.logWidget.resize(QSize(500, 300))
-        self.logWidget.setReadOnly(True)
-        logging.getLogger().setLevel(logging.INFO)
-        handler = QVizLogger.getHandler()
-        handler.new_record.connect(self.logWidget.appendHtml)
-        layout = QVBoxLayout()
-        layout.addWidget(self.logWidget)
-        return layout
-
-    def tabOne(self):
-        layout = QVBoxLayout()
-        default_user_name, default_machine, default_run = \
-            QVizDefault().getGUIEntries()
-        vboxLayout = QFormLayout()
-        """Set static text for each GUI box (left from the box itself) """
-        self.userName = QLineEdit(default_user_name)
-        self.userName.setStatusTip("Name of the user under which the case is "
-                                   "being stored.")
-        self.userName.setToolTip("Name of the user under which the case is "
-                                 "being stored.")
-        vboxLayout.addRow('User name', self.userName)
-        self.imasDbName = QLineEdit(default_machine)
-        self.imasDbName.setStatusTip("Database label under which the case is "
-                                     "being stored.")
-        self.imasDbName.setToolTip("Database label under which the case is "
-                                   "being stored.")
-        vboxLayout.addRow('Database', self.imasDbName)
-        self.shotNumber = QLineEdit()
-        self.shotNumber.setStatusTip("Shot case identifier.")
-        self.shotNumber.setToolTip("Shot case identifier.")
-        vboxLayout.addRow('Shot number', self.shotNumber)
-        self.runNumber = QLineEdit(default_run)
-        self.runNumber.setStatusTip("Run case identifier.")
-        self.runNumber.setToolTip("Run case identifier.")
-        vboxLayout.addRow('Run number', self.runNumber)
-
-        self.IMASdbBrowserWidget = QVizIMASdbBrowserWidget(parent=self)
-        self.IMASdbBrowserWidget.onItemDoubleClick.connect(self.updateIDSparam)
-        self.userName.editingFinished.connect(self.onUserNameEditFinished)
-
-        button_open1 = QPushButton('Open', self)
-        button_open1.setStatusTip("Open the case for the given parameters.")
-        button_open1.setToolTip("Open the case for the given parameters.")
-        button_open1.clicked.connect(self.OpenDataSourceFromTab1)
-
-        layout.addLayout(vboxLayout)
-        layout.addWidget(self.IMASdbBrowserWidget)
-
-        vboxLayout2 = QVBoxLayout()
-        vboxLayout2.addWidget(button_open1)
-
-        layout.addLayout(vboxLayout2)
-        self.tab1.setLayout(layout)
-
-    def OpenDataSourceFromTab1(self, evt):
-        try:
-            self.CheckInputsFromTab1()
-            tokens = self.shotNumber.text().split()
-            try:
-                for shotNumber in tokens:
-                    val = int(shotNumber)
-
-                    """Check if data source is available"""
-                    QVizGlobalOperations.check(QVizGlobalValues.IMAS_NATIVE,
-                                               val)
-
-                    self.mainMenuController.openShotView.Open(evt, dataSourceName=QVizGlobalValues.IMAS_NATIVE,
-                                                              imasDbName=self.imasDbName.text(),
-                                                              userName=self.userName.text(),
-                                                              runNumber=self.runNumber.text(),
-                                                              shotNumber=str(val))
-
-            except Exception as e:
-                raise ValueError(str(e))
-
-        except ValueError as e:
-            logging.error(str(e))
-
-    def CheckInputsFromTab1(self):
-        """Display warning message if the required parameter was not specified"""
-        if self.userName.text() == '':
-            raise ValueError("'User name' field is empty.")
-
-        if self.imasDbName.text() == '':
-            raise ValueError("'Database' field is empty.")
-
-        if self.shotNumber.text() == '' or self.runNumber.text() == '':
-            raise ValueError("'Shot number' or 'run number' field is empty.")
-
-    def updateIDSparam(self):
-        """Update IDS parameters widgets.
-        """
-        self.userName.setText(self.IMASdbBrowserWidget.getActiveUsername())
-        self.imasDbName.setText(self.IMASdbBrowserWidget.getActiveDatabase())
-        self.shotNumber.setText(self.IMASdbBrowserWidget.getActiveShot())
-        self.runNumber.setText(self.IMASdbBrowserWidget.getActiveRun())
-
-    def onUserNameEditFinished(self):
-        self.AvailableIDSBrowserWidget.addContentsForUsername(self.userName.text())
-
-    def tabTwo(self):
-
-        layout = QVBoxLayout()
-        vboxlayout = QFormLayout()
-        """Set static text for each GUI box (left from the box itself) """
-        self.shotNumber2 = QLineEdit()
-        vboxlayout.addRow('Shot number', self.shotNumber2)
-        default_user_name, default_machine, default_run = QVizDefault().getGUIEntries()
-        self.runNumber2 = QLineEdit(default_run)
-        vboxlayout.addRow('Run number', self.runNumber2)
-
-        publicDatabases = []
-
-        if os.environ.get('UDA_DISABLED') != '1':
-            udaConfigFilePath = Path(os.environ['VIZ_HOME'] + '/config/UDA_machines')
-            if udaConfigFilePath.is_file():
-                udaConfigFile = open(udaConfigFilePath)
-                UDAmachines = udaConfigFile.readline()
-                udaConfigFile.close()
-                publicDatabases = UDAmachines.split()
-            else:
-                logging.warning("Missing UDA_machines file in /config directory. UDA will be disabled!")
-                os.environ.get['UDA_DISABLED'] = '1'
-                self.tab2.setDisabled(True)
-        else:
-            print('UDA will be disabled (UDA_DISABLED=1)')
-            self.tab2.setDisabled(True)
-
-        self.cb = QComboBox()
-        self.cb.addItems(publicDatabases)
-        vboxlayout.addRow('Unified Data Access', self.cb)
-        # self.cb.currentIndexChanged.connect(self.cbSelectionchange)
-
-        button_open2 = QPushButton('Open', self)
-        button_open2.clicked.connect(self.OpenDataSourceFromTab2)
-        layout.addLayout(vboxlayout)
-
-        vboxLayout2 = QVBoxLayout()
-        vboxLayout2.addWidget(button_open2)
-        layout.addLayout(vboxLayout2)
-        self.tab2.setLayout(layout)
-        # self.tab2.setDisabled(True)
-
-    def OpenDataSourceFromTab2(self, evt):
-        try:
-            try:
-                self.CheckInputsFromTab2()
-                self.mainMenuController.openShotView.Open(evt,
-                                                          dataSourceName=QVizGlobalValues.IMAS_UDA,
-                                                          imasDbName='',
-                                                          userName='',
-                                                          runNumber=self.runNumber2.text(),
-                                                          shotNumber=self.shotNumber2.text(),
-                                                          UDAMachineName=self.cb.currentText())
-            except Exception as e:
-                raise ValueError(str(e))
-
-        except ValueError as e:
-            logging.error('Unable to open UDA data source, the reason is: ' +
-                          str(e))
-
-    def CheckInputsFromTab2(self):
-        machineName = \
-            self.cb.currentText()
-
-        if machineName == '':
-            raise ValueError("'UDA name' field is empty.")
-
-        if self.shotNumber2.text() == '':
-            raise ValueError("'Shot number' field is empty.")
-
-        if self.runNumber2.text() == '':
-            raise ValueError("'Run number' field is empty.")
-
-        QVizGlobalOperations.check(QVizGlobalValues.IMAS_UDA,
-                                   int(self.shotNumber2.text()))
-
-    def contextMenuEvent(self, event):
-
-        # Get position
-        self.pos = event.pos()
-        self.showPopUpMenu()
-
-    def showPopUpMenu(self):
-        """Display the popup menu .
-        """
-        self.contextMenu = QMenu()
-        # Set new popup menu
-        self.mainMenuController.updateMenu(self.contextMenu, self)
-
-        # Map the menu (in order to show it)
-        self.contextMenu.exec_(self.mapToGlobal(self.pos))
-        return 1
-
-    def getMDI(self):
-        """ Get MDI area through the root IMASViz main window.
-        """
-        if self.tabVIZ().objectName() == "tabVIZ":
-            return self.tabVIZ().getMDI()
-        return None
-
-#-------------END NEW CLASSes
- 
-'''
-
-#--------------------------------------------------------------------------_END_
-        
-        
-        
-        
-        
-        
-        
 class ExampleApp(QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(ExampleApp, self).__init__()
@@ -2135,8 +1865,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
 
 def main():
     app = QApplication(sys.argv)  # New instance QApplication
-    #QVizGlobalOperations.checkEnvSettings()
-    #QVizPreferences().build()
     window = ExampleApp()  # Create instance of ExampleApp
     window.setObjectName("IMASViz root window")
     window.show() 

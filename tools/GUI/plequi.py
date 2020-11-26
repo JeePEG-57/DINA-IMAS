@@ -24,35 +24,19 @@ import numpy as np
 class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
     def __init__(self, pulse, run, user, base, isum1, icp1, ieq1):
         super().__init__()
-        #self.timestep=time_step
         self.buildUI()
-        
-        #pulse = 170
-        #run = 7
-        #user = 'khayrue'
-        
-        #pulse = int(self.textPulse.toPlainText(), 10)
-        #run = int(self.textRun.toPlainText(), 10)
-        #user = self.textUser.toPlainText()
-        #print('selected pulse = ', pulse)
-        #print('selected run = ', run)
+
 
         
         imas_obj1 = imas.ids(pulse, run)
         imas_obj1.open_env(user, base, '3')
-     
-        #self.sum1 = imas_obj1.summary
-        #self.cp1 = imas_obj1.core_profiles
-        #self.eq1 = imas_obj1.equilibrium
+
         self.sum1 = isum1
         self.cp1 = icp1
         self.eq1 = ieq1
         self.pfa1 = imas_obj1.pf_active
         self.pfp1 = imas_obj1.pf_passive
-         
-        #self.sum1.get()
-        #self.cp1.get()
-        #self.eq1.get()
+
         self.pfa1.get()
         self.pfp1.get()
            
@@ -72,20 +56,14 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.matSlider.setRange(0,self.tor-1)
         self.matSlider.setValue(14)
         
-        #self.matSlider.valueChanged[int].connect (self.a)
-        #self.matSlider.valueChanged.connect (self.updatesli)
-        #self.a = self.matSlider.value()
-        #print(self.a)
-        #self.matSlider.valueChanged.connect(self.updatesli)
+
         self.matSlider.valueChanged.connect(self.plotty)
-        #self.matSlider.valueChanged.connect (print(self.a))
+
         
         #--------------------
         self.data_gain()
-        #self.fig = self.plotty()
         self.fig = plt.figure()
         self.canavas = FigureCanvas(self.fig)
-
         self.toolbar = NavigationToolbar(self.canavas, self)
         self.plotty()
 
@@ -106,8 +84,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
          
         #-----------------------------data filling for plotting---------------------------------------        
         
-        #ipl1 = sum1.global_quantities.ip.value				#1
-        #test graphs (just to see some informtion from ids)
+
         #plasma current----------------------------  
         self.ipl2 =[]								#1 alternate
         for i in range(self.tor):
@@ -138,14 +115,12 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
             self.q_axis.append(self.eq1.time_slice[i].global_quantities.q_axis)
 
         #ne nuzhno----------------------------------------
-        #self.psi = self.eq1.time_slice[0].profiles_1d.psi
-        #self.dpres = self.eq1.time_slice[0].profiles_1d.dpressure_dpsi
-  
+
         #j_tor ----------------------------------------------
         self.j_tor=[]
         for i in range(self.tor):
             self.j_tor.append(self.cp1.profiles_1d[i].j_tor)					#3
-            #j_tor.append(eq1.profiles_1d[i].j_tor)	
+
 
         #eto koordinata X dlya profiles_1d--------------------------
         self.rho_tor=[]
@@ -186,9 +161,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         
         self.psi_sep=[]
         self.psi_sep=self.eq1.time_slice[10].boundary_separatrix.psi
-        #for i in range(self.tor):
-            #self.psi_sep.append(self.eq1.time_slice[i].boundary_separatrix.psi)
-        #print(self.psi_sep)
+
         #2 -d profiles--------------------------------------------------------------------------
         #ACTIVE zone(changed)
         self.axy=[]
@@ -215,24 +188,13 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
                 break
           self.gran_r.append(self.eq1.time_slice[i].boundary.outline.r[0:j0-1])
           self.gran_z.append(self.eq1.time_slice[i].boundary.outline.z[0:j0-1])
-          print(j0)
-        print(self.gran_r[25])
-        #print(j0)
 
-        #print(len(eq1.time_slice[20].profiles_2d))
-        #print('HERE!!!!!!')
-        #for i  in range():
-            #psi2d.append(eq1.time_slice[50].profiles_2d[0].psi)
         for i  in range(self.tor):
             self.psi2d_t.append(self.eq1.time_slice[i].profiles_2d[0].psi)
-            #psi2d.append([])
             self.psi_sep_t.append(self.eq1.time_slice[i].boundary_separatrix.psi)
-            #for j  in range(65):
-  
-            #psi2d.append([eq1.time_slice[i].profiles_2d[0].grid.dim1,eq1.time_slice[i].profiles_2d[0].grid.dim2])
             self.pmag.append(self.eq1.time_slice[i].global_quantities.psi_axis)
             self.pbound.append(self.eq1.time_slice[i].global_quantities.psi_boundary)
-        #print(len(pbound))
+
         if self.pmag != self.pbound:
             self.p_s = self.pbound
             self.delaval=[]
@@ -242,7 +204,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
                 self.delaval.append(self.pmag[i]-self.pbound[i])
                 self.d1.append(self.delaval[i]/self.n_g)
       
-            #d1=delaval/n_g
+
             self.avalb=self.pmag
             self.PL = []
             for j in range(0,self.n_g+19):
@@ -260,24 +222,12 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         #for i in range(tor):
         self.limiterx.append(self.eq1.time_slice[0].coordinate_system.r[:,0])
         self.limitery.append(self.eq1.time_slice[0].coordinate_system.z[:,0])
-        #print(len(pfa1.coil))
         for i in range(len(self.pfa1.coil)):
             for j in range(len(self.pfa1.coil[0].element)):
                 self.factx.append(self.pfa1.coil[i].element[j].geometry.outline.r)
  	  
                 self.facty.append(self.pfa1.coil[i].element[j].geometry.outline.z)
-	  
-        #print(limiterx)
-        #print('-----------------------')
-        #print(j_tor[29])
-        #print('----------PSI2d-------------')
-        #print(len(psi2d))
-        #print(len(psi2d[0]))
-        #print('---------END_PSI2D----------')
-        #print(factx)
-        #print('--------')
-        #print(facty)
-        #print(limitery1)
+
   
         #params to plot profiles_1d
    
@@ -307,11 +257,6 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
    
         #1-d plots axis limits--------------------------------------------------------
         #-----------x_LIMITS---------
-        #print(rho_tor)
-        #print(i)
-        #print(len(rho_tor))
-        #print(t2[6])
-        #print(j_tor[10])
         self.xlimup_rho_tor=[]
         self.xlimdown_rho_tor=[]
         self.ylimup_j_tor=[]
@@ -449,20 +394,17 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         plt.plot (np.array(self.limiterx).T, np.array(self.limitery).T,'k-', linewidth=1,  label='equilibrium')
         if self.r_x[a] != 0.0:
           plt.plot(self.r_x[a],self.z_x[a],'rx')
-          #plt.plot (self.gran_z[a],self.gran_r[a],'m')
           plt.plot (self.gran_r[a],self.gran_z[a],'m', linewidth=0.5)
-        #psi_sep_ax=plt.contour(self.axx, self.axy, self.psi2d_t[a], [self.psi_sep/(2*math.pi)])
-        #plt.plot (factx[0], facty[0], 'ro', linewidth=2)             #NE RABOTAET ESHE
+
         psi_ax = plt.contourf(self.axx,self.axy,self.psi2d_t[a],20)
         dpsi = 1e-10+1e-5*(np.max(self.psi2d_t[a])-np.min(self.psi2d_t[a]))
         psi_sep_ax=plt.contourf(self.axx, self.axy, self.psi2d_t[a], levels=[self.psi_sep_t[a],dpsi+self.psi_sep_t[a]]) 
-        #psi_axxx = plt.contour(self.axx,self.axy,self.test_gran2d[a])
+
         
         plt.title ('equil \n time %f sec.'%self.t2[a])
         #plt.gca().set_aspect('square', adjustable='box')
         plt.axis('scaled')
-        #plt.text(0.5,0.5,'time %f sec.'%a)
-        #plt.legend()
+
         #--------------END_EQUILIBRIUM-------------------------------------------------------
         ax10=plt.subplot (6, 3, 13)
         plt.cla()
@@ -472,12 +414,11 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         ax11=plt.subplot (6, 3, 15)
         plt.cla()
         self.qqqqql, = plt.plot (self.rho_tor[a], self.n_e[a])
-        #plt.autoscale(enable = True, axis = 'both', tight = None)
-        #plt.plot (rho_tor[30], n_e[30], label='$slice # 30')
+
         plt.ylim([self.ylimdown_n_e[a],self.ylimup_n_e[a]])
         plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
         plt.title ("Ne")
-        #plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
+
   
   
         ax12=plt.subplot (6, 3, 16)
@@ -487,114 +428,18 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
    
         ax13=plt.subplot (6, 3, 18)
         plt.cla()
-        #plt.text(0.9,0.9,'$time slice %f'%a)
+
         self.l, = plt.plot (self.rho_tor[a], self.bstrap[a], 'r-')
-        #plt.plot (rho_tor[b], q[b], '--', label='$slice # %a'%b)
         plt.ylim([self.ylimdown_bootstr[a],self.ylimup_bootstr[a]])
         plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
         plt.title ("bootstrap")
-        #plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
-        #plt.autoscale(enable = True, axis = 'both', tight = None)
-        #---------------------------------slider
-        '''
-        axcolor = 'lightgoldenrodyellow'
-        axsli = plt.axes([0.2, 0.05, 0.6, 0.03], facecolor=axcolor)
-        #axsli = plt.subplot(6,3,18)
-  
 
-  
 
-        #ssli = DiscreteSlider(axsli, 'slice', 0, 10, allowed_vals=x, valinit=x[0])
-        ssli = Slider(axsli, 'slice', 0, tor-1, valinit=10, valfmt='%0.0f')
-        
-        
-        ssli.on_changed(update)
-        resetax = plt.axes([0.6, 0.01, 0.03, 0.02])
-        button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
-   
-      
-        def reset(event):
-            ssli.reset()
-        button.on_clicked(reset)
-        '''
         #--------------------------------slider_end  
         plt.subplots_adjust(wspace=0.2, hspace=0.6)
         self.canavas.draw()
-        #return fig
-        #plt.draw()
-        #plt.show()
-        #fig.canvas.draw()
-    
-    def updatesli(self):
-        
-        '''
-        tor, t1, t2, ipl2, ylimdown_ipl, ylimup_ipl, rho_tor, j_tor, ylimdown_j_tor, ylimup_j_tor, \
-             xlimdown_rho_tor, xlimup_rho_tor, q_95, q_axis, ylimdown_q_q, ylimup_q_q, \
-             q, ylimdown_q, ylimup_q, li_3, t_e, ylimdown_t_e, ylimup_t_e, fpow, t_i, \
-             ylimdown_t_i, ylimup_t_i, limiterx, limitery, axx, axy, psi2d_t, \
-             r_x, n_e, ylimdown_n_e, ylimup_n_e, z_x, bstrap, ylimdown_bootstr,ylimup_bootstr = self.data_gain()
-        #a = int(round(self.val))
-        #freq = sfreq.val
-        
-        self.l.set_ydata(bstrap[a])
-        self.l.set_xdata(rho_tor[a])
-        self.ql.set_ydata(q[a])
-        self.ql.set_xdata(rho_tor[a])
-        self.qql.set_ydata(j_tor[a])
-        #print(j_tor[a])
-        self.qql.set_xdata(rho_tor[a])
-        self.qqql.set_ydata(t_e[a])
-        self.qqql.set_xdata(rho_tor[a])
-        self.qqqql.set_ydata(t_i[a])
-        self.qqqql.set_xdata(rho_tor[a])
-        self.qqqqql.set_ydata(n_e[a])
-        #qqqqql.set_label('$slice # %a'%a)
-        self.qqqqql.set_xdata(rho_tor[a])
-        
-        #--------axes_refresh--------
-        plt.subplot(6,3,3)
-        plt.ylim([ylimdown_j_tor[a],ylimup_j_tor[a]])
-        plt.xlim([xlimdown_rho_tor[a],xlimup_rho_tor[a]])
-     
-    
-        plt.subplot (1, 3, 2)
-        plt.cla()
-        plt.plot (limiterx, limitery,'bo', linewidth=3,  label='equilibrium(dummy data)')
-        psi_ax = plt.contour(axx,axy,psi2d_t[a],20)
-   
-        plt.subplot (6, 3, 6)
-        plt.ylim([ylimdown_q[a],ylimup_q[a]])
-        plt.xlim([xlimdown_rho_tor[a],xlimup_rho_tor[a]])
-    
-        plt.subplot (6, 3, 9)
-        plt.ylim([ylimdown_t_e[a],ylimup_t_e[a]])
-        plt.xlim([xlimdown_rho_tor[a],xlimup_rho_tor[a]])
-    
-        plt.subplot (6, 3, 12)
-        plt.ylim([ylimdown_t_i[a],ylimup_t_i[a]])
-        plt.xlim([xlimdown_rho_tor[a],xlimup_rho_tor[a]])
-    
-        plt.subplot (6, 3, 15)
-        plt.ylim([ylimdown_n_e[a],ylimup_n_e[a]])
-        plt.xlim([xlimdown_rho_tor[a],xlimup_rho_tor[a]])
-     
-        plt.subplot (6, 3, 18)
-        plt.ylim([ylimdown_bootstr[a],ylimup_bootstr[a]])
-        plt.xlim([xlimdown_rho_tor[a],xlimup_rho_tor[a]])
-    
-    
-    
-        #2d-update
-        plt.subplot (1, 3, 2)
-        plt.title ('equil \n time %f sec.'%t1[a])
-        '''
-        
-        #self.fig = self.plotty()
-        self.plotty()
-        print('slider use')
-        #self.canavas = FigureCanvas(self.fig)
-        self.canavas.draw()
-        self.graplay.addWidget(self.canavas, 0, 0)
+
+
     #0--------------------------------------------------------------------------------------------------------------------EQUIL GRAPH-------------------------------------------------  
     #0-----------------------------------------------------   
 
