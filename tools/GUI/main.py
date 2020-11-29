@@ -1551,8 +1551,35 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
                  
       return data
  
+ 
+    def FillPulseScheduleItem(self, PSitem, record, mult = 1.e0):
+      if not isinstance(PSitem, list):
+        PSitem = [PSitem]
+        
+      if record["type"] == "timed":
+        nt = len(record["items"])
+        nv = len(record["items"][0])-1
+        
+        if nv != len(PSitem):
+          print("FillPulseScheduleItem(): inconsistent PS array sizes: " + str(nv) + ",  " + str(len(PSitem)))
+          return
+        
+        for psi in PSitem:
+          psi.time = []
+          psi.data = []
 
-    def SaveInputIDS(self):
+        for i in range(nt):
+          ins = record["items"][i]
+          for j in range(nv):
+            PSitem[j].time.append(float(ins[0].text()))
+            PSitem[j].data.append(float(ins[1+j].text())*mult)
+             
+        
+        #print("pulse_schedule field saved: " + record["title"] + "; nt,nv=" + str(nt) + ", " + str(nv))
+     
+ 
+
+    def SaveInputIDS(self,nameSaveSetups):
       # Create input ids
       pulseText = self.lineInputPulse.text()
       runText = self.lineInputRun.text()
@@ -1591,8 +1618,8 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         if rec["type"] == "tokamakdata":
           tokamakdata = rec
       
-      if tokamakdata:
-        print("pfa get()")  
+      #if tokamakdata:
+      #  print("pfa get()")  
       
       
       imas_obj1 = imas.ids(pulse, run)
@@ -1612,16 +1639,11 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
       pfa1.coil.resize(npfa)
       
-      #rrr = pfa1.coil.dtype()
-      rrr = type(pfa1.coil[0])
-      print("Coil type = " + rrr.__name__)
-      ggg = rrr()
-      
       ncircuit = 0
       for coil in tokamakdata["coils"]["geometry"]:
         ncircuit = max(ncircuit, int(coil["items_p"][3].text()))
       
-      print("ncircuit = " + str(ncircuit))
+      #print("ncircuit = " + str(ncircuit))
       
       turndata = self.GetStuctWithFieldValue(self.controlData, "title", "n_turn")
       
@@ -1651,11 +1673,11 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             pfa1.coil[i].element[ie].geometry.oblique.beta = float(coil["items_g"][5].text())
             
             pfa1.coil[i].element[ie].turns_with_sign = float(coil["items_p"][2].text())*float(turndata["items"][i].text())
-            print(str(pfa1.coil[i].element[ie].turns_with_sign))
+            #print(str(pfa1.coil[i].element[ie].turns_with_sign))
             
             pfa1.coil[i].name += coil["name"]
         
-        print("Coil" + str(i) + ":" + pfa1.coil[i].name)
+        #print("Coil" + str(i) + ":" + pfa1.coil[i].name)
         pfa1.coil[i].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())
 
         pfa1.coil[i].current.data.resize(1)
@@ -1717,7 +1739,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             pfp1.loop[iloop].current.resize(1)
 
         pfp1.loop[iloop].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())           
-        print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)
+        #print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)
 
            
       # Vessel passive elements
@@ -1759,10 +1781,99 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             pfp1.loop[iloop].current.resize(1)
 
         pfp1.loop[iloop].resistance = float(tokamakdata["vessel"]["resist"]["items"][i].text())            
-        print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)      
+        #print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)      
       
       
       pfp1.put()
+      
+      
+      # Pulse schedule
+      psch = imas_obj1.pulse_schedule     
+      psch.get()      
+      psch.ids_properties.homogeneous_time = 1
+      psch.time.resize(1)
+
+      
+      # Densities
+      psch.density_control.valve.resize(8)
+      # Tritium density
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "dens.dat")     
+      self.FillPulseScheduleItem(psch.density_control.valve[0].flow_rate.reference, record, 1.e19)
+      
+      # Be content (Ip < 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z.dat")     
+      self.FillPulseScheduleItem(psch.density_control.valve[1].flow_rate.reference, record)
+      
+      # Be content (Ip > 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z1.dat")     
+      self.FillPulseScheduleItem(psch.density_control.valve[2].flow_rate.reference, record)      
+      
+      # W content
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z2.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[3].flow_rate.reference, record)
+       
+      # Ar content
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z3.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[4].flow_rate.reference, record) 
+ 
+      # Ne content
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z4.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[5].flow_rate.reference, record)
+ 
+      # Deuterium density
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "n_d.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[6].flow_rate.reference, record, 1.e19) 
+ 
+      # DT density for density control
+      record = self.GetStuctWithFieldValue(self.externalData, "title", "dens.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[7].flow_rate.reference, record, 1.e19) 
+
+      # Aux heating
+      psch.ec.launcher.resize(3)
+      # EC heating (Ip < 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "ech.dat")      
+      self.FillPulseScheduleItem(psch.ec.launcher[0].power.reference, record, 1.e6)  
+ 
+      # EC+EQ heating (Ip > 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "emo.dat")      
+      self.FillPulseScheduleItem([psch.ec.launcher[1].power.reference, psch.ec.launcher[2].power.reference], record, 1.e6)   
+ 
+ 
+      # Magnetic control
+      psch.position_control.gap.resize(12)
+      # Elongation
+      record = self.GetStuctWithFieldValue(self.controlData, "title", "elong_ref.dat") 
+      self.FillPulseScheduleItem(psch.position_control.elongation.reference, record) 
+      psch.position_control.elongation.reference_name = "elong"
+
+      # Gaps on ramp-up and flat-top
+      for j in range(6):
+        gapname = "g" + str(j+1)
+        refname = gapname
+        record = self.GetStuctWithFieldValue(self.controlData, "title", refname + ".dat")      
+        self.FillPulseScheduleItem(psch.position_control.gap[j].value.reference, record, 1.e-2) 
+        psch.position_control.gap[j].name = gapname
+        psch.position_control.gap[j].value.reference_name = refname
+      
+      # Gaps on current ramp-down
+      for j in range(6):
+        gapname = "g" + str(j+1)
+        refname = gapname + "_term"
+        record = self.GetStuctWithFieldValue(self.controlData, "title", refname + ".dat")      
+        self.FillPulseScheduleItem(psch.position_control.gap[6+j].value.reference, record, 1.e-2) 
+        psch.position_control.gap[j].name = gapname
+        psch.position_control.gap[j].value.reference_name = refname
+
+
+      psch.put()
+                 
+      dat1 = imas_obj1.dataset_description
+      dat1.ids_properties.homogeneous_time = 1
+      dat1.time.resize(1)
+      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
+      dat1.simulation.workflow = nameSaveSetups
+      dat1.put()
+      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
       imas_obj1.close()
 
@@ -1788,7 +1899,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
           shutil.rmtree(new_imp)
         shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
-        self.SaveInputIDS()
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
         tar = tarfile.open(tarname, "w:gz")
@@ -1800,7 +1910,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         tar.close()
         print(tarname+' saved')
 
- 
+        self.SaveInputIDS(tarname)
 
     def PlotOutput(self):
       
