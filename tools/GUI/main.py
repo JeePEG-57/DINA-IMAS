@@ -1790,7 +1790,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       # Pulse schedule
       psch = imas_obj1.pulse_schedule     
       psch.get()      
-      psch.ids_properties.homogeneous_time = 1
+      psch.ids_properties.homogeneous_time = 0
       psch.time.resize(1)
 
       
