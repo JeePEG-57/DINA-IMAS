@@ -44,6 +44,7 @@ def DINA(idslist, arr_volt):
                                        idslist['core_sources'],
                                        idslist['transport_solver_numerics'],
                                        idslist['pulse_schedule'],
+                                       idslist['summary'],
                                        arr_volt)
   # output of the actor is a tuple in Python
   
@@ -120,11 +121,12 @@ def DENSITY(idslist, sources):
   #sources = idslist['core_sources']
   output = dinatransp_density.dinatransp_density_actor(idslist['equilibrium'],
                                                        idslist['core_profiles'],
+                                                       idslist['summary'],
                                                        sources,
                                                        idslist['transport_solver_numerics'])
                                                                
-  idslist['core_profiles'] = output
-  
+  idslist['core_profiles'] = output[0]
+  idslist['summary'] = output[1]
 
 
 def BOOTCOND(idslist):
@@ -152,8 +154,9 @@ pulse_in = 170
 run_in = 1
 
 pulse_out = 170
-run_out = 27
+run_out = 26
 
+decimation = 10
 
 # Time since external transport actors fire
 timeExternalTransport = 1.52
@@ -248,22 +251,23 @@ while True:
   #for key in idslist:
   #  imas_entry_result.put_slice(idslist[key])
   
-  #imas_entry_result.put_slice(idslist['em_coupling'])
-  imas_entry_result.put_slice(idslist['equilibrium'])
-  #imas_entry_result.put_slice(idslist['magnetics'])
-  imas_entry_result.put_slice(idslist['pf_active'])
-  imas_entry_result.put_slice(idslist['pf_passive'])
-  #imas_entry_result.put_slice(idslist['core_profiles'])
-  #imas_entry_result.put_slice(idslist['core_sources'])
-  #imas_entry_result.put_slice(idslist['core_transport'])
-  imas_entry_result.put_slice(idslist['summary'])
+  if (iloop%decimation == 0 or iloop == iloop_start):
+    imas_entry_result.put_slice(idslist['em_coupling'])
+    imas_entry_result.put_slice(idslist['equilibrium'])
+    #imas_entry_result.put_slice(idslist['magnetics'])
+    imas_entry_result.put_slice(idslist['pf_active'])
+    imas_entry_result.put_slice(idslist['pf_passive'])
+    imas_entry_result.put_slice(idslist['core_profiles'])
+    imas_entry_result.put_slice(idslist['core_sources'])
+    imas_entry_result.put_slice(idslist['core_transport'])
+    imas_entry_result.put_slice(idslist['summary'])
   
   
   
   print('Workflow step=' + str(iloop) + '; time=' + str(time) + ' s; Ipl=' + str(ip) + ' A', flush=True)
   
   # Condition for stopping the simulation
-  if (time > 20.0 and ip < 1.e3 or time > 2.0):
+  if (time > 20.0 and ip < 1.e3):
     break
     
   iloop = iloop + 1
@@ -272,21 +276,8 @@ while True:
 imas_entry_result.close()
 
 print('Finished successfully after ' + str(iloop) + ' steps')
-print(timearr)
+#print(timearr)
 #print(dina_tuple)
 #print(dir(pf_active))
 
 
-# Plasma current plot
-summary = idslist['summary']
-t1 = summary.time
-ipl1 = summary.global_quantities.ip.value
-
-fig_ipl = plt.figure()
-plt.plot(t1, ipl1)
-plt.xlabel('time, s')
-plt.ylabel('I_pl, A')
-plt.title('Plasma current')
-plt.grid(True)
-
-plt.show()

@@ -14,7 +14,6 @@ interface: dina
 
 fc2k: interface
 	make -C imas/fc2k
-	make -C imas/fc2k fc2k
 
 clean:
 	make -C src/scenario clean
