@@ -44,6 +44,7 @@ def DINA(idslist, arr_volt):
                                        idslist['core_sources'],
                                        idslist['transport_solver_numerics'],
                                        idslist['pulse_schedule'],
+				       idslist['summary'],
                                        arr_volt)
   # output of the actor is a tuple in Python
   
@@ -147,20 +148,20 @@ def CURDRIVE(idslist):
 
 idslist = {}
 
+user_name='kims12'
 
 pulse_in = 170
 run_in = 1
 
 pulse_out = 170
-run_out = 27
-
+run_out = 400
 
 # Time since external transport actors fire
 timeExternalTransport = 1.52
 
 
 # Reading initial IDS's
-imas_entry_init = imas.DBEntry(imasdef.MDSPLUS_BACKEND, 'test', pulse_in, run_in, user_name = 'dubrovm', data_version = '3')
+imas_entry_init = imas.DBEntry(imasdef.MDSPLUS_BACKEND, 'test', pulse_in, run_in, user_name, data_version = '3')
 imas_entry_init.open()
 
 
@@ -184,7 +185,7 @@ imas_entry_init.close()
 
 
 # Preparing of an IMAS entry for the simulation output
-imas_entry_result = imas.DBEntry(imasdef.MDSPLUS_BACKEND, 'test', pulse_out, run_out, user_name = 'dubrovm', data_version = '3')
+imas_entry_result = imas.DBEntry(imasdef.MDSPLUS_BACKEND, 'test', pulse_out, run_out, user_name, data_version = '3')
 imas_entry_result.create()
 
 

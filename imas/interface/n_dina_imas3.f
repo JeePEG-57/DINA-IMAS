@@ -1352,7 +1352,7 @@ c	implicit real*8 (a-h,o-z)
 
 
       
-      kpr=0
+      kpr=1
       
      	open(unit=49,file='dina_data.dat',
 !!!     	open(unit=41,file='tokamak_config.dat',
@@ -1603,7 +1603,7 @@ c
           read (49,*) 
           read (49,*)k_ener_ext_c16, k_dens_ext_c16,k_ajb_ext_c16
 
-!	close(49)
+	close(49)
 
 2	FORMAT(/,2(2x,1PE10.3))
 
