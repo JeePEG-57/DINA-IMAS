@@ -7,8 +7,8 @@ astra_actors = solps_imas.xml density_control_pellet.xml density_control_valve.x
 pyworkspace = ../python_wf/actors
 
 usepy = -pyworkspace $(pyworkspace)
-usekep = -nokepler
-#usekep = ""
+#usekep = -nokepler
+usekep = ""
 
 
 all: $(dina_actors) $(astra_actors)
