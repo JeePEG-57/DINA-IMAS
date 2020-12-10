@@ -774,6 +774,10 @@ summary%global_quantities%beta_tor%value(CurTimeStep) = betat
 summary%global_quantities%v_loop%value(CurTimeStep) = vloop
 summary%global_quantities%tau_energy%value(CurTimeStep) = tene
 summary%global_quantities%tau_energy_98%value(CurTimeStep) = teit_98
+
+
+print *,' teit_98 tene==',teit_98,tene
+
 summary%volume_average%n_e%value(CurTimeStep) = pec
 
 
@@ -1285,9 +1289,9 @@ flush(6)
       apr='++pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
        apr='++zeff-' 
-      print 71,apr,(zeff(i),i=1,n1) 
+!      print 71,apr,(zeff(i),i=1,n1) 
        apr='++sigk-' 
-      print 71,apr,(sigk(i),i=1,n1) 
+!      print 71,apr,(sigk(i),i=1,n1) 
    flush(6)
     print *,' end dina_imas'
 flush(6)

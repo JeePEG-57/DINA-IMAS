@@ -268,6 +268,9 @@ c ============ outputs ==============================================
 	zeff0_xx = zeff_a
 	vloop_xx = vloop
 	tene_xx = tene*1.d-3
+
+        print *,' tene_xx tene==',tene_xx,tene
+
 	teit_98_xx = teit_98*1.d-3
 	wfus_xx = w_fusion*1.d6
 	emag_xx = emag*1.d6

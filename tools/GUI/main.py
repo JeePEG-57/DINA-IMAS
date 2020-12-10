@@ -46,49 +46,17 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetI
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
 
-#from viz_plug import GUIFrame, QVizStartWindow, QVizMDI, QVizMainWindow
+
 import viz_plug
-#import QtVIZ_GUI
+
 
 
 
 sys.path.append((os.environ['VIZ_HOME']))
-'''
-#import QtVIZ_GUI
-from imasviz.Viz_API import Viz_API
 
-from imasviz.VizUtils import QVizGlobalOperations, QVizGlobalValues
-'''
-'''
-from imasviz.VizDataSource.QVizDataSourceFactory import QVizDataSourceFactory
-
-from imasviz.VizGUI.VizGuiCustomization import QVizDefault
-from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
-'''
-'''
 from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
                               QVizGlobalOperations, QVizLogger)
 
-
-from imasviz.VizGUI.VizGuiCustomization import QVizDefault
-from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
-'''
-from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-                              QVizGlobalOperations, QVizLogger)
-'''
-from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
-'''
-'''
-from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
-#from imasviz.VizGUI.VizWidgets.QVizAvailableIDSBrowserWidget import QVizAvailableIDSBrowserWidget
-from imasviz.VizGUI.VizGUICommands.VizMenusManagement.QVizSignalHandling import QVizSignalHandling
-  #----------------------------------------------
-from imasviz.VizPlugins.VizPlugin import VizPlugin
-
-# Project python modules
-from imasviz.VizPlugins.viz_equi.ids_read_multiprocess import \
-    ids_read_multiprocess
-'''
 
 #--------------------------END NEW IMPORT
 
@@ -124,244 +92,6 @@ class QVizMDI(QMdiArea):
         self.setWindowTitle("MDI")
         self.setObjectName("MDI")
 
-'''
-
-class GUIFrame(QTabWidget):
-    def __init__(self, parent):
-        super(GUIFrame, self).__init__(parent)
-
-        #self.setGeometry(300, 300, 300, 200)
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
-
-        self.addTab(self.tab1, "Local data source")
-        self.addTab(self.tab2, "Experiment data source")
-
-        self.tabOne()
-        self.tabTwo()
-
-        #title = "IMAS_VIZ (version " + str(QVizGlobalValues.IMAS_VIZ_VERSION) + ")"
-        #self.setWindowTitle(title)
-
-        self.mainMenuController = QVizMainMenuController(parent)
-        self.contextMenu = None
-        
-    def logPanel(self):
-        #LOG WIDGET
-        self.logWidget = QPlainTextEdit(parent=self)
-        #self.logWidget.resize(QSize(500, 300))
-        self.logWidget.setReadOnly(True)
-        logging.getLogger().setLevel(logging.INFO)
-        handler = QVizLogger.getHandler()
-        handler.new_record.connect(self.logWidget.appendHtml)
-        layout = QVBoxLayout()
-        layout.addWidget(self.logWidget)
-        return layout
-
-    def tabOne(self):
-        layout = QVBoxLayout()
-        default_user_name, default_machine, default_run = \
-            QVizDefault().getGUIEntries()
-        vboxLayout = QFormLayout()
-        """Set static text for each GUI box (left from the box itself) """
-        self.userName = QLineEdit(default_user_name)
-        self.userName.setStatusTip("Name of the user under which the case is "
-                                   "being stored.")
-        self.userName.setToolTip("Name of the user under which the case is "
-                                 "being stored.")
-        vboxLayout.addRow('User name', self.userName)
-        self.imasDbName = QLineEdit(default_machine)
-        self.imasDbName.setStatusTip("Database label under which the case is "
-                                     "being stored.")
-        self.imasDbName.setToolTip("Database label under which the case is "
-                                   "being stored.")
-        vboxLayout.addRow('Database', self.imasDbName)
-        self.shotNumber = QLineEdit()
-        self.shotNumber.setStatusTip("Shot case identifier.")
-        self.shotNumber.setToolTip("Shot case identifier.")
-        vboxLayout.addRow('Shot number', self.shotNumber)
-        self.runNumber = QLineEdit(default_run)
-        self.runNumber.setStatusTip("Run case identifier.")
-        self.runNumber.setToolTip("Run case identifier.")
-        vboxLayout.addRow('Run number', self.runNumber)
-
-        self.IMASdbBrowserWidget = QVizIMASdbBrowserWidget(parent=self)
-        self.IMASdbBrowserWidget.onItemDoubleClick.connect(self.updateIDSparam)
-        self.userName.editingFinished.connect(self.onUserNameEditFinished)
-
-        button_open1 = QPushButton('Open', self)
-        button_open1.setStatusTip("Open the case for the given parameters.")
-        button_open1.setToolTip("Open the case for the given parameters.")
-        button_open1.clicked.connect(self.OpenDataSourceFromTab1)
-
-        layout.addLayout(vboxLayout)
-        layout.addWidget(self.IMASdbBrowserWidget)
-
-        vboxLayout2 = QVBoxLayout()
-        vboxLayout2.addWidget(button_open1)
-
-        layout.addLayout(vboxLayout2)
-        self.tab1.setLayout(layout)
-
-    def OpenDataSourceFromTab1(self, evt):
-        try:
-            self.CheckInputsFromTab1()
-            tokens = self.shotNumber.text().split()
-            try:
-                for shotNumber in tokens:
-                    val = int(shotNumber)
-
-                    """Check if data source is available"""
-                    QVizGlobalOperations.check(QVizGlobalValues.IMAS_NATIVE,
-                                               val)
-
-                    self.mainMenuController.openShotView.Open(evt, dataSourceName=QVizGlobalValues.IMAS_NATIVE,
-                                                              imasDbName=self.imasDbName.text(),
-                                                              userName=self.userName.text(),
-                                                              runNumber=self.runNumber.text(),
-                                                              shotNumber=str(val))
-
-            except Exception as e:
-                raise ValueError(str(e))
-
-        except ValueError as e:
-            logging.error(str(e))
-
-    def CheckInputsFromTab1(self):
-        """Display warning message if the required parameter was not specified"""
-        if self.userName.text() == '':
-            raise ValueError("'User name' field is empty.")
-
-        if self.imasDbName.text() == '':
-            raise ValueError("'Database' field is empty.")
-
-        if self.shotNumber.text() == '' or self.runNumber.text() == '':
-            raise ValueError("'Shot number' or 'run number' field is empty.")
-
-    def updateIDSparam(self):
-        """Update IDS parameters widgets.
-        """
-        self.userName.setText(self.IMASdbBrowserWidget.getActiveUsername())
-        self.imasDbName.setText(self.IMASdbBrowserWidget.getActiveDatabase())
-        self.shotNumber.setText(self.IMASdbBrowserWidget.getActiveShot())
-        self.runNumber.setText(self.IMASdbBrowserWidget.getActiveRun())
-
-    def onUserNameEditFinished(self):
-        self.AvailableIDSBrowserWidget.addContentsForUsername(self.userName.text())
-
-    def tabTwo(self):
-
-        layout = QVBoxLayout()
-        vboxlayout = QFormLayout()
-        """Set static text for each GUI box (left from the box itself) """
-        self.shotNumber2 = QLineEdit()
-        vboxlayout.addRow('Shot number', self.shotNumber2)
-        default_user_name, default_machine, default_run = QVizDefault().getGUIEntries()
-        self.runNumber2 = QLineEdit(default_run)
-        vboxlayout.addRow('Run number', self.runNumber2)
-
-        publicDatabases = []
-
-        if os.environ.get('UDA_DISABLED') != '1':
-            udaConfigFilePath = Path(os.environ['VIZ_HOME'] + '/config/UDA_machines')
-            if udaConfigFilePath.is_file():
-                udaConfigFile = open(udaConfigFilePath)
-                UDAmachines = udaConfigFile.readline()
-                udaConfigFile.close()
-                publicDatabases = UDAmachines.split()
-            else:
-                logging.warning("Missing UDA_machines file in /config directory. UDA will be disabled!")
-                os.environ.get['UDA_DISABLED'] = '1'
-                self.tab2.setDisabled(True)
-        else:
-            print('UDA will be disabled (UDA_DISABLED=1)')
-            self.tab2.setDisabled(True)
-
-        self.cb = QComboBox()
-        self.cb.addItems(publicDatabases)
-        vboxlayout.addRow('Unified Data Access', self.cb)
-        # self.cb.currentIndexChanged.connect(self.cbSelectionchange)
-
-        button_open2 = QPushButton('Open', self)
-        button_open2.clicked.connect(self.OpenDataSourceFromTab2)
-        layout.addLayout(vboxlayout)
-
-        vboxLayout2 = QVBoxLayout()
-        vboxLayout2.addWidget(button_open2)
-        layout.addLayout(vboxLayout2)
-        self.tab2.setLayout(layout)
-        # self.tab2.setDisabled(True)
-
-    def OpenDataSourceFromTab2(self, evt):
-        try:
-            try:
-                self.CheckInputsFromTab2()
-                self.mainMenuController.openShotView.Open(evt,
-                                                          dataSourceName=QVizGlobalValues.IMAS_UDA,
-                                                          imasDbName='',
-                                                          userName='',
-                                                          runNumber=self.runNumber2.text(),
-                                                          shotNumber=self.shotNumber2.text(),
-                                                          UDAMachineName=self.cb.currentText())
-            except Exception as e:
-                raise ValueError(str(e))
-
-        except ValueError as e:
-            logging.error('Unable to open UDA data source, the reason is: ' +
-                          str(e))
-
-    def CheckInputsFromTab2(self):
-        machineName = \
-            self.cb.currentText()
-
-        if machineName == '':
-            raise ValueError("'UDA name' field is empty.")
-
-        if self.shotNumber2.text() == '':
-            raise ValueError("'Shot number' field is empty.")
-
-        if self.runNumber2.text() == '':
-            raise ValueError("'Run number' field is empty.")
-
-        QVizGlobalOperations.check(QVizGlobalValues.IMAS_UDA,
-                                   int(self.shotNumber2.text()))
-
-    def contextMenuEvent(self, event):
-
-        # Get position
-        self.pos = event.pos()
-        self.showPopUpMenu()
-
-    def showPopUpMenu(self):
-        """Display the popup menu .
-        """
-        self.contextMenu = QMenu()
-        # Set new popup menu
-        self.mainMenuController.updateMenu(self.contextMenu, self)
-
-        # Map the menu (in order to show it)
-        self.contextMenu.exec_(self.mapToGlobal(self.pos))
-        return 1
-
-    def getMDI(self):
-        """ Get MDI area through the root IMASViz main window.
-        """
-        if self.tabVIZ().objectName() == "tabVIZ":
-            return self.tabVIZ().getMDI()
-        return None
-
-#-------------END NEW CLASSes
- 
-'''
-
-#--------------------------------------------------------------------------_END_
-        
-        
-        
-        
-        
-        
-        
 class ExampleApp(QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(ExampleApp, self).__init__()
@@ -1821,8 +1551,35 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
                  
       return data
  
+ 
+    def FillPulseScheduleItem(self, PSitem, record, mult = 1.e0):
+      if not isinstance(PSitem, list):
+        PSitem = [PSitem]
+        
+      if record["type"] == "timed":
+        nt = len(record["items"])
+        nv = len(record["items"][0])-1
+        
+        if nv != len(PSitem):
+          print("FillPulseScheduleItem(): inconsistent PS array sizes: " + str(nv) + ",  " + str(len(PSitem)))
+          return
+        
+        for psi in PSitem:
+          psi.time = []
+          psi.data = []
 
-    def SaveInputIDS(self):
+        for i in range(nt):
+          ins = record["items"][i]
+          for j in range(nv):
+            PSitem[j].time.append(float(ins[0].text()))
+            PSitem[j].data.append(float(ins[1+j].text())*mult)
+             
+        
+        #print("pulse_schedule field saved: " + record["title"] + "; nt,nv=" + str(nt) + ", " + str(nv))
+     
+ 
+
+    def SaveInputIDS(self,nameSaveSetups):
       # Create input ids
       pulseText = self.lineInputPulse.text()
       runText = self.lineInputRun.text()
@@ -1861,8 +1618,8 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         if rec["type"] == "tokamakdata":
           tokamakdata = rec
       
-      if tokamakdata:
-        print("pfa get()")  
+      #if tokamakdata:
+      #  print("pfa get()")  
       
       
       imas_obj1 = imas.ids(pulse, run)
@@ -1882,16 +1639,11 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
       pfa1.coil.resize(npfa)
       
-      #rrr = pfa1.coil.dtype()
-      rrr = type(pfa1.coil[0])
-      print("Coil type = " + rrr.__name__)
-      ggg = rrr()
-      
       ncircuit = 0
       for coil in tokamakdata["coils"]["geometry"]:
         ncircuit = max(ncircuit, int(coil["items_p"][3].text()))
       
-      print("ncircuit = " + str(ncircuit))
+      #print("ncircuit = " + str(ncircuit))
       
       turndata = self.GetStuctWithFieldValue(self.controlData, "title", "n_turn")
       
@@ -1921,11 +1673,11 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             pfa1.coil[i].element[ie].geometry.oblique.beta = float(coil["items_g"][5].text())
             
             pfa1.coil[i].element[ie].turns_with_sign = float(coil["items_p"][2].text())*float(turndata["items"][i].text())
-            print(str(pfa1.coil[i].element[ie].turns_with_sign))
+            #print(str(pfa1.coil[i].element[ie].turns_with_sign))
             
             pfa1.coil[i].name += coil["name"]
         
-        print("Coil" + str(i) + ":" + pfa1.coil[i].name)
+        #print("Coil" + str(i) + ":" + pfa1.coil[i].name)
         pfa1.coil[i].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())
 
         pfa1.coil[i].current.data.resize(1)
@@ -1987,7 +1739,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             pfp1.loop[iloop].current.resize(1)
 
         pfp1.loop[iloop].resistance = float(tokamakdata["coils"]["resist"]["items"][i].text())           
-        print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)
+        #print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)
 
            
       # Vessel passive elements
@@ -2029,10 +1781,99 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             pfp1.loop[iloop].current.resize(1)
 
         pfp1.loop[iloop].resistance = float(tokamakdata["vessel"]["resist"]["items"][i].text())            
-        print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)      
+        #print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)      
       
       
       pfp1.put()
+      
+      
+      # Pulse schedule
+      psch = imas_obj1.pulse_schedule     
+      psch.get()      
+      psch.ids_properties.homogeneous_time = 0
+      psch.time.resize(1)
+
+      
+      # Densities
+      psch.density_control.valve.resize(8)
+      # Tritium density
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "dens.dat")     
+      self.FillPulseScheduleItem(psch.density_control.valve[0].flow_rate.reference, record, 1.e19)
+      
+      # Be content (Ip < 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z.dat")     
+      self.FillPulseScheduleItem(psch.density_control.valve[1].flow_rate.reference, record)
+      
+      # Be content (Ip > 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z1.dat")     
+      self.FillPulseScheduleItem(psch.density_control.valve[2].flow_rate.reference, record)      
+      
+      # W content
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z2.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[3].flow_rate.reference, record)
+       
+      # Ar content
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z3.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[4].flow_rate.reference, record) 
+ 
+      # Ne content
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z4.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[5].flow_rate.reference, record)
+ 
+      # Deuterium density
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "n_d.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[6].flow_rate.reference, record, 1.e19) 
+ 
+      # DT density for density control
+      record = self.GetStuctWithFieldValue(self.externalData, "title", "dens.dat")      
+      self.FillPulseScheduleItem(psch.density_control.valve[7].flow_rate.reference, record, 1.e19) 
+
+      # Aux heating
+      psch.ec.launcher.resize(3)
+      # EC heating (Ip < 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "ech.dat")      
+      self.FillPulseScheduleItem(psch.ec.launcher[0].power.reference, record, 1.e6)  
+ 
+      # EC+EQ heating (Ip > 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.DINAData, "title", "emo.dat")      
+      self.FillPulseScheduleItem([psch.ec.launcher[1].power.reference, psch.ec.launcher[2].power.reference], record, 1.e6)   
+ 
+ 
+      # Magnetic control
+      psch.position_control.gap.resize(12)
+      # Elongation
+      record = self.GetStuctWithFieldValue(self.controlData, "title", "elong_ref.dat") 
+      self.FillPulseScheduleItem(psch.position_control.elongation.reference, record) 
+      psch.position_control.elongation.reference_name = "elong"
+
+      # Gaps on ramp-up and flat-top
+      for j in range(6):
+        gapname = "g" + str(j+1)
+        refname = gapname
+        record = self.GetStuctWithFieldValue(self.controlData, "title", refname + ".dat")      
+        self.FillPulseScheduleItem(psch.position_control.gap[j].value.reference, record, 1.e-2) 
+        psch.position_control.gap[j].name = gapname
+        psch.position_control.gap[j].value.reference_name = refname
+      
+      # Gaps on current ramp-down
+      for j in range(6):
+        gapname = "g" + str(j+1)
+        refname = gapname + "_term"
+        record = self.GetStuctWithFieldValue(self.controlData, "title", refname + ".dat")      
+        self.FillPulseScheduleItem(psch.position_control.gap[6+j].value.reference, record, 1.e-2) 
+        psch.position_control.gap[j].name = gapname
+        psch.position_control.gap[j].value.reference_name = refname
+
+
+      psch.put()
+                 
+      dat1 = imas_obj1.dataset_description
+      dat1.ids_properties.homogeneous_time = 1
+      dat1.time.resize(1)
+      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
+      dat1.simulation.workflow = nameSaveSetups
+      dat1.put()
+      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
       imas_obj1.close()
 
@@ -2058,7 +1899,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
           shutil.rmtree(new_imp)
         shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
-        self.SaveInputIDS()
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
         tar = tarfile.open(tarname, "w:gz")
@@ -2070,7 +1910,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         tar.close()
         print(tarname+' saved')
 
- 
+        self.SaveInputIDS(tarname)
 
     def PlotOutput(self):
       
@@ -2135,8 +1975,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
 
 def main():
     app = QApplication(sys.argv)  # New instance QApplication
-    #QVizGlobalOperations.checkEnvSettings()
-    #QVizPreferences().build()
     window = ExampleApp()  # Create instance of ExampleApp
     window.setObjectName("IMASViz root window")
     window.show() 
