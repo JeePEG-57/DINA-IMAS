@@ -1,4 +1,6 @@
-# should convert this script in order to use imas.DBEntry instead of old Python API, so writing of the results from the actor is more natural
+
+import os
+
 import imas
 from imas import imasdef
 import numpy as np
@@ -149,7 +151,7 @@ def CURDRIVE(idslist):
 
 idslist = {}
 
-user_name='kims12'
+user_name = os.getenv('USER')
 
 pulse_in = 170
 run_in = 1
@@ -161,7 +163,7 @@ decimation = 10
 
 
 # Time since external transport actors fire
-timeExternalTransport = 1.52
+timeExternalTransport = 2.0
 
 
 # Reading initial IDS's
