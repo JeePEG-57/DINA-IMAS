@@ -1565,14 +1565,14 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
           return
         
         for psi in PSitem:
-          psi.time = []
-          psi.data = []
+          psi.time.resize(nt)
+          psi.data.resize(nt)
 
         for i in range(nt):
           ins = record["items"][i]
           for j in range(nv):
-            PSitem[j].time.append(float(ins[0].text()))
-            PSitem[j].data.append(float(ins[1+j].text())*mult)
+            PSitem[j].time[i] = float(ins[0].text())
+            PSitem[j].data[i] = float(ins[1+j].text())*mult
              
         
         #print("pulse_schedule field saved: " + record["title"] + "; nt,nv=" + str(nt) + ", " + str(nv))
