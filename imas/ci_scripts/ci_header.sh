@@ -22,7 +22,8 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 
-module load IMAS/3.30.0-4.8.6
+#module load IMAS/3.30.0-4.8.6
+module load IMAS
 
 # Fixed memory leak in PyUAL
 #module use -p /home/ITER/hoeneno/public/imas/etc/modulefiles 
@@ -57,11 +58,12 @@ if kepler_avail 2> /dev/null | grep -q $KEPLERMODULE; then
    kepler_load $KEPLERMODULE
 else
    echo "run bash ci_build.sh keplerinstall"
-   return
+   #return
 fi
 
 
-module load FC2K/4.13.2-Java-1.8
+#module load FC2K/4.13.2-Java-1.8
+module load FC2K
 
 #module use /home/ITER/hoeneno/public/imas/etc/modulefiles
 #module load FC2K/4.13.1-7-g674246d
@@ -76,10 +78,10 @@ module load TotalView
 
 export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
-module load PyQt5
+#module load PyQt5
 
-#module load Viz 
-module load Viz/2.4.2-intel-2018a-Python-3.6.4
+module load Viz 
+#module load Viz/2.4.2-intel-2018a-Python-3.6.4
 
 export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
