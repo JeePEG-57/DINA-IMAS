@@ -58,7 +58,8 @@ real(ids_real) ::time_eq
     integer,parameter :: ntet = 134
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz
     integer,parameter :: npf = 15, ncam = 100
-
+    integer,parameter :: npfa = 12, npfx = npf-npfa, npfp = npfx+ncam
+    integer :: npf0, ncam0
     
       integer,parameter :: kint=200      
       real (ids_real),dimension(:) :: c_input1(kint),c_input2(kint)
@@ -91,12 +92,13 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     
     real(ids_real) :: xbound(ntet),ybound(ntet)
     
-    real(ids_real) :: vchopper(npf),pf(npf),tcam(ncam)
+    real(ids_real) :: vchopper(npfa),pf(npf),tcam(ncam)
     
     real(ids_real) :: pstab(npo), pptab(npo),fptab(npo)
 
     real(ids_real),parameter :: pi = 3.14159265358979323846
 
+    real(ids_real) :: coef_ppx,coef_pffx,pmu0
 
   integer :: TimeSteps=1, CurTimeStep=1
   
@@ -153,19 +155,36 @@ if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e5) then
 	tpl = equilibrium0%time_slice(its)%global_quantities%ip
 	n = size(equilibrium0%time_slice(its)%profiles_1d%rho_tor_norm)
 	pstab(1:n) = equilibrium0%time_slice(its)%profiles_1d%rho_tor_norm(1:n)
-	pptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%dpressure_dpsi(1:n)
 	
-	fptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%f_df_dpsi(1:n)
+	rs0=equilibrium0%vacuum_toroidal_field%r0
 	
-! 	ncam = size(pf_passive0%loop, 1)
-	do i=1,ncam
-	  tcam(i) = pf_passive0%loop(i)%current(1)
-	enddo
 	
-! 	npf = size(pf_active0%coil, 1)
-	do i=1,npf
+	pmu0=4.d0*pi*1.d-7
+    coef_ppx=1./(2*pi)/(rs0)*10./pmu0
+    coef_pffx=1./(2*pi)*0.5d0*(rs0)*10.
+    
+    print *,' coef_ppx coef_pffx rs0 pmu0=',coef_ppx,coef_pffx,rs0,pmu0
+    
+!    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = coef_ppx*pptab(1:n)
+!    equilibrium%time_slice(CurTimeStep)%profiles_1d %f_df_dpsi(1:n) = coef_pffx*fptab(1:n)
+
+	pptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%dpressure_dpsi(1:n)/coef_ppx
+	
+	fptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%f_df_dpsi(1:n)/coef_pffx
+	
+	npf0 = size(pf_active0%coil, 1)
+	do i=1,npf0
 	  pf(i) =  pf_active0%coil(i)%current%data(1)
 	enddo
+	
+ 	ncam0 = size(pf_passive0%loop, 1)
+ 	!first 3 passive --> last 3 active
+	do i=1,npfx
+	  pf(npf0+i) = pf_passive0%loop(i)%current(1)
+	enddo
+	do i=1,ncam0-npfx
+	  tcam(i) = pf_passive0%loop(npfx+i)%current(1)
+	enddo	
  
 nact=size(em_coupling0%mutual_grid_active,2)
 print *,'size em_coupling0%mutual_grid_active',nact

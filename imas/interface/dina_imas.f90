@@ -120,6 +120,8 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: p_sep,greenwald,gfus,qtep
     
     real(ids_real),parameter :: pi = 3.14159265358979323846
+    
+    real(ids_real) :: coef_ppx,coef_pffx,pmu0
 
 
   integer :: TimeSteps, CurTimeStep
@@ -851,8 +853,26 @@ summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
     equilibrium%time_slice(CurTimeStep)%profiles_1d%psi(1:n) = psi_1D(1:n)
 
     equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(1:n) = press(1:n) ![Pa]
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = pptab(1:n)
-    equilibrium%time_slice(CurTimeStep)%profiles_1d %f_df_dpsi(1:n) = fptab(1:n)
+
+! 	pptab_dina =-1./(rs0*1.d-2)*pptab*10./pmu0 
+!	fptab_dina=-fptab*0.5d0*(rs0*1.d-2)*10./pmu0
+
+! 	pptab_iter =-pptab_dina/(2*pi)
+!	fptab_iter=-fptab_dina/(2*pi)
+
+! 	pptab_iter =pptab/(2*pi)/(rs0*1.d-2)*10./pmu0
+!	fptab_iter=fptab/(2*pi)*0.5d0*(rs0*1.d-2)*10./pmu0
+
+    
+    pmu0=4.d0*pi*1.d-7
+    coef_ppx=1./(2*pi)/(rs0)*10./pmu0
+    coef_pffx=1./(2*pi)*0.5d0*(rs0)*10.
+    
+    print *,' coef_ppx coef_pffx rs0 pmu0=',coef_ppx,coef_pffx,rs0,pmu0
+    
+    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = coef_ppx*pptab(1:n)
+    equilibrium%time_slice(CurTimeStep)%profiles_1d %f_df_dpsi(1:n) = coef_pffx*fptab(1:n)
+ 
     
     
     equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
