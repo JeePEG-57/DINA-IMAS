@@ -92,7 +92,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     
     real(ids_real) :: xbound(ntet),ybound(ntet)
     
-    real(ids_real) :: vchopper(npfa),pf(npf),tcam(ncam)
+    real(ids_real) :: vchopper(npf),pf(npf),tcam(ncam)
     
     real(ids_real) :: pstab(npo), pptab(npo),fptab(npo)
 
