@@ -36,9 +36,11 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.eq1 = ieq1
         self.pfa1 = imas_obj1.pf_active
         self.pfp1 = imas_obj1.pf_passive
+        self.wall = imas_obj1.wall
 
         self.pfa1.get()
         self.pfp1.get()
+        self.wall.get()   
            
         imas_obj1.close()
         
@@ -176,8 +178,8 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.gran_r=[]
         self.gran_z=[]
         self.test_gran2d=[]
-        self.axy=self.eq1.time_slice[25].profiles_2d[0].grid.dim1
-        self.axx=self.eq1.time_slice[25].profiles_2d[0].grid.dim2
+        self.axx=self.eq1.time_slice[25].profiles_2d[0].grid.dim1
+        self.axy=self.eq1.time_slice[25].profiles_2d[0].grid.dim2
         for i  in range(self.tor):
           j0 = len(self.eq1.time_slice[i].boundary.outline.r)
           for j in range(len(self.eq1.time_slice[i].boundary.outline.r)):
@@ -190,7 +192,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
           self.gran_z.append(self.eq1.time_slice[i].boundary.outline.z[0:j0-1])
 
         for i  in range(self.tor):
-            self.psi2d_t.append(self.eq1.time_slice[i].profiles_2d[0].psi)
+            self.psi2d_t.append(self.eq1.time_slice[i].profiles_2d[0].psi.transpose())
             self.psi_sep_t.append(self.eq1.time_slice[i].boundary_separatrix.psi)
             self.pmag.append(self.eq1.time_slice[i].global_quantities.psi_axis)
             self.pbound.append(self.eq1.time_slice[i].global_quantities.psi_boundary)
@@ -220,8 +222,17 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.facty=[]
         self.tor_geom=56
         #for i in range(tor):
-        self.limiterx.append(self.eq1.time_slice[0].coordinate_system.r[:,0])
-        self.limitery.append(self.eq1.time_slice[0].coordinate_system.z[:,0])
+        
+        #print("Wall data")
+        #print(len(self.wall.description_2d))
+        #print(len(self.wall.description_2d[0].limiter.unit))
+        #print(len(self.wall.description_2d[0].limiter.unit[0].outline.r))
+        if (len(self.wall.description_2d) > 0):
+          self.limiterx.append(self.wall.description_2d[0].limiter.unit[0].outline.r[:])
+          self.limitery.append(self.wall.description_2d[0].limiter.unit[0].outline.z[:])
+        else:
+          print("No wall limiter data")
+        
         for i in range(len(self.pfa1.coil)):
             for j in range(len(self.pfa1.coil[0].element)):
                 self.factx.append(self.pfa1.coil[i].element[j].geometry.outline.r)

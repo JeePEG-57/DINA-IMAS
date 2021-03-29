@@ -157,7 +157,7 @@ pulse_in = 170
 run_in = 1
 
 pulse_out = 170
-run_out = 400
+run_out = 401
 
 decimation = 10
 
@@ -177,6 +177,7 @@ imas_entry_init.open()
 idslist['equilibrium'] = imas_entry_init.get('equilibrium', occurrence = 0)
 
 idslist['em_coupling'] = imas_entry_init.get('em_coupling')
+idslist['wall'] = imas_entry_init.get('wall')
 idslist['pf_active'] = imas_entry_init.get('pf_active')
 idslist['pf_passive'] = imas_entry_init.get('pf_passive')
 idslist['core_profiles'] = imas_entry_init.get('core_profiles')
@@ -249,13 +250,11 @@ while True:
   #te0 = core_profiles.profiles_1d[0].electrons.temperature[0:n1-1]
   #tq0 = core_profiles.profiles_1d[0].t_i_average[0:n1-1]
   
-  
-  
-  # Put this slice to the database
-  #for key in idslist:
-  #  imas_entry_result.put_slice(idslist[key])
-  
+   
+  # Put this slice to the database 
   if (iloop%decimation == 0 or iloop == iloop_start):
+    #for key in idslist:
+    #  imas_entry_result.put_slice(idslist[key])
     imas_entry_result.put_slice(idslist['em_coupling'])
     imas_entry_result.put_slice(idslist['equilibrium'])
     #imas_entry_result.put_slice(idslist['magnetics'])
@@ -265,6 +264,7 @@ while True:
     imas_entry_result.put_slice(idslist['core_sources'])
     imas_entry_result.put_slice(idslist['core_transport'])
     imas_entry_result.put_slice(idslist['summary'])
+    imas_entry_result.put_slice(idslist['wall'])
   
   
   

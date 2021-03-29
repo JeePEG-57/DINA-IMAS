@@ -1875,6 +1875,31 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       dat1.put()
       print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
+      
+      
+      wall = imas_obj1.wall     
+      wall.get()      
+      wall.ids_properties.homogeneous_time = 1
+      wall.time.resize(1)
+      wall.time[0] = 0.0
+      
+      wall.description_2d.resize(1)
+      wall.description_2d[0].type.index = 0
+      
+      wall.description_2d[0].limiter.type.index = 0
+      
+      wall.description_2d[0].limiter.unit.resize(1)
+      limiter = tokamakdata["limiter"]
+      nlim = len(limiter["items_r"])
+      wall.description_2d[0].limiter.unit[0].outline.r.resize(nlim)
+      wall.description_2d[0].limiter.unit[0].outline.z.resize(nlim)
+      for i in range(nlim):       
+        wall.description_2d[0].limiter.unit[0].outline.r[i] = float(limiter["items_r"][i].text())
+        wall.description_2d[0].limiter.unit[0].outline.z[i] = float(limiter["items_z"][i].text())
+      
+      wall.put()
+      
+      
       imas_obj1.close()
 
 

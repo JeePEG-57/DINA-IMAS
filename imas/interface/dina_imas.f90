@@ -810,15 +810,6 @@ summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
     allocate(equilibrium%time_slice(TimeSteps))
     allocate(equilibrium%time(TimeSteps))
   
-    
-    n1 = nz
-    n2 = nr
-
-    !allocate(equilibrium%coordinate_system%grid%dim1(n1,TimeSteps))
-    !allocate(equilibrium%coordinate_system%grid%dim2(n2,TimeSteps))
-    allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%r(ke,1))
-    allocate(equilibrium%time_slice(CurTimeStep)%coordinate_system%z(ke,1))
-
 
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%psi(n))
@@ -835,11 +826,11 @@ summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
 
 
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(nz,nr))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(nz,nr))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(nr,nz))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(nr,nz))
     
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(nz))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(nr))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(nr))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(nz))
     
     
     allocate(equilibrium%vacuum_toroidal_field%b0(TimeSteps))
@@ -897,11 +888,11 @@ summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
     equilibrium%time_slice(CurTimeStep)%boundary%lcfs%r(1:ntet) = xbound(1:ntet)
     equilibrium%time_slice(CurTimeStep)%boundary%lcfs%z(1:ntet) = ybound(1:ntet)
 
-    !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim1(1:n1)=x(1:n1) ![m]
-    !equilibrium%time_slice(CurTimeStep)%coordinate_system%grid%dim2(1:n2)=y(1:n2) ![m]
+      
+    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid_type%index = 1 ! Rectangular ala eqdsk   
 
-    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nz)=y(1:nz)
-    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nr)=x(1:nr)
+    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nr)=x(1:nr)
+    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nz)=y(1:nz)
 
 
   !  call write_graf_imas0(nr,nz,ke, &
@@ -911,20 +902,27 @@ summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
 
 
 
-    do i=1,nz
-    do j=1,nr
-      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)=psi(j,i)
-      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(i,j)=curr_d(j,i)
-    enddo
-    enddo
+!     do i=1,nz
+!     do j=1,nr
+!       equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)=psi(j,i)
+!       equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(i,j)=curr_d(j,i)
+!     enddo
+!     enddo
+!     
+! 
+!     do i=1,nz
+!     do j=1,nr
+!       psi1(j,i) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)
+!     enddo
+!     enddo
+
+    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi = psi
+    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor = curr_d
     
-
-    do i=1,nz
-    do j=1,nr
-      psi1(j,i) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)
-    enddo
-    enddo
-
+    psi1 = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi
+    
+    
+        
     i_wr=0
     if(i_wr.eq.1)then
 
@@ -936,9 +934,6 @@ summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
 
     end if
     
-
-    equilibrium%time_slice(CurTimeStep)%coordinate_system%r(1:ke,1) = xu(1:ke)
-    equilibrium%time_slice(CurTimeStep)%coordinate_system%z(1:ke,1) = yu(1:ke)
 
 
     equilibrium%time_slice(CurTimeStep)%time = tt
