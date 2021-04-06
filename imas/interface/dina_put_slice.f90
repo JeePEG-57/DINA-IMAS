@@ -1,5 +1,5 @@
 subroutine dina_put_slice( pf_active, pf_passive , equilibrium, core_profiles, &
-    & core_sources, core_transport, bndcond, summary, &
+    & core_sources, core_transport, bndcond, summary, wall, &
     & pulse, run, iloop, trig)
 
 
@@ -14,6 +14,7 @@ type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources
 type (ids_transport_solver_numerics) :: bndcond
 type (ids_summary) :: summary
+type (ids_wall) :: wall
 
 
 integer :: pulse, run, iloop, trig
@@ -53,6 +54,8 @@ if (iloop == 1) then
 
   call ids_put(idx,"transport_solver_numerics",bndcond)
   call ids_put(idx,"summary",summary)
+  
+  call ids_put(idx,"wall",wall)
 
   write(*,*)  'Pulse put!'
 
@@ -87,6 +90,9 @@ else
   write(*,*)  'Put summary'
   call ids_put_slice(idx,"summary",summary)
 
+  write(*,*)  'Put wall'
+  call ids_put_slice(idx,"wall",wall)  
+  
   write(*,*)  'Slices put!'
 
 endif
@@ -101,7 +107,7 @@ call imas_close(idx)
 
 nz = size(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(:))
 nr = size(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(:))
-ke = size(equilibrium%time_slice(CurTimeStep)%coordinate_system%r(:,1))
+ke = size(wall%description_2d(1)%limiter%unit(1)%outline%r)
 
 write(*,*) 'nr nz ke = ',nr,nz,ke
 
@@ -112,24 +118,26 @@ allocate(xu(ke))
 allocate(yu(ke))
 
 !write(*,*) 'test1'
-y(1:nz) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nz)
-x(1:nr) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nr)
+x(1:nr) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nr)
+y(1:nz) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nz)
 
 
 !write(*,*) 'test2'
 
-    do i=1,nz
-    do j=1,nr
-      psi(j,i) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)
-    enddo
-    enddo
+    !do i=1,nz
+    !do j=1,nr
+    !  psi(j,i) = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(i,j)
+    !enddo
+    !enddo
+    psi = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi
 
 !write(*,*) 'test3'
-
-xu(1:ke) = equilibrium%time_slice(CurTimeStep)%coordinate_system%r(1:ke,1)
+xu(1:ke) = wall%description_2d(1)%limiter%unit(1)%outline%r(1:ke)
+!xu(1:ke) = equilibrium%time_slice(CurTimeStep)%coordinate_system%r(1:ke,1)
 
 !write(*,*) 'test4'
-yu(1:ke) = equilibrium%time_slice(CurTimeStep)%coordinate_system%z(1:ke,1)
+yu(1:ke) = wall%description_2d(1)%limiter%unit(1)%outline%z(1:ke)
+!yu(1:ke) = equilibrium%time_slice(CurTimeStep)%coordinate_system%z(1:ke,1)
 
 !write(*,*) 'test5'
 

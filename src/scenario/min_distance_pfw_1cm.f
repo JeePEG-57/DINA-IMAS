@@ -5,6 +5,8 @@
 c!!!	common
 c!!!     *  /eq8/jbound,xbound(ntet),ybound(ntet),alfa0_xx
 
+        dimension dNB_xx(24)
+
         call min_dist_c_pfw(jbound,xbound,ybound,
      &       dNB_xx,psep,
      *  rp1,zp1,dist1,rp2,zp2,dist2)

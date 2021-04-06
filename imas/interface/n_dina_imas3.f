@@ -374,27 +374,32 @@ c=================================================
 
       
 ! dina_wr_output is aimed to additional output parameters      
-        subroutine dina_wr_output(Pohm, Wdop, w_alfa, wtor, w_Be, w_W, w_Ar, w_Ne, w_imp, w_rad, w_heat)
-        
+!        subroutine dina_wr_output(Pohm, Wdop, w_alfa, wtor, w_Be, w_W, w_Ar, w_Ne, w_imp, w_rad, w_heat)
+        subroutine dina_wr_output(wr_imas_in)  
         include 'double.inc'
         
-        common/maksim_02/wr
-        dimension wr(150)
-
+        common/maksim_02/wr,wr_imas       
+        !dimension wr_imas(150)
+        !real*8 :: wr_imas(150)
+        
+        wr_imas_in = wr_imas
+        
 !     * /c_br4/wdh,p_oh
         
-        Pohm = wr(65)
-        wdop = wr(66)
-        w_alfa = wr(67)      
-        wtor = wr(84)
+        !wr_imas = wr
         
-        w_Be = wr(86)
-        w_W = wr(87)
-        w_Ar = wr(88)
-        w_Ne = wr(89)
-        w_imp = wr(90)
-        w_rad = wr(91)
-        w_heat = wr(71)
+        !Pohm = wr(65)
+        !wdop = wr(66)
+        !w_alfa = wr(67)      
+        !wtor = wr(84)
+        
+        !w_Be = wr(86)
+        !w_W = wr(87)
+        !w_Ar = wr(88)
+        !w_Ne = wr(89)
+        !w_imp = wr(90)
+        !w_rad = wr(91)
+        !w_heat = wr(71)
  
  
         return

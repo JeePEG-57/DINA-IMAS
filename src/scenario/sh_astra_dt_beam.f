@@ -1647,8 +1647,8 @@ c	read (*,*)
       equivalence (nn_b,nn)
       equivalence (n_tb,n_t)
       
-      equivalence (nn_b,nn)
-      equivalence (n_tb,n_t)
+      !equivalence (nn_b,nn)
+      !equivalence (n_tb,n_t)
 
       equivalence (poa_b,poa)
       equivalence (t_tb,t_t)

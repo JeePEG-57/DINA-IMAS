@@ -916,7 +916,9 @@ c
 	subroutine psi_tot_br()
 	include 'double.inc'
 	include 'new_com.inc'                                                  
-                                                                        
+              
+        dimension p_pl(nr,nz)
+                                                          
 	call psi_tot_br_c(  
      *  p_pl,i_bound,k_efit)    
                                                                         

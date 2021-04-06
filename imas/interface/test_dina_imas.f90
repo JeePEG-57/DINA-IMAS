@@ -12,13 +12,13 @@ subroutine dina_imas(&
   &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
-  & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+  & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
   & ,summary &
   & ,arr_in1, arr_out1 )
  
      use ids_schemas
 ! note that IDS0 are all prescribed, the others are dynamic
-type (ids_em_coupling)  :: em_coupling0
+type (ids_em_coupling)  :: em_coupling0, em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
@@ -45,7 +45,7 @@ interface
 end interface
 
 
-type (ids_em_coupling) :: em_coupling0
+type (ids_em_coupling) :: em_coupling0, em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
 type (ids_pf_active) :: pf_active0, pf_active
@@ -56,6 +56,7 @@ type (ids_core_transport)   :: core_transport
 type (ids_transport_solver_numerics) :: bndcond
 type (ids_pulse_schedule)   :: pulse_schedule
 type (ids_summary) :: summary
+type (ids_wall) :: wall
 
 real (ids_real) :: arr_in1(501), arr_out1(501)
 
@@ -123,6 +124,7 @@ call ids_get(idx0,"core_profiles",core_profiles0)
 call ids_get(idx0,"core_sources",core_sources0)
 call ids_get(idx0,"transport_solver_numerics",bndcond)
 call ids_get(idx0,"pulse_schedule",pulse_schedule)
+call ids_get(idx0,"wall",wall)
 
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
@@ -139,7 +141,7 @@ call dina_imas( em_coupling0, equilibrium0 &
  & , pf_active0,  pf_passive0, core_profiles0, core_sources0 &
  & , bndcond &
  & , pulse_schedule &
- & ,  equilibrium, &
+ & , em_coupling, equilibrium, &
  & magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
  & , summary &
  & , arr_in1,arr_out1)
@@ -201,7 +203,7 @@ write(*,*) 'Put ids to database, iloop = ', iloop
 flush(6)
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
- & core_sources, core_transport, bndcond, summary, &
+ & core_sources, core_transport, bndcond, summary, wall, &
 & pulse, run, iloop, err)
 
 

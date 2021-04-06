@@ -115,7 +115,8 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
     real(ids_real) :: pptab(npo),fptab(npo)
 
-    real(ids_real) :: Pohm,wdop,w_alfa,wtor, w_Be,w_W,w_Ar,w_Ne, w_imp,w_rad,w_heat
+    !real(ids_real) :: Pohm,wdop,w_alfa,wtor, w_Be,w_W,w_Ar,w_Ne, w_imp,w_rad,w_heat
+    real(ids_real) :: wr_imas(150)
     
     real(ids_real) :: p_sep,greenwald,gfus,qtep
     
@@ -555,7 +556,7 @@ write(*,*) '!!!dina_outp enter'
      & p_sep,greenwald,gfus,qtep)
      
 
-        call dina_wr_output(Pohm, Wdop, w_alfa, wtor, w_Be, w_W, w_Ar, w_Ne, w_imp, w_rad, w_heat)
+        call dina_wr_output(wr_imas)
         
 
 write(*,*) '!!!solpsza enter'
@@ -683,17 +684,48 @@ print *,' nact=',nact
 
 pf_active%ids_properties%homogeneous_time = 1
 
-do i=1,npfa
 
-    pf_active%coil(i)%current%data(1) = pf(i)
-!    pf_active%coil(i)%current%time(1) = dina_time
+pf_active%coil(1)%current%data(1) = wr_imas(35) ! CS3U
+pf_active%coil(1)%voltage%data(1) = wr_imas(46) ! CS3U
 
-    pf_active%coil(i)%voltage%data(1) = vchopper(i)
-!    pf_active%coil(i)%voltage%time(1) = dina_time
+pf_active%coil(2)%current%data(1) = wr_imas(36) ! CS2U
+pf_active%coil(2)%voltage%data(1) = wr_imas(47) ! CS2U
 
-end do
+pf_active%coil(3)%current%data(1) = wr_imas(37) ! CS1
+pf_active%coil(3)%voltage%data(1) = wr_imas(48) ! CS1
+
+pf_active%coil(4)%current%data(1) = wr_imas(38) ! CS2L
+pf_active%coil(4)%voltage%data(1) = wr_imas(49) ! CS2L
+
+pf_active%coil(5)%current%data(1) = wr_imas(39) ! CS3L
+pf_active%coil(5)%voltage%data(1) = wr_imas(50) ! CS3L
+
+pf_active%coil(6)%current%data(1) = wr_imas(40) ! PF1
+pf_active%coil(6)%voltage%data(1) = wr_imas(51) ! PF1
+
+pf_active%coil(7)%current%data(1) = wr_imas(41) ! PF2
+pf_active%coil(7)%voltage%data(1) = wr_imas(52) ! PF2
+
+pf_active%coil(8)%current%data(1) = wr_imas(42) ! PF3
+pf_active%coil(8)%voltage%data(1) = wr_imas(53) ! PF3
+
+pf_active%coil(9)%current%data(1) = wr_imas(43) ! PF4
+pf_active%coil(9)%voltage%data(1) = wr_imas(54) ! PF4
+
+pf_active%coil(10)%current%data(1) = wr_imas(44) ! PF5
+pf_active%coil(10)%voltage%data(1) = wr_imas(55) ! PF5
+
+pf_active%coil(11)%current%data(1) = wr_imas(45) ! PF6
+pf_active%coil(11)%voltage%data(1) = wr_imas(56) ! PF6
+
+
+
+pf_active%coil(12)%current%data(1) = wr_imas(59) ! VS3
+pf_active%coil(12)%voltage%data(1) = wr_imas(62) ! VS3
+
 
 pf_active%time(1) = dina_time
+
 
 
 print *,' npass=',npass
@@ -880,6 +912,9 @@ summary%global_quantities%greenwald_fraction%value(CurTimeStep) = greenwald
 	equilibrium%time_slice(CurTimeStep)%global_quantities%q_95 = q_95
 	equilibrium%time_slice(CurTimeStep)%global_quantities%w_mhd = wen2 ![J]
 
+	
+	
+	
         equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%r = rmajor
         equilibrium%time_slice(CurTimeStep)%boundary%minor_radius = rminor
         equilibrium%time_slice(CurTimeStep)%boundary%elongation = elong
@@ -1138,7 +1173,7 @@ allocate(core_sources%source(isrc)%profiles_1d(CurTimeStep)%j_parallel(n))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = Pohm
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(65) !Pohm
 
 
  isrc = 4
@@ -1146,7 +1181,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wdop
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(66) !wdop
   
   
  isrc = 5
@@ -1154,7 +1189,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_alfa  
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(67) !w_alfa  
   
   
  isrc = 6
@@ -1162,7 +1197,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wtor   
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(84) !wtor   
    
  
  isrc = 7
@@ -1170,7 +1205,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_Be  
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(86) !w_Be  
  
  
  isrc = 8
@@ -1178,7 +1213,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_W  
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(87) !w_W  
  
  
  isrc = 9
@@ -1186,7 +1221,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_Ar 
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(88) !w_Ar 
  
  
  isrc = 10
@@ -1194,7 +1229,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_Ne 
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(89) !w_Ne 
   
   
  isrc = 11
@@ -1202,7 +1237,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_imp 
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(90) !w_imp 
   
  
  isrc = 12
@@ -1210,7 +1245,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_rad 
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(91) !w_rad 
  
  
  isrc = 13
@@ -1218,7 +1253,7 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 
   core_sources%source(isrc)%global_quantities(CurTimeStep)%time = tt
-  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = w_heat  
+  core_sources%source(isrc)%global_quantities(CurTimeStep)%power = wr_imas(71) !w_heat  
  
  
  

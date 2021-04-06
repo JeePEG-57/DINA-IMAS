@@ -3630,6 +3630,8 @@ c      if(kpr.eq.1)print 71,apr,(qde0(i),i=1,n)
 	include 'double.inc'
       include 'new_com.inc'
 
+      dimension sb_lh(n)
+
       call lh_heat_c(n,
      *  qde0,sb_lh,kpr)
 
