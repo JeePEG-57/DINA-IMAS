@@ -1,6 +1,6 @@
 subroutine dina_put_slice( pf_active, pf_passive , equilibrium, core_profiles, &
-    & core_sources, core_transport, bndcond, summary, wall, &
-    & pulse, run, iloop, trig)
+    & core_sources, core_transport, bndcond, summary, wall, em_coupling, magnetics, &
+    & pulse, run, idx, iloop, trig)
 
 
 use ids_schemas
@@ -14,14 +14,16 @@ type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources
 type (ids_transport_solver_numerics) :: bndcond
 type (ids_summary) :: summary
+type (ids_em_coupling) :: em_coupling
+type (ids_magnetics) :: magnetics
 type (ids_wall) :: wall
 
 
 integer :: pulse, run, iloop, trig
+integer :: idx
 
 
-
-integer :: i, k, j, idx
+integer :: i, k, j
 integer :: nr, nz, n1, n2, ke, i_wr
 
 integer :: TimeSteps, CurTimeStep
@@ -39,10 +41,12 @@ if (iloop == 1) then
 
 
   write(*,*) 'Create new pulse file...'
-!   call imas_create('ids',pulse,run,1,1,idx)
+
   call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
   write(*,*) 'Pulse file is created, put non-timed...'
 
+  call ids_put(idx,"em_coupling",em_coupling)
+  call ids_put(idx,"magnetics",magnetics)
 
   call ids_put(idx,"pf_active",pf_active)
   call ids_put(idx,"pf_passive",pf_passive)
@@ -62,10 +66,16 @@ if (iloop == 1) then
 else
 
   write(*,*) 'Open pulse file...'
-!   call imas_open('ids',pulse,run,idx) 
-  call imas_open_env('ids',pulse,run,idx,user,'test','3') 
+
+!  call imas_open_env('ids',pulse,run,idx,user,'test','3') 
   write(*,*)  'Pulse file is opened, put slices'
 
+  write(*,*)  'Put em_coupling'
+  call ids_put_slice(idx,"em_coupling",em_coupling)
+  
+  write(*,*)  'Put magnetics'
+  call ids_put_slice(idx,"magnetics",magnetics) 
+  
   write(*,*)  'Put pf_active'
   call ids_put_slice(idx,"pf_active",pf_active)
 
@@ -98,7 +108,7 @@ else
 endif
 
 
-call imas_close(idx)
+!call imas_close(idx)
 
 
 

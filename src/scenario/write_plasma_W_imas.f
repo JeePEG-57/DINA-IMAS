@@ -185,9 +185,10 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
      *  /vic_018/r_lh_new
 c*********************************************************
      *  /maksim_01/tqc_xx,emag
-     *  /maksim_02/wr,wr_imas
-	
-        dimension dNB_xx(24),wr(150),wr_imas(150)
+     
+        common/maksim_03/wr,wr_imas       
+        dimension wr(150), wr_imas(150)
+        dimension dNB_xx(24)
 
 c******* Begin of Sign changing ******
         tpl_imas=tpl*(-1)
@@ -564,7 +565,7 @@ cccccc	wr(73)=r_lh
         wr_imas(66)=wdop*1.d6
         wr_imas(67)=w_alfa*1.d6
         wr_imas(68)=w_fusion*1.d6
-        wr_imas(69)=gfus*(1.d6/3.6d3)
+        wr_imas(69)=gfus*(1.d6*3.6d3)
         wr_imas(70)=qtep
         wr_imas(71)=(wdop+w_alfa+Pohm)*1.d6   !!! take care about Pohm !
         wr_imas(72)=p_hl*1.d6
@@ -593,7 +594,7 @@ cccccc  wr_imas(73)=r_lh
         wr_imas(93)=tene/1000.
         wr_imas(94)=rsep2/100.
         wr_imas(95)=zsep2/100.
-        wr_imas(96)=gaps(n_ga+1)/100.
+        wr_imas(96)=gaps(n_ga+1)/100. !dsep
         wr_imas(97)=rsep2_r/100.
         wr_imas(98)=zsep2_r/100.
         wr_imas(99)=bz_left

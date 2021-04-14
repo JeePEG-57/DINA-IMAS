@@ -3638,7 +3638,7 @@ c
 	DO i=1,nr
            DO j=1,nz
               kk=(i-1)*nz+j
-        curr_d(i,j)=f(kk)*coef1*1.e7
+        curr_d(i,j)=f(kk)*coef
               if(abs(f(kk)).gt.1.e-5)then
                  k=k+1
                  pl_cur(k)=f(kk)*coef1

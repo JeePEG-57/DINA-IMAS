@@ -200,14 +200,13 @@ c ============ outputs ==============================================
      * q_ax_xx,q_95_xx,rs0_xx,bt0_xx,wen2_xx,tt_xx,
      * ai_xx,psi_1D_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
      * x_xx,y_xx,psi_xx,psi_bnd_xx,psi_sep_xx,curr_d_xx,
-     * xbound_xx,ybound_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,
+     * ksepa_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,gaps_xx,dsep_xx,
      * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,ajae_xx,zeff_xx,press_xx,qe0_xx,qq0_xx,
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,palf_xx,zeff0_xx,vloop_xx,
      * tene_xx,teit_98_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
      * pptab_xx,fptab_xx,
-     * rsep_xx,zsep_xx, rsep2_xx,zsep2_xx, rsep2_r_xx,zsep2_r_xx, dsep_xx,
-     * p_sep_xx,greenwald_xx,gfus_xx,qtep_xx)
+     * n_bnd_xx,xbound_xx,ybound_xx,n_sep_xx,x_sep_xx,y_sep_xx, n_sep2_xx,x_sep2_xx,y_sep2_xx)
 
 
 	include 'double.inc'
@@ -225,9 +224,10 @@ c ============ outputs ==============================================
      *  q_xx(*),x_xx(*),y_xx(*)
 	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),ajae_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
+        dimension xbound_xx(*),ybound_xx(*),x_sep_xx(*),y_sep_xx(*),x_sep2_xx(*),y_sep2_xx(*) 
      
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
-        dimension xbound_xx(*),ybound_xx(*)
+        dimension gaps_xx(*)
         dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
         dimension pptab_xx(*),fptab_xx(*)
         dimension press_xx(*),zeff_xx(*)
@@ -237,7 +237,7 @@ c ============ outputs ==============================================
 
 !	pi=3.14159
 	
-	tpl_xx=tpl*1000.d0
+	tpl_xx = -tpl*1000.d0
 	
 !	print *,' n_xx tpl_xx=',n_xx,tpl_xx
 	
@@ -255,7 +255,7 @@ c ============ outputs ==============================================
         q_95_xx=q_95
 	rs0_xx=rs0/100.d0
 	bt0_xx=bt0/10.d0
-	wen2_xx=wen2*1.d6
+	wen2_xx=0.d0 ! wr_imas
 	tt_xx=tt/1000.d0
 
         betap_xx = betj
@@ -279,37 +279,46 @@ c ============ outputs ==============================================
         rminor_xx = eu/100.d0
         elong_xx = elong
         tri_xx = tri
-
-        rsep_xx = rsep/100.
-        zsep_xx = zsep/100.
-        rsep2_xx = rsep2/100.
-        zsep2_xx = zsep2/100.
-        rsep2_r_xx = rsep2_r/100.
-        zsep2_r_xx = zsep2_r/100.
-        dsep_xx = gaps(n_ga+1)/100.
-               
-        p_sep_xx = p_sep_tot*1.d6
-        greenwald_xx = gamma
-        gfus_xx = gfus*1.d6
-        qtep_xx = qtep
+      
         
-        do i=1,ntet
+        ksepa_xx = ksepa 
+        
+        n_bnd_xx = jbound
+        do i=1,jbound
            xbound_xx(i) = xbound(i)*1.d-2
            ybound_xx(i) = ybound(i)*1.d-2
         end do
+        
+        n_sep_xx = n_sep
+        do i=1,n_sep
+           x_sep_xx(i) = x_sep(i)*1.d-2
+           y_sep_xx(i) = y_sep(i)*1.d-2
+        end do
+        
+        n_sep2_xx = n_sep2
+        do i=1,n_sep2
+           x_sep2_xx(i) = x_sep2(i)*1.d-2
+           y_sep2_xx(i) = y_sep2(i)*1.d-2
+        end do
+        
+        do i=1,n_ga
+          gaps_xx(i) = gaps(i)*1.d-2
+        enddo
+        dsep_xx = gaps(n_ga+1)*1.d-2
+        
 c=================================================
 
 	do i=1,n
 	   ai_xx(i)=ai(i)
-	   psi_1D_xx(i)=psval(i)*1.d-5*2.*pi
+
 	   te0_xx(i)=te0(i)
 	   tq0_xx(i)=tq0(i)
-!	   pne_xx(i)=pne(i)*1.e19
-	   pne_xx(i)=pne(i)
+	   pne_xx(i)=pne(i)*1.d19
 	   tok1_xx(i)=tok1(i)*1.d7
 	   q_xx(i)=q(i)
 	   zeff_xx(i)=zeff(i)
 
+	   psi_1D_xx(i)=psval(i)*1.d-5*2.*pi
 !	   pptab_xx(i)=pptab(i)
 !	   fptab_xx(i)=fptab(i)
 
@@ -321,12 +330,12 @@ c=================================================
 	end do
 	
 	do i=1,n
-	   pd0_xx(i)=pd0(i)
-	   pt0_xx(i)=pt0(i)
+	   pd0_xx(i)=pd0(i)*1.d19
+	   pt0_xx(i)=pt0(i)*1.d19
 	   sigk_xx(i)=sigk(i)
-	   ajb_xx(i)=ajb(i)
-	   aj0_xx(i)=aj0(i)
-	   ajae_xx(i)=ajae(i)
+	   ajb_xx(i)=ajb(i)*1.d7
+	   aj0_xx(i)=aj0(i)*1.d7
+	   ajae_xx(i)=ajae(i)*1.d7
 	   qe0_xx(i)=qe0(i)
 	   qq0_xx(i)=qq0(i)
 	end do
@@ -344,9 +353,9 @@ c=================================================
 
 	do i=1,nr
 	   do j=1,nz
-	      psi_xx(i,j)=psi(i,j)*1.d-5*2.*pi
+	      psi_xx(i,j) = psi(i,j)*1.d-5*2.*pi
 
-              curr_d_xx(i,j)=curr_d(i,j)
+              curr_d_xx(i,j) = curr_d(i,j)*(-1.d7)
 	   end do
 	end do
 
@@ -357,7 +366,7 @@ c=================================================
 	enddo
 	
 	do i=1,ncam
-	   tcam_xx(i) = tcam(i)*1.d3
+	   tcam_xx(i) = tcam(i)*(-1.d3)
 	enddo
 
 	if(kpr.eq.1)print *,' tt t_vde=',tt,t_vde
@@ -377,9 +386,13 @@ c=================================================
 !        subroutine dina_wr_output(Pohm, Wdop, w_alfa, wtor, w_Be, w_W, w_Ar, w_Ne, w_imp, w_rad, w_heat)
         subroutine dina_wr_output(wr_imas_in)  
         include 'double.inc'
+       
         
-        common/maksim_02/wr,wr_imas       
-        !dimension wr_imas(150)
+        common/maksim_03/wr,wr_imas       
+        dimension wr(150), wr_imas(150)
+        
+        dimension wr_imas_in(150)
+        
         !real*8 :: wr_imas(150)
         
         wr_imas_in = wr_imas
@@ -445,7 +458,7 @@ c=================================================
 	do i=1,n
 	   te0(i)=te0_xx(i)
 	   tq0(i)=tq0_xx(i)
-	   pne(i)=pne_xx(i)
+	   pne(i)=pne_xx(i)*1.d-19
 	end do
 
       apr='--te0-' 
@@ -458,11 +471,11 @@ c=================================================
    71 FORMAT(20X,A20/,(6(1pE10.3)))
 	
 	do i=1,n
-	   pd0(i)=pd0_xx(i)
-	   pt0(i)=pt0_xx(i)
+	   pd0(i)=pd0_xx(i)*1.d-19
+	   pt0(i)=pt0_xx(i)*1.d-19
 	   sigk(i)=sigk_xx(i)
-	   ajb(i)=ajb_xx(i)
-	   aj0(i)=aj0_xx(i)
+	   ajb(i)=ajb_xx(i)*1.d-7
+	   aj0(i)=aj0_xx(i)*1.d-7
 	   qe0(i)=qe0_xx(i)
 	   qq0(i)=qq0_xx(i)
 	end do

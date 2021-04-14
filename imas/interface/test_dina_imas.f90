@@ -203,8 +203,8 @@ write(*,*) 'Put ids to database, iloop = ', iloop
 flush(6)
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
- & core_sources, core_transport, bndcond, summary, wall, &
-& pulse, run, iloop, err)
+ & core_sources, core_transport, bndcond, summary, wall, em_coupling, magnetics, &
+& pulse, run, idx, iloop, err)
 
 
 endif
@@ -242,7 +242,7 @@ if (summary%time(1).gt.tmax) exit
 
 end do
 
-!call imas_close(idx)
+call imas_close(idx)
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 write(*,*) 'DINA_IMAS loop finished, clean up'
