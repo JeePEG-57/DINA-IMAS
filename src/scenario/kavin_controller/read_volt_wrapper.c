@@ -32,18 +32,9 @@
 /* %%%-SFUNWIZ_wrapper_includes_Changes_BEGIN --- EDIT HERE TO _END */
 #include <math.h>
 #include<stdio.h>
-extern FILE*f;
 /* %%%-SFUNWIZ_wrapper_includes_Changes_END --- EDIT HERE TO _BEGIN */
 #define u_width 
 #define y_width 500
-
-struct t15_mem2
-{
-int N; double y[500][20];
-int k_time; 
-};
-
-	  struct t15_mem2 mem2;
 /*
  * Create external references here.  
  *
@@ -67,45 +58,14 @@ void read_volt_Outputs_wrapper(real_T *y0,
       y1[0].re = u1[0].re;
       y1[0].im = u1[0].im;
 */
-int i,j,k,N; static int kl; static double y[500][20];char b[256];
-int k_time, ii; double y2; 
+int i,j,k,N; static int kl; static double y[500][20]; FILE*f;char b[1024];
 
 if(kl==0){
-	printf("+++volt.dat \n");
-	N=mem2.N; /*mexPrintf(" N %d\n",N);*/
-	k_time=mem2.k_time;
-
-for(k=0;k<k_time;k++){
-	printf("+++k==   %d\n",k);
-for(ii=0;ii<N;ii++){
-	y[k][ii]=mem2.y[k][ii];}
-}
-
-
-k=1;
-printf("+++k==   %d\n",k);
-for(ii=0;ii<N;ii++){
-printf(" %g",y[k][ii]);
-}
-printf("\n");
-k=10;
-printf("+++k==   %d\n",k);
-for(ii=0;ii<N;ii++){
-printf(" %g",y[k][ii]);
-}
-printf("\n");
-k=k_time-1;
-printf("+++k==   %d\n",k);
-for(ii=0;ii<N;ii++){
-printf(" %g",y[k][ii]);
-}
-printf("\n");
-
-i=k_time;
-
-printf("+++i  N  ii k %d %d %d %d\n",i,N,ii,k);
-
-//fclose(f);
+N=*n_mc; /*mexPrintf(" N %d\n",N);*/
+f=fopen("volt.dat","r");fgets(b,1023,f);i=0;
+while(N==fscanf(f,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+y[i],y[i]+1,y[i]+2,y[i]+3,y[i]+4,y[i]+5,y[i]+6,y[i]+7,y[i]+8,y[i]+9,y[i]+10,y[i]+11))i++;
+fclose(f);
 /*mexPrintf(" i %d\n",i);*/
 for(k=0;k<N;k++)for(j=i;j<500;j++)y[j][k]=0;
 for(j=i;j<500;j++)y[j][0]=y[j-1][0]+1;

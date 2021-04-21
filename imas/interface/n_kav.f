@@ -106,13 +106,18 @@ c =================================================================
 	num=10
 !	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
 
-
+!        print *,' kav_contr=='
+!        read (*,*)
 
       call kav_contr(
 !-----------------------------------  inputs---
      *  c_input1,c_input2,
 !------------------------------------outputs
      *  c_output1,c_output2)
+
+!        print *,' after kav_contr'
+!        read (*,*)
+
 
 c ============ outputs ==============================================
 
