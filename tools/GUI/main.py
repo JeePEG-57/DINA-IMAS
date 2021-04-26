@@ -541,7 +541,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
       grid.addWidget(table, 0, 0)
       
-      n = len(record["items_r"])
+      n = len(record["items"])
       
       headerNames = [str(i+1) for i in range(n)]
       headerParameters = ["R", "Z"]      
@@ -553,8 +553,8 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       table.setHorizontalHeaderLabels(headerParameters)      
       table.setVerticalHeaderLabels(headerNames)
       for i in range(n):
-        table.setItem(i, 0, record["items_r"][i])
-        table.setItem(i, 1, record["items_z"][i])
+        table.setItem(i, 0, record["items"][i]["r"])
+        table.setItem(i, 1, record["items"][i]["z"])
         table.resizeColumnsToContents()
         table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x))      
 
@@ -577,7 +577,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
       grid.addWidget(table, 0, 0, 1, 1)
       
-      n = len(record["items_r"])
+      n = len(record["items"])
       
       headerNames = [str(i+1) for i in range(n)]
       headerParameters = ["R", "Z", "Angle", "Length"]      
@@ -589,10 +589,10 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       table.setHorizontalHeaderLabels(headerParameters)      
       table.setVerticalHeaderLabels(headerNames)
       for i in range(n):
-        table.setItem(i, 0, record["items_r"][i])
-        table.setItem(i, 1, record["items_z"][i])
-        table.setItem(i, 2, record["items_a"][i])
-        table.setItem(i, 3, record["items_l"][i])
+        table.setItem(i, 0, record["items"][i]["r"])
+        table.setItem(i, 1, record["items"][i]["z"])
+        table.setItem(i, 2, record["items"][i]["a"])
+        table.setItem(i, 3, record["items"][i]["l"])
         table.resizeColumnsToContents()
         table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x)) 
 
@@ -1165,15 +1165,21 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       NLOOP = self.ReadParameters(f)
       record["common"] = NLOOP     
       nloop = NLOOP["data"][0]
-      print("nloop = " + str(nloop))        
-      loopR = []
-      loopZ = []
+      print("nloop = " + str(nloop))  
+      loops = [] 
+      #loopR = []
+      #loopZ = []
       for i in range(nloop):
         line = self.ReadRow(f)
-        loopR.append(line[0])
-        loopZ.append(line[1])         
-      record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in loopR] 
-      record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in loopZ] 
+        #loopR.append(line[0])
+        #loopZ.append(line[1])  
+        loop = {}
+        loop["r"] = QtWidgets.QTableWidgetItem(str(line[0]))
+        loop["z"] = QtWidgets.QTableWidgetItem(str(line[1]))
+        loops.append(loop)
+      #record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in loopR] 
+      #record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in loopZ] 
+      record["items"] = loops
       output["loops"] = record
       
       
@@ -1183,20 +1189,28 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       record["common"] = NPROB      
       nprob = NPROB["data"][0]
       print("nprob = " + str(nprob))     
-      probR = []
-      probZ = []
-      probA = []
-      probL = []
+      #probR = []
+      #probZ = []
+      #probA = []
+      #probL = []
+      probes = []
       for i in range(nprob):
         line = self.ReadRow(f)
-        probR.append(line[0])
-        probZ.append(line[1])    
-        probA.append(line[2])
-        probL.append(line[3]) 
-      record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probR] 
-      record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probZ] 
-      record["items_a"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probA] 
-      record["items_l"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probL] 
+        #probR.append(line[0])
+        #probZ.append(line[1])    
+        #probA.append(line[2])
+        #probL.append(line[3])         
+        probe = {}
+        probe["r"] = QtWidgets.QTableWidgetItem(str(line[0]))
+        probe["z"] = QtWidgets.QTableWidgetItem(str(line[1]))
+        probe["a"] = QtWidgets.QTableWidgetItem(str(line[2]))
+        probe["l"] = QtWidgets.QTableWidgetItem(str(line[3]))
+        probes.append(probe)       
+      #record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probR] 
+      #record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probZ] 
+      #record["items_a"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probA] 
+      #record["items_l"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probL]      
+      record["items"] = probes
       output["probes"] = record
       
       
@@ -1257,22 +1271,22 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       # Loops
       recsave = record["loops"]
       self.SaveFilePart(f, recsave["common"])
-      nloop = len(recsave["items_r"])
+      nloop = len(recsave["items"])
       for i in range(nloop):
-        s1 = recsave["items_r"][i].text()
-        s2 = recsave["items_z"][i].text()
+        s1 = recsave["items"][i]["r"].text()
+        s2 = recsave["items"][i]["z"].text()
         f.write("  " + s1 + "  " + s2 + "\n")
       
       
       # Probes
       recsave = record["probes"]
       self.SaveFilePart(f, recsave["common"])
-      nprobes = len(recsave["items_r"])
+      nprobes = len(recsave["items"])
       for i in range(nprobes):
-        s1 = recsave["items_r"][i].text()
-        s2 = recsave["items_z"][i].text()
-        s3 = recsave["items_a"][i].text()
-        s4 = recsave["items_l"][i].text()
+        s1 = recsave["items"][i]["r"].text()
+        s2 = recsave["items"][i]["z"].text()
+        s3 = recsave["items"][i]["a"].text()
+        s4 = recsave["items"][i]["l"].text()
         f.write("  " + s1 + "  " + s2 + "  " + s3 + "  " + s4 + "\n")
 
 
@@ -1785,6 +1799,40 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
       
       pfp1.put()
+      
+      
+      
+      # Magnetic diagnostics
+      magnetics = imas_obj1.magnetics
+      magnetics.get()
+      magnetics.ids_properties.homogeneous_time = 0
+      magnetics.time.resize(1)
+      
+      nloop = len(tokamakdata["loops"]["items"])
+      magnetics.flux_loop.resize(nloop)
+      for iloop in range(nloop):
+        loop = tokamakdata["loops"]["items"][iloop]
+        magnetics.flux_loop[iloop].type.index = 1
+        magnetics.flux_loop[iloop].position.resize(1)
+        magnetics.flux_loop[iloop].position[0].r = float(loop["r"].text())
+        magnetics.flux_loop[iloop].position[0].z = float(loop["z"].text())
+        magnetics.flux_loop[iloop].position[0].phi = 0.0
+      
+      nprobe = len(tokamakdata["probes"]["items"])
+      magnetics.b_field_pol_probe.resize(nprobe)
+      for iprobe in range(nprobe):
+        probe = tokamakdata["probes"]["items"][iprobe]
+        magnetics.b_field_pol_probe[iprobe].type.index = 1
+        magnetics.b_field_pol_probe[iprobe].position.r = float(probe["r"].text())
+        magnetics.b_field_pol_probe[iprobe].position.z = float(probe["z"].text())
+        magnetics.b_field_pol_probe[iprobe].position.phi = 0.0
+        magnetics.b_field_pol_probe[iprobe].poloidal_angle = float(probe["a"].text())
+        magnetics.b_field_pol_probe[iprobe].toroidal_angle = 0.0
+        magnetics.b_field_pol_probe[iprobe].length = float(probe["l"].text())
+      
+      
+      magnetics.put()
+      
       
       
       # Pulse schedule

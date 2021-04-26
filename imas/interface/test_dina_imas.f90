@@ -9,7 +9,7 @@ implicit none
 interface 
 ! Declaration of the dina_imas subroutine
 subroutine dina_imas(&
-  &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+  &  equilibrium0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
   & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
@@ -18,11 +18,11 @@ subroutine dina_imas(&
  
      use ids_schemas
 ! note that IDS0 are all prescribed, the others are dynamic
-type (ids_em_coupling)  :: em_coupling0, em_coupling
+type (ids_em_coupling)  :: em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
-type (ids_pf_active)   :: pf_active0, pf_active
-type (ids_pf_passive)   :: pf_passive0, pf_passive
+type (ids_pf_active)   :: pf_active
+type (ids_pf_passive)   :: pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources0, core_sources
@@ -45,16 +45,17 @@ interface
 end interface
 
 
-type (ids_em_coupling) :: em_coupling0, em_coupling
+type (ids_em_coupling) :: em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
-type (ids_pf_active) :: pf_active0, pf_active
-type (ids_pf_passive) :: pf_passive0, pf_passive
+type (ids_pf_active) :: pf_active
+type (ids_pf_passive) :: pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_sources)   :: core_sources0, core_sources
 type (ids_core_transport)   :: core_transport
 type (ids_transport_solver_numerics) :: bndcond
 type (ids_pulse_schedule)   :: pulse_schedule
+type (ids_dataset_description) :: data_description
 type (ids_summary) :: summary
 type (ids_wall) :: wall
 
@@ -65,7 +66,7 @@ integer :: pulse=170, run=6, prescribedpulse=170, prescribedrun=1
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, idec, imax
-real (ids_real) :: tmax
+real (ids_real) :: tmax, tpfa
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
@@ -95,7 +96,7 @@ print *,' run number =',prescribedrun
 print *,' Enter maximum steps number'
 !read (*,*)imax
 imax=1000000
-imax=16000
+!imax=16000
 
 print *,' imax =',imax
 
@@ -116,14 +117,15 @@ write(*,*) 'Reading the prescribed IDS'
 ! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
 call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3') 
 
-call ids_get(idx0,"em_coupling",em_coupling0)
+call ids_get(idx0,"magnetics",magnetics)
 call ids_get(idx0,"equilibrium",equilibrium0)
-call ids_get(idx0,"pf_active",pf_active0)
-call ids_get(idx0,"pf_passive",pf_passive0)
+call ids_get(idx0,"pf_active",pf_active)
+call ids_get(idx0,"pf_passive",pf_passive)
 call ids_get(idx0,"core_profiles",core_profiles0)
 call ids_get(idx0,"core_sources",core_sources0)
 call ids_get(idx0,"transport_solver_numerics",bndcond)
 call ids_get(idx0,"pulse_schedule",pulse_schedule)
+call ids_get(idx0,"dataset_description",data_description)
 call ids_get(idx0,"wall",wall)
 
 write(*,*) 'Finished reading the prescribed IDS'
@@ -132,13 +134,22 @@ call imas_close(idx0)
 arr_in1(1:31)=1
 arr_out1(1:31)=0
 
+
+
+  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
+  write(*,*) 'Pulse file is created'
+
+  call ids_put(idx,"dataset_description",data_description)
+  call ids_put(idx,"pulse_schedule",pulse_schedule)
+
+
 do iloop=1,imax
 
 write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
 
-call dina_imas( em_coupling0, equilibrium0 &
- & , pf_active0,  pf_passive0, core_profiles0, core_sources0 &
+call dina_imas( equilibrium0 &
+ & , core_profiles0, core_sources0 &
  & , bndcond &
  & , pulse_schedule &
  & , em_coupling, equilibrium, &
@@ -160,6 +171,7 @@ flush(6)
 !call dina_transp4(equilibrium0, core_profiles0, core_profiles)
 !call dina_transp5(equilibrium0, core_sources0, core_sources)
 
+call ids_deallocate(bndcond)
 call solps_imas(equilibrium, core_transport, bndcond)
 
 write(*,*) "SOLPS finished"
@@ -212,11 +224,14 @@ endif
 write(*,*) 'Deallocate IDS '
 flush(6)
 
-call ids_deallocate(pf_active0)
-call ids_deallocate(pf_passive0)
+!call ids_deallocate(pf_active0)
+!call ids_deallocate(pf_passive0)
 call ids_deallocate(equilibrium0)
 call ids_deallocate(core_profiles0)
 call ids_deallocate(core_sources0)
+
+call ids_deallocate(core_transport)
+call ids_deallocate(em_coupling)
 
 write(*,*) 'Copy IDS '
 flush(6)
@@ -224,10 +239,10 @@ flush(6)
 call ids_copy(equilibrium, equilibrium0)
 write(*,*) 'Copy IDS 1'
 flush(6)
-call ids_copy(pf_active, pf_active0)
+!call ids_copy(pf_active, pf_active0)
 write(*,*) 'Copy IDS 2'
 flush(6)
-call ids_copy(pf_passive, pf_passive0)
+!call ids_copy(pf_passive, pf_passive0)
 write(*,*) 'Copy IDS 3'
 flush(6)
 call ids_copy(core_profiles, core_profiles0)
@@ -238,7 +253,13 @@ call ids_copy(core_sources, core_sources0)
 
 write(*,*) '****** Pulsetime =',summary%time(1),'/',tmax
 flush(6)
-if (summary%time(1).gt.tmax) exit
+
+tpfa = 0.d0
+do i=1,11
+  tpfa = tpfa + dabs(pf_active%coil(i)%current%data(1))
+enddo
+
+if (summary%time(1).gt.tmax .or. (dabs(summary%global_quantities%ip%value(1)).lt.1.d3 .and. tpfa.lt.1.d3)) exit
 
 end do
 

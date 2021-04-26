@@ -19,6 +19,8 @@ real(ids_real) :: c_input1(npo),c_input2(npo)
 real(ids_real) :: c_output1(npo),c_output2(npo),c_output3(npo)
 
 
+include 'imas_interface.inc'
+
 
 call ids_copy(core_profiles0,core_profiles)
 
@@ -29,7 +31,7 @@ call ids_copy(core_profiles0,core_profiles)
 !------------------------------------outputs
      &  c_output1,c_output2)
 
-    	jbut=c_output1*1.d7
+    	jbut=tpl_dir*c_output1*1.d7
     	sigk=c_output2
 
 ! 7000	format(1x,1pe14.7)

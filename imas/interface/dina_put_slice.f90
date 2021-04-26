@@ -42,8 +42,8 @@ if (iloop == 1) then
 
   write(*,*) 'Create new pulse file...'
 
-  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
-  write(*,*) 'Pulse file is created, put non-timed...'
+!  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
+  write(*,*) 'dinaputslice, put non-timed...'
 
   call ids_put(idx,"em_coupling",em_coupling)
   call ids_put(idx,"magnetics",magnetics)
@@ -68,7 +68,7 @@ else
   write(*,*) 'Open pulse file...'
 
 !  call imas_open_env('ids',pulse,run,idx,user,'test','3') 
-  write(*,*)  'Pulse file is opened, put slices'
+  write(*,*)  'dinaputslice, put slices'
 
   write(*,*)  'Put em_coupling'
   call ids_put_slice(idx,"em_coupling",em_coupling)

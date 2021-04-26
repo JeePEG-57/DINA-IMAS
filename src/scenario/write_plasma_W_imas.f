@@ -188,6 +188,10 @@ c*********************************************************
      
         common/maksim_03/wr,wr_imas       
         dimension wr(150), wr_imas(150)
+        
+        !include 'imas_interface.inc'
+        
+        
         dimension dNB_xx(24)
 
 c******* Begin of Sign changing ******
@@ -222,6 +226,10 @@ c******* Begin of Sign changing ******
 
         U_vs1_imas=U_vs1*(-1)
         U_vs2_imas=U_vs2*(-1)
+        
+        
+        uact_imas = -uact
+        
 c******* End of Sign changing ******
 
 	  i_en=i_en+1
@@ -409,7 +417,7 @@ c     * tokc zvel'
 	wr(26)=tqc/1000.
 	wr(27)=tq_ax/tqc
 	wr(28)=zeff_a
-	wr(29)=uact
+	wr(29)=uact_imas
 	wr(30)=vs
 	wr(31)=c_e_old
 	wr(32)=psi_ext !!!! %%% one needs to need to add tcam to psi_pf 
@@ -525,7 +533,7 @@ cccccc	wr(73)=r_lh
         wr_imas(26)=tqc
         wr_imas(27)=tq_ax/tqc
         wr_imas(28)=zeff_a
-        wr_imas(29)=uact
+        wr_imas(29)=uact_imas
         wr_imas(30)=vs
         wr_imas(31)=c_e_old
         wr_imas(32)=psi_ext !!!! %%% one needs to need to add tcam to psi_pf 

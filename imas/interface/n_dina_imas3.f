@@ -206,7 +206,8 @@ c ============ outputs ==============================================
      * tene_xx,teit_98_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
      * pptab_xx,fptab_xx,
-     * n_bnd_xx,xbound_xx,ybound_xx,n_sep_xx,x_sep_xx,y_sep_xx, n_sep2_xx,x_sep2_xx,y_sep2_xx)
+     * n_bnd_xx,xbound_xx,ybound_xx,n_sep_xx,x_sep_xx,y_sep_xx, n_sep2_xx,x_sep2_xx,y_sep2_xx,
+     * bprobe_xx, psloop_xx)
 
 
 	include 'double.inc'
@@ -231,13 +232,16 @@ c ============ outputs ==============================================
         dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
         dimension pptab_xx(*),fptab_xx(*)
         dimension press_xx(*),zeff_xx(*)
+        dimension bprobe_xx(*),psloop_xx(*)
 
+        include 'imas_interface.inc'
+        
 
       n_xx=n
 
 !	pi=3.14159
 	
-	tpl_xx = -tpl*1000.d0
+	tpl_xx = tpl_dir*tpl*1000.d0
 	
 !	print *,' n_xx tpl_xx=',n_xx,tpl_xx
 	
@@ -246,18 +250,18 @@ c ============ outputs ==============================================
 	uli_xx=uli
 	v_xx=volume
 	parea_xx=surface
-	psi_ax_xx=pmag*1.d-5*2.*pi
-	psi_bnd_xx=pbound*1.d-5*2.*pi
-	psi_sep_xx=psep*1.d-5*2.*pi
+	
 	rmag_xx=rmag/100.d0
 	zmag_xx=zmag/100.d0
 	q_ax_xx=q(2)
         q_95_xx=q_95
-	rs0_xx=rs0/100.d0
-	bt0_xx=bt0/10.d0
+
 	wen2_xx=0.d0 ! wr_imas
 	tt_xx=tt/1000.d0
 
+        rs0_xx = rs0/100.d0
+        bt0_xx = bt0_dir*bt0/10.d0
+	
         betap_xx = betj
         betat_xx = bett
         tec_xx = tec
@@ -280,6 +284,11 @@ c ============ outputs ==============================================
         elong_xx = elong
         tri_xx = tri
       
+      
+        psi_ax_xx = tpl_dir*pmag*1.d-5*2.*pi
+        psi_bnd_xx = tpl_dir*pbound*1.d-5*2.*pi
+        psi_sep_xx = tpl_dir*psep*1.d-5*2.*pi
+        
         
         ksepa_xx = ksepa 
         
@@ -306,6 +315,9 @@ c ============ outputs ==============================================
         enddo
         dsep_xx = gaps(n_ga+1)*1.d-2
         
+        
+        bprobe_xx(1:kprobe) = tpl_dir*bprobe(1:kprobe) ! *1.d-1
+        psloop_xx(1:kloop) = tpl_dir*psloop(1:kloop)*2.*pi ! *1.d-5
 c=================================================
 
 	do i=1,n
@@ -313,31 +325,39 @@ c=================================================
 
 	   te0_xx(i)=te0(i)
 	   tq0_xx(i)=tq0(i)
-	   pne_xx(i)=pne(i)*1.d19
-	   tok1_xx(i)=tok1(i)*1.d7
+	   
+	   pne_xx(i)=pne(i)*1.d19   
+           pd0_xx(i)=pd0(i)*1.d19
+           pt0_xx(i)=pt0(i)*1.d19
+           
+           sigk_xx(i)=sigk(i)
+           qe0_xx(i)=qe0(i)
+           qq0_xx(i)=qq0(i)
+	   
 	   q_xx(i)=q(i)
 	   zeff_xx(i)=zeff(i)
 
-	   psi_1D_xx(i)=psval(i)*1.d-5*2.*pi
+   
 !	   pptab_xx(i)=pptab(i)
 !	   fptab_xx(i)=fptab(i)
 
-	   pptab_xx(i)=ppx(i)
-	   fptab_xx(i)=pffx(i)
-	   press_xx(i)=p(i)
+	   pptab_xx(i) = tpl_dir*ppx(i)
+	   fptab_xx(i) = tpl_dir*pffx(i)
+	   press_xx(i) = p(i)
 
 
 	end do
 	
 	do i=1,n
-	   pd0_xx(i)=pd0(i)*1.d19
-	   pt0_xx(i)=pt0(i)*1.d19
-	   sigk_xx(i)=sigk(i)
-	   ajb_xx(i)=ajb(i)*1.d7
-	   aj0_xx(i)=aj0(i)*1.d7
-	   ajae_xx(i)=ajae(i)*1.d7
-	   qe0_xx(i)=qe0(i)
-	   qq0_xx(i)=qq0(i)
+
+	   ajb_xx(i) = tpl_dir*ajb(i)*1.d7
+	   aj0_xx(i) = tpl_dir*aj0(i)*1.d7
+	   ajae_xx(i) = tpl_dir*ajae(i)*1.d7
+	   tok1_xx(i) = tpl_dir*tok1(i)*1.d7
+	   
+           psi_1D_xx(i) = tpl_dir*psval(i)*1.d-5*2.*pi
+           
+
 	end do
 
 c=================================================
@@ -353,20 +373,20 @@ c=================================================
 
 	do i=1,nr
 	   do j=1,nz
-	      psi_xx(i,j) = psi(i,j)*1.d-5*2.*pi
+	      psi_xx(i,j) = tpl_dir*psi(i,j)*1.d-5*2.*pi
 
-              curr_d_xx(i,j) = curr_d(i,j)*(-1.d7)
+              curr_d_xx(i,j) = tpl_dir*curr_d(i,j)*1.d7
 	   end do
 	end do
 
 	
 	do i=1,npf
-	   vchopper_xx(i) = vchopper(i)
-	   pf_xx(i) = pf(i)*1.d3
+	   vchopper_xx(i) = tpl_dir*vchopper(i)*pf_turns(i)
+	   pf_xx(i) = tpl_dir*1.d3*pf(i)/pf_turns(i)
 	enddo
 	
 	do i=1,ncam
-	   tcam_xx(i) = tcam(i)*(-1.d3)
+	   tcam_xx(i) = tpl_dir*1.d3*tcam(i)
 	enddo
 
 	if(kpr.eq.1)print *,' tt t_vde=',tt,t_vde
@@ -434,7 +454,7 @@ c=================================================
 
 	include 'parf0'
      
-      common /c_input1/te0(npo),tq0(npo),pne(npo),
+        common /c_input1/te0(npo),tq0(npo),pne(npo),
      *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
      *  aj0(npo),qe0(npo),qq0(npo)
 
@@ -442,6 +462,9 @@ c=================================================
      *	/n_m/n,m,mp
      */ge2/NTAY,TAY,TT
 
+        include 'imas_interface.inc'
+     
+     
 	character *20 apr
 
 c=================================================
@@ -474,8 +497,8 @@ c=================================================
 	   pd0(i)=pd0_xx(i)*1.d-19
 	   pt0(i)=pt0_xx(i)*1.d-19
 	   sigk(i)=sigk_xx(i)
-	   ajb(i)=ajb_xx(i)*1.d-7
-	   aj0(i)=aj0_xx(i)*1.d-7
+	   ajb(i)=tpl_dir*ajb_xx(i)*1.d-7
+	   aj0(i)=tpl_dir*aj0_xx(i)*1.d-7
 	   qe0(i)=qe0_xx(i)
 	   qq0(i)=qq0_xx(i)
 	end do
