@@ -4,10 +4,31 @@
 !> As a result of call dina_0 and then call dina2 the DINA modeling in one time step is being produced
 !> After call dina_outp the output data are being recorded to IDS and dat files
 
+#ifdef __GFORTRAN__
+
 
 #define AllocIfNull(array, size)  if (.NOT.associated(array)) allocate(array(size))
+
 #define AllocIfNull1(array, value)  if (.NOT.associated(array)) allocate(array(1)) ; \
                                     array(1) = value
+
+#define AllocArr(array, size, value)  if (.NOT.associated(array)) allocate(array(size)) ; \
+                                    array(1:size) = value(1:size)
+                                    
+                                    
+#else
+
+
+#define AllocIfNull(array, size)  if (.NOT.associated(#array)) allocate(#array(#size))
+
+#define AllocIfNull1(array, value)  if (.NOT.associated(#array)) allocate(#array(1)) ; \
+                                    #array(1) = #value
+
+#define AllocArr(array, size, value)  if (.NOT.associated(#array)) allocate(#array(#size)) ; \
+                                    #array(1:#size) = #value(1:#size)
+                                    
+                                    
+#endif
 
 
 
@@ -1062,17 +1083,34 @@ summary%global_quantities%fusion_fluence%value(CurTimeStep) = wr_imas(69)
     
     ! 2D Profiles
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(nr,nz))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(nr,nz))
-    
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(nr))
-    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(nz))
-      
+    ! Grid dimensions
     equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid_type%index = 1 ! Rectangular ala eqdsk   
-
-    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nr)=x(1:nr)
-    equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nz)=y(1:nz)
-
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(nr))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(nz))        
+      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim1(1:nr)=x(1:nr)
+      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%dim2(1:nz)=y(1:nz)
+    
+    !allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%volume_element(nr-1,nz-1))   
+    !do i=1,nr-1
+    !do j=1,nz-1
+    !  equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%grid%volume_element(i,j)=dabs((x(i+1)-x(i))*(y(j+1)-y(j)))
+    !enddo
+    !enddo
+    
+    ! Profiles
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi(nr,nz))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor(nr,nz))     
+    
+    
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%r(nr,nz))
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%z(nr,nz))        
+    do i=1,nz
+      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%r(1:nr,i)=x(1:nr)
+    enddo
+    do i=1,nr
+      equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%z(i,1:nz)=y(1:nz)
+    enddo
+    
 
   !  call write_graf_imas0(nr,nz,ke, &
   !   &	0.01d0,0.01d0,tt,&
@@ -1098,13 +1136,11 @@ summary%global_quantities%fusion_fluence%value(CurTimeStep) = wr_imas(69)
     equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi = psi
     equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%j_tor = curr_d
     
-    psi1 = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi
     
-    
-        
+           
     i_wr=0
     if(i_wr.eq.1)then
-
+    psi1 = equilibrium%time_slice(CurTimeStep)%profiles_2d(1)%psi
 
     call write_graf_imas(nr,nz,ke, &
      &	0.01d0,0.01d0,tt,&

@@ -62,7 +62,7 @@ type (ids_wall) :: wall
 real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
-integer :: pulse=170, run=6, prescribedpulse=170, prescribedrun=1
+integer :: pulse=170, run=5, prescribedpulse=170, prescribedrun=1
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, idec, imax
@@ -249,6 +249,11 @@ call ids_copy(core_profiles, core_profiles0)
 write(*,*) 'Copy IDS 4'
 flush(6)
 call ids_copy(core_sources, core_sources0)
+
+
+!call ids_deallocate(equilibrium)
+!call ids_deallocate(core_profiles)
+!call ids_deallocate(core_sources)
 
 
 write(*,*) '****** Pulsetime =',summary%time(1),'/',tmax
