@@ -62,7 +62,7 @@ type (ids_wall) :: wall
 real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
-integer :: pulse=170, run=5, prescribedpulse=170, prescribedrun=1
+integer :: pulse=170, run=4, prescribedpulse=170, prescribedrun=1
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, idec, imax

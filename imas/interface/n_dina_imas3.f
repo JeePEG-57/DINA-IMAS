@@ -205,9 +205,10 @@ c ============ outputs ==============================================
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,palf_xx,zeff0_xx,vloop_xx,
      * tene_xx,teit_98_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
-     * pptab_xx,fptab_xx,
+     * fpol_xx,pptab_xx,fptab_xx,
      * n_bnd_xx,xbound_xx,ybound_xx,n_sep_xx,x_sep_xx,y_sep_xx, n_sep2_xx,x_sep2_xx,y_sep2_xx,
-     * bprobe_xx, psloop_xx)
+     * bprobe_xx,psloop_xx,
+     * surface_1d_xx,volume_1d_xx,area_1d_xx)
 
 
 	include 'double.inc'
@@ -230,10 +231,11 @@ c ============ outputs ==============================================
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
         dimension gaps_xx(*)
         dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
-        dimension pptab_xx(*),fptab_xx(*)
+        dimension fpol_xx(*),pptab_xx(*),fptab_xx(*)
         dimension press_xx(*),zeff_xx(*)
         dimension bprobe_xx(*),psloop_xx(*)
-
+        dimension surface_1d_xx(*),volume_1d_xx(*),area_1d_xx(*)
+        
         include 'imas_interface.inc'
         
 
@@ -336,17 +338,27 @@ c=================================================
 	   
 	   q_xx(i)=q(i)
 	   zeff_xx(i)=zeff(i)
-
    
 !	   pptab_xx(i)=pptab(i)
 !	   fptab_xx(i)=fptab(i)
 
+           fpol_xx(i) = bt0_dir*(rs0/100.d0)*f(i)/10.d0
 	   pptab_xx(i) = tpl_dir*ppx(i)
 	   fptab_xx(i) = tpl_dir*pffx(i)
 	   press_xx(i) = p(i)
 
+	   surface_1d_xx(i) = s_surf(i)
 
 	end do
+	
+	
+	volume_1d_xx(1) = 2.*pi*vi(1)*ha(1)*1.d-6
+	area_1d_xx(1) = spo(1)*ha(1)*1.d-4
+	do i=2,n
+	   volume_1d_xx(i) = volume_1d_xx(i-1) + 2.*pi*vi(i)*ha(i)*1.d-6
+           area_1d_xx(i) = area_1d_xx(i-1) + spo(i)*ha(i)*1.d-4          
+	enddo
+	
 	
 	do i=1,n
 

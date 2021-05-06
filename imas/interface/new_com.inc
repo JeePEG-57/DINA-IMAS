@@ -97,15 +97,10 @@
      *  /en2e/pd0_a,pt0_a,pd0_b,pt0_b,pw_p
      *  /en5/SD0(npo),ST0(npo),SH0(npo)
      *  /en6/Vn(npo)
-     *  /en7/UD,ZD,UT,ZT,UH,ZH,LD,LT,LH,ID,IT,IH,KTP,NN_tr
      *  /en9/QE0(npo),QQ0(npo),QDG(npo)
-     *  /en11/un(4),zn(2),ll,ken,ken1,ken2,noit
      *  /en12/pnal(npo),pnaln(npo),zalfa,talfa
      *  /en14e/t_dop
      *  /en14/EMOE,EMOQ,NDOP,QDE0(npo),QDQ0(npo)
-     *  /en16/QTOR(npo),QDH(npo),QpE(npo),QpQ(npo)
-     *  /en19/DD,DT,DH,SIN0,SINK,ALPY,Sss,Ppp,Eee
-     *  /en27/nij
      *  /en25/zhib,tego
      *  /en28/wen1,wen2
      *  /en33/anom_e,anom_i,key_t11,kcchp
@@ -692,5 +687,9 @@ c************************************************
 	common
      *  /maksim_01/tqc,emag
      *  /maksim_02/qtep,gfus,gamma
-
+     *  /maksim_04/s_surf(npo)
+     
         common /c_teit_98/teit_98
+
+     
+     

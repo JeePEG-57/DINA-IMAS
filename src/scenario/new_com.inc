@@ -687,7 +687,8 @@ c************************************************
 	common
      *  /maksim_01/tqc,emag
      *  /maksim_02/qtep,gfus,gamma
-
+     *  /maksim_04/s_surf(npo)
+     
         common /c_teit_98/teit_98
 
      

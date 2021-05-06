@@ -224,6 +224,7 @@ c       implicit real*8 (a-h,o-z)
 	common
      *	/efit4/coef
 	common /c_temp7/s_bound
+	common /maksim_04/s_surf(npo)
 
         dimension tok_b(ntet),r_b(ntet),z_b(ntet)
 
@@ -346,6 +347,8 @@ c==========================
       C3(I)=c3(i)/(ha(i)*2.*PI)
       
       s_bound=s_bound*(2.*PI)*1.d-4
+      s_surf(i)=s_bound
+      
       
    30 CONTINUE
    

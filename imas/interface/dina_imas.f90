@@ -12,7 +12,7 @@
 #define AllocIfNull1(array, value)  if (.NOT.associated(array)) allocate(array(1)) ; \
                                     array(1) = value
 
-#define AllocArr(array, size, value)  if (.NOT.associated(array)) allocate(array(size)) ; \
+#define AllocArr(array, value, size)  if (.NOT.associated(array)) allocate(array(size)) ; \
                                     array(1:size) = value(1:size)
                                     
                                     
@@ -24,7 +24,7 @@
 #define AllocIfNull1(array, value)  if (.NOT.associated(#array)) allocate(#array(1)) ; \
                                     #array(1) = #value
 
-#define AllocArr(array, size, value)  if (.NOT.associated(#array)) allocate(#array(#size)) ; \
+#define AllocArr(array, value, size)  if (.NOT.associated(#array)) allocate(#array(#size)) ; \
                                     #array(1:#size) = #value(1:#size)
                                     
                                     
@@ -142,7 +142,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     
     real(ids_real) :: vchopper(npf),pf(npf),tcam(ncam)
 
-    real(ids_real) :: pptab(npo),fptab(npo)
+    real(ids_real) :: fpol(npo),pptab(npo),fptab(npo)
 
     !real(ids_real) :: Pohm,wdop,w_alfa,wtor, w_Be,w_W,w_Ar,w_Ne, w_imp,w_rad,w_heat
     real(ids_real) :: wr_imas(150)
@@ -154,6 +154,8 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: coef_ppx,coef_pffx,pmu0
     
     real(ids_real) :: bprobe(nbpol), psloop(nflux)
+    
+    real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
 
 
   integer :: TimeSteps, CurTimeStep
@@ -577,9 +579,10 @@ write(*,*) '!!!dina_outp enter'
      & pd0,pt0,sigk,jbut,aj0,ajae,zeff,press,qe0,qq0, &
      & betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,teit_98,wfus,emag, &
      & vchopper,pf,tcam, &
-     & pptab,fptab, &
+     & fpol,pptab,fptab, &
      & n_bnd,xbound,ybound, n_sep,x_sep,y_sep, n_sep2,x_sep2,y_sep2, &
-     & bprobe, psloop)
+     & bprobe,psloop,&
+     & surface_1d,volume_1d,area_1d)
      
 
         call dina_wr_output(wr_imas)
@@ -1052,13 +1055,17 @@ summary%global_quantities%fusion_fluence%value(CurTimeStep) = wr_imas(69)
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(n))
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(n))
-    
+    allocate(equilibrium%time_slice(CurTimeStep)%profiles_1d%f(n))
+      equilibrium%time_slice(CurTimeStep)%profiles_1d%f(1:n) = fpol(1:n)
     
     equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n) = ai(1:n)
     equilibrium%time_slice(CurTimeStep)%profiles_1d%psi(1:n) = psi_1D(1:n)
 
     equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(1:n) = press(1:n) ![Pa]
 
+    
+    
+    
 !       pptab_dina =-1./(rs0*1.d-2)*pptab*10./pmu0 
 !       fptab_dina=-fptab*0.5d0*(rs0*1.d-2)*10./pmu0
 
@@ -1151,16 +1158,17 @@ summary%global_quantities%fusion_fluence%value(CurTimeStep) = wr_imas(69)
     
 
     
-! Allocations core_profiles    
-
-
+! Starting core_profiles    
+    core_profiles%ids_properties%homogeneous_time = 1
+    allocate(core_profiles%profiles_1d(TimeSteps))
+    core_profiles%profiles_1d(CurTimeStep)%time = tt
+    allocate(core_profiles%time(TimeSteps))
+    core_profiles%time(CurTimeStep) = tt ![s]
+    
 write(*,*) 'Allocate core_profiles... '
 
-    allocate(core_profiles%profiles_1d(TimeSteps))
-    allocate(core_profiles%time(TimeSteps))
-
-    allocate(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
-
+    
+      
     allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%zeff(n))
@@ -1170,9 +1178,8 @@ write(*,*) 'Allocate core_profiles... '
     allocate(core_profiles%global_quantities%resistive_psi_losses(1))
     allocate(core_profiles%global_quantities%ejima(1))
     
-! Filling core_profiles  
-
-    core_profiles%ids_properties%homogeneous_time = 1
+    
+! Filling 0D  
     
     core_profiles%global_quantities%t_e_peaking(CurTimeStep) = wr_imas(25)
     core_profiles%global_quantities%t_i_average_peaking(CurTimeStep) = wr_imas(27)
@@ -1180,17 +1187,23 @@ write(*,*) 'Allocate core_profiles... '
     core_profiles%global_quantities%ejima(CurTimeStep) = wr_imas(31)
     
     
-    core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
+    
+! Filling 1D
 
-	
-	core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
-	core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
-	core_profiles%profiles_1d(CurTimeStep)%zeff(1:n) = zeff(1:n)
+    allocate(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
+      core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
+
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%volume, volume_1d, n)
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%area, area_1d, n) 
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%surface, surface_1d, n) 
+      
+    core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
+    core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
+    core_profiles%profiles_1d(CurTimeStep)%zeff(1:n) = zeff(1:n)
 
 
     
-    core_profiles%profiles_1d(CurTimeStep)%time = tt
-    core_profiles%time(CurTimeStep) = tt ![s]
+
 
 
 write(*,*) 'Write core_profiles transp... '
