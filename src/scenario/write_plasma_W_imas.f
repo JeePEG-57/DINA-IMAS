@@ -222,6 +222,10 @@ c******* Begin of Sign changing ******
 
         U_vs1_imas=U_vs1*(-1)
         U_vs2_imas=U_vs2*(-1)
+c**************************************************
+
+        uact_imas=uact*(-1)
+
 c******* End of Sign changing ******
 
 	  i_en=i_en+1
@@ -409,7 +413,7 @@ c     * tokc zvel'
 	wr(26)=tqc/1000.
 	wr(27)=tq_ax/tqc
 	wr(28)=zeff_a
-	wr(29)=uact
+	wr(29)=uact_imas
 	wr(30)=vs
 	wr(31)=c_e_old
 	wr(32)=psi_ext !!!! %%% one needs to need to add tcam to psi_pf 

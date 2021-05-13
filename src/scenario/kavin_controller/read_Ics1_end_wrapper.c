@@ -60,6 +60,7 @@ void read_Ics1_end_Outputs_wrapper(real_T *y0, SimStruct *S)
 static int kl; double y; FILE*f;char b[1024];
 
 if(kl==0){
+	printf("---cs1_eob.dat \n");
 f=fopen("cs1_eob.dat","r");fgets(b,1023,f);
 fscanf(f,"%lf",&y);
 /*mexPrintf(" y= %g\n",y);*/

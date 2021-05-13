@@ -25,7 +25,7 @@
   *  -------------------------------------------------------------------------
   * | See matlabroot/simulink/src/sfuntmpl_doc.c for a more detailed template |
   *  ------------------------------------------------------------------------- 
-* Created: Mon Nov 23 09:47:41 2020
+* Created: Mon May  6 20:56:36 2019
 */
 #define S_FUNCTION_LEVEL 2
 #define S_FUNCTION_NAME read_tt_kavin2
@@ -36,7 +36,7 @@
 #define NUM_OUTPUTS          1
 /* Output Port  0 */
 #define OUT_PORT_0_NAME      y0
-#define OUTPUT_0_WIDTH       44
+#define OUTPUT_0_WIDTH       32
 #define OUTPUT_DIMS_0_COL    1
 #define OUTPUT_0_DTYPE       real_T
 #define OUTPUT_0_COMPLEX     COMPLEX_NO
@@ -105,7 +105,7 @@ static void mdlInitializeSizes(SimStruct *S)
     ssSetNumModes(S, 0);
     ssSetNumNonsampledZCs(S, 0);
 
- //   ssSetSimulinkVersionGeneratedIn(S, "8.5");
+//    ssSetSimulinkVersionGeneratedIn(S, "8.5");
 
     /* Take care when specifying exception free code - see sfuntmpl_doc.c */
     ssSetOptions(S, (SS_OPTION_EXCEPTION_FREE_CODE |
