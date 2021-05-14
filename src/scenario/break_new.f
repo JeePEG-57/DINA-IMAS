@@ -3050,6 +3050,8 @@ c	stop
 	call gamma_z_read_c(
      *       gamma_z,tt,kpr,nz_imp)
      
+        coef_imp1=gamma_z
+
         n_imp(1)=nz_imp
 
 	return
