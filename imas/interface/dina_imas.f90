@@ -324,6 +324,16 @@ if(.NOT.associated(pf_passive%loop)) then
     enddo
 endif
 
+
+
+print*, 'npfa, npfp =', npfa, npfp
+print *,' pf_active%coil size ', size(pf_active%coil)
+print *,' pf_passive%loop size ', size(pf_passive%loop)
+flush(6)
+
+print *,' pfs resistances...'
+flush(6)
+
 pf_active%coil(1:npfa)%resistance = pfres(1:npfa)
 pf_passive%loop(1:npfx)%resistance = pfres(npfa+1:nact)
 pf_passive%loop(npfx+1:npfp)%resistance = rcam(1:npass)  
