@@ -9,20 +9,26 @@ implicit none
 interface 
 ! Declaration of the dina_imas subroutine
 subroutine dina_imas(&
-  &  equilibrium0, core_profiles0, core_sources0 &
+  &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
   & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
   & ,summary &
   & ,arr_in1, arr_out1 )
- 
-     use ids_schemas
-! note that IDS0 are all prescribed, the others are dynamic
-type (ids_em_coupling)  :: em_coupling
+  
+
+
+use ids_schemas
+use ids_routines
+implicit none
+
+
+! trees are static or dynamic; if not defined, they are static
+type (ids_em_coupling)  :: em_coupling0, em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
-type (ids_pf_active)   :: pf_active
-type (ids_pf_passive)   :: pf_passive
+type (ids_pf_active)   :: pf_active0, pf_active
+type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources0, core_sources
@@ -45,11 +51,11 @@ interface
 end interface
 
 
-type (ids_em_coupling) :: em_coupling
+type (ids_em_coupling) :: em_coupling, em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
-type (ids_pf_active) :: pf_active
-type (ids_pf_passive) :: pf_passive
+type (ids_pf_active) :: pf_active, pf_active0
+type (ids_pf_passive) :: pf_passive, pf_passive0
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_sources)   :: core_sources0, core_sources
 type (ids_core_transport)   :: core_transport
@@ -121,10 +127,11 @@ write(*,*) 'Reading the prescribed IDS'
 ! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
 call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3') 
 
+call ids_get(idx0,"em_coupling",em_coupling0)
 call ids_get(idx0,"magnetics",magnetics)
 call ids_get(idx0,"equilibrium",equilibrium0)
-call ids_get(idx0,"pf_active",pf_active)
-call ids_get(idx0,"pf_passive",pf_passive)
+call ids_get(idx0,"pf_active",pf_active0)
+call ids_get(idx0,"pf_passive",pf_passive0)
 call ids_get(idx0,"core_profiles",core_profiles0)
 call ids_get(idx0,"core_sources",core_sources0)
 call ids_get(idx0,"transport_solver_numerics",bndcond)
@@ -152,8 +159,8 @@ do iloop=1,imax
 write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
 
-call dina_imas( equilibrium0 &
- & , core_profiles0, core_sources0 &
+call dina_imas( &
+ &   em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
  & , bndcond &
  & , pulse_schedule &
  & , em_coupling, equilibrium, &
@@ -161,8 +168,20 @@ call dina_imas( equilibrium0 &
  & , summary &
  & , arr_in1,arr_out1)
 
+ 
 write(*,*) "DINA_IMAS finished"
 flush(6)
+
+
+call ids_deallocate(pf_active0)
+call ids_deallocate(pf_passive0)
+call ids_deallocate(em_coupling0)
+call ids_deallocate(equilibrium0)
+call ids_deallocate(core_profiles0)
+call ids_deallocate(core_sources0)
+write(*,*) "DINA_IMAS inputs deallocated"
+flush(6)
+
 
 call dina_contr(arr_out1,arr_in1)
 
@@ -225,39 +244,21 @@ call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
 
 endif
 
-write(*,*) 'Deallocate IDS '
-flush(6)
 
-!call ids_deallocate(pf_active0)
-!call ids_deallocate(pf_passive0)
-call ids_deallocate(equilibrium0)
-call ids_deallocate(core_profiles0)
-call ids_deallocate(core_sources0)
-
-call ids_deallocate(core_transport)
-call ids_deallocate(em_coupling)
-
-write(*,*) 'Copy IDS '
+write(*,*) 'Copy pf_active'
 flush(6)
-
-call ids_copy(equilibrium, equilibrium0)
-write(*,*) 'Copy IDS 1'
+call ids_copy(pf_active, pf_active0)
+write(*,*) 'Copy pf_passive'
 flush(6)
-!call ids_copy(pf_active, pf_active0)
-write(*,*) 'Copy IDS 2'
-flush(6)
-!call ids_copy(pf_passive, pf_passive0)
-write(*,*) 'Copy IDS 3'
+call ids_copy(pf_passive, pf_passive0)
+write(*,*) 'Copy core_profiles'
 flush(6)
 call ids_copy(core_profiles, core_profiles0)
-write(*,*) 'Copy IDS 4'
+write(*,*) 'Copy core_sources'
 flush(6)
 call ids_copy(core_sources, core_sources0)
 
 
-!call ids_deallocate(equilibrium)
-!call ids_deallocate(core_profiles)
-!call ids_deallocate(core_sources)
 
 
 write(*,*) '****** Pulsetime =',summary%time(1),'/',tmax
@@ -269,6 +270,21 @@ do i=1,11
 enddo
 
 if (summary%time(1).gt.tmax .or. (dabs(summary%global_quantities%ip%value(1)).lt.1.d3 .and. tpfa.lt.1.d3)) exit
+
+
+write(*,*) 'Deallocate IDS '
+flush(6)
+call ids_deallocate(pf_active)
+call ids_deallocate(pf_passive)
+call ids_deallocate(em_coupling)
+call ids_deallocate(equilibrium)
+call ids_deallocate(core_profiles)
+call ids_deallocate(core_sources)
+call ids_deallocate(core_transport)
+call ids_deallocate(summary)
+write(*,*) 'IDS deallocated'
+flush(6)
+
 
 end do
 

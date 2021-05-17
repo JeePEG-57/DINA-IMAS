@@ -33,12 +33,13 @@
 
 
 subroutine dina_imas(&
-  &  equilibrium0, core_profiles0, core_sources0 &
+  &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
   & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
   & ,summary &
   & ,arr_in1, arr_out1 )
+  
 
 
 use ids_schemas
@@ -47,11 +48,11 @@ implicit none
 
 
 ! trees are static or dynamic; if not defined, they are static
-type (ids_em_coupling)  :: em_coupling
+type (ids_em_coupling)  :: em_coupling0, em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics
-type (ids_pf_active)   :: pf_active
-type (ids_pf_passive)   :: pf_passive
+type (ids_pf_active)   :: pf_active0, pf_active
+type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources0, core_sources
@@ -171,13 +172,23 @@ real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
 real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 
- real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
+real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
  
 	character *20 apr
 
 
 print *,'DINA_IMAS Enter'
 flush(6)
+
+
+
+call ids_copy(pf_active0, pf_active)
+call ids_copy(pf_passive0, pf_passive)
+!call ids_copy(equilibrium0, equilibrium)
+!call ids_copy(core_profiles0, core_profiles)
+!call ids_copy(core_sources0, core_sources)
+!call ids_copy(em_coupling0, em_coupling)
+
 
 
 if (first_call == 1) then ! convert input trees to local variables before calling dina
