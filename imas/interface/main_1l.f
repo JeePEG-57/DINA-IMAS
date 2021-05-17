@@ -56,10 +56,15 @@
  !     	print * ,' k_in i a_in',k_in,i,a_in(i)
       end do
       
-      
+       ! print *,' t15_2_output'
+ 
       call t15_2_output(k_in, a_in,
      *  k_out, a_out) 
 
+       ! print *,' after t15_2_output'
+
+       ! read (*,*)
+        
       do i=1,38
  !     	print * ,' k_out i a_out',k_out,i,a_out(i)
       end do

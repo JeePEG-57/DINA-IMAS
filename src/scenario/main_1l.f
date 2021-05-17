@@ -25,9 +25,9 @@
 
       i_en=i_en+1
 
-!	print * ,' T15--initi'
+	print * ,' T15--initi'
 
- !     stop
+      stop
       
 
 	EqTime=1.5

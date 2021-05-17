@@ -6,6 +6,10 @@ dina:
 	make -C src/scenario
 	make -C src/scenario/kavin_controller clean
 	make -C src/scenario/kavin_controller
+	make -C src/scenario/kavin_controller_1a clean
+	make -C src/scenario/kavin_controller_1a
+	make -C src/scenario/kavin_controller_1b clean
+	make -C src/scenario/kavin_controller_1b
 
 interface: dina
 	make -C imas/astra_transp
