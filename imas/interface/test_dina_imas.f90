@@ -78,40 +78,44 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 
 call getenv("USER", user)
-print *,' User name is ', user
+print *,'User name is ', user
 
 
-print *,' Enter pulse number'
-!read (*,*)prescribedpulse
-prescribedpulse=170
+print *,'Enter pulse number...'
+read (*,*) pulse
+prescribedpulse = pulse
 
-print *,' pulse number',prescribedpulse
-pulse=prescribedpulse
 
-print *,' Enter run number'
-!read (*,*)prescribedrun
-prescribedrun=1
-print *,' run number =',prescribedrun
+print *,'Enter run number...'
+read (*,*) run
+prescribedrun = 1
 
-print *,' Enter maximum steps number'
+
+!print *,' Enter maximum steps number'
 !read (*,*)imax
 imax=1000000
-!imax=16000
 
-print *,' imax =',imax
 
-print *,' Enter maximum time'
+!print *,' Enter maximum time'
 !read (*,*)imax
-tmax=900.d0
-print *,' tmax =',tmax
+tmax=10000.d0
 
-print *,' Enter decimation for filling the database'
-!read (*,*)idec
-idec=100
-!idec=1
-print *,' idec',idec
 
-write(*,*) 'The file'
+print *,'Enter decimation for filling the database...'
+read (*,*)idec
+!idec=100
+
+
+print *,' Input pulse,run =', prescribedpulse, prescribedrun
+print *,' Output pulse, run =', pulse, run
+print *,' Maximum time steps amount =', imax
+print *,' Maximum simulation time =', tmax, ' seconds'
+print *,' Database put decimation =', idec
+
+
+print *,'Press any key to begin simulation...'
+read (*,*)
+
 
 write(*,*) 'Reading the prescribed IDS'
 ! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 

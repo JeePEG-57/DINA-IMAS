@@ -7,6 +7,7 @@ from PyQt5 import QtWidgets, QtGui
 import design
 import captions
 
+import math
 import numpy
 import random
 import matplotlib
@@ -1591,8 +1592,41 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         #print("pulse_schedule field saved: " + record["title"] + "; nt,nv=" + str(nt) + ", " + str(nv))
      
- 
 
+    def FillCoilGeometry(self, geometry, record):
+                 
+      rc = float(record[0].text())
+      zc = float(record[1].text())
+      length = float(record[2].text())
+      height = float(record[3].text())
+      alpha = float(record[4].text()) 
+      beta = float(record[5].text())   
+      
+      # Alpha and beta swapped here because in tokamakdata alpha is for height and beta for length
+      alpha_imas = beta
+      beta_imas = alpha - math.pi/2.0
+       
+      alpha_imas = alpha_imas%(2.0*math.pi) 
+      beta_imas = beta_imas%(2.0*math.pi) 
+       
+      tol = 1.e-12
+      if (abs(alpha_imas) < tol and abs(beta_imas) < tol):     
+        geometry.geometry_type = 2
+        geometry.rectangle.r = rc
+        geometry.rectangle.z = zc
+        geometry.rectangle.width = length
+        geometry.rectangle.height = height
+
+      else:       
+        geometry.geometry_type = 3
+        geometry.oblique.r = rc - 0.5*(length*math.cos(beta) + height*math.cos(alpha))
+        geometry.oblique.z = zc - 0.5*(length*math.sin(beta) + height*math.sin(alpha))
+        geometry.oblique.length_alpha = length
+        geometry.oblique.length_beta = height
+        geometry.oblique.alpha = alpha_imas
+        geometry.oblique.beta = beta_imas        
+      
+      
     def SaveInputIDS(self,nameSaveSetups):
       # Create input ids
       pulseText = self.lineInputPulse.text()
@@ -1678,13 +1712,25 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             
             pfa1.coil[i].element[ie].name = coil["name"]
             
-            pfa1.coil[i].element[ie].geometry.geometry_type = 3
-            pfa1.coil[i].element[ie].geometry.oblique.r = float(coil["items_g"][0].text())
-            pfa1.coil[i].element[ie].geometry.oblique.z = float(coil["items_g"][1].text())
-            pfa1.coil[i].element[ie].geometry.oblique.length = float(coil["items_g"][2].text())
-            pfa1.coil[i].element[ie].geometry.oblique.thickness = float(coil["items_g"][3].text())
-            pfa1.coil[i].element[ie].geometry.oblique.alpha = float(coil["items_g"][4].text())
-            pfa1.coil[i].element[ie].geometry.oblique.beta = float(coil["items_g"][5].text())
+            #pfa1.coil[i].element[ie].geometry.geometry_type = 3
+            
+            #rc = float(coil["items_g"][0].text())
+            #zc = float(coil["items_g"][1].text())
+            #l_alpha = float(coil["items_g"][2].text())
+            #l_beta = float(coil["items_g"][3].text())
+            #beta = float(coil["items_g"][4].text()) # Alpha and beta swapped here because in tokamakdata alpha is for height and beta for length
+            #alpha = float(coil["items_g"][5].text()) 
+                                 
+            
+            #pfa1.coil[i].element[ie].geometry.oblique.r = rc - 0.5*(l_alpha*math.cos(alpha) + l_beta*math.cos(beta))
+            #pfa1.coil[i].element[ie].geometry.oblique.z = zc - 0.5*(l_alpha*math.sin(alpha) + l_beta*math.sin(beta))
+            #pfa1.coil[i].element[ie].geometry.oblique.length_alpha = l_alpha
+            #pfa1.coil[i].element[ie].geometry.oblique.length_beta = l_beta
+            #pfa1.coil[i].element[ie].geometry.oblique.alpha = alpha
+            #pfa1.coil[i].element[ie].geometry.oblique.beta = beta - math.pi/2.0
+            
+            self.FillCoilGeometry(pfa1.coil[i].element[ie].geometry, coil["items_g"])         
+            
             
             pfa1.coil[i].element[ie].turns_with_sign = float(coil["items_p"][2].text())*float(turndata["items"][i].text())
             #print(str(pfa1.coil[i].element[ie].turns_with_sign))
@@ -1738,13 +1784,23 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             
             pfp1.loop[iloop].element[ie].name = coil["name"]
             
-            pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
-            pfp1.loop[iloop].element[ie].geometry.oblique.r = float(coil["items_g"][0].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.z = float(coil["items_g"][1].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.length = float(coil["items_g"][2].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.thickness = float(coil["items_g"][3].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.alpha = float(coil["items_g"][4].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.beta = float(coil["items_g"][5].text())            
+            #pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
+            
+            #rc = float(coil["items_g"][0].text())
+            #zc = float(coil["items_g"][1].text())
+            #l_alpha = float(coil["items_g"][2].text())
+            #l_beta = float(coil["items_g"][3].text())
+            #beta = float(coil["items_g"][4].text())
+            #alpha = float(coil["items_g"][5].text()) 
+            
+            #pfp1.loop[iloop].element[ie].geometry.oblique.r = rc - 0.5*(l_alpha*math.cos(alpha) + l_beta*math.cos(beta))
+            #pfp1.loop[iloop].element[ie].geometry.oblique.z = zc - 0.5*(l_alpha*math.sin(alpha) + l_beta*math.sin(beta))
+            #pfp1.loop[iloop].element[ie].geometry.oblique.length_alpha = l_alpha
+            #pfp1.loop[iloop].element[ie].geometry.oblique.length_beta = l_beta
+            #pfp1.loop[iloop].element[ie].geometry.oblique.alpha = alpha
+            #pfp1.loop[iloop].element[ie].geometry.oblique.beta = beta - math.pi/2.0            
+      
+            self.FillCoilGeometry(pfp1.loop[iloop].element[ie].geometry, coil["items_g"])  
       
             pfp1.loop[iloop].element[ie].turns_with_sign = float(coil["items_p"][2].text())
       
@@ -1780,13 +1836,23 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             
             pfp1.loop[iloop].element[ie].name = cam["name"]
             
-            pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
-            pfp1.loop[iloop].element[ie].geometry.oblique.r = float(cam["items_g"][0].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.z = float(cam["items_g"][1].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.length = float(cam["items_g"][2].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.thickness = float(cam["items_g"][3].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.alpha = float(cam["items_g"][4].text())
-            pfp1.loop[iloop].element[ie].geometry.oblique.beta = float(cam["items_g"][5].text()) 
+            #pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
+            
+            #rc = float(cam["items_g"][0].text())
+            #zc = float(cam["items_g"][1].text())
+            #l_alpha = float(cam["items_g"][2].text())
+            #l_beta = float(cam["items_g"][3].text())
+            #beta = float(cam["items_g"][4].text())
+            #alpha = float(cam["items_g"][5].text()) 
+                       
+            #pfp1.loop[iloop].element[ie].geometry.oblique.r = rc - 0.5*(l_alpha*math.cos(alpha) + l_beta*math.cos(beta))
+            #pfp1.loop[iloop].element[ie].geometry.oblique.z = zc - 0.5*(l_alpha*math.sin(alpha) + l_beta*math.sin(beta))
+            #pfp1.loop[iloop].element[ie].geometry.oblique.length_alpha = l_alpha
+            #pfp1.loop[iloop].element[ie].geometry.oblique.length_beta = l_beta
+            #pfp1.loop[iloop].element[ie].geometry.oblique.alpha = alpha
+            #pfp1.loop[iloop].element[ie].geometry.oblique.beta = beta - math.pi/2.0
+            
+            self.FillCoilGeometry(pfp1.loop[iloop].element[ie].geometry, cam["items_g"])  
             
             pfp1.loop[iloop].element[ie].turns_with_sign = float(cam["items_p"][2].text())
                        
@@ -1824,9 +1890,14 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         probe = tokamakdata["probes"]["items"][iprobe]
         magnetics.b_field_pol_probe[iprobe].type.index = 1
         magnetics.b_field_pol_probe[iprobe].position.r = float(probe["r"].text())
-        magnetics.b_field_pol_probe[iprobe].position.z = float(probe["z"].text())
+        magnetics.b_field_pol_probe[iprobe].position.z = float(probe["z"].text())      
         magnetics.b_field_pol_probe[iprobe].position.phi = 0.0
-        magnetics.b_field_pol_probe[iprobe].poloidal_angle = float(probe["a"].text())
+        
+        a = -float(probe["a"].text())
+        if (a < 0.0):
+          a = a + 2.0*math.pi       
+        magnetics.b_field_pol_probe[iprobe].poloidal_angle = a
+        
         magnetics.b_field_pol_probe[iprobe].toroidal_angle = 0.0
         magnetics.b_field_pol_probe[iprobe].length = float(probe["l"].text())
       
