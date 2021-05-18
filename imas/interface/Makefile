@@ -47,46 +47,8 @@ test_wr_prof: test_wr_prof.o wr_prof_imas.o
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
 
 %.o: %.f
+	@echo "   * $^ -> $@"
 	$(f2c) -c $<
-
-pers2.o: pers2.f 
-	$(f2c) -c pers2.f
-
-green_imas.o: green_imas.f 
-	$(f2c) -c green_imas.f
-
-n_dina_imas3.o: n_dina_imas3.f 
-	$(f2c) -c n_dina_imas3.f
-
-n_dina_imas4.o: n_dina_imas4.f
-	$(f2c) -c n_dina_imas4.f
-
-main_1l.o: main_1l.f 
-	$(f2c) -c main_1l.f
-
-n_kav.o: n_kav.f
-	$(f2c) -c n_kav.f
-
-out42_for.o: out42_for.f
-	$(f2c) -c out42_for.f
-
-tran1.o: tran1.f 
-	$(f2c) -c tran1.f
-
-tran2.o: tran2.f 
-	$(f2c) -c tran2.f
-
-tran3.o: tran3.f 
-	$(f2c) -c tran3.f
-
-tran4.o: tran4.f 
-	$(f2c) -c tran4.f
-
-tran5.o: tran5.f 
-	$(f2c) -c tran5.f
-
-add_dll.o: add_dll.f 
-	$(f2c) -c add_dll.f
 
 dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"
