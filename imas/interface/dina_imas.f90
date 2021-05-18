@@ -33,7 +33,7 @@
 
 
 subroutine dina_imas(&
-  &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+  &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
   & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
@@ -50,7 +50,7 @@ implicit none
 ! trees are static or dynamic; if not defined, they are static
 type (ids_em_coupling)  :: em_coupling0, em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
-type (ids_magnetics)   :: magnetics
+type (ids_magnetics)   :: magnetics0, magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
 type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
@@ -184,6 +184,7 @@ flush(6)
 
 call ids_copy(pf_active0, pf_active)
 call ids_copy(pf_passive0, pf_passive)
+call ids_copy(magnetics0, magnetics)
 !call ids_copy(equilibrium0, equilibrium)
 !call ids_copy(core_profiles0, core_profiles)
 !call ids_copy(core_sources0, core_sources)
@@ -880,7 +881,7 @@ endif
 AllocIfNull(summary%global_quantities%ip%value, TimeSteps)
 
 
-if(.NOT.associated(summary%global_quantities%li%value)) allocate(summary%global_quantities%li%value(TimeSteps))
+!if(.NOT.associated(summary%global_quantities%li%value)) allocate(summary%global_quantities%li%value(TimeSteps))
 if(.NOT.associated(summary%global_quantities%beta_pol%value)) allocate(summary%global_quantities%beta_pol%value(TimeSteps))
 if(.NOT.associated(summary%global_quantities%beta_tor%value)) allocate(summary%global_quantities%beta_tor%value(TimeSteps))
 
@@ -1189,19 +1190,16 @@ summary%global_quantities%fusion_fluence%value(CurTimeStep) = wr_imas(69)
 write(*,*) 'Allocate core_profiles... '
 
     
-      
-    allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
-    allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
-    allocate(core_profiles%profiles_1d(CurTimeStep)%zeff(n))
+! Filling 0D  
+
+
     
     allocate(core_profiles%global_quantities%t_e_peaking(1))
     allocate(core_profiles%global_quantities%t_i_average_peaking(1))
     allocate(core_profiles%global_quantities%resistive_psi_losses(1))
     allocate(core_profiles%global_quantities%ejima(1))
     
-    
-! Filling 0D  
-    
+       
     core_profiles%global_quantities%t_e_peaking(CurTimeStep) = wr_imas(25)
     core_profiles%global_quantities%t_i_average_peaking(CurTimeStep) = wr_imas(27)
     core_profiles%global_quantities%resistive_psi_losses(CurTimeStep) = wr_imas(30)
@@ -1211,9 +1209,15 @@ write(*,*) 'Allocate core_profiles... '
     
 ! Filling 1D
 
+
+    allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
+    allocate(core_profiles%profiles_1d(CurTimeStep)%zeff(n))
+
     allocate(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
       core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
 
+      
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%volume, volume_1d, n)
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%area, area_1d, n) 
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%surface, surface_1d, n) 

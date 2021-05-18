@@ -40,19 +40,19 @@ def DINA(idslist, arr_volt):
 
   output = dinaimas21.dinaimas21_actor(idslist['em_coupling'],
                                        idslist['equilibrium'],
+                                       idslist['magnetics'],
                                        idslist['pf_active'],
                                        idslist['pf_passive'],
                                        idslist['core_profiles'],
                                        idslist['core_sources'],
                                        idslist['transport_solver_numerics'],
                                        idslist['pulse_schedule'],
-                                       idslist['summary'],
                                        arr_volt)
   # output of the actor is a tuple in Python
   
   idslist['em_coupling'] = output[0]
   idslist['equilibrium'] = output[1]
-  #idslist['magnetics'] = output[2]
+  idslist['magnetics'] = output[2]
   idslist['pf_active'] = output[3]
   idslist['pf_passive'] = output[4]
   idslist['core_profiles'] = output[5]
@@ -177,6 +177,7 @@ imas_entry_init.open()
 idslist['equilibrium'] = imas_entry_init.get('equilibrium', occurrence = 0)
 
 idslist['em_coupling'] = imas_entry_init.get('em_coupling')
+idslist['magnetics'] = imas_entry_init.get('magnetics')
 idslist['wall'] = imas_entry_init.get('wall')
 idslist['pf_active'] = imas_entry_init.get('pf_active')
 idslist['pf_passive'] = imas_entry_init.get('pf_passive')
@@ -186,7 +187,7 @@ idslist['core_transport'] = imas_entry_init.get('core_transport')
 idslist['transport_solver_numerics'] = imas_entry_init.get('transport_solver_numerics')
 idslist['pulse_schedule'] = imas_entry_init.get('pulse_schedule')
 idslist['summary'] = imas_entry_init.get('summary')
-#idslist['dataset_description'] = imas_entry_init.get('dataset_description')
+idslist['dataset_description'] = imas_entry_init.get('dataset_description')
 
 imas_entry_init.close()
 
@@ -194,6 +195,10 @@ imas_entry_init.close()
 # Preparing of an IMAS entry for the simulation output
 imas_entry_result = imas.DBEntry(imasdef.MDSPLUS_BACKEND, 'test', pulse_out, run_out, user_name, data_version = '3')
 imas_entry_result.create()
+
+
+imas_entry_result.put(idslist["dataset_description"])
+imas_entry_result.put(idslist["pulse_schedule"])
 
 
 # Allocation for initial voltages of the magnetic control
@@ -257,7 +262,7 @@ while True:
     #  imas_entry_result.put_slice(idslist[key])
     imas_entry_result.put_slice(idslist['em_coupling'])
     imas_entry_result.put_slice(idslist['equilibrium'])
-    #imas_entry_result.put_slice(idslist['magnetics'])
+    imas_entry_result.put_slice(idslist['magnetics'])
     imas_entry_result.put_slice(idslist['pf_active'])
     imas_entry_result.put_slice(idslist['pf_passive'])
     imas_entry_result.put_slice(idslist['core_profiles'])
@@ -271,7 +276,7 @@ while True:
   print('Workflow step=' + str(iloop) + '; time=' + str(time) + ' s; Ipl=' + str(ip) + ' A', flush=True)
   
   # Condition for stopping the simulation
-  if (time > 20.0 and ip < 1.e3):
+  if (time > 20.0 and abs(ip) < 1.e3):
     break
     
   iloop = iloop + 1

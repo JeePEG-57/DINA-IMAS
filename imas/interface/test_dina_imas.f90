@@ -9,7 +9,7 @@ implicit none
 interface 
 ! Declaration of the dina_imas subroutine
 subroutine dina_imas(&
-  &  em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+  &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
   & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
@@ -26,7 +26,7 @@ implicit none
 ! trees are static or dynamic; if not defined, they are static
 type (ids_em_coupling)  :: em_coupling0, em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
-type (ids_magnetics)   :: magnetics
+type (ids_magnetics)   :: magnetics0, magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
 type (ids_pf_passive)   :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
@@ -53,7 +53,7 @@ end interface
 
 type (ids_em_coupling) :: em_coupling, em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
-type (ids_magnetics) :: magnetics
+type (ids_magnetics) :: magnetics, magnetics0
 type (ids_pf_active) :: pf_active, pf_active0
 type (ids_pf_passive) :: pf_passive, pf_passive0
 type (ids_core_profiles)   :: core_profiles0, core_profiles
@@ -128,7 +128,7 @@ write(*,*) 'Reading the prescribed IDS'
 call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3') 
 
 call ids_get(idx0,"em_coupling",em_coupling0)
-call ids_get(idx0,"magnetics",magnetics)
+call ids_get(idx0,"magnetics",magnetics0)
 call ids_get(idx0,"equilibrium",equilibrium0)
 call ids_get(idx0,"pf_active",pf_active0)
 call ids_get(idx0,"pf_passive",pf_passive0)
@@ -160,7 +160,7 @@ write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
 
 call dina_imas( &
- &   em_coupling0, equilibrium0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+ &   em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
  & , bndcond &
  & , pulse_schedule &
  & , em_coupling, equilibrium, &
@@ -177,6 +177,7 @@ call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
 call ids_deallocate(em_coupling0)
 call ids_deallocate(equilibrium0)
+call ids_deallocate(magnetics0)
 call ids_deallocate(core_profiles0)
 call ids_deallocate(core_sources0)
 write(*,*) "DINA_IMAS inputs deallocated"
@@ -245,6 +246,9 @@ call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
 endif
 
 
+write(*,*) 'Copy magnetics'
+flush(6)
+call ids_copy(magnetics, magnetics0)
 write(*,*) 'Copy pf_active'
 flush(6)
 call ids_copy(pf_active, pf_active0)
@@ -278,6 +282,7 @@ call ids_deallocate(pf_active)
 call ids_deallocate(pf_passive)
 call ids_deallocate(em_coupling)
 call ids_deallocate(equilibrium)
+call ids_deallocate(magnetics)
 call ids_deallocate(core_profiles)
 call ids_deallocate(core_sources)
 call ids_deallocate(core_transport)

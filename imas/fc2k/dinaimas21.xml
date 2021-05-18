@@ -54,6 +54,15 @@
             <string>null</string>
           </vector>
           <vector>
+            <string>magnetics</string>
+            <string>0</string>
+            <string>0</string>
+            <string>0</string>
+            <string>1</string>
+            <string>0</string>
+            <string>null</string>
+          </vector>
+          <vector>
             <string>pf_active</string>
             <string>0</string>
             <string>0</string>
@@ -184,7 +193,7 @@
             <string>0</string>
             <string>0</string>
             <string>0</string>
-            <string>1</string>
+            <string>0</string>
             <string>1</string>
             <string>null</string>
           </vector>

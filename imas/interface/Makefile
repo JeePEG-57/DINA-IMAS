@@ -106,10 +106,9 @@ dina_sdn.a: dina_sdn.o
 	@echo "   * $^ -> $@"
 	ar -rcs $@ $^
 
-solps_imas.a: solps_imas.o
+solps_imas.a: $(DINADIR)/solpsz2_vic.o solps_imas.o
 	@echo "   * $^ -> $@"
-	@cp $(DINADIR)/solpsz2_vic.o solpsz2_vic.o
-	ar -rcs $@ solps_imas.o solpsz2_vic.o
+	ar -rcs $@ $^
 
 external_transp.a: external_transp.o
 	@echo "   * $^ -> $@"
