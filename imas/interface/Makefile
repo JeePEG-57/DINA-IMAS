@@ -13,14 +13,10 @@ DINADIR := ../../src/scenario
 CONTROLDIR := ../../src/controllers
 ASTRADIR := ../astra_transp
 
-LIB_SOURCE1 += $(DINADIR)/dina_99.a dina_imas.o wr_prof_imas.o n_dina_imas3.o out42_for.o green_imas.o pers2.o
+LIB_SOURCEDINA := dina_imas.o wr_prof_imas.o n_dina_imas3.o out42_for.o green_imas.o pers2.o
 
 LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o
 
-LIB_SOURCE3 += dina_put_slice.o
-
-
-#SCHEMAS = $(UAL)/fortraninterface/ids_schemas.f90
 
 
 all: $(TARGETS)
@@ -34,9 +30,9 @@ test_dina_astra: test_dina_imas_astra.o dina_put_slice.a dina_imas.a dina_contr.
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-astra_transp_density.a:
+astra_transp_density.a: $(ASTRADIR)/astra_transp_density.a
 	@echo "   * $^ -> $@"
-	@cp $(ASTRADIR)/astra_transp_density.a astra_transp_density.a
+	@cp $< $@
 
 test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	@echo "   * $^ -> $@"
@@ -49,6 +45,9 @@ test_wr_prof: test_wr_prof.o wr_prof_imas.o
 %.o: %.f90
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
+
+%.o: %.f
+	$(f2c) -c $<
 
 pers2.o: pers2.f 
 	$(f2c) -c pers2.f
@@ -89,70 +88,70 @@ tran5.o: tran5.f
 add_dll.o: add_dll.f 
 	$(f2c) -c add_dll.f
 
-dina_imas.a: $(LIB_SOURCE1)
+dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"
-	@cp $(DINADIR)/dina_99.a dina_imas.a
-	ar -rcs dina_imas.a wr_prof_imas.o n_dina_imas3.o dina_imas.o green_imas.o pers2.o
+	@cp $< $@
+	ar -rcs $@ $(LIB_SOURCEDINA)
 
-dina_put_slice.a: $(LIB_SOURCE3)
+dina_put_slice.a: dina_put_slice.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_put_slice.a dina_put_slice.o
+	ar -rcs $@ $^
 
 dina_contr.a: $(CONTROLDIR)/kavin_controller/dina_kav.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
-	@cp $(CONTROLDIR)/kavin_controller/dina_kav.a dina_contr.a
-	ar -rcs dina_contr.a $(LIB_SOURCECTRL)
+	@cp $< $@
+	ar -rcs $@ $(LIB_SOURCECTRL)
 
 dina_contr_1a.a: $(CONTROLDIR)/kavin_controller_1a/dina_kav.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
-	@cp $(CONTROLDIR)/kavin_controller_1a/dina_kav.a dina_contr_1a.a
-	ar -rcs dina_contr_1a.a $(LIB_SOURCECTRL)
+	@cp $< $@
+	ar -rcs $@ $(LIB_SOURCECTRL)
 
 dina_contr_1b.a: $(CONTROLDIR)/kavin_controller_1b/dina_kav.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
-	@cp $(CONTROLDIR)/kavin_controller_1b/dina_kav.a dina_contr_1b.a
-	ar -rcs dina_contr_1b.a $(LIB_SOURCECTRL)
+	@cp $< $@
+	ar -rcs $@ $(LIB_SOURCECTRL)
 
 dina_transp_energy.a: dina_transp_energy.o tran1.o add_dll.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_transp_energy.a dina_transp_energy.o tran1.o add_dll.o
+	ar -rcs $@ $^
 
 dina_transp_density.a: dina_transp_density.o tran2.o add_dll.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_transp_density.a dina_transp_density.o tran2.o add_dll.o
+	ar -rcs $@ $^
 
 dina_transp_density_test.a: dina_transp_density_test.o tran2.o add_dll.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_transp_density_test.a dina_transp_density_test.o tran2.o add_dll.o
+	ar -rcs $@ $^
 
 dina_transp_density_test0.a: dina_transp_density_test0.o tran2.o add_dll.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_transp_density_test0.a dina_transp_density_test0.o tran2.o add_dll.o
+	ar -rcs $@ $^
 
 dina_transp_bootcond.a: dina_transp_bootcond.o tran3.o add_dll.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_transp_bootcond.a dina_transp_bootcond.o tran3.o add_dll.o
+	ar -rcs $@ $^
 
 dina_transp_curdrive.a: dina_transp_curdrive.o tran4.o add_dll.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_transp_curdrive.a dina_transp_curdrive.o tran4.o add_dll.o
+	ar -rcs $@ $^
 
 dina_transp_heatsrc.a: dina_transp_heatsrc.o tran5.o add_dll.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_transp_heatsrc.a dina_transp_heatsrc.o tran5.o add_dll.o
+	ar -rcs $@ $^
 
 dina_sdn.a: dina_sdn.o
 	@echo "   * $^ -> $@"
-	ar -rcs dina_sdn.a dina_sdn.o
+	ar -rcs $@ $^
 
 solps_imas.a: solps_imas.o
 	@echo "   * $^ -> $@"
 	@cp $(DINADIR)/solpsz2_vic.o solpsz2_vic.o
-	ar -rcs solps_imas.a solps_imas.o solpsz2_vic.o
+	ar -rcs $@ solps_imas.o solpsz2_vic.o
 
 external_transp.a: external_transp.o
 	@echo "   * $^ -> $@"
-	ar -rcs external_transp.a external_transp.o
+	ar -rcs $@ $^
 
 clean:
 	rm -f *.o

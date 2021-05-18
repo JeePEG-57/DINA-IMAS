@@ -19,8 +19,8 @@ rt_nonfinite.c rt_rand.c rtGetNaN.c rtGetInf.c
 
 CONTROLOBJ = $(CONTROLSRC:.c=.o)
 
-#mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-#current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 DINA_KAV := dina_kav.a
 #DINA_KAV := $(current_dir).a
 
