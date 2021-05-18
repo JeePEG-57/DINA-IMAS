@@ -45,7 +45,8 @@ dina_99.a: $(DINAOBJ)
 
 
 clean:
-	-rm -f *.o
+	-rm -f *.o 
+	-rm -f *.a
 
 distclean:
 	-rm -f *.o *.a

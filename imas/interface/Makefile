@@ -10,15 +10,12 @@ DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.
 TARGETS += dina_imas.a dina_put_slice.a dina_contr.a dina_contr_1a.a dina_contr_1b.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_density_test0.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a dina_sdn.a solps_imas.a test_dina_to_imas test_dina test_wr_prof
 
 DINADIR := ../../src/scenario
+CONTROLDIR := ../../src/controllers
 ASTRADIR := ../astra_transp
 
 LIB_SOURCE1 += $(DINADIR)/dina_99.a dina_imas.o wr_prof_imas.o n_dina_imas3.o out42_for.o green_imas.o pers2.o
 
-LIB_SOURCE2 += $(DINADIR)/dina_kav.a dina_contr.o n_kav.o out42_for.o main_1l.o
-
-LIB_SOURCE2a += $(DINADIR)/kavin_controller_1a.a dina_contr.o n_kav.o out42_for.o main_1l.o
-
-LIB_SOURCE2b += $(DINADIR)/kavin_controller_1b.a dina_contr.o n_kav.o out42_for.o main_1l.o
+LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o
 
 LIB_SOURCE3 += dina_put_slice.o
 
@@ -94,7 +91,6 @@ add_dll.o: add_dll.f
 
 dina_imas.a: $(LIB_SOURCE1)
 	@echo "   * $^ -> $@"
-	@cp $(DINADIR)/dina_99.a dina_99.a
 	@cp $(DINADIR)/dina_99.a dina_imas.a
 	ar -rcs dina_imas.a wr_prof_imas.o n_dina_imas3.o dina_imas.o green_imas.o pers2.o
 
@@ -102,20 +98,20 @@ dina_put_slice.a: $(LIB_SOURCE3)
 	@echo "   * $^ -> $@"
 	ar -rcs dina_put_slice.a dina_put_slice.o
 
-dina_contr.a: $(LIB_SOURCE2)
+dina_contr.a: $(CONTROLDIR)/kavin_controller/dina_kav.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
-	@cp $(DINADIR)/dina_kav.a dina_contr.a
-	ar -rcs dina_contr.a dina_contr.o main_1l.o n_kav.o out42_for.o
+	@cp $(CONTROLDIR)/kavin_controller/dina_kav.a dina_contr.a
+	ar -rcs dina_contr.a $(LIB_SOURCECTRL)
 
-dina_contr_1a.a: $(LIB_SOURCE2a)
+dina_contr_1a.a: $(CONTROLDIR)/kavin_controller_1a/dina_kav.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
-	@cp $(DINADIR)/kavin_controller_1a.a dina_contr_1a.a
-	ar -rcs dina_contr_1a.a dina_contr.o main_1l.o n_kav.o out42_for.o
+	@cp $(CONTROLDIR)/kavin_controller_1a/dina_kav.a dina_contr_1a.a
+	ar -rcs dina_contr_1a.a $(LIB_SOURCECTRL)
 
-dina_contr_1b.a: $(LIB_SOURCE2b)
+dina_contr_1b.a: $(CONTROLDIR)/kavin_controller_1b/dina_kav.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
-	@cp $(DINADIR)/kavin_controller_1b.a dina_contr_1b.a
-	ar -rcs dina_contr_1b.a dina_contr.o main_1l.o n_kav.o out42_for.o
+	@cp $(CONTROLDIR)/kavin_controller_1b/dina_kav.a dina_contr_1b.a
+	ar -rcs dina_contr_1b.a $(LIB_SOURCECTRL)
 
 dina_transp_energy.a: dina_transp_energy.o tran1.o add_dll.o
 	@echo "   * $^ -> $@"

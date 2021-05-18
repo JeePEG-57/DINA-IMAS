@@ -23,7 +23,6 @@ all: dina_kav.a
 dina_kav.a: $(CONTROLOBJ)
 	$(RM) -r dina_kav.a
 	$(AR) $(ARFLAGS) $@ $(CONTROLOBJ)
-	cp dina_kav.a ..
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<

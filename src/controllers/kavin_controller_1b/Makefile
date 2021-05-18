@@ -19,10 +19,10 @@ rt_nonfinite.c rt_rand.c rtGetNaN.c rtGetInf.c
 
 CONTROLOBJ = $(CONTROLSRC:.c=.o)
 
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-#DINA_KAV := dina_kav.a
-DINA_KAV := $(current_dir).a
+#mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+#current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+DINA_KAV := dina_kav.a
+#DINA_KAV := $(current_dir).a
 
 all: $(DINA_KAV)
 
@@ -30,7 +30,6 @@ $(DINA_KAV): $(CONTROLOBJ)
 	$(info Controller library: $(DINA_KAV) from $(current_dir))
 	$(RM) -r $(DINA_KAV)
 	$(AR) $(ARFLAGS) $@ $(CONTROLOBJ)
-	cp $(DINA_KAV) ..
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
@@ -40,7 +39,8 @@ $(DINA_KAV): $(CONTROLOBJ)
 
 
 clean:
-	-rm -f *.o
+	-rm -f *.o 
+	-rm -f *.a
 
 distclean:
 	-rm -f *.o *.a
