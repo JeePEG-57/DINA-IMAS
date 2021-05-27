@@ -21,15 +21,15 @@ CONTROLOBJ = $(CONTROLSRC:.c=.o)
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-DINA_KAV := dina_kav.a
+DINA_KAV := kmc.a
 #DINA_KAV := $(current_dir).a
 
 all: $(DINA_KAV)
 
 $(DINA_KAV): $(CONTROLOBJ)
-	$(info Controller library: $(DINA_KAV) from $(current_dir))
-	$(RM) -r $(DINA_KAV)
-	$(AR) $(ARFLAGS) $@ $(CONTROLOBJ)
+	$(info Controller library: $@ from $(current_dir))
+	$(RM) -r $@
+	$(AR) $(ARFLAGS) $@ $^
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
@@ -37,10 +37,6 @@ $(DINA_KAV): $(CONTROLOBJ)
 %.o: %.c
 	$(f2c)  -c $<
 
-
 clean:
 	-rm -f *.o 
 	-rm -f *.a
-
-distclean:
-	-rm -f *.o *.a

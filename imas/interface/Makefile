@@ -59,17 +59,17 @@ dina_put_slice.a: dina_put_slice.o
 	@echo "   * $^ -> $@"
 	ar -rcs $@ $^
 
-dina_contr.a: $(CONTROLDIR)/kavin_controller/dina_kav.a $(LIB_SOURCECTRL)
+dina_contr.a: $(CONTROLDIR)/kmc/kmc.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
 	@cp $< $@
 	ar -rcs $@ $(LIB_SOURCECTRL)
 
-dina_contr_1a.a: $(CONTROLDIR)/kavin_controller_1a/dina_kav.a $(LIB_SOURCECTRL)
+dina_contr_1a.a: $(CONTROLDIR)/kmc_pfpo1_1a/kmc.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
 	@cp $< $@
 	ar -rcs $@ $(LIB_SOURCECTRL)
 
-dina_contr_1b.a: $(CONTROLDIR)/kavin_controller_1b/dina_kav.a $(LIB_SOURCECTRL)
+dina_contr_1b.a: $(CONTROLDIR)/kmc_pfpo1_1b/kmc.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
 	@cp $< $@
 	ar -rcs $@ $(LIB_SOURCECTRL)

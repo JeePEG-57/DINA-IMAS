@@ -18,11 +18,11 @@ rt_nonfinite.c rt_rand.c rtGetNaN.c rtGetInf.c
 
 CONTROLOBJ = $(CONTROLSRC:.c=.o)
 
-all: dina_kav.a
+all: kmc.a
 
-dina_kav.a: $(CONTROLOBJ)
-	$(RM) -r dina_kav.a
-	$(AR) $(ARFLAGS) $@ $(CONTROLOBJ)
+kmc.a: $(CONTROLOBJ)
+	$(RM) -r $@
+	$(AR) $(ARFLAGS) $@ $^
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
@@ -30,9 +30,5 @@ dina_kav.a: $(CONTROLOBJ)
 %.o: %.c
 	$(f2c)  -c $<
 
-
 clean:
-	-rm -f *.o
-
-distclean:
 	-rm -f *.o *.a

@@ -6,9 +6,9 @@ dina:
 	make -C src/scenario
 
 controllers:
-	make -C src/controllers/kavin_controller
-	make -C src/controllers/kavin_controller_1a
-	make -C src/controllers/kavin_controller_1b
+	make -C src/controllers/kmc
+	make -C src/controllers/kmc_pfpo1_1a
+	make -C src/controllers/kmc_pfpo1_1b
 
 interface: dina controllers
 	make -C imas/astra_transp
@@ -20,14 +20,10 @@ fc2k: interface
 
 clean:
 	make -C src/scenario clean
-	make -C src/controllers/kavin_controller clean
-	make -C src/controllers/kavin_controller_1a clean
-	make -C src/controllers/kavin_controller_1b clean
+	make -C src/controllers/kmc clean
+	make -C src/controllers/kmc_pfpo1_1a clean
+	make -C src/controllers/kmc_pfpo1_1b clean
 	make -C imas/astra_transp clean
 	make -C imas/eq_test clean
 	make -C imas/interface clean
 	make -C imas/fc2k clean
-
-distclean:
-	make -C src/scenario distclean
-	make -C imas/interface distclean

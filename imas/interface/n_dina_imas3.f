@@ -345,7 +345,7 @@ c=================================================
            fpol_xx(i) = bt0_dir*(rs0/100.d0)*f(i)/10.d0
 	   pptab_xx(i) = tpl_dir*ppx(i)
 	   fptab_xx(i) = tpl_dir*pffx(i)
-	   press_xx(i) = p(i)
+	   press_xx(i) = 1.602176634d0*p(i)/(200.d0*1.d-6)
 
 	   surface_1d_xx(i) = s_surf(i)
 
@@ -362,11 +362,11 @@ c=================================================
 	
 	do i=1,n
 
-	   ajb_xx(i) = tpl_dir*ajb(i)*1.d7
-	   aj0_xx(i) = tpl_dir*aj0(i)*1.d7
-	   ajae_xx(i) = tpl_dir*ajae(i)*1.d7
-	   tok1_xx(i) = tpl_dir*tok1(i)*1.d7
-	   
+	   tok1_xx(i) = tpl_dir*tok1(i)*1.d7 ! Toroidal current density
+	   ajb_xx(i) = tpl_dir*ajb(i)*1.d7 ! Bootstrap current density
+	   aj0_xx(i) = tpl_dir*aj0(i)*1.d7 ! j_parallel
+	   ajae_xx(i) = tpl_dir*ajae(i)*1.d7 ! source of j_parallel
+	      
            psi_1D_xx(i) = tpl_dir*psval(i)*1.d-5*2.*pi
            
 
