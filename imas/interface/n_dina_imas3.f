@@ -343,8 +343,8 @@ c=================================================
 !	   fptab_xx(i)=fptab(i)
 
            fpol_xx(i) = bt0_dir*(rs0/100.d0)*f(i)/10.d0
-	   pptab_xx(i) = tpl_dir*ppx(i)
-	   fptab_xx(i) = tpl_dir*pffx(i)
+	   pptab_xx(i) = -tpl_dir*ppx(i)
+	   fptab_xx(i) = -tpl_dir*pffx(i)
 	   press_xx(i) = 1.602176634d0*p(i)/(200.d0*1.d-6)
 
 	   surface_1d_xx(i) = s_surf(i)*2.d0*pi*1.d-4
