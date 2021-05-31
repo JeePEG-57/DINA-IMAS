@@ -347,15 +347,15 @@ c=================================================
 	   fptab_xx(i) = tpl_dir*pffx(i)
 	   press_xx(i) = 1.602176634d0*p(i)/(200.d0*1.d-6)
 
-	   surface_1d_xx(i) = s_surf(i)
+	   surface_1d_xx(i) = s_surf(i)*2.d0*pi*1.d-4
 
 	end do
 	
 	
-	volume_1d_xx(1) = 2.*pi*vi(1)*ha(1)*1.d-6
+	volume_1d_xx(1) = 2.d0*pi*vi(1)*ha(1)*1.d-6
 	area_1d_xx(1) = spo(1)*ha(1)*1.d-4
 	do i=2,n
-	   volume_1d_xx(i) = volume_1d_xx(i-1) + 2.*pi*vi(i)*ha(i)*1.d-6
+	   volume_1d_xx(i) = volume_1d_xx(i-1) + 2.d0*pi*vi(i)*ha(i)*1.d-6
            area_1d_xx(i) = area_1d_xx(i-1) + spo(i)*ha(i)*1.d-4          
 	enddo
 	

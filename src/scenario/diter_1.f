@@ -346,8 +346,9 @@ c==========================
       GRA1(I)=GRA1(I)/VI(I)
       C3(I)=c3(i)/(ha(i)*2.*PI)
       
-      s_bound=s_bound*(2.*PI)*1.d-4
       s_surf(i)=s_bound
+      s_bound=s_bound*(2.*PI)*1.d-4
+      
       
       
    30 CONTINUE
