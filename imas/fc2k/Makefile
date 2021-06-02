@@ -46,6 +46,7 @@ endif
 	$$FC2K/bin/fc2k -nocompile solps_imas.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile dinacontr21_1a.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile dinacontr21_1b.xml $(usekep) $(usepy)
+	$$FC2K/bin/fc2k -nocompile dinacontr21_2madiv.xml $(usekep) $(usepy)
 
 ifdef kepler
 	cd $(KEPLER)/build-area && ant clean-cache && ant compile && ant make-kars
