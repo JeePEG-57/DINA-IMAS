@@ -205,10 +205,11 @@ c ============ outputs ==============================================
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,palf_xx,zeff0_xx,vloop_xx,
      * tene_xx,teit_98_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
-     * fpol_xx,pptab_xx,fptab_xx,
+     * fpol_xx,pptab_xx,fptab_xx,phi_xx,
      * n_bnd_xx,xbound_xx,ybound_xx,n_sep_xx,x_sep_xx,y_sep_xx, n_sep2_xx,x_sep2_xx,y_sep2_xx,
      * bprobe_xx,psloop_xx,
-     * surface_1d_xx,volume_1d_xx,area_1d_xx)
+     * surface_1d_xx,volume_1d_xx,area_1d_xx,
+     * psi_sep2_xx)
 
 
 	include 'double.inc'
@@ -231,15 +232,16 @@ c ============ outputs ==============================================
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
         dimension gaps_xx(*)
         dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
-        dimension fpol_xx(*),pptab_xx(*),fptab_xx(*)
+        dimension fpol_xx(*),pptab_xx(*),fptab_xx(*),phi_xx(*)
         dimension press_xx(*),zeff_xx(*)
         dimension bprobe_xx(*),psloop_xx(*)
         dimension surface_1d_xx(*),volume_1d_xx(*),area_1d_xx(*)
         
         include 'imas_interface.inc'
         
-
-      n_xx=n
+           
+        
+        n_xx=n
 
 !	pi=3.14159
 	
@@ -290,7 +292,7 @@ c ============ outputs ==============================================
         psi_ax_xx = tpl_dir*pmag*1.d-5*2.*pi
         psi_bnd_xx = tpl_dir*pbound*1.d-5*2.*pi
         psi_sep_xx = tpl_dir*psep*1.d-5*2.*pi
-        
+        psi_sep2_xx = tpl_dir*psep2*1.d-5*2.*pi
         
         ksepa_xx = ksepa 
         
@@ -336,20 +338,44 @@ c=================================================
            qe0_xx(i)=qe0(i)
            qq0_xx(i)=qq0(i)
 	   
-	   q_xx(i)=q(i)
+
 	   zeff_xx(i)=zeff(i)
    
 !	   pptab_xx(i)=pptab(i)
 !	   fptab_xx(i)=fptab(i)
 
-           fpol_xx(i) = bt0_dir*(rs0/100.d0)*f(i)/10.d0
-	   pptab_xx(i) = -tpl_dir*ppx(i)
-	   fptab_xx(i) = -tpl_dir*pffx(i)
-	   press_xx(i) = 1.602176634d0*p(i)/(200.d0*1.d-6)
+           psi_1D_xx(i) = tpl_dir*psval(i)*1.d-5*2.*pi
+           phi_xx(i) = bt0_dir*dfmax(i)*1.d-5
+
 
 	   surface_1d_xx(i) = s_surf(i)*2.d0*pi*1.d-4
 
 	end do
+	
+	
+	
+	do i=1,n
+	
+	   psix_xx=(psval(i)-pmag)/(pbound-pmag) 
+	   psix_xx=sqrt(psix_xx)
+	   !psix_xx=sqrt(ai(i))
+	
+	   call feeti(n,ppx,pptab_xx(i),ai,psix_xx)
+           call feeti(n,pffx,fptab_xx(i),ai,psix_xx)
+           call feeti(n,f,fpol_xx(i),ai,psix_xx)
+           call feeti(n,p,press_xx(i),ai,psix_xx)
+           call feeti(n,q,q_xx(i),ai,psix_xx)
+          
+          
+           pptab_xx(i) = -tpl_dir*pptab_xx(i) * 1.d10/(rs0*8.d0*pi**2)
+           fptab_xx(i) = -tpl_dir*fptab_xx(i) * rs0/(40.d0*pi)       
+           fpol_xx(i) = bt0_dir*(rs0/100.d0)*fpol_xx(i)/10.d0
+           press_xx(i) = 1.602176634d0*press_xx(i)/(200.d0*1.d-6)
+          
+           q_xx(i)=q_xx(i)
+                   
+	enddo
+	
 	
 	
 	volume_1d_xx(1) = 2.d0*pi*vi(1)*ha(1)*1.d-6
@@ -367,7 +393,7 @@ c=================================================
 	   aj0_xx(i) = tpl_dir*aj0(i)*1.d7 ! j_parallel
 	   ajae_xx(i) = tpl_dir*ajae(i)*1.d7 ! source of j_parallel
 	      
-           psi_1D_xx(i) = tpl_dir*psval(i)*1.d-5*2.*pi
+           
            
 
 	end do
@@ -401,6 +427,8 @@ c=================================================
 	   tcam_xx(i) = tpl_dir*1.d3*tcam(i)
 	enddo
 
+		
+	
 	if(kpr.eq.1)print *,' tt t_vde=',tt,t_vde
 
       if(tt.gt.t_vde)then

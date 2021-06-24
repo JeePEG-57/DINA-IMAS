@@ -1712,22 +1712,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
             
             pfa1.coil[i].element[ie].name = coil["name"]
             
-            #pfa1.coil[i].element[ie].geometry.geometry_type = 3
-            
-            #rc = float(coil["items_g"][0].text())
-            #zc = float(coil["items_g"][1].text())
-            #l_alpha = float(coil["items_g"][2].text())
-            #l_beta = float(coil["items_g"][3].text())
-            #beta = float(coil["items_g"][4].text()) # Alpha and beta swapped here because in tokamakdata alpha is for height and beta for length
-            #alpha = float(coil["items_g"][5].text()) 
-                                 
-            
-            #pfa1.coil[i].element[ie].geometry.oblique.r = rc - 0.5*(l_alpha*math.cos(alpha) + l_beta*math.cos(beta))
-            #pfa1.coil[i].element[ie].geometry.oblique.z = zc - 0.5*(l_alpha*math.sin(alpha) + l_beta*math.sin(beta))
-            #pfa1.coil[i].element[ie].geometry.oblique.length_alpha = l_alpha
-            #pfa1.coil[i].element[ie].geometry.oblique.length_beta = l_beta
-            #pfa1.coil[i].element[ie].geometry.oblique.alpha = alpha
-            #pfa1.coil[i].element[ie].geometry.oblique.beta = beta - math.pi/2.0
             
             self.FillCoilGeometry(pfa1.coil[i].element[ie].geometry, coil["items_g"])         
             
@@ -1782,23 +1766,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
           if icircuit == int(coil["items_p"][3].text()):
             ie = ie + 1           
             
-            pfp1.loop[iloop].element[ie].name = coil["name"]
-            
-            #pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
-            
-            #rc = float(coil["items_g"][0].text())
-            #zc = float(coil["items_g"][1].text())
-            #l_alpha = float(coil["items_g"][2].text())
-            #l_beta = float(coil["items_g"][3].text())
-            #beta = float(coil["items_g"][4].text())
-            #alpha = float(coil["items_g"][5].text()) 
-            
-            #pfp1.loop[iloop].element[ie].geometry.oblique.r = rc - 0.5*(l_alpha*math.cos(alpha) + l_beta*math.cos(beta))
-            #pfp1.loop[iloop].element[ie].geometry.oblique.z = zc - 0.5*(l_alpha*math.sin(alpha) + l_beta*math.sin(beta))
-            #pfp1.loop[iloop].element[ie].geometry.oblique.length_alpha = l_alpha
-            #pfp1.loop[iloop].element[ie].geometry.oblique.length_beta = l_beta
-            #pfp1.loop[iloop].element[ie].geometry.oblique.alpha = alpha
-            #pfp1.loop[iloop].element[ie].geometry.oblique.beta = beta - math.pi/2.0            
+            pfp1.loop[iloop].element[ie].name = coil["name"]                     
       
             self.FillCoilGeometry(pfp1.loop[iloop].element[ie].geometry, coil["items_g"])  
       
@@ -1834,23 +1802,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
           if icircuit == int(cam["items_p"][3].text()):
             ie = ie + 1           
             
-            pfp1.loop[iloop].element[ie].name = cam["name"]
-            
-            #pfp1.loop[iloop].element[ie].geometry.geometry_type = 3
-            
-            #rc = float(cam["items_g"][0].text())
-            #zc = float(cam["items_g"][1].text())
-            #l_alpha = float(cam["items_g"][2].text())
-            #l_beta = float(cam["items_g"][3].text())
-            #beta = float(cam["items_g"][4].text())
-            #alpha = float(cam["items_g"][5].text()) 
-                       
-            #pfp1.loop[iloop].element[ie].geometry.oblique.r = rc - 0.5*(l_alpha*math.cos(alpha) + l_beta*math.cos(beta))
-            #pfp1.loop[iloop].element[ie].geometry.oblique.z = zc - 0.5*(l_alpha*math.sin(alpha) + l_beta*math.sin(beta))
-            #pfp1.loop[iloop].element[ie].geometry.oblique.length_alpha = l_alpha
-            #pfp1.loop[iloop].element[ie].geometry.oblique.length_beta = l_beta
-            #pfp1.loop[iloop].element[ie].geometry.oblique.alpha = alpha
-            #pfp1.loop[iloop].element[ie].geometry.oblique.beta = beta - math.pi/2.0
+            pfp1.loop[iloop].element[ie].name = cam["name"]         
             
             self.FillCoilGeometry(pfp1.loop[iloop].element[ie].geometry, cam["items_g"])  
             

@@ -127,7 +127,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
     
     real(ids_real) :: tpl=1000.0,uli=1000.0,v=1000.0,parea=1000.0,psi_ax=1000.0,rmag=1000.0,zmag=1000.0 &
-  & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0,psi_sep &
+  & ,q_ax=1000.0,q_95=1000.0,rs0=1000.0,bt0=1000.0,wen2=1000.0,tt = 1.0,psi_bnd = 1000.0,psi_sep, psi_sep2 &
   & ,rmajor,rminor,elong,tri
   
 
@@ -143,7 +143,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     
     real(ids_real) :: vchopper(npf),pf(npf),tcam(ncam)
 
-    real(ids_real) :: fpol(npo),pptab(npo),fptab(npo)
+    real(ids_real) :: fpol(npo),pptab(npo),fptab(npo),phi_1D(npo)
 
     !real(ids_real) :: Pohm,wdop,w_alfa,wtor, w_Be,w_W,w_Ar,w_Ne, w_imp,w_rad,w_heat
     real(ids_real) :: wr_imas(150)
@@ -175,6 +175,10 @@ real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
 real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
  
 	character *20 apr
+
+	
+real(ids_real) :: cocos_psi = -1.d0
+
 
 
 print *,'DINA_IMAS Enter'
@@ -601,10 +605,11 @@ write(*,*) '!!!dina_outp enter'
      & pd0,pt0,sigk,jbut,aj0,ajae,zeff,press,qe0,qq0, &
      & betap,betat,tec,tqc,pec,pic,palf,zeff0,vloop,tene,teit_98,wfus,emag, &
      & vchopper,pf,tcam, &
-     & fpol,pptab,fptab, &
+     & fpol,pptab,fptab,phi_1D, &
      & n_bnd,xbound,ybound, n_sep,x_sep,y_sep, n_sep2,x_sep2,y_sep2, &
      & bprobe,psloop,&
-     & surface_1d,volume_1d,area_1d)
+     & surface_1d,volume_1d,area_1d, &
+     & psi_sep2)
      
 
         call dina_wr_output(wr_imas)
@@ -624,6 +629,19 @@ write(*,*) '!!!solpsza enter'
 
 
     flush(6)
+    
+    
+    
+    psi_ax = psi_ax*cocos_psi
+    psi_bnd = psi_bnd*cocos_psi
+    psi_sep = psi_sep*cocos_psi
+    psi_sep2 = psi_sep2*cocos_psi
+    psi = psi*cocos_psi
+    psi_1D = psi_1D*cocos_psi
+    psloop = psloop*cocos_psi
+    pptab = pptab*cocos_psi
+    fptab = fptab*cocos_psi
+    
     
 !write(*,*) "output_1",output_1
 
@@ -1050,6 +1068,7 @@ summary%global_quantities%fusion_fluence%value(CurTimeStep) = wr_imas(69)
        
        
         ! Outer separatrix
+        equilibrium%time_slice(CurTimeStep)%boundary_secondary_separatrix%psi = psi_sep2
         allocate(equilibrium%time_slice(CurTimeStep)%boundary_secondary_separatrix%outline%r(n_sep2))
         allocate(equilibrium%time_slice(CurTimeStep)%boundary_secondary_separatrix%outline%z(n_sep2))
           equilibrium%time_slice(CurTimeStep)%boundary_secondary_separatrix%outline%r(1:n_sep2) = x_sep2(1:n_sep2)
@@ -1098,17 +1117,20 @@ summary%global_quantities%fusion_fluence%value(CurTimeStep) = wr_imas(69)
 !       fptab_iter=fptab/(2*pi)*0.5d0*(rs0*1.d-2)*10./pmu0
 
     
-    pmu0=4.d0*pi*1.d-7
-    coef_ppx=1./(2*pi)/(rs0)*10./pmu0
-    coef_pffx=1./(2*pi)*0.5d0*(rs0)*10.
-    
-    print *,' coef_ppx coef_pffx rs0 pmu0=',coef_ppx,coef_pffx,rs0,pmu0
-    
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = coef_ppx*pptab(1:n)
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = coef_pffx*fptab(1:n)        
-        
-        
+    !pmu0=4.d0*pi*1.d-7
+    !coef_ppx=1./(2*pi)/(rs0)*10./pmu0
+    !coef_pffx=1./(2*pi)*0.5d0*(rs0)*10.   
+    !print *,' coef_ppx coef_pffx rs0 pmu0=',coef_ppx,coef_pffx,rs0,pmu0    
+    !equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = coef_ppx*pptab(1:n)
+    !equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = coef_pffx*fptab(1:n)        
+           
+    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = pptab(1:n)
+    equilibrium%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n) = fptab(1:n)  
 
+    AllocArr(equilibrium%time_slice(CurTimeStep)%profiles_1d%phi,phi_1D,n)
+    AllocArr(equilibrium%time_slice(CurTimeStep)%profiles_1d%q, q, n)
+    AllocArr(equilibrium%time_slice(CurTimeStep)%profiles_1d%j_tor, tok1, n)
+   
     
     ! 2D Profiles
     allocate(equilibrium%time_slice(CurTimeStep)%profiles_2d(1))
@@ -1213,20 +1235,25 @@ write(*,*) 'Allocate core_profiles... '
     allocate(core_profiles%profiles_1d(CurTimeStep)%j_tor(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%q(n))
     allocate(core_profiles%profiles_1d(CurTimeStep)%zeff(n))
-
+      core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
+      core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
+      core_profiles%profiles_1d(CurTimeStep)%zeff(1:n) = zeff(1:n)
+    
+    
     allocate(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(n))
       core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n) = ai(1:n)
 
+           
       
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%psi, psi_1D, n)   
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%volume, volume_1d, n)
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%area, area_1d, n) 
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%surface, surface_1d, n) 
       
-    core_profiles%profiles_1d(CurTimeStep)%j_tor(1:n) = tok1(1:n) ![A/m2]
-    core_profiles%profiles_1d(CurTimeStep)%q(1:n) = q(1:n)
-    core_profiles%profiles_1d(CurTimeStep)%zeff(1:n) = zeff(1:n)
 
 
+    core_profiles%profiles_1d(CurTimeStep)%grid%psi_magnetic_axis = psi_ax
+    core_profiles%profiles_1d(CurTimeStep)%grid%psi_boundary = psi_bnd
     
 
 

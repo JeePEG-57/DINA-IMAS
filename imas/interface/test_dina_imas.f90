@@ -83,6 +83,7 @@ character (len=255) :: user
 INTEGER :: clock_start,clock_end,clock_rate
 
 
+    
 call getenv("USER", user)
 print *,'User name is ', user
 

@@ -292,16 +292,16 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
     
           #------------y_LIMITS------------
             self.ylimup_j_tor.append(max(self.j_tor[i])*1.1)
-            self.ylimdown_j_tor.append(min(self.j_tor[i])*0.9)
+            self.ylimdown_j_tor.append(min(self.j_tor[i])*1.1)
     
-            self.ylimup_q.append(max(self.q[i])*1.1)
-            self.ylimdown_q.append(min(self.q[i])*0.9)
+            self.ylimup_q.append(5.0)
+            self.ylimdown_q.append(0.0)
     
             self.ylimup_t_e.append(max(self.t_e[i])*1.1)
-            self.ylimdown_t_e.append(min(self.t_e[i])*0.9)
+            self.ylimdown_t_e.append(0.0)
     
             self.ylimup_t_i.append(max(self.t_i[i])*1.1)
-            self.ylimdown_t_i.append(min(self.t_i[i])*0.9)
+            self.ylimdown_t_i.append(0.0)
     
             self.ylimup_n_e.append(max(self.n_e[i])*1.1)
             self.ylimdown_n_e.append(min(self.n_e[i])*0.9)
