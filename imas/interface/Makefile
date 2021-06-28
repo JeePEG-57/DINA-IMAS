@@ -83,6 +83,11 @@ dina_contr_1b.a: $(CONTROLDIR)/kmc_pfpo1_1b/kmc.a $(LIB_SOURCECTRL)
 	@cp $< $@
 	ar -rcs $@ $(LIB_SOURCECTRL)
 
+dina_contr_2madiv.a: $(CONTROLDIR)/kmc_2madiv/kmc.a $(LIB_SOURCECTRL)
+	@echo "   * $^ -> $@"
+	@cp $< $@
+	ar -rcs $@ $(LIB_SOURCECTRL)
+
 dina_transp_energy.a: dina_transp_energy.o tran1.o add_dll.o
 	@echo "   * $^ -> $@"
 	ar -rcs $@ $^

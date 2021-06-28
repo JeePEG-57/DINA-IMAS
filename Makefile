@@ -9,6 +9,7 @@ controllers:
 	make -C src/controllers/kmc
 	make -C src/controllers/kmc_pfpo1_1a
 	make -C src/controllers/kmc_pfpo1_1b
+	make -C src/controllers/kmc_2madiv
 
 interface: dina controllers
 	make -C imas/astra_transp
