@@ -196,6 +196,9 @@ c*** tt_rampup - SOF time
 	end if
 
       if(i_en.gt.1)goto 2323
+      
+      eps2=1.e-5
+      
       tt_HL_xx=600.e3
      
        key_sig_coef=1.d0
@@ -1795,7 +1798,7 @@ c	zvel=(z_cur-z_cur0)/tay
 	if(kpr.eq.1)
      *	print *,' ZVEL d_zvel INT_2000',zvel,d_zvel,int_2000
 
-	if(kpr.eq.1)print *,' int_2005 eps2 i_zvel ',int_2005,eps2,i_zvel
+	print *,' int_2005 eps2 int_2000 ',int_2005,eps2,int_2000
 
 	if(kpr.eq.1)print *,' delzmag delrmag',delzmag,delrmag
         if(kpr.eq.1)print*,'zmag zref zmag0 zvel',zmag,zref,zmag0,zvel

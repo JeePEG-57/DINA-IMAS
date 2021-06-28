@@ -2,11 +2,14 @@
 	include 'double.inc'
 	include 'new_com.inc'
 
-	call ptoke1_c(f_jp,i_bound,rmag,zmag)
+	call ptoke1_c(f_jp,i_bound,rmag,zmag,
+     * 	pptab,fptab)
 	return
 	end
 
-	subroutine ptoke1_c(f,i_bound,rmag,zmag)
+	subroutine ptoke1_c(f,i_bound,rmag,zmag,
+     * 	pptab,fptab)
+     
 	include 'double.inc'
         include 'parf0'
         include 'parf2'
@@ -62,6 +65,8 @@
 c----------
 	dimension f(nwnh)
 	dimension pspl_temp(nwnh)                                      
+
+	dimension pptab(*),fptab(*)
 
 	delta0=1.2*sqrt(dx**2+dy**2)
 	COEF=10./(4.*PI)
@@ -191,12 +196,18 @@ c  calc. psi_plasma - pspl...
 	if(errm.gt.eps2)it1=1
 c
 	if(kpr.eq.1)print *,'error_max eps2 ',errm,eps2
+	
+	if(it1.eq.0)print *,'error_max eps2 al1 ',errm,eps2,al1
 c
 	alfa0=alfa0*al1
 
 	do i=1,n
 	ppx(i)=ppx(i)*al1
 	pffx(i)=pffx(i)*al1
+
+	pptab(i)=pptab(i)*al1
+	fptab(i)=fptab(i)*al1
+
 	end do
 
 c        fdd_1=fdd
@@ -209,9 +220,13 @@ c!!!	if(abs(del_r).gt.1.e-1)call bound_hcoor()
 c	if(abs(del_r).gt.1.e-1.and.ntay.gt.0)
 c     *  call bound_h2()
 
+      	call psi_pl_test(f,pspl)
+
 	   do i=1,nwnh   
 	      pspl(i)=0.5d0*(pspl_temp(i)+pspl(i))
          end do
+
+      	call psi_pl_test(f,pspl)
 
 	do i=1,nr
 	do j=1,nz
@@ -3555,6 +3570,7 @@ C END PLASMA BOUNDARY
         include 'parf4'
 	common
      *  /ge1/pi
+     *	/ge1e/rs0,tpl
      *  /ge5/kpr
 	common
      *  /eq1/psi(nr,nz),pspl(nwnh),x(nr),y(nz),dx,dy
@@ -3648,6 +3664,17 @@ c
            end do
 	end do
         npl=k
+
+
+      tok_2=0.
+	do i=1,nr
+	   do j=1,nz
+              tok_2=tok_2+curr_d(i,j)*dx*dy
+	   end do
+	end do
+
+	print *,' +tpl  tok_2==',tpl,tok_2
+
 
 
 	return
@@ -4207,8 +4234,8 @@ c*vic
         r_cur=0.
         z_cur=0.
 	
-c	i_old=0
-	i_old=1
+	i_old=0
+!	i_old=1
 
 
 	call pp_pff_mat()
@@ -4259,7 +4286,8 @@ c	call feet_p(nrad,pffx,fprime,poa,psix)
 	
 	else
 
-	call cur_den_pet(f00,i,j)
+	call cur_den_p(f00,f_pp,f_pff,i,j,psix)
+!	call cur_den_pet(f00,i,j)
 
 	end if
 
@@ -5601,11 +5629,11 @@ c	write (6,*)(pffx(i),i=1,nrad)
 
 	   psix=(float(i)-1.)/float(n1)
 
-	   call feeti(nrad,ppx,pprime,poa,psix)
-	   call feeti(nrad,pffx,fprime,poa,psix)
+!	   call feeti(nrad,ppx,pprime,poa,psix)
+!	   call feeti(nrad,pffx,fprime,poa,psix)
 
-c              call linear(nrad,ppx,pprime,poa,psix)
-c              call linear(nrad,pffx,fprime,poa,psix)
+              call linear(nrad,ppx,pprime,poa,psix)
+              call linear(nrad,pffx,fprime,poa,psix)
 
 
 
@@ -5619,6 +5647,38 @@ c	if(kpr.eq.1)print *,' Okay pp_pff_mat'
 	
 c	call pp_pff_pet()
 
+	return
+	end
+	subroutine cur_den_p(f00_xx,f_pp_xx,f_pff_xx,
+     *  i_xx,j_xx,psix_xx)
+	include 'double.inc'
+	include 'new_com.inc'
+
+	call cur_den_p_c(f00_xx,f_pp_xx,f_pff_xx,
+     *  i_xx,j_xx,psix_xx,
+     *  x,y,dx,dy,psi,nr,nz,pmag,pbound,rs0)
+
+	return
+	end
+
+
+	subroutine cur_den_p_c(f00,f_pp,f_pff,i,j,psix,
+     *  x,y,dx,dy,psi,nr,nz,pmag,pbound,rs0)
+	include 'double.inc'
+
+	dimension x(*),y(*),psi(nr,nz)
+	
+	r=x(i)
+	z=y(j)
+
+	call fit_pp_pff(psix,pprime,fprime)
+
+	f_pp=-PPRIME*r/rS0
+
+	f_pff=-0.5d0*FPRIME*rS0/r
+
+	f00=f_pp+f_pff
+	   
 	return
 	end
 

@@ -409,13 +409,37 @@ c=================================================
 	end do
 
 
-	do i=1,nr
-	   do j=1,nz
-	      psi_xx(i,j) = tpl_dir*psi(i,j)*1.d-5*2.*pi
-
+        tok_1=0.
+        tok_2=0.
+        tok_3=0.
+        do i=1,nr
+           do j=1,nz
+                kk=(i-1)*nz+j
+                u_h(kk)=0.
+              psi_xx(i,j) = tpl_dir*psi(i,j)*1.d-5*2.*pi
               curr_d_xx(i,j) = tpl_dir*curr_d(i,j)*1.d7
-	   end do
-	end do
+              u_h(kk)=curr_d(i,j)/(coef+1.d-13)
+              tok_1=tok_1+curr_d_xx(i,j)*dx*dy*1.e-4
+              tok_2=tok_2+curr_d(i,j)*dx*dy
+              tok_3=tok_3+u_h(kk)*dx*dy*coef
+           end do
+        end do
+
+        print *,'tpl tok_1 tok_2 tok_3==',
+        
+     *  tpl,-tok_1*1.e-3,tok_2,tok_3
+
+
+        call psi_pl_test(u_h,pspl)
+        
+        do i=1,nr
+          do j=1,nz
+                kk=(i-1)*nz+j
+                u_h(kk)=0.
+          end do
+        end do
+          
+!         call psi_pl_test(u_h,psext)
 
 	
 	do i=1,npf
@@ -1793,3 +1817,205 @@ c
 C
 	RETURN
 	END
+	
+	
+	        subroutine psi_pl_test(f_x,pspl_x)
+        include 'double.inc'
+
+        dimension f_x(*),pspl_x(*)
+
+        include 'new_com.inc'
+
+        call psi_pl_test_c(al1_x,f_x,errm_x,
+     *  dx,dy,x,y,coef,pspl_x)
+
+        return
+        end
+
+        subroutine psi_pl_test_c(al1,u_h,errm,
+     *  dx,dy,x,y,coef,pspl)
+        include 'double.inc'
+
+        dimension x(*),y(*),u_h(*),pspl(*)
+        
+        include 'parf0'
+        include 'parf2'
+
+        real *8  a_fur(nr),b_fur(nr),c_fur(nr),f_fur(nr,nz),x_fur(nr),
+     *  y_fur(nz)
+
+c-----------------------------------
+
+        real *8  a_r(nr),b_r(nr),c_r(nr)
+        real *8  a_z(nz),b_z(nz),c_z(nz)
+
+        real * 8 a_s(nn,mm),b_s(nn,mm),c_s(nn,mm),d_s(nn,mm),
+     *  f_s(nn,mm),e_s(nn,mm),u_s(nn,mm),f_help(nn,mm),t_help(nn,mm)
+
+        real *8 right,rleft,delr,delz,dlr2,dlz2,rw
+
+        common
+     *  /c_bound4/i_bound
+     *  /ge5/kpr
+
+        CHARACTER *70 APR
+71      FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+
+        delr=dx
+        delz=dy
+
+        dlr2=delr**2
+        dlz2=delz**2
+
+        do i=1,nr
+           x_fur(i)=x(i)
+        end do
+
+        do i=1,nz
+           y_fur(i)=y(i)
+        end do
+
+c---------------------------------------        
+        i_fur=1
+        i_solver=0
+c-----------------------------------------------
+        i_sym=0
+
+c TEMPORARILY
+
+
+        i_solver=0
+        i_sym=1
+
+
+
+        if(i_sym.eq.1)then
+c----------------------------------------------------
+
+        do i=2,nr-1
+
+        rw=x(i)   
+
+        a_r(i)=-2.*rw/( dlr2*(x_fur(i)+x_fur(i-1)) )
+
+        b_r(i)=-2.*rw/( dlr2 )*( -1./( x_fur(i)+x_fur(i+1) )-1./
+     *   ( x_fur(i)+x_fur(i-1)) )
+
+        c_r(i)=-2.*rw/( dlr2*(x_fur(i)+x_fur(i+1)) )
+        
+        a_fur(i)=-a_r(i)
+        c_fur(i)=-c_r(i)
+        b_fur(i)= b_r(i)
+
+        end do
+
+        else
+
+        do i=2,nr-1
+
+        rw=x(i)
+
+        a_r(i)=-1.*( 1./dlr2+1./(rw*delr*2.) )
+        b_r(i)=-1.*( -2./dlr2 )
+        c_r(i)=-1.*( 1./dlr2-1./(rw*delr*2.) )
+
+
+        a_fur(i)=-a_r(i)
+        c_fur(i)=-c_r(i)
+        b_fur(i)= b_r(i)
+
+        end do
+
+        end if
+
+        do i=1,nz
+        a_z(i)=-1.*(1./dlz2)
+        b_z(i)=-1.*(-2./dlz2)
+        c_z(i)=-1.*(1./dlz2)
+        end do
+
+c------------------------------
+c  definition for sore ....
+C       EQUATION A(i,j)*U(i+1,j)+B(i,j)*U(i-1,j)+
+C        C(i,j)*U(i,j+1)+D(i,j)*U(i,j-1)+E(i,j)*U(i,j)=F(i,j)
+c--------------------------------
+c       j_r=a_r(i)*p_pl(i-1,j)+b_r(i)*p_pl(i,j)+c_r(i)*p_pl(i+1,j)
+c       j_z=a_z(i)*p_pl(i,j-1)+b_z(i)*p_pl(i,j)+c_z(i)*p_pl(i,j+1)
+c       j_tor=j_r+j_z
+c---------------------------------
+
+        do i=1,nr
+        do j=1,nz
+c   a_s(i,j)*u(i+1,j) :
+        a_s(i,j)=c_r(i)
+c   b_s(i,j)*u(i-1,j) :
+        b_s(i,j)=a_r(i)
+c   c_s(i,j)*u(i,j+1) :
+        c_s(i,j)=c_z(j)
+c   d_s(i,j)*u(i,j-1) :
+        d_s(i,j)=a_z(j)
+c   e_s(i,j)*u(i,j) :
+        e_s(i,j)=(b_r(i)+b_z(j))
+        end do
+        end do
+
+c----------------------------
+        n1=nr-1
+        m1=nz-1
+
+        coef1=coef*dx*dy
+
+
+        tok_pl=0.
+        DO I=1,nr
+           DO J=1,nz
+              kk=(i-1)*nz+j
+              tok_pl=tok_pl+u_h(kk)*coef1
+           end do
+        end do
+
+        if(kpr.eq.1)print *,' tok_pl BEFORE',tok_pl
+
+
+        DO I=1,nr
+           DO J=1,nz
+              kk=(i-1)*nz+j
+
+              u_s(i,j)=pspl(kk)
+
+              t_help(i,j)=u_s(i,j)
+
+              f_s(i,j)=u_h(kk)*x(i)
+
+              f_fur(i,j)=-f_s(i,j)
+           END DO
+        END DO
+
+        errm=0.
+        DO I=2,n1
+           DO J=2,m1
+
+              rleft=a_s(i,j)*u_s(i+1,j)+b_s(i,j)*u_s(i-1,j)+
+     *  c_s(i,j)*u_s(i,j+1)+d_s(i,j)*u_s(i,j-1)+e_s(i,j)*u_s(i,j)
+
+           right=f_s(i,j)
+           kk=(i-1)*nz+j
+
+           err=abs(rleft-right)
+           if(err.gt.errm)then
+              errm=err
+              f_s_max=f_s(i,j)
+              imax=i
+              jmax=j
+           end if
+              
+        END DO
+        END DO
+
+        if(kpr.eq.1)print *,' imax jmax NEV f_s',imax,jmax,errm,f_s_max
+
+
+
+        return
+        end

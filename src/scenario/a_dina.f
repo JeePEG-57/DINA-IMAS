@@ -328,7 +328,8 @@
  	call equil()
  	else
  	if(k_jetto.eq.1)k_ener=0
- 	omega=0.33d0
+! 	omega=0.33d0
+ 	omega=0.5d0
  	call equil2()
  	end if
 
