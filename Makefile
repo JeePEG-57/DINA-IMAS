@@ -24,6 +24,7 @@ clean:
 	make -C src/controllers/kmc clean
 	make -C src/controllers/kmc_pfpo1_1a clean
 	make -C src/controllers/kmc_pfpo1_1b clean
+	make -C src/controllers/kmc_2madiv clean
 	make -C imas/astra_transp clean
 	make -C imas/eq_test clean
 	make -C imas/interface clean
