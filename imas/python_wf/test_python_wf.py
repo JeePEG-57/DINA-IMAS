@@ -12,16 +12,24 @@ import matplotlib.pyplot as plt
 
 # importing the actors we want to run
 import dinaimas21.wrapper as dinaimas21
+
+# Import one of the controllers
 import dinacontr21.wrapper as dinacontr21
+#import dinacontr21_1a.wrapper as dinacontr21
+#import dinacontr21_1b.wrapper as dinacontr21
+
 import dinatransp_bootcond.wrapper as dinatransp_bootcond
 import dinatransp_curdrive.wrapper as dinatransp_curdrive
 import dinatransp_density.wrapper as dinatransp_density
 import dinatransp_energy.wrapper as dinatransp_energy
 import dinatransp_heatsrc.wrapper as dinatransp_heatsrc
+
+import astra_transp_density.wrapper as astratransp_density
 import astra_sources_pellet.wrapper as astra_sources_pellet
 import astra_sources_valve.wrapper as astra_sources_valve
 import density_control_pellet.wrapper as density_control_pellet
 import density_control_valve.wrapper as density_control_valve
+
 import solps_imas.wrapper as solps_imas
 
 
@@ -149,6 +157,16 @@ def CURDRIVE(idslist):
 
 
 
+def ASTRA_DENSITY(idslist):
+  
+  output = dinatransp_density.dinatransp_density_actor(idslist['equilibrium'],
+                                                       idslist['core_profiles'],                                                                                             
+                                                       idslist['transport_solver_numerics'])
+  
+  idslist['core_profiles'] = output
+
+
+
 idslist = {}
 
 user_name = os.getenv('USER')
@@ -159,8 +177,10 @@ run_in = 1
 pulse_out = 170
 run_out = 401
 
-decimation = 10
+decimation = 100
 
+# Set to 1 for ASTRA density transport
+USE_ASTRA = 0
 
 # Time since external transport actors fire
 timeExternalTransport = 2.0
@@ -226,17 +246,22 @@ while True:
     HEATSRC(idslist)
     ENERGY(idslist)
     
-    # Density control and sources distribution    
-    cmd_pellet = density_control_pellet.density_control_pellet_actor(idslist['summary'])
-    cmd_valve = density_control_valve.density_control_valve_actor(idslist['summary'])
-        
-    # Density sources distribution
-    densitysrc_pellet = ASTRASRC_PELLET(idslist, cmd_pellet)
-    densitysrc_valve = ASTRASRC_VALVE(idslist, cmd_valve)
+    if USE_ASTRA==1:
+      ASTRA_DENSITY(idslist)
+    else:
+      # Density control and sources distribution    
+      cmd_pellet = density_control_pellet.density_control_pellet_actor(idslist['summary'])
+      cmd_valve = density_control_valve.density_control_valve_actor(idslist['summary'])
+          
+      # Density sources distribution
+      densitysrc_pellet = ASTRASRC_PELLET(idslist, cmd_pellet)
+      densitysrc_valve = ASTRASRC_VALVE(idslist, cmd_valve)
+      
+      densitysrc = densitysrc_pellet + densitysrc_valve
+           
+      DENSITY(idslist, densitysrc)
     
-    densitysrc = densitysrc_pellet + densitysrc_valve
-    
-    DENSITY(idslist, densitysrc)
+
     
     BOOTCOND(idslist)
     CURDRIVE(idslist)

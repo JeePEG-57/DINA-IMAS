@@ -198,10 +198,10 @@ c ============ outputs ==============================================
 	subroutine dina_outp(n_xx,
      * tpl_xx,uli_xx,v_xx,parea_xx,psi_ax_xx,rmag_xx,zmag_xx,
      * q_ax_xx,q_95_xx,rs0_xx,bt0_xx,wen2_xx,tt_xx,
-     * ai_xx,psi_1D_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
+     * a_xx,psi_1D_xx,te0_xx,tq0_xx,pne_xx,tok1_xx,q_xx,
      * x_xx,y_xx,psi_xx,psi_bnd_xx,psi_sep_xx,curr_d_xx,
      * ksepa_xx,rmajor_xx,rminor_xx,elong_xx,tri_xx,gaps_xx,dsep_xx,
-     * pd0_xx,pt0_xx,sigk_xx,ajb_xx,aj0_xx,ajae_xx,zeff_xx,press_xx,qe0_xx,qq0_xx,
+     * pd0_xx,pt0_xx,sigma_xx,ajb_xx,aj0_xx,ajae_xx,zeff_xx,press_xx,qe0_xx,qq0_xx,
      * betap_xx,betat_xx,tec_xx,tqc_xx,pec_xx,pic_xx,palf_xx,zeff0_xx,vloop_xx,
      * tene_xx,teit_98_xx,wfus_xx,emag_xx,
      * vchopper_xx,pf_xx,tcam_xx,
@@ -223,9 +223,9 @@ c ============ outputs ==============================================
 !     *  /cont20/x_gaps(kf_c),y_gaps(kf_c),gaps(kf_c),n_gaps
      
 
-	dimension ai_xx(*),psi_1D_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
+	dimension a_xx(*),psi_1D_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
-	dimension pd0_xx(*),pt0_xx(*),sigk_xx(*),ajb_xx(*),ajae_xx(*),
+	dimension pd0_xx(*),pt0_xx(*),sigma_xx(*),ajb_xx(*),ajae_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
         dimension xbound_xx(*),ybound_xx(*),x_sep_xx(*),y_sep_xx(*),x_sep2_xx(*),y_sep2_xx(*) 
      
@@ -325,7 +325,7 @@ c ============ outputs ==============================================
 c=================================================
 
 	do i=1,n
-	   ai_xx(i)=ai(i)
+	   a_xx(i)=a(i)
 
 	   te0_xx(i)=te0(i)
 	   tq0_xx(i)=tq0(i)
@@ -334,7 +334,9 @@ c=================================================
            pd0_xx(i)=pd0(i)*1.d19
            pt0_xx(i)=pt0(i)*1.d19
            
-           sigk_xx(i)=sigk(i)
+           !sigma_xx(i)=sigma_dina(i)
+           sigma_xx(i)=sigk(i)
+           
            qe0_xx(i)=qe0(i)
            qq0_xx(i)=qq0(i)
 	   
@@ -357,25 +359,54 @@ c=================================================
 	do i=1,n
 	
 	   psix_xx=(psval(i)-pmag)/(pbound-pmag) 
-	   psix_xx=sqrt(psix_xx)
-	   !psix_xx=sqrt(ai(i))
+	   !psix_xx=sqrt(psix_xx)
+	   psix_xx=sqrt(ai(i))
 	
-	   call feeti(n,ppx,pptab_xx(i),ai,psix_xx)
-           call feeti(n,pffx,fptab_xx(i),ai,psix_xx)
-           call feeti(n,f,fpol_xx(i),ai,psix_xx)
-           call feeti(n,p,press_xx(i),ai,psix_xx)
-           call feeti(n,q,q_xx(i),ai,psix_xx)
+	   !call feeti(n,ppx,pptab_xx(i),a,psix_xx)
+           !call feeti(n,pffx,fptab_xx(i),a,psix_xx)          
+           !call feeti(n,p,press_xx(i),a,psix_xx)
+           
+           !call feeti(n,f,fpol_xx(i),ai,psix_xx)
+           !call feeti(n,q,q_xx(i),ai,psix_xx)
           
           
+           ! Defined on a-grid?
+           pptab_xx(i) = ppx(i)
+           fptab_xx(i) = pffx(i)
+           press_xx(i) = p(i)
+           
+
+        enddo
+        
+        ! Defined on ai-grid, to get it on a-grid
+        !fpol_xx(i) = f(i)
+        !q_xx(i) = q(i)
+        
+        ai(n+1)=1.d0
+        teta_xx=1.d0
+        call inter_h0(q,ai,n,teta_xx,val)
+        q(n+1)=val
+        f(n+1)=bt0
+           
+           
+        fpol_xx(1) = f(1)
+        fpol_xx(n) = f(n)
+        q_xx(1) = q(1)
+        q_xx(n) = q(n)
+        do i=2,n-1             
+           call feeti(n+1,f,fpol_xx(i),ai,a(i))
+           call feeti(n+1,q,q_xx(i),ai,a(i))          
+        enddo
+        
+        
+        do i=1,n  
            pptab_xx(i) = -tpl_dir*pptab_xx(i) * 1.d10/(rs0*8.d0*pi**2)
            fptab_xx(i) = -tpl_dir*fptab_xx(i) * rs0/(40.d0*pi)       
            fpol_xx(i) = bt0_dir*(rs0/100.d0)*fpol_xx(i)/10.d0
-           press_xx(i) = 1.602176634d0*press_xx(i)/(200.d0*1.d-6)
-          
+           press_xx(i) = 1.602176634d0*press_xx(i)/(200.d0*1.d-6)         
            q_xx(i)=q_xx(i)
                    
 	enddo
-	
 	
 	
 	volume_1d_xx(1) = 2.d0*pi*vi(1)*ha(1)*1.d-6
