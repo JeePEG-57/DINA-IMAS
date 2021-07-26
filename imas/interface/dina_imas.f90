@@ -157,6 +157,8 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: bprobe(nbpol), psloop(nflux)
     
     real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
+    
+    real(ids_real) :: dsep_ref
 
 
   integer :: TimeSteps, CurTimeStep
@@ -652,8 +654,18 @@ write(*,*) '!!!solpsza enter'
       end do
 
 
-      n_output2=npf+n_gaps+ncam
+      n_output2=n_gaps+npf+ncam
 
+      
+      
+      ! dsep control
+      if ((tt.gt.70.d0).and.(dabs(tpl).gt.14.5d6)) then
+        dsep_ref = 3.6d-2
+        !output_2(4) = output_2(4) - 10.d0*(dsep-dsep_ref)
+      end if
+      
+      
+      
       do i=1,n_output2
 	  arr_out1(n_output1+i)=output_2(i)
       end do
