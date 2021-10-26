@@ -26,21 +26,14 @@ import numpy as np
 
 #--------------new class for equilibrium window
 class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
-    def __init__(self, pulse, run, user, base):
+    def __init__(self, idslist):
         super().__init__()
         self.buildUI()
 
 
-
-        imas_entry_init = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, base, pulse, run, user, data_version = '3')
-        imas_entry_init.open()
+        self.idslist = idslist
         
-        self.sum1 = imas_entry_init.get('summary')
-
-
-        
-        
-        self.t1 = self.sum1.time
+        self.t1 = idslist['summary'].time
         self.tor = len(self.t1)
         
         #--------------------
@@ -92,18 +85,6 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.canvas.draw()
         
         
-        
-        self.cp1 = imas_entry_init.get('core_profiles')
-        self.cs1 = imas_entry_init.get('core_sources')
-        self.eq1 = imas_entry_init.get('equilibrium')
-        self.pfa1 = imas_entry_init.get('pf_active')
-        self.pfp1 = imas_entry_init.get('pf_passive')
-        self.wall = imas_entry_init.get('wall')
-        
-        
-        
-        imas_entry_init.close()
-        
         self.data_gain()
         
         self.matSlider.setValue(int(self.tor/3))
@@ -118,7 +99,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
       #  self.psi2d_t.append(self.eq1.time_slice[i].profiles_2d[0].psi.transpose())
 
       CurrentMax = 0.0
-      for loop in self.pfp1.loop:
+      for loop in self.idslist['pf_passive'].loop:
         Current = max(abs(loop.current))
         CurrentMax = max(CurrentMax, Current)
       self.pfpCurrentMax = CurrentMax
@@ -184,7 +165,8 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
     def plotty(self):
 
         it = self.matSlider.value()
-    
+        
+        idslist = self.idslist
 
         
         #fig, axes = plt.subplots(nrows=6, ncols=3, dpi=100, facecolor = 'white')
@@ -204,9 +186,9 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         
         ax = self.ax_j_profile
         ax.cla()
-        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
-        y = self.cp1.profiles_1d[it].j_tor
-        y1 = self.cp1.profiles_1d[it].j_bootstrap
+        x = idslist['core_profiles'].profiles_1d[it].grid.rho_tor_norm
+        y = idslist['core_profiles'].profiles_1d[it].j_tor
+        y1 = idslist['core_profiles'].profiles_1d[it].j_bootstrap
         
         ax.plot(x, y, label = "j_tor")
         ax.plot(x, y1, label = "j_btstrp")
@@ -218,8 +200,8 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
 
         ax = self.ax_q_profile
         ax.cla()
-        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
-        y = self.cp1.profiles_1d[it].q
+        x = idslist['core_profiles'].profiles_1d[it].grid.rho_tor_norm
+        y = idslist['core_profiles'].profiles_1d[it].q
         
         ax.plot(x, y, 'r-', label="q")
         ax.set_xlim([0.0, 1.0])
@@ -230,9 +212,9 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
     
         ax = self.ax_T_profile
         ax.cla()
-        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
-        y = self.cp1.profiles_1d[it].electrons.temperature
-        y1 = self.cp1.profiles_1d[it].t_i_average
+        x = idslist['core_profiles'].profiles_1d[it].grid.rho_tor_norm
+        y = idslist['core_profiles'].profiles_1d[it].electrons.temperature
+        y1 = idslist['core_profiles'].profiles_1d[it].t_i_average
         
         ax.plot(x, y, label = "Te")
         ax.plot(x, y1, label = "Ti")
@@ -247,14 +229,14 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
   
         ax = self.ax_N_profile
         ax.cla()
-        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
+        x = idslist['core_profiles'].profiles_1d[it].grid.rho_tor_norm
         
         ideut = 0
         itrit = 1
         
-        y = self.cp1.profiles_1d[it].electrons.density
-        y1 = self.cp1.profiles_1d[it].ion[ideut].density
-        y2 = self.cp1.profiles_1d[it].ion[itrit].density
+        y = idslist['core_profiles'].profiles_1d[it].electrons.density
+        y1 = idslist['core_profiles'].profiles_1d[it].ion[ideut].density
+        y2 = idslist['core_profiles'].profiles_1d[it].ion[itrit].density
         
         ax.plot(x, y, label = "Ne")
         ax.plot(x, y1, label = "Nd")
@@ -274,10 +256,10 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         
         isrc = 0
         
-        x = self.cs1.source[isrc].profiles_1d[it].grid.rho_tor_norm
+        x = idslist['core_sources'].source[isrc].profiles_1d[it].grid.rho_tor_norm
         
-        y = self.cs1.source[isrc].profiles_1d[it].electrons.energy
-        y1 = self.cs1.source[isrc].profiles_1d[it].total_ion_energy
+        y = idslist['core_sources'].source[isrc].profiles_1d[it].electrons.energy
+        y1 = idslist['core_sources'].source[isrc].profiles_1d[it].total_ion_energy
         
         ax.plot(x, y, label = "Qe")
         ax.plot(x, y1, label = "Qi")
@@ -293,15 +275,15 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         ax = self.ax_equil
         ax.cla()
         
-        x = self.eq1.time_slice[it].profiles_2d[0].grid.dim1
-        y = self.eq1.time_slice[it].profiles_2d[0].grid.dim2
+        x = idslist['equilibrium'].time_slice[it].profiles_2d[0].grid.dim1
+        y = idslist['equilibrium'].time_slice[it].profiles_2d[0].grid.dim2
       
-        psi2d = np.transpose(self.eq1.time_slice[it].profiles_2d[0].psi)
+        psi2d = np.transpose(idslist['equilibrium'].time_slice[it].profiles_2d[0].psi)
         
-        psi_axis = self.eq1.time_slice[it].global_quantities.psi_axis
-        psi_bnd = self.eq1.time_slice[it].boundary.psi
-        psi_sep = self.eq1.time_slice[it].boundary_separatrix.psi
-        psi_sep2 = self.eq1.time_slice[it].boundary_secondary_separatrix.psi
+        psi_axis = idslist['equilibrium'].time_slice[it].global_quantities.psi_axis
+        psi_bnd = idslist['equilibrium'].time_slice[it].boundary.psi
+        psi_sep = idslist['equilibrium'].time_slice[it].boundary_separatrix.psi
+        psi_sep2 = idslist['equilibrium'].time_slice[it].boundary_secondary_separatrix.psi
         
         
         
@@ -316,31 +298,31 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         psi_max = np.amax(psi2d)
         #print("psi max = " + str(psi_max))
         
-        dsep = self.eq1.time_slice[it].boundary_separatrix.gap[30].value
+        dsep = idslist['equilibrium'].time_slice[it].boundary_separatrix.gap[30].value
 
 
 
 
         if (self.DrawLimiter):
-          if (len(self.wall.description_2d) > 0):
-            for unit in self.wall.description_2d[0].limiter.unit:
+          if (len(idslist['wall'].description_2d) > 0):
+            for unit in idslist['wall'].description_2d[0].limiter.unit:
               ax.plot(unit.outline.r, unit.outline.z, 'k-', linewidth=1, label='limiter')
           else:
             print("No wall limiter data")
           
           
         if (self.DrawLimiterActivePoint):
-          r = self.eq1.time_slice[it].boundary_separatrix.active_limiter_point.r
-          z = self.eq1.time_slice[it].boundary_separatrix.active_limiter_point.z
+          r = idslist['equilibrium'].time_slice[it].boundary_separatrix.active_limiter_point.r
+          z = idslist['equilibrium'].time_slice[it].boundary_separatrix.active_limiter_point.z
           ax.plot(r, z, 'rx')
 
 
         n_levels = 9
         dpsi = (psi_bnd - psi_axis)/n_levels
-        xmax = np.max(self.eq1.time_slice[it].boundary.outline.r)
-        xmin = np.min(self.eq1.time_slice[it].boundary.outline.r)
-        ymax = np.max(self.eq1.time_slice[it].boundary.outline.z)
-        ymin = np.min(self.eq1.time_slice[it].boundary.outline.z)
+        xmax = np.max(idslist['equilibrium'].time_slice[it].boundary.outline.r)
+        xmin = np.min(idslist['equilibrium'].time_slice[it].boundary.outline.r)
+        ymax = np.max(idslist['equilibrium'].time_slice[it].boundary.outline.z)
+        ymin = np.min(idslist['equilibrium'].time_slice[it].boundary.outline.z)
         i_ymax = -1
         i_ymin = -1
         for i in range(len(y)):
@@ -391,7 +373,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
           psi_sep_ax1.collections[0].set_label('separatrix2, psi=' + "{:.2f}".format(psi_sep2))
         
         
-        for coil in self.pfa1.coil:
+        for coil in idslist['pf_active'].coil:
           for elem in coil.element:
             path = self.GetGeometryPath(elem.geometry)
             patch = patches.PathPatch(path, facecolor='orange', edgecolor='blue', lw=1)
@@ -399,9 +381,9 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
 
 
         CurrentMax = 0.
-        for loop in self.pfp1.loop:
+        for loop in idslist['pf_passive'].loop:
           CurrentMax = max(CurrentMax, abs(loop.current[it]))
-        for loop in self.pfp1.loop:
+        for loop in idslist['pf_passive'].loop:
           current = loop.current[it]
           
           r = current/CurrentMax
@@ -418,8 +400,8 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
             ax.add_patch(patch)
 
 
-        Time = self.eq1.time_slice[it].time
-        Ipl = self.eq1.time_slice[it].global_quantities.ip
+        Time = idslist['equilibrium'].time_slice[it].time
+        Ipl = idslist['equilibrium'].time_slice[it].global_quantities.ip
         ax.set_title('Equilibrium \n time=%f s, Ip=%f MA'%(Time, Ipl*1.e-6))
         if (self.DrawLegend):
           ax.legend()
@@ -444,7 +426,23 @@ def main():
     user = "dubrovm"
     database = "test"
     
-    window = Second_window(shot,run,user,database)
+    imas_entry_init = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, shot, run, user, data_version = '3')
+    imas_entry_init.open()
+    
+    idslist = {}
+    
+    idslist['equilibrium'] = imas_entry_init.get('equilibrium')
+    idslist['wall'] = imas_entry_init.get('wall')
+    idslist['pf_active'] = imas_entry_init.get('pf_active')
+    idslist['pf_passive'] = imas_entry_init.get('pf_passive')
+    idslist['core_profiles'] = imas_entry_init.get('core_profiles')
+    idslist['core_sources'] = imas_entry_init.get('core_sources')
+    idslist['summary'] = imas_entry_init.get('summary')
+    
+    imas_entry_init.close()
+        
+    
+    window = Second_window(idslist)
     window.setObjectName("EQUIL_win")
     window.show() 
     sys.exit(app.exec_())  # Start application
