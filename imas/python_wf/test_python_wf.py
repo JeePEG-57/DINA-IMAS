@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import dinaimas21.wrapper as dinaimas21
 
 # Import one of the controllers
-import dinacontr21.wrapper as dinacontr21
+import kmc.wrapper as kmc
 #import dinacontr21_1a.wrapper as dinacontr21
 #import dinacontr21_1b.wrapper as dinacontr21
 
@@ -183,7 +183,7 @@ decimation = 100
 USE_ASTRA = 0
 
 # Time since external transport actors fire
-timeExternalTransport = 2.0
+timeExternalTransport = 1.e6
 
 
 # Reading initial IDS's
@@ -270,7 +270,7 @@ while True:
   SOLPS(idslist)
 
   # Magnetic controller
-  arr_volt = dinacontr21.dinacontr21_actor(arr_curr)
+  arr_volt = kmc.kmc_actor(arr_curr)
   
 
 

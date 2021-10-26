@@ -8,45 +8,41 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetI
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
 import eq_win4
+import sys
 import math
 import imas # UAL library
 import matplotlib
 matplotlib.use('Qt5Agg')
+#matplotlib.use('GTK3Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+from matplotlib.path import Path
+import matplotlib.patches as patches
 
 import numpy as np
 
 #--------------new class for equilibrium window
 class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
-    def __init__(self, pulse, run, user, base, isum1, icp1, ieq1):
+    def __init__(self, pulse, run, user, base):
         super().__init__()
         self.buildUI()
 
 
+
+        imas_entry_init = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, base, pulse, run, user, data_version = '3')
+        imas_entry_init.open()
         
-        imas_obj1 = imas.ids(pulse, run)
-        imas_obj1.open_env(user, base, '3')
+        self.sum1 = imas_entry_init.get('summary')
 
-        self.sum1 = isum1
-        self.cp1 = icp1
-        self.eq1 = ieq1
-        self.pfa1 = imas_obj1.pf_active
-        self.pfp1 = imas_obj1.pf_passive
-        self.wall = imas_obj1.wall
 
-        self.pfa1.get()
-        self.pfp1.get()
-        self.wall.get()   
-           
-        imas_obj1.close()
+        
         
         self.t1 = self.sum1.time
-        self.t2 = self.eq1.time
-        self.tor = len(self.t2)
+        self.tor = len(self.t1)
+        
         #--------------------
         self.matSlider = QSlider()
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -56,272 +52,141 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.matSlider.setSizePolicy(sizePolicy)
         self.matSlider.setOrientation(QtCore.Qt.Horizontal)
         self.matSlider.setRange(0,self.tor-1)
-        self.matSlider.setValue(14)
         
 
         self.matSlider.valueChanged.connect(self.plotty)
+        
+        self.DrawLegend = False
+        self.DrawLimiter = True
+        self.DrawLimiterActivePoint = True
+        self.DrawBoundary = True
+        self.DrawSeparatrix = True
+        self.DrawSeparatrix2 = True
+        self.DrawPsiInside = True
+        self.DrawPsiOutside = True
+
 
         
         #--------------------
-        self.data_gain()
+        
         self.fig = plt.figure()
-        self.canavas = FigureCanvas(self.fig)
-        self.toolbar = NavigationToolbar(self.canavas, self)
-        self.plotty()
-
-
-#-------------------------------------fdfdsdf
+        self.canvas = FigureCanvas(self.fig)
+        self.toolbar = NavigationToolbar(self.canvas, self)
         
         
-        self.graplay.addWidget(self.canavas, 0, 0)
+        self.graplay.addWidget(self.canvas, 0, 0)
         self.graplay.addWidget(self.matSlider, 1, 0) 
         self.graplay.addWidget(self.toolbar, 2, 0) 
         
-    
-#0--------------------------------------------------------------------------------------------------------------------EQUIL GRAPH-------------------------------------------------   
-
+        
+        nrows = 5
+        ncols = 2
+        
+        self.ax_j_profile = plt.subplot(nrows, ncols, 2)
+        self.ax_q_profile = plt.subplot(nrows, ncols, 4)
+        self.ax_T_profile = plt.subplot(nrows, ncols, 6)
+        self.ax_N_profile = plt.subplot(nrows, ncols, 8)
+        self.ax_Q_profile = plt.subplot(nrows, ncols, 10)
+        self.ax_equil = plt.subplot(1, ncols, 1)
+        
+        self.canvas.draw()
+        
+        
+        
+        self.cp1 = imas_entry_init.get('core_profiles')
+        self.cs1 = imas_entry_init.get('core_sources')
+        self.eq1 = imas_entry_init.get('equilibrium')
+        self.pfa1 = imas_entry_init.get('pf_active')
+        self.pfp1 = imas_entry_init.get('pf_passive')
+        self.wall = imas_entry_init.get('wall')
+        
+        
+        
+        imas_entry_init.close()
+        
+        self.data_gain()
+        
+        self.matSlider.setValue(int(self.tor/3))
+        self.plotty()
+        
+        
+        
     def data_gain(self):
-
-        
-         
-        #-----------------------------data filling for plotting---------------------------------------        
-        
-
-        #plasma current----------------------------  
-        self.ipl2 =[]								#1 alternate
-        for i in range(self.tor):
-            self.ipl2.append(self.eq1.time_slice[i].global_quantities.ip)
-        self.li_3 = self.sum1.global_quantities.li.value				#7
- 
-        #electron density-------------------------
-        self.n_e = []								#15
-        for i in range(self.tor):
-            self.n_e.append(self.cp1.profiles_1d[i].electrons.density)
-
-        #electron temperature---------------------
-        self.t_e = []					#9
-        for i in range(self.tor):
-            self.t_e.append(self.cp1.profiles_1d[i].electrons.temperature)
-
-        #ion temperature--------------------------
-        self.t_i =[]				#12
-        for i in range(self.tor):
-            self.t_i.append(self.cp1.profiles_1d[i].t_i_average)
-
-        #q95% and q_axis--------------------------------------
-        self.q_95=[]								#4
-        for i in range(self.tor):
-            self.q_95.append(self.eq1.time_slice[i].global_quantities.q_95)
-        self.q_axis=[]								#4
-        for i in range(self.tor):
-            self.q_axis.append(self.eq1.time_slice[i].global_quantities.q_axis)
-
-        #ne nuzhno----------------------------------------
-
-        #j_tor ----------------------------------------------
-        self.j_tor=[]
-        for i in range(self.tor):
-            self.j_tor.append(self.cp1.profiles_1d[i].j_tor)					#3
-
-
-        #eto koordinata X dlya profiles_1d--------------------------
-        self.rho_tor=[]
-        for i in range(self.tor):
-            self.rho_tor.append(self.cp1.profiles_1d[i].grid.rho_tor_norm)
-
-
-        #q profiles_1d------------------------------------------
-        self.q=[]
-        for i in range(self.tor):
-            self.q.append(self.cp1.profiles_1d[i].q)
       
-        #bootstrap profiles_1d-----------------------------------
-        self.bstrap=[]
-        for i in range(self.tor):
-            self.bstrap.append(self.cp1.profiles_1d[i].j_bootstrap)
+      #self.psi2d_t=[]
+      #for i in range(self.tor):
+      #  self.psi2d_t.append(self.eq1.time_slice[i].profiles_2d[0].psi.transpose())
 
+      CurrentMax = 0.0
+      for loop in self.pfp1.loop:
+        Current = max(abs(loop.current))
+        CurrentMax = max(CurrentMax, Current)
+      self.pfpCurrentMax = CurrentMax
+      #print("pf_passive max loop current = " + str(self.pfpCurrentMax))
 
-        #fusion power  ----------------------------------------------
-        self.fpow=self.sum1.fusion.power.value
-    
-
-        #R_x for limiter--(now its also TAU-Energy)------------------------------------------
-        self.r_x=[]								#4
-        for i in range(self.tor):
-            self.r_x.append(self.eq1.time_slice[i].boundary_separatrix.active_limiter_point.r)
-            
-        self.tau_e=[]								#4
-        #for i in range(self.tor):
-        self.tau_e=self.sum1.global_quantities.tau_energy.value
-
-        #R_z for limiter--------------------------------------------------------  
-        self.z_x=[]								#4
-        for i in range(self.tor):
-            self.z_x.append(self.eq1.time_slice[i].boundary_separatrix.active_limiter_point.z)
   
-        #------------------------------EQUIL----------------------------------------------------
-        
-        self.psi_sep=[]
-        self.psi_sep=self.eq1.time_slice[10].boundary_separatrix.psi
-
-        #2 -d profiles--------------------------------------------------------------------------
-        #ACTIVE zone(changed)
-        self.axy=[]
-        self.axx=[]
-        self.psi2d=[]
-        self.psi2d=self.eq1.time_slice[25].profiles_2d[0].psi
-        self.pmag=[]
-        self.pbound=[]
-        self.psi2d_t=[]
-        self.psi_sep_t=[]
-
-        self.gran_r=[]
-        self.gran_z=[]
-        self.test_gran2d=[]
-        self.axx=self.eq1.time_slice[25].profiles_2d[0].grid.dim1
-        self.axy=self.eq1.time_slice[25].profiles_2d[0].grid.dim2
-        for i  in range(self.tor):
-          j0 = len(self.eq1.time_slice[i].boundary.outline.r)
-          for j in range(len(self.eq1.time_slice[i].boundary.outline.r)):
-              if self.eq1.time_slice[i].boundary.outline.r[j]==0.0:
-     
-                j0=j
-         
-                break
-          self.gran_r.append(self.eq1.time_slice[i].boundary.outline.r[0:j0-1])
-          self.gran_z.append(self.eq1.time_slice[i].boundary.outline.z[0:j0-1])
-
-        for i  in range(self.tor):
-            self.psi2d_t.append(self.eq1.time_slice[i].profiles_2d[0].psi.transpose())
-            self.psi_sep_t.append(self.eq1.time_slice[i].boundary_separatrix.psi)
-            self.pmag.append(self.eq1.time_slice[i].global_quantities.psi_axis)
-            self.pbound.append(self.eq1.time_slice[i].global_quantities.psi_boundary)
-
-        if self.pmag != self.pbound:
-            self.p_s = self.pbound
-            self.delaval=[]
-            self.n_g=20
-            self.d1=[]
-            for i in range(self.tor):
-                self.delaval.append(self.pmag[i]-self.pbound[i])
-                self.d1.append(self.delaval[i]/self.n_g)
+    def GetGeometryPath(self, geom):
+      verts = []
+      codes = []
       
-
-            self.avalb=self.pmag
-            self.PL = []
-            for j in range(0,self.n_g+19):
-                for i in range(self.tor):
-                    self.avalb.append(self.avalb[i]-self.d1[i])
-                self.PL.append(self.avalb)
-      
-      
-        #PASSIVE zone(not changed)
-        self.limiterx=[]
-        self.limitery=[]
-        self.factx=[]
-        self.facty=[]
-        self.tor_geom=56
-        #for i in range(tor):
+      if (geom.geometry_type == 2):
+        verts = [
+          (geom.rectangle.r - 0.5*geom.rectangle.width, geom.rectangle.z - 0.5*geom.rectangle.height),  # left, bottom
+          (geom.rectangle.r - 0.5*geom.rectangle.width, geom.rectangle.z + 0.5*geom.rectangle.height),  # left, top
+          (geom.rectangle.r + 0.5*geom.rectangle.width, geom.rectangle.z + 0.5*geom.rectangle.height),  # right, top
+          (geom.rectangle.r + 0.5*geom.rectangle.width, geom.rectangle.z - 0.5*geom.rectangle.height),  # right, bottom
+          (0., 0.),  # ignored
+        ]
+        codes = [
+            Path.MOVETO,
+            Path.LINETO,
+            Path.LINETO,
+            Path.LINETO,
+            Path.CLOSEPOLY,
+        ]
         
-        #print("Wall data")
-        #print(len(self.wall.description_2d))
-        #print(len(self.wall.description_2d[0].limiter.unit))
-        #print(len(self.wall.description_2d[0].limiter.unit[0].outline.r))
-        if (len(self.wall.description_2d) > 0):
-          self.limiterx.append(self.wall.description_2d[0].limiter.unit[0].outline.r[:])
-          self.limitery.append(self.wall.description_2d[0].limiter.unit[0].outline.z[:])
-        else:
-          print("No wall limiter data")
-        
-        for i in range(len(self.pfa1.coil)):
-            for j in range(len(self.pfa1.coil[0].element)):
-                self.factx.append(self.pfa1.coil[i].element[j].geometry.outline.r)
- 	  
-                self.facty.append(self.pfa1.coil[i].element[j].geometry.outline.z)
-
-  
-        #params to plot profiles_1d
-   
-        b=332
-        #x = np.logspace(0, 1, 10)
-  
-        #----------------------------------------SET_AXIS_LIMITS-------------------------------------\
-        #-Ipl- one axis - y
-        self.ylimup_ipl=max(self.ipl2)*1.1
-        self.ylimdown_ipl=min(self.ipl2)*0.9
-    
-        #q95 and q_axis limits one axis - y
-        self.ylimup_q95=(max(self.q_95))*1.1
-        self.ylimdown_q_95=min((self.q_95))*0.9
-        self.ylimup_q_axis=(max(self.q_axis))*1.1
-        self.ylimdown_q_axis=(min(self.q_axis))*0.9
-        if self.ylimup_q95 >= self.ylimup_q_axis:
-            self.ylimup_q_q = self.ylimup_q95
-        else:
-            self.ylimup_q_q = self.ylimup_q_axis
-        if self.ylimdown_q_95 >= self.ylimdown_q_axis:
-            self.ylimdown_q_q = self.ylimdown_q_95
-        else:
-            self.ylimdown_q_q = self.ylimdown_q_axis
-   
-        # li(3), fus.pow., Rx and Zx dont need (like ipl and q_95_axis, just for training)
-   
-        #1-d plots axis limits--------------------------------------------------------
-        #-----------x_LIMITS---------
-        self.xlimup_rho_tor=[]
-        self.xlimdown_rho_tor=[]
-        self.ylimup_j_tor=[]
-        self.ylimdown_j_tor=[]
-        self.ylimup_q=[]
-        self.ylimdown_q=[]
-        self.ylimup_t_e=[]
-        self.ylimdown_t_e=[]
-        self.ylimup_t_i=[]
-        self.ylimdown_t_i=[]
-        self.ylimup_n_e=[]
-        self.ylimdown_n_e=[]
-        self.ylimup_bootstr=[]
-        self.ylimdown_bootstr=[]
-  
-  
-    
-        for i in range(self.tor): 
+      if (geom.geometry_type == 3):
+        verts = [
+          (geom.oblique.r, geom.oblique.z),  # left, bottom
+          (geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha),
+            geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha)),  # left, top
+          (geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha) -  geom.oblique.length_beta*math.sin(geom.oblique.beta),
+            geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha) +  geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, bottom
+          (geom.oblique.r - geom.oblique.length_beta*math.sin(geom.oblique.beta),
+            geom.oblique.z + geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, top
+          (0., 0.),  # ignored
+        ]
+        codes = [
+            Path.MOVETO,
+            Path.LINETO,
+            Path.LINETO,
+            Path.LINETO,
+            Path.CLOSEPOLY,
+        ]
+      
+      if (geom.geometry_type == 1):
+        n = len(geom.outline.r)
+        for i in range(n):
+          verts.append((geom.outline.r[i], geom.outline.z[i]))
+          codes.append(Path.LINETO)
           
-            self.xlimup_rho_tor.append(max(self.rho_tor[i])*1.1)
-            self.xlimdown_rho_tor.append(min(self.rho_tor[i])*0.9)
+        if (n > 0):
+          codes[0] = Path.MOVETO
+          
+          verts.append((0.0, 0.0))
+          codes.append(Path.CLOSEPOLY)
+      
+      path = Path(verts, codes)
+      
+      return path
     
-          #------------y_LIMITS------------
-            self.ylimup_j_tor.append(max(self.j_tor[i])*1.1)
-            self.ylimdown_j_tor.append(min(self.j_tor[i])*1.1)
     
-            self.ylimup_q.append(5.0)
-            self.ylimdown_q.append(0.0)
+    def plotty(self):
+
+        it = self.matSlider.value()
     
-            self.ylimup_t_e.append(max(self.t_e[i])*1.1)
-            self.ylimdown_t_e.append(0.0)
-    
-            self.ylimup_t_i.append(max(self.t_i[i])*1.1)
-            self.ylimdown_t_i.append(0.0)
-    
-            self.ylimup_n_e.append(max(self.n_e[i])*1.1)
-            self.ylimdown_n_e.append(min(self.n_e[i])*0.9)
-    
-            self.ylimup_bootstr.append(max(self.bstrap[i])*1.1)
-            self.ylimdown_bootstr.append(min(self.bstrap[i])*0.9)
-        '''
-        return tor, t1, t2, ipl2, ylimdown_ipl, ylimup_ipl, rho_tor, j_tor, ylimdown_j_tor, ylimup_j_tor, \
-               xlimdown_rho_tor, xlimup_rho_tor, q_95, q_axis, ylimdown_q_q, ylimup_q_q, \
-               q, ylimdown_q, ylimup_q, li_3, t_e, ylimdown_t_e, ylimup_t_e, fpow, t_i, \
-               ylimdown_t_i, ylimup_t_i, limiterx, limitery, axx, axy, psi2d_t, \
-               r_x, n_e, ylimdown_n_e, ylimup_n_e, z_x, bstrap, ylimdown_bootstr,ylimup_bootstr
-        '''
-    def plotty (self):
-  
-  
+
         
-  
-        a = self.matSlider.value()
-    
         #fig, axes = plt.subplots(nrows=6, ncols=3, dpi=100, facecolor = 'white')
         #ax1 = plt.subplot2grid((6,3), (0,0))
         #ax1.plot(t2, ipl2)
@@ -333,129 +198,257 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         #plt.ion()
         #fig = plt.figure()
         
-        #plt.text(0.9,0.9,'$time slice %f'%a)
+        #plt.text(0.9,0.9,'$time slice %f'%it)
         #a1=fig.add_subplot (6, 3, 1)
-        ax1=plt.subplot (6, 3, 1)
-        plt.cla()
-        plt.plot (self.t2, self.ipl2)
-        #plt.xlim(-10,10)
-        plt.ylim(self.ylimdown_ipl,self.ylimup_ipl)
-        plt.title ("Ipl(t)")
-   
-        #a2=fig.add_subplot (6, 3, 3)
-        ax2=plt.subplot (6, 3, 3)
-        plt.cla()
-        self.qql, = plt.plot (self.rho_tor[a],self.j_tor[a])
-        #plt.plot (rho_tor[b], j_tor[b],'--', label='$slice # %a'%b)
-        plt.title ("j_tor(rho)")
-        plt.ylim([self.ylimdown_j_tor[a],self.ylimup_j_tor[a]])
-        plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
-        #plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
-
-        ax3=plt.subplot (6, 3, 4)
-        plt.cla()
-        plt.plot (self.t2, self.q_95,'-', label='%s'%'q_95')
-        plt.plot (self.t2, self.q_axis, '--',label='%s'%'q_axis')
-        plt.title ("q95/axis")
-        plt.ylim(self.ylimdown_q_q, self.ylimup_q_q)
-        plt.legend(loc='center left',bbox_to_anchor=(-0.4,0.5))
-
-        ax4=plt.subplot (6, 3, 6)
-        plt.cla()
-        self.ql, = plt.plot (self.rho_tor[a], self.q[a], 'r-')
-        #plt.plot (rho_tor[b], q[b], '--', label='$slice # %a'%b)
-        plt.ylim([self.ylimdown_q[a],self.ylimup_q[a]])
-        plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
-        plt.title ("q")
-        #plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
-  
-        ax5=plt.subplot (6, 3, 7)
-        plt.cla()
-        plt.plot (self.t1, self.li_3)
-        plt.title ("li(3)")
-    
-        ax6=plt.subplot (6, 3, 9)
-        plt.cla()
-        self.qqql, = plt.plot (self.rho_tor[a], self.t_e[a])
-        #plt.plot (rho_tor[30], t_e[30], label='$slice # 30')
-        plt.ylim([self.ylimdown_t_e[a],self.ylimup_t_e[a]])
-        plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
-        plt.title ("Te")
-        #plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
-  
-        ax7=plt.subplot (6, 3, 10)
-        plt.cla()
-        plt.plot (self.t1, self.fpow)
-        plt.title ("fus.pow.")
-    
-        ax8=plt.subplot (6, 3, 12)
-        plt.cla()
-        self.qqqql, = plt.plot (self.rho_tor[a], self.t_i[a])
-        #plt.plot (rho_tor[30], t_i[30], label='$slice # 30')
-        plt.ylim([self.ylimdown_t_i[a],self.ylimup_t_i[a]])
-        plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
-        plt.title ("Ti")
-        #plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
-  
-  
-        #---------------EQUILIBRIUM-------------------------------------------------------
-        ax9=plt.subplot (1, 3, 2)
-        plt.cla()
-
-        plt.plot (np.array(self.limiterx).T, np.array(self.limitery).T,'k-', linewidth=1,  label='equilibrium')
-        if self.r_x[a] != 0.0:
-          plt.plot(self.r_x[a],self.z_x[a],'rx')
-          plt.plot (self.gran_r[a],self.gran_z[a],'m', linewidth=0.5)
-
-        psi_ax = plt.contourf(self.axx,self.axy,self.psi2d_t[a],20)
-        dpsi = 1e-10+1e-5*(np.max(self.psi2d_t[a])-np.min(self.psi2d_t[a]))
-        psi_sep_ax=plt.contourf(self.axx, self.axy, self.psi2d_t[a], levels=[self.psi_sep_t[a],dpsi+self.psi_sep_t[a]]) 
 
         
-        plt.title ('equil \n time %f sec.'%self.t2[a])
-        #plt.gca().set_aspect('square', adjustable='box')
-        plt.axis('scaled')
+        ax = self.ax_j_profile
+        ax.cla()
+        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
+        y = self.cp1.profiles_1d[it].j_tor
+        y1 = self.cp1.profiles_1d[it].j_bootstrap
+        
+        ax.plot(x, y, label = "j_tor")
+        ax.plot(x, y1, label = "j_btstrp")
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([min(y)*1.05, 0.0])
+        ax.set_title("j, A/m²")
+        ax.legend(loc='center left',bbox_to_anchor=(1,0.5))
 
-        #--------------END_EQUILIBRIUM-------------------------------------------------------
-        ax10=plt.subplot (6, 3, 13)
-        plt.cla()
-        plt.plot (self.t1, self.tau_e)
-        plt.title ("tau_energy")
 
-        ax11=plt.subplot (6, 3, 15)
-        plt.cla()
-        self.qqqqql, = plt.plot (self.rho_tor[a], self.n_e[a])
+        ax = self.ax_q_profile
+        ax.cla()
+        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
+        y = self.cp1.profiles_1d[it].q
+        
+        ax.plot(x, y, 'r-', label="q")
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([0.0, max(y)*1.05])
+        ax.set_title("q")
+        ax.legend(loc='center left',bbox_to_anchor=(1,0.5))
+    
+    
+        ax = self.ax_T_profile
+        ax.cla()
+        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
+        y = self.cp1.profiles_1d[it].electrons.temperature
+        y1 = self.cp1.profiles_1d[it].t_i_average
+        
+        ax.plot(x, y, label = "Te")
+        ax.plot(x, y1, label = "Ti")
 
-        plt.ylim([self.ylimdown_n_e[a],self.ylimup_n_e[a]])
-        plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
-        plt.title ("Ne")
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([0.0, max(y)*1.05])
+        
+        ax.set_title ("T, eV")
+        ax.legend(loc='center left',bbox_to_anchor=(1,0.5))
+  
 
   
+        ax = self.ax_N_profile
+        ax.cla()
+        x = self.cp1.profiles_1d[it].grid.rho_tor_norm
+        
+        ideut = 0
+        itrit = 1
+        
+        y = self.cp1.profiles_1d[it].electrons.density
+        y1 = self.cp1.profiles_1d[it].ion[ideut].density
+        y2 = self.cp1.profiles_1d[it].ion[itrit].density
+        
+        ax.plot(x, y, label = "Ne")
+        ax.plot(x, y1, label = "Nd")
+        ax.plot(x, y2, label = "Nt")
+
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([0.0, max(y)*1.05])
+        
+        ax.legend(loc='center left',bbox_to_anchor=(1,0.5))
+        ax.set_title("Density, m⁻³")
+        
+        
+        
+        
+        ax = self.ax_Q_profile
+        ax.cla()
+        
+        isrc = 0
+        
+        x = self.cs1.source[isrc].profiles_1d[it].grid.rho_tor_norm
+        
+        y = self.cs1.source[isrc].profiles_1d[it].electrons.energy
+        y1 = self.cs1.source[isrc].profiles_1d[it].total_ion_energy
+        
+        ax.plot(x, y, label = "Qe")
+        ax.plot(x, y1, label = "Qi")
+        
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([min(y), max(y)])
+        ax.set_title ("Heat sources, W/m³")
+        ax.legend(loc='center left',bbox_to_anchor=(1,0.5))
+        
+        
   
-        ax12=plt.subplot (6, 3, 16)
-        plt.cla()
-        plt.plot (self.t1, self.z_x)
-        plt.title ("Zx")
-   
-        ax13=plt.subplot (6, 3, 18)
-        plt.cla()
+        #EQUILIBRIUM--------------
+        ax = self.ax_equil
+        ax.cla()
+        
+        x = self.eq1.time_slice[it].profiles_2d[0].grid.dim1
+        y = self.eq1.time_slice[it].profiles_2d[0].grid.dim2
+      
+        psi2d = np.transpose(self.eq1.time_slice[it].profiles_2d[0].psi)
+        
+        psi_axis = self.eq1.time_slice[it].global_quantities.psi_axis
+        psi_bnd = self.eq1.time_slice[it].boundary.psi
+        psi_sep = self.eq1.time_slice[it].boundary_separatrix.psi
+        psi_sep2 = self.eq1.time_slice[it].boundary_secondary_separatrix.psi
+        
+        
+        
+        if (psi_axis > psi_bnd):
+          psi2d = -psi2d
+          psi_axis = -psi_axis
+          psi_bnd = -psi_bnd
+          psi_sep = -psi_sep
+          psi_sep2 = -psi_sep2
+          
+        
+        psi_max = np.amax(psi2d)
+        #print("psi max = " + str(psi_max))
+        
+        dsep = self.eq1.time_slice[it].boundary_separatrix.gap[30].value
 
-        self.l, = plt.plot (self.rho_tor[a], self.bstrap[a], 'r-')
-        plt.ylim([self.ylimdown_bootstr[a],self.ylimup_bootstr[a]])
-        plt.xlim([self.xlimdown_rho_tor[a],self.xlimup_rho_tor[a]])
-        plt.title ("bootstrap")
 
 
-        #--------------------------------slider_end  
+
+        if (self.DrawLimiter):
+          if (len(self.wall.description_2d) > 0):
+            for unit in self.wall.description_2d[0].limiter.unit:
+              ax.plot(unit.outline.r, unit.outline.z, 'k-', linewidth=1, label='limiter')
+          else:
+            print("No wall limiter data")
+          
+          
+        if (self.DrawLimiterActivePoint):
+          r = self.eq1.time_slice[it].boundary_separatrix.active_limiter_point.r
+          z = self.eq1.time_slice[it].boundary_separatrix.active_limiter_point.z
+          ax.plot(r, z, 'rx')
+
+
+        n_levels = 9
+        dpsi = (psi_bnd - psi_axis)/n_levels
+        xmax = np.max(self.eq1.time_slice[it].boundary.outline.r)
+        xmin = np.min(self.eq1.time_slice[it].boundary.outline.r)
+        ymax = np.max(self.eq1.time_slice[it].boundary.outline.z)
+        ymin = np.min(self.eq1.time_slice[it].boundary.outline.z)
+        i_ymax = -1
+        i_ymin = -1
+        for i in range(len(y)):
+          if (y[i] < ymin):
+            i_ymin = i
+          if (y[i] < ymax):
+            i_ymax = i
+            
+        if (dpsi > 0.):
+          if (self.DrawPsiOutside):
+            vmax = psi_max
+            vmin = psi_bnd
+            levels = np.arange(vmin, vmax, dpsi)
+            colors = 'blue'
+            psi_ax = ax.contour(x, y, psi2d, levels=levels,
+              colors=colors, linewidths=0.5, linestyles='solid')
+              
+            vmax = psi_bnd
+            vmin = psi_axis
+            levels = np.arange(vmin, vmax, dpsi)
+            psi_ax = ax.contour(x, y[0:i_ymin], psi2d[0:i_ymin][:],
+              levels=levels, colors=colors, linewidths=0.5, linestyles='solid')
+            psi_ax = ax.contour(x, y[i_ymax:], psi2d[i_ymax:][:],
+              levels=levels, colors=colors, linewidths=0.5, linestyles='solid')
+          
+          if (self.DrawPsiInside):
+            vmax = psi_bnd
+            vmin = psi_axis
+            levels = np.arange(vmin, vmax, dpsi)
+            colors = 'red'
+            psi_ax = ax.contour(x, y[i_ymin:i_ymax], psi2d[i_ymin:i_ymax][:],
+              levels=levels, colors=colors, linewidths=0.5, linestyles='solid')
+           
+        
+        if (self.DrawBoundary):
+          psi_sep_ax1 = ax.contour(x, y, psi2d, 
+            levels=[psi_bnd], colors=['r'], linewidths=1, linestyles='solid')
+          psi_sep_ax1.collections[0].set_label('boundary,    psi=' + "{:.2f}".format(psi_bnd))
+        
+        if (self.DrawSeparatrix):
+          psi_sep_ax1 = ax.contour(x, y, psi2d,
+            levels=[psi_sep], colors = ['b'], linewidths=1, linestyles='solid')
+          psi_sep_ax1.collections[0].set_label('separatrix,   psi=' + "{:.2f}".format(psi_sep))
+        
+        if (self.DrawSeparatrix2):
+          psi_sep_ax1 = ax.contour(x, y, psi2d,
+            levels=[psi_sep2], colors = ['m'], linewidths=1, linestyles='solid')
+          psi_sep_ax1.collections[0].set_label('separatrix2, psi=' + "{:.2f}".format(psi_sep2))
+        
+        
+        for coil in self.pfa1.coil:
+          for elem in coil.element:
+            path = self.GetGeometryPath(elem.geometry)
+            patch = patches.PathPatch(path, facecolor='orange', edgecolor='blue', lw=1)
+            ax.add_patch(patch)
+
+
+        CurrentMax = 0.
+        for loop in self.pfp1.loop:
+          CurrentMax = max(CurrentMax, abs(loop.current[it]))
+        for loop in self.pfp1.loop:
+          current = loop.current[it]
+          
+          r = current/CurrentMax
+          g = -current/CurrentMax
+          b = 0.5
+          
+          r = np.clip(r,0.,1.)
+          g = np.clip(g,0.,1.)
+          b = np.clip(b,0.,1.)
+          
+          for elem in loop.element:
+            path = self.GetGeometryPath(elem.geometry)
+            patch = patches.PathPatch(path, facecolor=(r, g, b), edgecolor=(r, g, b), lw=1)
+            ax.add_patch(patch)
+
+
+        Time = self.eq1.time_slice[it].time
+        Ipl = self.eq1.time_slice[it].global_quantities.ip
+        ax.set_title('Equilibrium \n time=%f s, Ip=%f MA'%(Time, Ipl*1.e-6))
+        if (self.DrawLegend):
+          ax.legend()
+        ax.set_aspect('equal', adjustable='box')
+
+
         plt.subplots_adjust(wspace=0.2, hspace=0.6)
-        self.canavas.draw()
+        self.canvas.draw()
 
-
-    #0--------------------------------------------------------------------------------------------------------------------EQUIL GRAPH-------------------------------------------------  
-    #0-----------------------------------------------------   
 
     def buildUI(self):
         super().buildUI(self)
         #plotty()
         
         #self.setWindowTitle('TRY-1-2-3')
+
+def main():
+    app = QApplication(sys.argv)  # New instance QApplication
+    
+    shot = 135013
+    run = 1
+    user = "dubrovm"
+    database = "test"
+    
+    window = Second_window(shot,run,user,database)
+    window.setObjectName("EQUIL_win")
+    window.show() 
+    sys.exit(app.exec_())  # Start application
+
+if __name__ == '__main__':  # If direct run, not import
+    main() 
+    
