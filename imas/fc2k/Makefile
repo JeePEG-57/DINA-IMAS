@@ -45,7 +45,7 @@ endif
 	$$FC2K/bin/fc2k -nocompile dinatransp_bootcond.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile dinatransp_curdrive.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile dinatransp_heatsrc.xml $(usekep) $(usepy)
-#	$$FC2K/bin/fc2k -nocompile dinasdn21.xml $(usekep) $(usepy)
+	$$FC2K/bin/fc2k -nocompile dinasdn21.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile solps_imas.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile kmc.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile kmc_2madiv.xml $(usekep) $(usepy)
