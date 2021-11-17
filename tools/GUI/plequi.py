@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplica
                              QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView, QAction) 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
-                            QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
+                            QSlider, QCheckBox, QPushButton, QHBoxLayout, QLabel, QMessageBox
 import eq_win4
 import sys
 import math
@@ -45,31 +45,46 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.matSlider.setSizePolicy(sizePolicy)
         self.matSlider.setOrientation(QtCore.Qt.Horizontal)
         self.matSlider.setRange(0,self.tor-1)
-        
-
         self.matSlider.valueChanged.connect(self.plotty)
         
-        self.DrawLegend = False
-        self.DrawLimiter = True
-        self.DrawLimiterActivePoint = True
-        self.DrawBoundary = True
-        self.DrawSeparatrix = True
-        self.DrawSeparatrix2 = True
-        self.DrawPsiInside = True
-        self.DrawPsiOutside = True
-
-
+        verticalLayout = QtWidgets.QVBoxLayout(self)
+        verticalLayout.setObjectName("ToolsLayout")       
+        
+        self.CreateCheckBox(verticalLayout, "DrawCoils", True)
+        self.CreateCheckBox(verticalLayout, "DrawLegend", True)
+        self.CreateCheckBox(verticalLayout, "DrawPassive", True)
+        self.CreateCheckBox(verticalLayout, "DrawLimiter", True)
+        self.CreateCheckBox(verticalLayout, "DrawLimiterActivePoint", True)
+        self.CreateCheckBox(verticalLayout, "DrawBoundary", True)
+        self.CreateCheckBox(verticalLayout, "DrawSeparatrix", True)
+        self.CreateCheckBox(verticalLayout, "DrawSeparatrix2", True)
+        self.CreateCheckBox(verticalLayout, "DrawPsiInside", True)
+        self.CreateCheckBox(verticalLayout, "DrawPsiOutside", True)
+        
+        verticalLayout.addStretch()
         
         #--------------------
         
         self.fig = plt.figure()
         self.canvas = FigureCanvas(self.fig)
+        sp = self.canvas.sizePolicy()
+        sp.setVerticalPolicy(QtWidgets.QSizePolicy.Expanding)
+        self.canvas.setSizePolicy(sp)
+        
         self.toolbar = NavigationToolbar(self.canvas, self)
+        sp = self.toolbar.sizePolicy()
+        sp.setHorizontalPolicy(QtWidgets.QSizePolicy.Maximum)
+        self.toolbar.setSizePolicy(sp)
         
         
-        self.graplay.addWidget(self.canvas, 0, 0)
-        self.graplay.addWidget(self.matSlider, 1, 0) 
-        self.graplay.addWidget(self.toolbar, 2, 0) 
+        
+        self.graplay.addWidget(self.canvas, 0, 1)
+        self.graplay.addWidget(self.matSlider, 1, 1) 
+        self.graplay.addWidget(self.toolbar, 2, 1) 
+        self.graplay.addLayout(verticalLayout, 0, 0) 
+        
+        
+        
         
         
         nrows = 5
@@ -81,6 +96,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.ax_N_profile = plt.subplot(nrows, ncols, 8)
         self.ax_Q_profile = plt.subplot(nrows, ncols, 10)
         self.ax_equil = plt.subplot(1, ncols, 1)
+        self.ax_equil.set_aspect('equal', adjustable='box')
         
         self.canvas.draw()
         
@@ -91,6 +107,15 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.plotty()
         
         
+    def CreateCheckBox(self, layout, name, defaultState):
+      checkBox = QCheckBox(name)
+      checkBox.setChecked(defaultState)
+      checkBox.stateChanged.connect(self.plotty)
+      #self.DrawCoils.stateChanged.connect(lambda:self.btnstate(self.DrawCoils))
+      layout.addWidget(checkBox)
+      sp = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+      checkBox.setSizePolicy(sp)
+      exec("self." + name + " = checkBox")
         
     def data_gain(self):
       
@@ -163,11 +188,10 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
     
     
     def plotty(self):
-
+      
         it = self.matSlider.value()
         
         idslist = self.idslist
-
         
         #fig, axes = plt.subplots(nrows=6, ncols=3, dpi=100, facecolor = 'white')
         #ax1 = plt.subplot2grid((6,3), (0,0))
@@ -224,9 +248,8 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         
         ax.set_title ("T, eV")
         ax.legend(loc='center left',bbox_to_anchor=(1,0.5))
-  
-
-  
+        
+        
         ax = self.ax_N_profile
         ax.cla()
         x = idslist['core_profiles'].profiles_1d[it].grid.rho_tor_norm
@@ -298,12 +321,11 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         psi_max = np.amax(psi2d)
         #print("psi max = " + str(psi_max))
         
-        dsep = idslist['equilibrium'].time_slice[it].boundary_separatrix.gap[30].value
-
-
-
-
-        if (self.DrawLimiter):
+        dsep = idslist['equilibrium'].time_slice[it].boundary_secondary_separatrix.distance_inner_outer
+        
+        
+        
+        if (self.DrawLimiter.isChecked()):
           if (len(idslist['wall'].description_2d) > 0):
             for unit in idslist['wall'].description_2d[0].limiter.unit:
               ax.plot(unit.outline.r, unit.outline.z, 'k-', linewidth=1, label='limiter')
@@ -311,30 +333,35 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
             print("No wall limiter data")
           
           
-        if (self.DrawLimiterActivePoint):
+        if (self.DrawLimiterActivePoint.isChecked()):
           r = idslist['equilibrium'].time_slice[it].boundary_separatrix.active_limiter_point.r
           z = idslist['equilibrium'].time_slice[it].boundary_separatrix.active_limiter_point.z
+          #if (idslist['summary'].boundary.type.value[it] == 0):
+          #  ax.plot(r, z, 'rx')
+          #else:
+          #  ax.plot(r, z, 'yx')
           ax.plot(r, z, 'rx')
-
-
+          
+          
         n_levels = 9
         dpsi = (psi_bnd - psi_axis)/n_levels
-        xmax = np.max(idslist['equilibrium'].time_slice[it].boundary.outline.r)
-        xmin = np.min(idslist['equilibrium'].time_slice[it].boundary.outline.r)
-        ymax = np.max(idslist['equilibrium'].time_slice[it].boundary.outline.z)
-        ymin = np.min(idslist['equilibrium'].time_slice[it].boundary.outline.z)
-        i_ymax = -1
-        i_ymin = -1
-        for i in range(len(y)):
-          if (y[i] < ymin):
-            i_ymin = i
-          if (y[i] < ymax):
-            i_ymax = i
-            
+        
         if (dpsi > 0.):
-          if (self.DrawPsiOutside):
+          xmax = np.max(idslist['equilibrium'].time_slice[it].boundary.outline.r)
+          xmin = np.min(idslist['equilibrium'].time_slice[it].boundary.outline.r)
+          ymax = np.max(idslist['equilibrium'].time_slice[it].boundary.outline.z)
+          ymin = np.min(idslist['equilibrium'].time_slice[it].boundary.outline.z)
+          i_ymax = -1
+          i_ymin = -1
+          for i in range(len(y)):
+            if (y[i] < ymin):
+              i_ymin = i
+            if (y[i] < ymax):
+              i_ymax = i
+          
+          if (self.DrawPsiOutside.isChecked()):
             vmax = psi_max
-            vmin = psi_bnd
+            vmin = psi_bnd + dpsi
             levels = np.arange(vmin, vmax, dpsi)
             colors = 'blue'
             psi_ax = ax.contour(x, y, psi2d, levels=levels,
@@ -348,7 +375,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
             psi_ax = ax.contour(x, y[i_ymax:], psi2d[i_ymax:][:],
               levels=levels, colors=colors, linewidths=0.5, linestyles='solid')
           
-          if (self.DrawPsiInside):
+          if (self.DrawPsiInside.isChecked()):
             vmax = psi_bnd
             vmin = psi_axis
             levels = np.arange(vmin, vmax, dpsi)
@@ -357,58 +384,58 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
               levels=levels, colors=colors, linewidths=0.5, linestyles='solid')
            
         
-        if (self.DrawBoundary):
+        if (self.DrawBoundary.isChecked()):
           psi_sep_ax1 = ax.contour(x, y, psi2d, 
             levels=[psi_bnd], colors=['r'], linewidths=1, linestyles='solid')
-          psi_sep_ax1.collections[0].set_label('boundary,    psi=' + "{:.2f}".format(psi_bnd))
+          psi_sep_ax1.collections[0].set_label('boundary,    psi=' + "{:.2f}".format(psi_bnd) + " Wb")
         
-        if (self.DrawSeparatrix):
+        if (self.DrawSeparatrix.isChecked()):
           psi_sep_ax1 = ax.contour(x, y, psi2d,
-            levels=[psi_sep], colors = ['b'], linewidths=1, linestyles='solid')
-          psi_sep_ax1.collections[0].set_label('separatrix,   psi=' + "{:.2f}".format(psi_sep))
+            levels=[psi_sep], colors = ['r'], linewidths=1, linestyles='solid')
+          psi_sep_ax1.collections[0].set_label('separatrix,   psi=' + "{:.2f}".format(psi_sep) + " Wb")
         
-        if (self.DrawSeparatrix2):
+        if (self.DrawSeparatrix2.isChecked()):
           psi_sep_ax1 = ax.contour(x, y, psi2d,
             levels=[psi_sep2], colors = ['m'], linewidths=1, linestyles='solid')
-          psi_sep_ax1.collections[0].set_label('separatrix2, psi=' + "{:.2f}".format(psi_sep2))
+          psi_sep_ax1.collections[0].set_label('separatrix2, psi=' + "{:.2f}".format(psi_sep2) + " Wb")
         
+        if (self.DrawCoils.isChecked()):
+          for coil in idslist['pf_active'].coil:
+            for elem in coil.element:
+              path = self.GetGeometryPath(elem.geometry)
+              patch = patches.PathPatch(path, facecolor='orange', edgecolor='blue', lw=1)
+              ax.add_patch(patch)
         
-        for coil in idslist['pf_active'].coil:
-          for elem in coil.element:
-            path = self.GetGeometryPath(elem.geometry)
-            patch = patches.PathPatch(path, facecolor='orange', edgecolor='blue', lw=1)
-            ax.add_patch(patch)
-
-
-        CurrentMax = 0.
-        for loop in idslist['pf_passive'].loop:
-          CurrentMax = max(CurrentMax, abs(loop.current[it]))
-        for loop in idslist['pf_passive'].loop:
-          current = loop.current[it]
-          
-          r = current/CurrentMax
-          g = -current/CurrentMax
-          b = 0.5
-          
-          r = np.clip(r,0.,1.)
-          g = np.clip(g,0.,1.)
-          b = np.clip(b,0.,1.)
-          
-          for elem in loop.element:
-            path = self.GetGeometryPath(elem.geometry)
-            patch = patches.PathPatch(path, facecolor=(r, g, b), edgecolor=(r, g, b), lw=1)
-            ax.add_patch(patch)
-
-
+        if (self.DrawPassive.isChecked()):
+          CurrentMax = 0.
+          for loop in idslist['pf_passive'].loop:
+            CurrentMax = max(CurrentMax, abs(loop.current[it]))
+          for loop in idslist['pf_passive'].loop:
+            current = loop.current[it]
+            
+            r = current/CurrentMax
+            g = -current/CurrentMax
+            b = 0.5
+            
+            r = np.clip(r,0.,1.)
+            g = np.clip(g,0.,1.)
+            b = np.clip(b,0.,1.)
+            
+            for elem in loop.element:
+              path = self.GetGeometryPath(elem.geometry)
+              patch = patches.PathPatch(path, facecolor=(r, g, b), edgecolor=(r, g, b), lw=1)
+              ax.add_patch(patch)
+              
+              
         Time = idslist['equilibrium'].time_slice[it].time
         Ipl = idslist['equilibrium'].time_slice[it].global_quantities.ip
-        ax.set_title('Equilibrium \n time=%f s, Ip=%f MA'%(Time, Ipl*1.e-6))
-        if (self.DrawLegend):
+        ax.set_title('t = %f s, Ip = %f MA'%(Time, Ipl*1.e-6))
+        if (self.DrawLegend.isChecked()):
           ax.legend()
-        ax.set_aspect('equal', adjustable='box')
-
-
-        plt.subplots_adjust(wspace=0.2, hspace=0.6)
+        
+        
+        #plt.subplots_adjust(wspace=0.2, hspace=0.6)
+        plt.subplots_adjust(left=0.05, bottom=0.05, right=0.9, top=0.95, wspace=0.2, hspace=0.6)
         self.canvas.draw()
 
 
@@ -421,23 +448,37 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
 def main():
     app = QApplication(sys.argv)  # New instance QApplication
     
-    shot = 135013
-    run = 1
+    shot = 135011
+    run = 7
     user = "dubrovm"
-    database = "test"
+    database = "iter"
+    
+    SingleSlice = True
+    time = 300.0
+    interp = 1
     
     imas_entry_init = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, shot, run, user, data_version = '3')
     imas_entry_init.open()
     
     idslist = {}
     
-    idslist['equilibrium'] = imas_entry_init.get('equilibrium')
-    idslist['wall'] = imas_entry_init.get('wall')
-    idslist['pf_active'] = imas_entry_init.get('pf_active')
-    idslist['pf_passive'] = imas_entry_init.get('pf_passive')
-    idslist['core_profiles'] = imas_entry_init.get('core_profiles')
-    idslist['core_sources'] = imas_entry_init.get('core_sources')
-    idslist['summary'] = imas_entry_init.get('summary')
+    
+    if (SingleSlice):
+      idslist['equilibrium'] = imas_entry_init.get_slice('equilibrium', time, interp)
+      idslist['wall'] = imas_entry_init.get_slice('wall', time, interp)
+      idslist['pf_active'] = imas_entry_init.get_slice('pf_active', time, interp)
+      idslist['pf_passive'] = imas_entry_init.get_slice('pf_passive', time, interp)
+      idslist['core_profiles'] = imas_entry_init.get_slice('core_profiles', time, interp)
+      idslist['core_sources'] = imas_entry_init.get_slice('core_sources', time, interp)
+      idslist['summary'] = imas_entry_init.get_slice('summary', time, interp)
+    else:
+      idslist['equilibrium'] = imas_entry_init.get('equilibrium')
+      idslist['wall'] = imas_entry_init.get('wall')
+      idslist['pf_active'] = imas_entry_init.get('pf_active')
+      idslist['pf_passive'] = imas_entry_init.get('pf_passive')
+      idslist['core_profiles'] = imas_entry_init.get('core_profiles')
+      idslist['core_sources'] = imas_entry_init.get('core_sources')
+      idslist['summary'] = imas_entry_init.get('summary')
     
     imas_entry_init.close()
         

@@ -1082,7 +1082,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       output = {}      
       output["type"] = "coil"
       
-      output["name"] = f.readline().rstrip()
+      output["name"] = f.readline().strip()
       
       props = self.ReadRowStr(f)
       if len(props) != 4:
@@ -1871,11 +1871,11 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       record = self.GetStuctWithFieldValue(self.DINAData, "title", "dens.dat")     
       self.FillPulseScheduleItem(psch.density_control.valve[0].flow_rate.reference, record, 1.e19)
       
-      # Be content (Ip < 1.5 MA)
+      # Be content (0D transport)
       record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z.dat")     
       self.FillPulseScheduleItem(psch.density_control.valve[1].flow_rate.reference, record)
       
-      # Be content (Ip > 1.5 MA)
+      # Be content (1D transport)
       record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z1.dat")     
       self.FillPulseScheduleItem(psch.density_control.valve[2].flow_rate.reference, record)      
       
