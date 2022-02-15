@@ -1,5 +1,5 @@
-! test the DINA_EQUIL
-! Jo Lister, August 2013
+! A test for the DINA_EQUIL subroutine
+
 
 use ids_schemas
 use ids_routines
@@ -8,12 +8,13 @@ implicit none
 interface 
 ! Declaration of the dina_equil subroutine 
 subroutine dina_equil(&
-  &  em_coupling0, equilibrium0, pf_active0, pf_passive0 &
+  &  em_coupling0, wall0, equilibrium0, pf_active0, pf_passive0 &
   & ,equilibrium) 
  
      use ids_schemas
 ! note that IDS0 are all prescribed, the others are dynamic
 type (ids_em_coupling)  :: em_coupling0
+type (ids_wall)  :: wall0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_pf_active)   :: pf_active0
 type (ids_pf_passive)   :: pf_passive0
@@ -23,6 +24,7 @@ end interface
 
 
 type (ids_em_coupling) :: em_coupling0
+type (ids_wall)  :: wall0
 type (ids_equilibrium) :: equilibrium_ref, equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
 type (ids_pf_active) :: pf_active0, pf_active
@@ -33,6 +35,9 @@ type (ids_core_sources)   :: core_sources0, core_sources
 
 ! define the pulse and run numbers for testing, will be done later outside
 integer :: pulse=171, run=7, prescribedpulse=170, prescribedrun=7
+
+
+
 
 ! define local variables
 integer :: time_loop, i, iloop, idec, imax, nt, interpol = 0
@@ -48,6 +53,12 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 call getenv("USER", user)
 print *,' User name is ', user
+
+    open(unit=41,file='shot.dat',form='formatted')
+	print *,' opened file shot.dat'
+	read(41,*)
+	read(41,*)run,prescribedrun
+    close (41)
 
 
 write(*,*) 'Reading the prescribed IDS pulse, run ==', prescribedpulse, prescribedrun 
@@ -86,6 +97,7 @@ flush(6)
 
 call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interpol)
 call ids_get_slice(idx0,"em_coupling",em_coupling0, time_get, interpol)
+call ids_get_slice(idx0,"wall",wall0, time_get, interpol)
 call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interpol)
 call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interpol)
 
@@ -99,12 +111,22 @@ write(*,*) 'Output pulse, run ==', pulse, run
 
 flush(6)
 
-call dina_equil(em_coupling0, equilibrium0, pf_active0, pf_passive0, equilibrium)
+call dina_equil(em_coupling0, wall0, equilibrium0, pf_active0, pf_passive0, equilibrium)
 
 write(*,*) "DINA_EQUIL finished"
 flush(6)
 
-call imas_open_env('ids',pulse,run,idx,user,'test','3') 
+
+write(*,*) 'TEST_DINA_EQUIL Exiting cleanly'
+
+
+stop
+
+!call imas_create_env('ids',pulse,run,idx,user,'test','3') 
+  write(*,*) 'Pulse file is created'
+
+!  call ids_put(idx,"dataset_description",data_description)
+!  call ids_put(idx,"pulse_schedule",pulse_schedule)
 
 
 write(*,*) 'Put calculated equilibrium...'

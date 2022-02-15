@@ -147,7 +147,7 @@ arr_out1(1:31)=0
 
 
 
-  call imas_create_env('ids',pulse,run,1,1,idx,user,'iter','3')
+  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
   write(*,*) 'Pulse file is created'
 
   call ids_put(idx,"dataset_description",data_description)

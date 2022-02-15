@@ -6,7 +6,7 @@
 
 
 subroutine dina_equil(&
-  &  em_coupling0, equilibrium0, pf_active0, pf_passive0 &
+  &  em_coupling0, wall0, equilibrium0, pf_active0, pf_passive0 &
   & ,equilibrium)
 
 
@@ -17,6 +17,7 @@ implicit none
 
 ! trees are static or dynamic; if not defined, they are static
 type (ids_em_coupling)  :: em_coupling0
+type (ids_wall)  :: wall0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_pf_active)   :: pf_active0
 type (ids_pf_passive)   :: pf_passive0
@@ -26,7 +27,8 @@ type (ids_pf_passive)   :: pf_passive0
 integer,save :: i, k,  j, its
 integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
-integer,save :: kloop,kprobe, ke=57, ngrid2
+integer,save :: kloop,kprobe, ngrid2
+integer,save :: ke, nu, mu
 
 integer,save :: nact=30, npass=300 , nflux=60, nbpol=70, nelem = 1
 
@@ -140,9 +142,11 @@ loop_count = loop_count + 1 ! number of times the iterative routine was entered
 
 write(*,*) 'dina_imas loop, first_call = ', first_call, loop_count
 
-print *,' Ip==',equilibrium0%time_slice(1)%global_quantities%ip
+tpl=-equilibrium0%time_slice(1)%global_quantities%ip
 
-if (equilibrium0%time_slice(1)%global_quantities%ip .gt. 1.e5) then
+print *,' Ip==',tpl
+
+if (tpl .gt. 1.e4) then
 
       n_input1=2
 !      n_input2=15
@@ -196,10 +200,7 @@ print *,'em_coupling0%mutual_loops_grid 1',nflux
 nbpol=size(em_coupling0%field_probes_grid,1)
 print *,'em_coupling0%field_probes_grid 1',nbpol    
     
-ke=size(equilibrium0%time_slice(1)%coordinate_system%r,1)
-print *,'equilibrium0%coordinate_system%r 1',ke
-	
-     
+
 allocate(fluxarr(ngrid,nact))
 allocate(vesarr(ngrid,npass))
 
@@ -244,19 +245,36 @@ end do
     
 allocate(pfres(nact))
 allocate(rcam(npass))
-allocate(xu(ke))
-allocate(yu(ke))    
+
    
 pfres(1:nact) = pf_active0%coil(1:nact)%resistance
 rcam(1:npass) = pf_passive0%loop(1:npass)%resistance
 
-xu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%r(1:ke,1)
-yu(1:ke)=equilibrium0%time_slice(1)%coordinate_system%z(1:ke,1)
+  
+! Limiter
+nu=size(wall0%description_2d(1)%limiter%unit,1)
+ke = 0
+do i=1,nu
+  ke = ke + size(wall0%description_2d(1)%limiter%unit(i)%outline%r,1)
+enddo
+print *,'wall0%description_2d(1)%limiter%unit, ke', nu, ke
 
-! x(1:nr)=equilibrium0%time_slice(1)%coordinate_system%grid%dim1(1:nr) ![m]
-! y(1:nz)=equilibrium0%time_slice(1)%coordinate_system%grid%dim2(1:nz) ![m]
-x(1:nr)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim2(1:nr) ![m]
-y(1:nz)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim1(1:nz) ![m]
+allocate(xu(ke))
+allocate(yu(ke))    
+  
+j = 0
+do i=1,nu
+  mu = size(wall0%description_2d(1)%limiter%unit,1)
+  xu(j+1:j+mu) = wall0%description_2d(1)%limiter%unit(i)%outline%r(1:mu)
+  yu(j+1:j+mu) = wall0%description_2d(1)%limiter%unit(i)%outline%z(1:mu)
+  j = j + mu
+enddo
+  
+  
+! Coordinate system
+x(1:nr) = equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim1(1:nr) ![m]
+y(1:nz) = equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim2(1:nz) ![m]
+
 
 gridrange(1)=y(1)
 gridrange(2)=y(nz)
