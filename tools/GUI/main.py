@@ -1985,15 +1985,19 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.labelDirSave.setText(self.directorySave)
         
         
+        
+        new_imp = self.directorySave + '/imp'
+        if os.path.exists(new_imp):
+          shutil.rmtree(new_imp)
+        #shutil.copytree(self.directoryLoad + '/imp', new_imp)
+        shutil.copytree(self.directoryLoad, self.directorySave, dirs_exist_ok=True)
+        
+        
         self.SaveDataToFile(self.externalData, self.directorySave + '/external_data.dat')
         self.SaveDataToFile(self.controlData, self.directorySave + '/control_init.dat')
         self.SaveDataToFile(self.generalData, self.directorySave + '/general_data.dat')
         self.SaveDataToFile(self.DINAData, self.directorySave + '/dina_data.dat')
         
-        new_imp = self.directorySave + '/imp'
-        if os.path.exists(new_imp):
-          shutil.rmtree(new_imp)
-        shutil.copytree(self.directoryLoad + '/imp', new_imp)
         
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
