@@ -251,9 +251,13 @@ ccc	if(ntay.lt.999999)kbu=0
 
 	if(ntay.lt.4)kuv=0
 	if(ntay.lt.4)kae=0
+      
+      kuv=0
+      kae=0
+      
+!      kbu=0
 
-
-        if(kpr.eq.1)print *,'kuv kbu=',kuv,kbu
+        if(kpr.eq.1)print *,'kuv kbu =',kuv,kbu
 
 
       if(k_ener.eq.-1)then

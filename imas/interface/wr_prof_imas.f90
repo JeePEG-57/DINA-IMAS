@@ -94,6 +94,7 @@
 	include 'double.inc'
  	include 'parf0' 
  	include 'parf_mike' 
+    include 'imas_interface.inc'
 	
 
      common /c_imas_ajb/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
@@ -128,13 +129,13 @@
 	nn_b = nr
 	n_tb = nt	
 	
-	if(kpr.eq.1)print *,' nnb n_tb==',nn_b,n_tb
+	if(kpr.eq.1)print *,' tpl_dir	 nnb n_tb==',tpl_dir,nn_b,n_tb
 	
 	
     do it=1,nt
 	  t_tb(it) = cp%time(it)*1.d3
 	  nr = size(cp%profiles_1d(it)%j_bootstrap)
-	  te0_tb(1:nr,it) = cp%profiles_1d(it)%j_bootstrap(1:nr)*coeff	
+	  te0_tb(1:nr,it) = cp%profiles_1d(it)%j_bootstrap(1:nr)*coeff*tpl_dir		
 	end do
     
     call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -240,6 +241,7 @@
 	include 'double.inc'
  	include 'parf0' 
  	include 'parf_mike' 
+    include 'imas_interface.inc'
 
       common /c_imas_nb/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
       common /c_imas_nb1/nn_b,n_tb
@@ -283,7 +285,7 @@
 	nn_b = nr
 	n_tb = nt
 	
-	if(kpr.eq.1)print *,' nnb n_tb==',nn_b,n_tb
+	if(kpr.eq.1)print *,' tpl_dir nnb n_tb==',tpl_dir,nn_b,n_tb
 
         apr='++poa-' 
        if(kpr.eq.1)print 71,apr,(poa_b(i),i=1,nr) 
@@ -296,7 +298,7 @@
     !   print *,' it==nr t_tb(it)',it,nr,t_tb(it)
     !flush(6)
 
-	  te0_tb(1:nr,it) = cs%source(1)%profiles_1d(it)%j_parallel(1:nr)*coeff	
+	  te0_tb(1:nr,it) = cs%source(1)%profiles_1d(it)%j_parallel(1:nr)*coeff*tpl_dir		
 
     !   apr='++nb-' 
     !   if(kpr.eq.1)print 71,apr,(te0_tb(iprof,it),iprof=1,nr) 
@@ -336,6 +338,7 @@
 	include 'double.inc'
  	include 'parf0' 
  	include 'parf_mike' 
+    include 'imas_interface.inc'
 
       common /c_imas_ecd/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
       common /c_imas_ecd1/nn_b,n_tb
@@ -367,12 +370,12 @@
 	nn_b = nr
 	n_tb = nt
 	
-	if(kpr.eq.1)print *,' nnb n_tb==',nn_b,n_tb
+	if(kpr.eq.1)print *,' tpl_dir nnb n_tb==',tpl_dir,nn_b,n_tb
 
     do it=1,nt
 	  t_tb(it) = cs%time(it)*1.d3
 	  nr = size(cs%source(2)%profiles_1d(it)%j_parallel)
-	  te0_tb(1:nr,it) = cs%source(2)%profiles_1d(it)%j_parallel(1:nr)*coeff	
+	  te0_tb(1:nr,it) = cs%source(2)%profiles_1d(it)%j_parallel(1:nr)*coeff*tpl_dir	
 	end do
 
         call prof_sort(nn_b,n_tb,te0_tb,t_tb,kpr)
@@ -859,4 +862,88 @@
 
     return
     end
+
+
+	    subroutine equil_data()
+
+        integer :: pulse, run
+        real*8 :: coeff
+    
+        integer   ::  ih_imas
+        common /c_imas_is/ih_imas
+        common /c_jetto_ids/pulse_c,run_c
+
+!        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
+
+  !      read(49,*)
+  !      read(49,*) pulse
+        pulse=pulse_c
+!        read(49,*)
+!        read(49,*) run
+        run=run_c
+
+!        close(2)
+
+        write(*,*) 'jetto_ids: pulse, run =',pulse,run
+        write(*,*) 'jetto_ids: k_jetto =',ih_imas
+
+
+    if(ih_imas.eq.0)return
+    	coeff = 1.d0 !
+	    call equil_data_c(pulse, run, coeff) 
+	return
+    end
+
+	subroutine equil_data_c(pulse, run, coeff)
+
+
+	use ids_schemas
+    use ids_routines	
+	
+	include 'double.inc'
+ 	include 'parf0' 
+ 	include 'parf_mike' 
+    include 'imas_interface.inc'
+      
+	character *20 apr,filename
+
+    type (ids_equilibrium) :: equilibrium0, equilibrium
+    type (ids_pf_active)   :: pf_active0, pf_active
+    type (ids_pf_passive)   :: pf_passive0, pf_passive
+
+    integer :: pulse, run, idx0
+	integer :: it, ir, nt, nr ,kpr
+	real(ids_real) ::time_get
+	
+      common/ge5/kpr
+      
+      character (len=255) :: user
+      call getenv("USER", user)
+		
+	call imas_open_env('ids', pulse, run, idx0,user,'test','3') 
+
+interpol = 1
+time_get=20.
+
+write(*,*) 'get slice time_get =', time_get
+flush(6)
+
+call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interpol)
+call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interpol)
+call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interpol)
+
+write(*,*) 'Finished reading the prescribed IDS'
+
+call imas_close(idx0)
+
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+      
+5001    format(4i4)
+5000    format (6(1pe14.6e3))
+
+
+	return
+	end
 

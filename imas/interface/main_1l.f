@@ -61,9 +61,9 @@
       call t15_2_output(k_in, a_in,
      *  k_out, a_out) 
 
-       ! print *,' after t15_2_output'
+      !  print *,' after t15_2_output'
 
-       ! read (*,*)
+      !  read (*,*)
         
       do i=1,38
  !     	print * ,' k_out i a_out',k_out,i,a_out(i)

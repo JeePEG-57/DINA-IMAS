@@ -344,14 +344,14 @@ def main(argv):
   "user": user_name,
   "database": "test",
   "pulse": 170,
-  "run": 401
+  "run": 424
   }
 
   wf_params = {
   "ids_in": ids_in,
   "ids_out": ids_out,
   "magcontr": "kmc",
-  "decimation": 100,
+  "decimation": 50,
   "use_astra": False,
   "t_exttransp": 4.0e3
   }

@@ -51,7 +51,8 @@
       apr='+ai-' 
       if(kpr.eq.1)print 71,apr,(ai(i),i=1,n) 
 
-     	call prof_astra_sigma(tt_prof,n,sigk,ai,num,kpr)
+     	
+     	
 !     	call prof_astra_sigma(tt_prof,n,sigma_jetto,ai,num,kpr)
 
 
@@ -81,6 +82,16 @@
 !	print*,'from astra_prof_HL'
       if(kpr.eq.1)print*,'tt tt_prof=',tt,tt_prof
 
+
+     	call prof_astra_sigma(tt_prof,n,sigk,ai,num,kpr)
+     	
+      do i=1,n
+      !!!sigk(i)=sigk(i)/(1480.d0*te0(i)**1.5d0)
+      end do
+
+      apr='&&sigk-' 
+      if(kpr.eq.1) print 71,apr,(sigk(i),i=1,n) 
+ 
 
       i_pres=1
       if(i_pres.eq.1)then
@@ -372,7 +383,7 @@ c	read (*,*)
 
 
       coef=1.d-0
-	if(i_sh.eq.1)then
+	if(i_sh.eq.-1)then
 
       n_t=9999
       
@@ -1801,5 +1812,197 @@ c	read (*,*)
 	return
 	end
 
+                                                                        
+	subroutine dm0_calc()
+	include 'double.inc'
+	include 'new_com.inc'
+
+	do i=1,n                                                               
+	dm0(i)=2.*pi*psval(i)
+	psi8(i)=(dm0(i)-dm0(i-1))/ha(i)                                           
+	dmn(i)=dm0(i)                                                          
+	end do                                                                 
+      
+	return
+	end
+      
+
+	subroutine prof_dm0()
+	include 'double.inc'
+	include 'new_com.inc'
+
+	call prof_dm0_c(tt,n,dm0,a,ha,psi8,num,kpr)
 
 
+	return
+	end
+	subroutine prof_dm0_c(tt,n,te0,a,ha,psi,num,kpr)
+	include 'double.inc'
+
+	dimension te0(*),a(*),ha(*),psi(*)
+
+ 	include 'parf0' 
+ 	include 'parf_mike' 
+
+	dimension t_t(ntime),te0_t(npo,ntime),poa(npo),ppz(npo)
+      common /c_imas_dm0/t_tb(ntime),te0_tb(npo,ntime),poa_b(npo)
+      common /c_imas_dm01/nn_b,n_tb
+      common /c_imas_is/ih_imas
+      
+      equivalence (nn_b,nn)
+      equivalence (n_tb,n_t)
+      
+      equivalence (poa_b,poa)
+      equivalence (t_tb,t_t)
+      equivalence (te0_tb,te0_t)
+
+	character *20 apr,filename
+
+
+	i_sh=i_sh+1
+
+	if(i_sh.eq.1)then
+	i_sh=i_sh+ih_imas
+      end if
+
+      coef=1.d0
+	if(i_sh.eq.-1)then
+
+      n_t=9999
+      filename='dm0.txt'
+
+c-------
+           open (unit=41,file=filename,form='formatted') 
+          
+           read (41,*)nn,(poa(ii),ii=1,nn)
+
+           k=0
+           do i=2,n_t 
+           read (41,*,err=2000,end=2000)t_t(i),
+     *    (te0_t(iprof,i),iprof=1,nn)
+           
+           k=k+1
+           t_t(i)=t_t(i)*1.d3
+           
+           apr='-pne_t-' 
+c           print 71,apr,(pne_t(iprof,i),iprof=1,n) 
+
+
+!	print *,' i== n t_t(i) ',i,n,t_t(i)
+
+c	read (*,*)
+           end do 
+           
+
+c	read (*,*)
+
+           apr='-t_t-' 
+!           print 71,apr,(t_t(i),i=1,n_t) 
+
+	
+
+
+
+2000	continue
+
+      nprof=nn 
+         
+	n_t=k
+
+      t_t(1)=0.d0
+
+      i=2
+	do iprof=1,nn
+	te0_t(iprof,i-1)=te0_t(iprof,i)
+	end do
+
+	n_t=n_t+1
+      i=n_t
+      t_t(i)=t_t(i-1)+1000.e3
+      
+	do iprof=1,nn
+	te0_t(iprof,i)=te0_t(iprof,i-1)
+	end do
+
+	if(kpr.eq.1)print *,' nprof n_t== t_t ',nprof,n_t,t_t(n_t)
+
+!	t_t(1)=-0.1
+!	t_t(n_t)=1.d5
+c
+	if(kpr.eq.1)print *,' ++ n_t== t_t1 t_t2 ',n_t,t_t(1),t_t(2)
+	if(kpr.eq.1)print *,' ++ n_t== t_t(n-1) t_t(n) ',t_t(n_t-1),t_t(n_t)
+
+       close (unit=41) 
+        end if
+
+	do i=300,305
+           apr='-den_t-' 
+ !          print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
+	end do
+
+
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+	if(ih_imas.eq.0)then
+	return
+      end if
+
+      i_time=0
+      
+      do i=2,n_t
+      if( (tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
+c==================
+	 t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
+
+      i_time=i
+
+	do iprof=1,nn
+	ppz(iprof)=te0_t(iprof,i-1)+t_coef*(te0_t(iprof,i)-
+     *  te0_t(iprof,i-1))
+      ppz(iprof)=ppz(iprof)*coef
+	end do
+
+c
+	 end if
+
+	 end do
+
+        apr='++poa-' 
+!        print 71,apr,(poa(i),i=1,nn) 
+      apr='++ppz-' 
+!      print 71,apr,(ppz(i),i=1,nn) 
+
+      te0(1)=ppz(1)
+      te0(n)=ppz(nn)
+	do i=2,n-1
+!           call feeti(nn,ppz,te0(i),poa,a(i))
+!           call linear(nn,ppz,te0(i),poa,a(i))
+           te0(i)=ppz(i)
+      end do
+
+      te0(1)=1.e5
+	do i=2,n
+           te0(i)=te0(1)-(te0(1)-te0(n))*a(i)**2
+           psi(i)=(te0(i)-te0(i-1))/ha(i)
+      end do
+
+
+
+      
+        apr='++dm0-' 
+      if(kpr.eq.1)print 71,apr,(te0(i),i=1,n) 
+        apr='++psi-' 
+      if(kpr.eq.1)print 71,apr,(psi(i),i=1,n) 
+
+	if(kpr.eq.1)print *,' n t_1 t_2==',n,t_t(i_time-1),t_t(i_time)
+	if(kpr.eq.1)print *,' i_time tt t_coef==',i_time,tt,t_coef
+	
+!	stop
+	
+c	read (*,*)
+
+5001    format(4i4)
+5000    format (6(1pe14.6e3))
+
+	return
+	end

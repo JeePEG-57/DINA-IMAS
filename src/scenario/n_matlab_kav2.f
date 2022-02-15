@@ -15,7 +15,8 @@
      *       del_ramp,omega,
      *       ro_bar,alf_bar,vchopper,pf0,pf_p,key_lh,key_h_to_l,
      *       tt_dw,tt_h,betp_flat,coef_kessel_1,vs_start,tt_emo,omg_ppx,
-     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke,r_lh_new,pf_turns)
+     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke,r_lh_new,pf_turns,
+     *       pll0)
 
 	return
 	end
@@ -30,8 +31,9 @@
      *       del_ramp,omega,
      *       ro_bar,alf_bar,vchopper,pf0,pf_p,key_lh,key_h_to_l,
      *       tt_dw,tt_h,betp_flat,coef_kessel_1,vs_start,tt_emo,omg_ppx,
-     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke,r_lh_new,pf_turns)
-
+     *       fdd,fdd0,tau_p,xu,yu,xu_dist,yu_dist,ke,r_lh_new,pf_turns,
+     *       pll0)
+     
 	include 'double.inc'
 	include 'parf0'
 	include 'parf1'
@@ -196,6 +198,8 @@ c*** tt_rampup - SOF time
 	end if
 
       if(i_en.gt.1)goto 2323
+      
+!      next=2
       
       eps2=1.e-5
       
@@ -457,8 +461,8 @@ c  here we multiply by c_pf_res all PF coils resistances...
 c----------------------  FLAT files reading.....
  !       call flat_ext()
 c----------------------  end of FLAT files reading.....
-	call shape_pf_iam() 
-      call brz_vec_r()
+!	call shape_pf_iam() 
+!      call brz_vec_r()
 
 	else
 
@@ -1205,6 +1209,8 @@ ccc	tay_elm=1.
 
 c	if(ntay.gt.next+1.and.tay.lt.99)then
 !	if(ntay.gt.next+1.and.tay.lt.tay_simul*0.99.and.krref.eq.0)then
+
+
 	if(ntay.gt.next+1.and.tay.lt.tay_simul*0.99
      *   .and.ntay.lt.next+30)then
 	   tay=tay*1.2
@@ -1550,67 +1556,25 @@ ccc     call ppx_pffx_save(2)
 
       if(k_ener.eq.0)call prof_astra()
 
+      call shape_pfres()
+!	call gen()
 
 2000	continue
 	int_2000=int_2000+1
 
-      if(int_2000.le.2)then
-      call shape_pfres()
-	call gen()
-      end if
-
-c	if(krref.eq.3)call pp_calc()
-
-c	k_zyb=0
-!!!	if(k_zyb.eq.0)then
-!!!	if(k_zyb.eq.0.and.int_2000.eq.1)then
-
       
 c
-	if(k_zyb.eq.0)then
-
-
-ccc      call ppx_pffx_save(2)
-
       ngra2=1
-	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.20)then
+!      ngra2=1000
+
+!	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.20)then
+	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.2)then
 
       omg_ppx=omg_ppx*0.99
       if(omg_ppx.le.0.5d0)omg_ppx=0.5d0
- 
-!      omg_ppx=0.d0
      
-      if(tt.lt.56930e9)then
-	   call ppx_pffx()
-ccc	   call avr_ppx_pffx2()
-	   
-!         call ppx_pffx_corr2()
-
-ccc         call ppx_pffx_corr4()
-
-      end if
-
-	   else
-!	   omg_ppx=1.d0
-	end if
-
-
- 
-!	   call ppx_pffx()
-
-
-ccc	   if(krref.eq.0.and.key_lh.eq.1)then 
-c	   if(tt.gt.tt_h.and.tt.le.120.d3)then 
-	   if(krref.eq.0.and.tt.gt.tt_avr)then 
-c	   if(krref.eq.0.and.tt.gt.tt_h)then 
-c*** Spline of plasma current
-
-	      call ppx_pffx_corr2()
-
-
-c***    Plasma current averaging 
-!!!	      call avr_ppx_pffx()
-	   end if
+      call ppx_pffx()
+      call ppx_pffx_corr2()
 	   	      
 	end if
 
@@ -1771,6 +1735,8 @@ c----------------
       if(int_2005.gt.50)go to 6666
 
 	if(it1.ne.0)go to 2005
+	
+	tpl_equ=tpl
 
 c----------------
 	delzmag=zmag-zmag_in
@@ -1837,6 +1803,7 @@ c  toroidal coordinates...
 	call map_ps()
 
 ccc      call li_calc()
+
 
   	do j=1,mp
 	   uk_help(j)=uk(j)
@@ -1920,9 +1887,23 @@ c!!! so transport does not know about time evolution of surfaces
         fdd0=fdd
         end if
 
-      if(i_filter.eq.1)call fdd_filter()
+      if(ntay.le.9.and.k_ener.eq.0)then
+      pll0=pll
+      fdd0=fdd
+      
+            if(kpr.eq.1)print *,' pll pll0=',pll,pll0
 
+      end if
+      
 	call tpl_cal()
+      tpl_o=tpl
+
+      i_filter=0
+      tau_p=5.*tay
+      if(kpr.eq.1)print *,' tay tau_p=',tay,tau_p
+!      if(i_filter.eq.1)call fdd_filter()
+      if(kpr.eq.1)print *,' tpl_o tpl=',tpl_o,tpl
+
 	next=next_help
 
 c!	call tpl_calc()
@@ -1961,6 +1942,16 @@ c************
 ccc      call ppx_pffx_save(2)
 
 	if(it1.ne.0.and.int_2000.lt.10)go to 2000
+
+!        call write_equil()
+      
+      if(tt.ge.time_eq-0.5d0*tay.and.tt.lt.time_eq+0.5d0*tay)then
+      	
+      	tpl=tpl_equ
+        call write_equil()
+!        stop
+      end if
+
       
       goto 63
 
@@ -2050,6 +2041,8 @@ ccc      call ppx_pffx_save(2)
 !      call wr_rpp()
 !      call wr_zpp()
 
+      call wr_equil()
+
 	zvel=zvel_tran
 
  5555   continue
@@ -2129,7 +2122,7 @@ c	if(q(2).le.0.8)call zyb(n,ires)
 c**********************************************
 ccc	q_test=0.90
 c	q_test=0.96
-	q_test=0.97
+	q_test=-0.97
 cccccccc	q_test=0.8
 c	q_test=0.7
 c	q_test=0.98

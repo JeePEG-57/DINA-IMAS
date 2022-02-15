@@ -222,10 +222,14 @@ call system(" pwd")
 
 !call fp_test()
 
+ print *,' dina_data_read'
  call dina_data_read()
+ print *,' general_data_read'
  call general_data_read()
-
+ print *,' congig_calc'
  call congig_calc()
+
+ print *,' read_green_params'
 
        call  read_green_params(&
 &      npass,nact,kloop,kprobe,ke,ngrid2)
@@ -475,12 +479,18 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 !          read (49,*)time_eq
           time_eq=time_eq_c
 !         close (41)
-         
+
+!         tpl=-equilibrium0%time_slice(1)%global_quantities%ip
+
+!        print *,' +++Ip==',tpl
+
         print *,'from time_eq.dat  time_eq =',time_eq
 
 !    ih_imas=1
 !    if (ih_imas.eq.1) then
 	call ids_prof_jetto()
+	
+	call equil_data()
 !   end if
 !stop
 
@@ -585,6 +595,14 @@ do i=1,n_input2
 input_2(i)=arr_in1(n_input1+i)
 !print *,' i input_2 arr2=',i,input_2(i),arr_in1(n_input1+i)
 end do
+
+
+!tpl=-equilibrium0%time_slice(1)%global_quantities%ip
+
+!print *,' +++Ip==',tpl
+
+
+
 
 
 write(*,*) '!!!dina0 enter'
@@ -1691,6 +1709,8 @@ flush(6)
       print 71,apr,(pd0(i),i=1,n) 
       apr='++pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
+      apr='++jbut-' 
+      print 71,apr,(jbut(i),i=1,n) 
        apr='++zeff-' 
 !      print 71,apr,(zeff(i),i=1,n1) 
        apr='++sigma-' 

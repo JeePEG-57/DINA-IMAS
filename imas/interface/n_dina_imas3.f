@@ -251,7 +251,7 @@ c ============ outputs ==============================================
 	
 !	print *,' n_xx tpl_xx=',n_xx,tpl_xx
 
-	tt_xx=tt/1000.d0
+	tt_xx=(tt-tay)/1000.d0
 
         rs0_xx = rs0/100.d0
         bt0_xx = bt0_dir*bt0/10.d0
@@ -311,7 +311,8 @@ c=================================================
            pt0_xx(i)=pt0(i)*1.d19
            
            !sigma_xx(i)=sigma_dina(i)
-           sigma_xx(i)=1480.d0*sigk(i)*te0(i)**1.5d0
+!!!           sigma_xx(i)=1480.d0*sigk(i)*te0(i)**1.5d0
+           sigma_xx(i)=sigk(i)
            
            qe0_xx(i)=qe0(i)
            qq0_xx(i)=qq0(i)

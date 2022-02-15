@@ -2045,6 +2045,9 @@ c+++++++++++++++++++++++++++++++++
 	apr='p'
 	if(kpr.eq.1)print 71,apr,(p(i),i=1,n)
 
+	apr='pne'
+	if(kpr.eq.1)print 71,apr,(pne(i),i=1,n)
+
 	apr='te0'
 	if(kpr.eq.1)print 71,apr,(te0(i),i=1,n)
 	apr='tq0'

@@ -59,6 +59,8 @@
 
         if(kpr.eq.1)print *,' i_en2==key_equil kpr ',i_en2,key_equil,kpr
         
+        
+
 !              i_con=3
 
 !        close ( unit=1)       
@@ -82,13 +84,55 @@
          
         if(kpr.eq.1)print *,'tt_kavin,tt_dw =',
      *  tt_kavin,tt_dw
+      
 
         if(kpr.eq.1)print *,'k_jetto  ih_imas =',
      *  k_jetto,ih_imas
 
+       	if(ih_imas.eq.3.and.i_en.eq.1)then
+       	k_ener=0
+ 		ARG=1.
+	  pi=4.*atan(ARG)
+	  coef=10./(4.*pi)
+	  
+        end if
+      
+        if(kpr.eq.1)print *,'k_jetto i_en=',
+     *  k_jetto,i_en
+
 	  call read_data() 
+       	
+       	if(ih_imas.eq.3.and.i_en.eq.1)then
+!        call read_equil()
+        tt_dina=tt_dina_c
+        tt=tt_dina
+!        call shape_equil()
+        call shape_equil2()
+        end if
+       
+      	
+	 call anglep_kav()
+
+
+	  call angl_p()                                                          
 	  call ONE2()  
 
+
+
+      if(ih_imas.eq.3)tt_kavin=-1.
+      
+
+      if(kpr.eq.1)print *,' tt tt_dina==',tt,tt_dina
+      if(kpr.eq.1)print *,' tt tt_kavin==',tt,tt_kavin
+
+
+
+
+
+
+
+
+     
       apr='+ai-' 
 !      if(kpr.eq.1)print 71,apr,(ai(i),i=1,n) 
 
@@ -98,6 +142,13 @@
         call prof_astra()
         ih_imas=2
        end if
+
+       if(ih_imas.eq.3)then 
+        k_jetto=1
+        call prof_astra()
+        ih_imas=4
+       end if
+
 
       end if
 
@@ -147,6 +198,9 @@
       
 !      tt_dina=1352.
 
+ 
+
+       
       if(kpr.eq.1)print *,' tt== tt_dina==',tt,tt_dina
 
 
@@ -327,15 +381,19 @@
       omega=1.d0
  	call equil()
  	else
- 	if(k_jetto.eq.1)k_ener=0
-! 	omega=0.33d0
+      if(ih_imas.eq.4.and.i_en.eq.1)then
+      k_ener=0
  	omega=0.5d0
+ 	call equil3()
+ 	end if
+ 	if(k_jetto.eq.1)k_ener=0
+ 	omega=0.33d0
  	call equil2()
  	end if
 
- 	
-!      if(tt.gt.4.e3)stop
+       if(ih_imas.eq.4)t_end=0.
 
+	if(kpr.eq.1)print*,'!!!ih_imas k_jetto',ih_imas,k_jetto
 	if(kpr.eq.1)print*,'!!!tt tay t_end',tt,tay,t_end
  	
       if(tt.gt.t_end+tay)then 	
@@ -345,6 +403,9 @@ c  i_fil=0  old case without reconstruction....
       call get_gaps()
       i_en3=i_en3+1
       end if
+ 
+ 
+ 
  
          if(i_en3.eq.1)then
          open (unit=1,file='gaps.dat',form='formatted')
@@ -360,8 +421,11 @@ c  i_fil=0  old case without reconstruction....
       close(1)
       
       
-	ntay=ntay+1
+    	ntay=ntay+1
 	tt=tt+tay
+
+!	ntay=ntay+1
+!	tt=tt+tay
 
 
         if(tt.gt.1520.)then
@@ -394,12 +458,22 @@ c  i_fil=0  old case without reconstruction....
         c_output1(2)=zvel_xx
         c_output1(3)=elong_xx
         c_output1(4)=tpl_xx
+       
+      	if(kpr.eq.1)print*,'z_cur zvel elong tpl ',(c_output1(i),i=1,4)
+
+        
         c_output1(5)=klim_xx
         c_output1(6)=xleft_xx
         c_output1(7)=xright_xx
         c_output1(8)=rsep_xx
+
+      	if(kpr.eq.1)print*,'klim xleft xright rsep',(c_output1(i),i=5,8)
+
+
         c_output1(9)=tt_xx
         c_output1(10)=zsep_xx
+
+      	if(kpr.eq.1)print*,'tt zsep',(c_output1(i),i=9,10)
 
         c_output1(11)=npf_xx
         c_output1(12)=n_gaps_xx
@@ -408,20 +482,42 @@ c  i_fil=0  old case without reconstruction....
         c_output1(15)=i_wr_xx
 
 
+
+        apr= 'c_output1 '
+        print 71,apr,(c_output1(i),i=1,15)
+
+
+
+      	if(kpr.eq.1)print*,'npf n_gaps ntay ncam ',(c_output1(i),i=11,14)
+
+
       kk=0
       do i=1,n_gaps_xx
       kk=kk+1
       c_output2(kk)=gaps_xx(i)
       end do
+      
+        apr= 'gaps '
+        print 71,apr,(gaps_xx(i),i=1,n_gaps_xx)
+
+      
       do i=1,npf_xx
       kk=kk+1
       c_output2(kk)=pf_xx(i)
       end do
+      
+        apr= 'pf_xx '
+        print 71,apr,(pf_xx(i),i=1,npf_xx)
+
+      
       do i=1,ncam_xx
       kk=kk+1
       c_output2(kk)=tcam_xx(i)
      	a_print(i)=tcam_xx(i)
       end do
+
+        apr= 'tcam_xx '
+        print 71,apr,(tcam_xx(i),i=1,ncam_xx)
 
 	n_pr=ncam_xx
 
@@ -445,7 +541,8 @@ c  i_fil=0  old case without reconstruction....
 
 c----------------------
 
-
+!      if(i_en.gt.5)stop
+      
 
                                                                         
 

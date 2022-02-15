@@ -2148,7 +2148,8 @@ c	a_print(i)=ajb(i)
 	apr='-3-ajb '
 c	call out42(n_pr,a_print,num,apr)
 
-      call write_fc()
+      call wr_equil()
+      
         call kpl_out()
 
       call ppx_pffx_save(0)
@@ -3512,8 +3513,8 @@ c	ceps=ceps*0.5
 
 	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
 
-c	if(abs(crz).gt.1.d-5.and.iter.le.25)go to 1000
-	if(abs(crz).gt.1.d-5.and.iter.le.95)go to 1000
+	if(abs(crz).gt.1.d-5.and.iter.le.25)go to 1000
+!	if(abs(crz).gt.1.d-5.and.iter.le.95)go to 1000
 
 c	if(abs(crz).gt.1.d-5)go to 1000
 

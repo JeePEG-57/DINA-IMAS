@@ -658,7 +658,8 @@ C
 
 
 	call fdd_filter_c(
-     *  fdd,ntay,tay,tt,tau_p)
+     *  tpl,ntay,tay,tt,tau_p)
+!     *  fdd,ntay,tay,tt,tau_p)
 
 
 
@@ -667,7 +668,7 @@ C
 	end
 
 	subroutine fdd_filter_c(
-     *  fdd,ntay,tay,tt,tau_p)
+     *  fdd,ntay,tay,tt,tay_p)
 
 	include 'double.inc'
 	common
@@ -702,7 +703,7 @@ c	qqp = 0.5 * 5.0e-2 * (time - time1)
 
 c    ;  /* 1/taup = 1/20.0 = 5.0e-2 */
 c    ;  /* 1/taup = 1/0.5 = 2. */
-      if(taup.le.tay)then
+      if(tay_p.le.tay)then
       taup=tay
       else
 	taup=tay_p
@@ -720,8 +721,8 @@ c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
 
 	fdd=f9af
 
-      if(kpr.eq.1)write(6,'(" tt tay fdd taup  ", 6(1pe12.5))'),
-     *  tt,tay,fdd,taup
+      if(kpr.eq.1)write(6,'(" tt tay fdd tay_p taup  ", 6(1pe12.5))'),
+     *  tt,tay,fdd,tay_p,taup
 
 
 	return

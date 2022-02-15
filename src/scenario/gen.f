@@ -689,6 +689,10 @@ c           tokc=tokc+tcam(i)
 	apr='pf (GEN)'
 	if(kpr.eq.1)print 71,apr,(t_gen(i+ncam),i=1,npf)
 
+	apr='pf0 (GEN)'
+	if(kpr.eq.1)print 71,apr,(t_gen0(i+ncam),i=1,npf)
+
+
 	apr='volt (GEN)'
 	if(kpr.eq.1)print 71,apr,(vchopper(i),i=1,npf)
 

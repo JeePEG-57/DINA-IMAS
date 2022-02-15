@@ -68,7 +68,10 @@ type (ids_wall) :: wall
 real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! define the pulse and run numbers for testing, will be done later outside
-integer :: pulse=135011, run=7, prescribedpulse=170, prescribedrun=1
+
+!integer :: pulse=170, run=399, prescribedpulse=170, prescribedrun=1
+integer :: pulse=170, run=402, prescribedpulse=170, prescribedrun=1
+!integer :: pulse=170, run=403, prescribedpulse=170, prescribedrun=402
 
 ! define local variables
 integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, idec, imax
@@ -76,7 +79,13 @@ real (ids_real) :: tmax, tpfa
 real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
 integer :: idx, idx0, err
 integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
+
+
+integer :: interpol = 0
+!real (ids_real) ::time_get
+
 character (len=255) :: user
+
 
 
 ! for timing tests
@@ -87,12 +96,12 @@ call getenv("USER", user)
 print *,'User name is ', user
 
 
-print *,'Enter pulse number...'
+!print *,'Enter pulse number...'
 !read (*,*) pulse
 !prescribedpulse = pulse
 
 
-print *,'Enter run number...'
+!print *,'Enter run number...'
 !read (*,*) run
 !prescribedrun = 1
 
@@ -107,16 +116,12 @@ imax=1000000
 tmax=10000.d0
 
 
-print *,'Enter decimation for filling the database...'
+!print *,'Enter decimation for filling the database...'
 !read (*,*)idec
-idec=100
+!idec=100
 
 
-print *,' Input pulse,run =', prescribedpulse, prescribedrun
-print *,' Output pulse, run =', pulse, run
-print *,' Maximum time steps amount =', imax
-print *,' Maximum simulation time =', tmax, ' seconds'
-print *,' Database put decimation =', idec
+
 
 
 print *,'Press any key to begin simulation...'
@@ -141,6 +146,25 @@ call ids_get(idx0,"wall",wall)
 
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
+
+
+    open(unit=41,file='shot.dat',form='formatted')
+	print *,' opened file shot.dat'
+	read(41,*)
+	read(41,*)run,prescribedrun,idec,imax
+!	read(41,*)
+!	read(41,*)time_get
+    close (41)
+
+print *,' Input pulse,run =', prescribedpulse, prescribedrun
+print *,' Output pulse, run =', pulse, run
+print *,' Maximum time steps amount =', imax
+print *,' Maximum simulation time =', tmax, ' seconds'
+print *,' Database put decimation =', idec
+
+!write(*,*) ' time_get =', time_get
+
+
 
 arr_in1(1:31)=1
 arr_out1(1:31)=0
