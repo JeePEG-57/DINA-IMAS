@@ -1,0 +1,6 @@
+  tcont2   dtcont2  Ip_div   ref_ramp    Ip_rd   trd_ref  max_VS_lim  k_g4  Time_stop
+   2        0.3      3.3        3.       4.4      70         0.25     1     75
+
+c_a_tpl1   c_a_tpl1_eob   c_a_tpl2   c_a_tpl_min    y0    c1_y0  c2_y0
+  5.         1.5              5.        0.75        1.     1.8      4.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
