@@ -1,23 +1,8 @@
 #include <stdio.h>
-
 #define nmax 9997
 #define kf 15
 #define mexPrintf printf
 
-extern struct t15_mem6 mem6;
-
-struct t15_mem6
-{
-	int kmax;
-	double pf[nmax][kf];
-	double t[nmax],tpl[nmax];
-};
-
-
-
-
-extern FILE*prob;
-extern FILE*f2;
 
 /* Subroutine */ int scen_read(int i_en, int npf, int indx, int  *n, 
 		double *t_val, double *tpl_val, double *pf_val)
@@ -31,43 +16,51 @@ extern FILE*f2;
 	static double pf[nmax][kf];
 	static double t[nmax],tpl[nmax];
 	int res;
-	char b[1256];
 
-//	FILE *prob;
-
+	FILE *prob;
 
 
-	if(i_en > -1){goto l2;}
 
-	mexPrintf(" i_en  %d  \n ",i_en);
-	
-	prob=fopen("general_data.dat","r");
-	f2=prob;
+	if(i_en > 1){goto l2;}
 
-	printf("---general_data.dat \n");
+	mexPrintf(" i_en npf %d %d \n ",i_en,npf);
 
-//	fscanf(prob, "%s ", &s_ncam);
- 
-	fgets(b,1255,prob);
+//	return;
 
-	printf("%s  ",b);
+//	if ((prob=fopen("scr_data_test","r"))==NULL){
+	if ((prob=fopen("scr_data.dat","r"))==NULL){
+	mexPrintf(" scr_data_test %d \n ",i_en);
+	return -1;
+	}
+/* read (41,*) */
+/* read (41,*)ncam */
 
-    fscanf(prob, "%d ",&nmax1);
+	fscanf(prob, "%s ", &s_ncam);
 
-	fgets(b,1255,prob);
-	printf("%s  ",b);
+	mexPrintf(" sss %s  ",s_ncam);
 
-	printf(" nmax1===  %d \n ",nmax1);
+//	nmax1=21;
+	nmax1=nmax;
 
 	for (i = 1; i <= nmax1; ++i) {
+	
+		ii=feof(prob);
 
-	res=fscanf(prob, " \n %f",&ss);
+//	mexPrintf(" i ii %d %d \n   ",i,ii);
+
+	if(ii != 0){goto l1;}
+
+			
+
+	res=fscanf(prob, "\n %f",&ss);
+
+	if(res != 1){goto l1;}
 
 	kmax=i;
 
 	t[i]=ss;
 
-	mexPrintf(" i res t %d %d %f \n",i,res,t[i]);
+	mexPrintf(" i res t %d %d %f ",i,res,t[i]);
 
     //printf(" i %d \n ",i);
     //printf(" rc %g  ",rc[i]);
@@ -80,9 +73,6 @@ extern FILE*f2;
 	pf[i][j]=ss;
 		mexPrintf("%f ",pf[i][j]);
      }
-    	
-	    fscanf(prob, "\n");
-
 		mexPrintf(" \n   ");
 
 						 
@@ -92,9 +82,9 @@ l1:
 
 /* close (41) */
 
-	mexPrintf(" l1 final  i res %d %d \n   ",i,res);
+	mexPrintf("  i res %d %d \n   ",i,res);
 
-//	fclose(f);
+	fclose(prob);
 
 //	return 0;
 
@@ -120,16 +110,12 @@ l2:
 //	mexPrintf(" kmax= indx %d %d \n ",kmax,indx);
 
 //	return 0;
-	
-	kmax=mem6.kmax;
-
-	mexPrintf(" +++ kmax= npf  %d %d \n ",kmax,npf);
 
 	for (i = 0; i <= kmax; ++i) {
-		t_val[i]=mem6.t[i];
-		tpl_val[i]=mem6.tpl[i];
+		t_val[i]=t[i];
+		tpl_val[i]=tpl[i];
     	for (j = 1; j <= npf; ++j) {
-		pf_val[j+i*npf]=mem6.pf[i][j];}
+		pf_val[j+i*npf]=pf[i][j];}
 	}
 
 //	mexPrintf("  return \n   ");
@@ -139,4 +125,3 @@ l2:
 
     return 0;
 } /* scen_read */
-

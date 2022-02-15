@@ -1,6 +1,3 @@
-//! t15_2.c is the main subroutine to read the input 
-//! control_init.dat file
-
 #if 1
 
 # define t15_2_initialize t15_2_initialize_
@@ -13,9 +10,9 @@
  *
  * Code generated for Simulink model 't15_2'.
  *
- * Model version                  : 1.1143
+ * Model version                  : 1.1161
  * Simulink Coder version         : 8.5 (R2013b) 08-Aug-2013
- * C/C++ source code generated on : Mon May 20 13:51:36 2019
+ * C/C++ source code generated on : Fri Jan 14 08:20:53 2022
  *
  * Target selection: ert_shrlib.tlc
  * Embedded hardware selection: 32-bit Generic
@@ -27,12 +24,6 @@
 
 #include <float.h>
 #include <stdio.h>
-//extern FILE*f;
-FILE*f;
-FILE*f1;
-FILE*prob;
-FILE*f2;
-
 #include <stdlib.h>
 #include <string.h>
 //#include <Windows.h>
@@ -40,83 +31,12 @@ FILE*f2;
 
 #include "t15_2.h"
 #include "t15_2_private.h"
-
-#define nmax 9997
-#define kf 15
 #define mexPrintf printf
 
-	struct t15_mem1
-{
-	  double tcont2,Ip_div,ref_ramp,Ip_rd,trd_ref,c_a_tpl1,c_a_tpl1_eob;
-      double c_a_tpl2,c_a_tpl_min,y0,t_tran2d,c1_y0,c2_y0,g2_ramp;
-};
 
-	  struct t15_mem1 mem1;
+int kpr1, kpr =1;
 
-	struct t15_mem2
-{
-int N; double y[500][20];
-int k_time; 
-};
-
-	  struct t15_mem2 mem2;
-
-struct t15_mem3
-{
-int N[7];
-double y_0[50][2],y1[50][2],y2[50][2],y3[50][2],y4[50][2],y5[50][2],y6[50][2];
-};
-
-	  struct t15_mem3 mem3;
-
-
-
-
-
-struct t15_mem4
-{
-int N[7];
-double y_1[50][2],y_2[50][2],y_3[50][2],y_4[50][2],y_5[50][2],y_6[50][2];
-};
-
-struct t15_mem4 mem4;
-
-struct t15_mem5
-{
-double y[25];
-};
-
-	  struct t15_mem5 mem5;
-
-	  struct t15_mem6
-{
-	int kmax;
-	double pf[nmax][kf];
-	double t[nmax],tpl[nmax];
-};
-
-	  struct t15_mem6 mem6;
-struct t15_mem7
-{
-double y[25];
-};
-
-	  struct t15_mem7 mem7;
-
-struct t15_mem8
-{
-int npf;
-double ntur[15];
-};
-
-	  struct t15_mem8 mem8;
-
-
-
-extern read_general_data(void);
-extern void read_tt_kavin2_data(void);
-
-int kpr =1;
+kpr1=1;
 
 
 /* Block signals (auto storage) */
@@ -254,10 +174,67 @@ void t15_2_step(void)
   /* DataStoreWrite: '<S5>/Data Store Write1' */
   memcpy(&t15_2_DWork.volt[0], &t15_2_B.SFunction2[0], 10000U * sizeof(real_T));
 
-  /* Gain: '<S5>/1e-3' incorporates:
+  /* Level2 S-Function Block: '<S5>/S-Function' (read_control_data2) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[2];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* DataStoreWrite: '<S5>/Data Store Write10' */
+  t15_2_DWork.c_a_tpl1_eob = t15_2_B.SFunction[10];
+
+  /* DataStoreWrite: '<S5>/Data Store Write11' */
+  t15_2_DWork.c_a_tpl2 = t15_2_B.SFunction[11];
+
+  /* DataStoreWrite: '<S5>/Data Store Write12' */
+  t15_2_DWork.c_a_tpl_min = t15_2_B.SFunction[12];
+
+  /* DataStoreWrite: '<S5>/Data Store Write13' */
+  t15_2_DWork.y0 = t15_2_B.SFunction[13];
+
+  /* DataStoreWrite: '<S5>/Data Store Write14' */
+  t15_2_DWork.c1_y0 = t15_2_B.SFunction[14];
+
+  /* DataStoreWrite: '<S5>/Data Store Write15' */
+  t15_2_DWork.c2_y0 = t15_2_B.SFunction[15];
+
+  /* DataStoreWrite: '<S5>/Data Store Write16' */
+  t15_2_DWork.t_tran2D = t15_2_B.SFunction[16];
+
+  /* DataStoreWrite: '<S5>/Data Store Write17' */
+  t15_2_DWork.max_VS_lim = t15_2_B.SFunction[6];
+
+  /* DataStoreWrite: '<S5>/Data Store Write18' */
+  t15_2_DWork.k_g4 = t15_2_B.SFunction[7];
+
+  /* DataStoreWrite: '<S5>/Data Store Write2' */
+  t15_2_DWork.c_a_tpl1 = t15_2_B.SFunction[9];
+
+  /* DataStoreWrite: '<S5>/Data Store Write3' */
+  t15_2_DWork.tcont2 = t15_2_B.SFunction[0];
+
+  /* DataStoreWrite: '<S5>/Data Store Write4' */
+  t15_2_DWork.Ip_div = t15_2_B.SFunction[2];
+
+  /* DataStoreWrite: '<S5>/Data Store Write5' */
+  t15_2_DWork.ref_ramp = t15_2_B.SFunction[3];
+
+  /* DataStoreWrite: '<S5>/Data Store Write6' */
+  t15_2_DWork.dtcont2 = t15_2_B.SFunction[1];
+
+  /* DataStoreWrite: '<S5>/Data Store Write7' */
+  t15_2_DWork.Ip_rd = t15_2_B.SFunction[4];
+
+  /* DataStoreWrite: '<S5>/Data Store Write8' */
+  t15_2_DWork.trd_ref = t15_2_B.SFunction[5];
+
+  /* DataStoreWrite: '<S5>/Data Store Write9' */
+  t15_2_DWork.Time_stop = t15_2_B.SFunction[8];
+
+  /* Gain: '<S5>/Time s' incorporates:
    *  Inport: '<Root>/In1'
    */
-  t15_2_B.e3 = t15_2_P.e3_Gain_p * t15_2_U.In1[8];
+  t15_2_B.Times = t15_2_P.Times_Gain * t15_2_U.In1[8];
 
   /* Memory: '<S5>/Memory2' */
   t15_2_B.Memory2 = t15_2_DWork.Memory2_PreviousInput;
@@ -271,7 +248,7 @@ void t15_2_step(void)
   if (t15_2_B.u > t15_2_P.Ip1e4_Threshold) {
     t15_2_B.Ip1e4 = t15_2_B.Memory2;
   } else {
-    t15_2_B.Ip1e4 = t15_2_B.e3;
+    t15_2_B.Ip1e4 = t15_2_B.Times;
   }
 
   /* End of Switch: '<S5>/Ip<1e-4 ' */
@@ -283,22 +260,23 @@ void t15_2_step(void)
   t15_2_B.Sum2 = t15_2_B.Ip1e4 + t15_2_B.DataStoreRead;
 
   /* RelationalOperator: '<S5>/Relational Operator' */
-  t15_2_B.RelationalOperator_n = (t15_2_B.e3 >= t15_2_B.Sum2);
+  t15_2_B.RelationalOperator_b = (t15_2_B.Times >= t15_2_B.Sum2);
 
   /* Stop: '<S5>/Stop Simulation' */
-  if (t15_2_B.RelationalOperator_n) {
+  if (t15_2_B.RelationalOperator_b) {
     rtmSetStopRequested(t15_2_M, 1);
   }
 
   /* End of Stop: '<S5>/Stop Simulation' */
 
-  /* RelationalOperator: '<S5>/Relational Operator1' incorporates:
-   *  Constant: '<S5>/Time_stop'
-   */
-  t15_2_B.RelationalOperator1 = (t15_2_B.e3 >= t15_2_P.Time_stop_Value);
+  /* DataStoreRead: '<S5>/Data Store Read1' */
+  t15_2_B.DataStoreRead1 = t15_2_DWork.Time_stop;
+
+  /* RelationalOperator: '<S5>/Relational Operator1' */
+  t15_2_B.RelationalOperator1_f = (t15_2_B.Times >= t15_2_B.DataStoreRead1);
 
   /* Stop: '<S5>/Stop Simulation1' */
-  if (t15_2_B.RelationalOperator1) {
+  if (t15_2_B.RelationalOperator1_f) {
     rtmSetStopRequested(t15_2_M, 1);
   }
 
@@ -313,85 +291,87 @@ void t15_2_step(void)
    *  Inport: '<Root>/In2'
    */
   for (i = 0; i < 15; i++) {
-    t15_2_B.e6_m[i] = t15_2_U.In2[i + 6] * t15_2_P.e6_Gain_c;
+    t15_2_B.e6_e[i] = t15_2_U.In2[i + 6] * t15_2_P.e6_Gain_k;
   }
 
   /* End of Gain: '<S14>/1e-6   ' */
 
-  /* Memory: '<S23>/Memory2' */
-  t15_2_B.Memory2_k = t15_2_DWork.Memory2_PreviousInput_k;
-
-  /* Sum: '<S23>/Add3' */
-  t15_2_B.Add3 = t15_2_B.e6_m[2] + t15_2_B.Memory2_k;
-
-  /* DataStoreRead: '<S23>/Data Store Read1' */
-  t15_2_B.DataStoreRead1 = t15_2_DWork.RupRd[4];
-
-  /* Gain: '<S23>/1e-3' */
-  t15_2_B.e3_k = t15_2_P.e3_Gain_m * t15_2_B.DataStoreRead1;
-
-  /* Product: '<S23>/Product1' incorporates:
-   *  Constant: '<S23>/ntur(3)'
-   */
-  t15_2_B.Product1 = t15_2_B.e3_k * t15_2_P.ntur3_Value;
-
-  /* RelationalOperator: '<S23>/Relational Operator' */
-  t15_2_B.RelationalOperator = (t15_2_B.Add3 > t15_2_B.Product1);
-
-  /* Memory: '<S23>/Memory1' */
+  /* Memory: '<S18>/Memory1' */
   t15_2_B.Memory1 = t15_2_DWork.Memory1_PreviousInput;
 
-  /* Switch: '<S23>/0.999' */
-  if (t15_2_B.RelationalOperator >= t15_2_P.u99_Threshold) {
-    t15_2_B.u99 = t15_2_B.e3;
+  /* DataStoreRead: '<S18>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_e = t15_2_DWork.RupRd[4];
+
+  /* Gain: '<S18>/1e-3' */
+  t15_2_B.e3 = t15_2_P.e3_Gain * t15_2_B.DataStoreRead1_e;
+
+  /* DataStoreRead: '<S18>/Data Store Read2' */
+  t15_2_B.DataStoreRead2 = t15_2_DWork.ntur[2];
+
+  /* Product: '<S18>/Product1' */
+  t15_2_B.Product1 = t15_2_B.e3 * t15_2_B.DataStoreRead2;
+
+  /* RelationalOperator: '<S18>/Relational Operator' */
+  t15_2_B.RelationalOperator = (t15_2_B.e6_e[2] < t15_2_B.Product1);
+
+  /* Memory: '<S28>/Memory' */
+  t15_2_B.Memory = t15_2_DWork.Memory_PreviousInput;
+
+  /* Logic: '<S28>/Logical Operator' */
+  t15_2_B.LogicalOperator = ((t15_2_B.RelationalOperator != 0.0) ||
+    (t15_2_B.Memory != 0.0));
+
+  /* Switch: '<S18>/switch1' */
+  if (t15_2_B.LogicalOperator >= t15_2_P.switch1_Threshold) {
+    t15_2_B.switch1 = t15_2_B.Memory1;
   } else {
-    t15_2_B.u99 = t15_2_B.Memory1;
+    t15_2_B.switch1 = t15_2_B.Times;
   }
 
-  /* End of Switch: '<S23>/0.999' */
+  /* End of Switch: '<S18>/switch1' */
 
-  /* Sum: '<S23>/Add2' */
-  t15_2_B.Add2 = t15_2_B.u99 - t15_2_B.e3;
+  /* Sum: '<S18>/Add2' */
+  t15_2_B.Add2 = t15_2_B.switch1 - t15_2_B.Times;
 
-  /* DataStoreRead: '<S23>/Data Store Read' */
-  t15_2_B.DataStoreRead_o = t15_2_DWork.RupRd[1];
+  /* DataStoreRead: '<S18>/Data Store Read' */
+  t15_2_B.DataStoreRead_f = t15_2_DWork.RupRd[1];
 
-  /* Product: '<S23>/Product' */
-  t15_2_B.Product = t15_2_B.Add2 / t15_2_B.DataStoreRead_o;
+  /* Product: '<S18>/Product' */
+  t15_2_B.Product = t15_2_B.Add2 / t15_2_B.DataStoreRead_f;
 
-  /* Sum: '<S23>/Add1' incorporates:
-   *  Constant: '<S23>/Constant4'
+  /* Sum: '<S18>/Add1' incorporates:
+   *  Constant: '<S18>/Constant4'
    */
-  t15_2_B.Add1 = t15_2_B.Product + t15_2_P.Constant4_Value;
+  t15_2_B.Add1 = t15_2_B.Product + t15_2_P.Constant4_Value_fs;
 
-  /* Saturate: '<S23>/1 0' */
+  /* Saturate: '<S18>/1 0' */
   tmin = t15_2_B.Add1;
   u = t15_2_P.u_LowerSat;
   u_0 = t15_2_P.u_UpperSat;
   if (tmin >= u_0) {
-    t15_2_B.u_n = u_0;
+    t15_2_B.u_e = u_0;
   } else if (tmin <= u) {
-    t15_2_B.u_n = u;
+    t15_2_B.u_e = u;
   } else {
-    t15_2_B.u_n = tmin;
+    t15_2_B.u_e = tmin;
   }
 
-  /* End of Saturate: '<S23>/1 0' */
+  /* End of Saturate: '<S18>/1 0' */
 
-  /* Memory: '<S17>/Memory1' */
-  t15_2_B.Memory1_j = t15_2_DWork.Memory1_PreviousInput_c;
+  /* Memory: '<S19>/Memory1' */
+  t15_2_B.Memory1_i = t15_2_DWork.Memory1_PreviousInput_m;
 
-  /* Switch: '<S17>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_g) {
+  /* Switch: '<S19>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_j) {
     for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S17>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_d5[i] = t15_2_DWork.scr_data[13 * i + 1];
+      /* DataStoreRead: '<S19>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_pg[i] = t15_2_DWork.scr_data[13 * i + 1];
 
-      /* DataStoreRead: '<S17>/Data Store Read' */
-      t15_2_B.DataStoreRead_h4[i] = t15_2_DWork.scr_data[13 * i];
+      /* DataStoreRead: '<S19>/Data Store Read' */
+      t15_2_B.DataStoreRead_cq[i] = t15_2_DWork.scr_data[13 * i];
     }
 
-    /* Dynamic Look-Up Table Block: '<S17>/Ipref'
+    /* Dynamic Look-Up Table Block: '<S19>/Ipref'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -399,47 +379,102 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.Ipref_h), &t15_2_B.DataStoreRead1_d5[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_h4[0], 499U);
-    t15_2_B.c_eob = t15_2_B.Ipref_h;
+    LookUp_real_T_real_T( &(t15_2_B.Ipref), &t15_2_B.DataStoreRead1_pg[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_cq[0], 499U);
+    t15_2_B.c_eob = t15_2_B.Ipref;
   } else {
-    t15_2_B.c_eob = t15_2_B.Memory1_j;
+    t15_2_B.c_eob = t15_2_B.Memory1_i;
   }
 
-  /* End of Switch: '<S17>/c_eob' */
+  /* End of Switch: '<S19>/c_eob' */
 
-  /* Product: '<S17>/Divide6' */
-  t15_2_B.Divide6 = t15_2_B.c_eob * t15_2_B.u_n;
+  /* Product: '<S19>/Divide6' */
+  t15_2_B.Divide6 = t15_2_B.c_eob * t15_2_B.u_e;
 
   /* Sum: '<S14>/Add1' */
-  t15_2_B.Add1_i = t15_2_B.e6 - t15_2_B.Divide6;
+  t15_2_B.Add1_d = t15_2_B.e6 - t15_2_B.Divide6;
 
-  /* Level2 S-Function Block: '<S19>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S21>/S-Function1' (read_gaps) */
   {
-    SimStruct *rts = t15_2_M->childSfunctions[2];
+    SimStruct *rts = t15_2_M->childSfunctions[3];
     sfcnOutputs(rts, 0);
   }
 
-  /* UnitDelay: '<S24>/UD' */
-  t15_2_B.Uk1 = t15_2_DWork.UD_DSTATE;
+  /* DataStoreRead: '<S17>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_f = t15_2_DWork.Ip_div;
 
-  /* UnitDelay: '<S25>/UD' */
-  t15_2_B.Uk1_d = t15_2_DWork.UD_DSTATE_j;
+  /* RelationalOperator: '<S17>/Relational Operator' */
+  t15_2_B.RelationalOperator_e = (t15_2_B.e6 > t15_2_B.DataStoreRead1_f);
 
-  /* Memory: '<S29>/Memory2' */
-  t15_2_B.Memory2_f = t15_2_DWork.Memory2_PreviousInput_m;
+  /* Memory: '<S27>/Memory' */
+  t15_2_B.Memory_b = t15_2_DWork.Memory_PreviousInput_p;
 
-  /* Switch: '<S29>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_ix) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S29>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_c3[i] = t15_2_DWork.scr_data[13 * i + 3];
+  /* Logic: '<S27>/Logical Operator' */
+  t15_2_B.LogicalOperator_f = ((t15_2_B.RelationalOperator_e != 0.0) ||
+    (t15_2_B.Memory_b != 0.0));
 
-      /* DataStoreRead: '<S29>/Data Store Read' */
-      t15_2_B.DataStoreRead_nu[i] = t15_2_DWork.scr_data[13 * i];
+  /* If: '<S17>/If' */
+  if (t15_2_B.LogicalOperator_f < 1.0) {
+    /* Outputs for IfAction SubSystem: '<S17>/If Action Subsystem' incorporates:
+     *  ActionPort: '<S25>/Action Port'
+     */
+    /* Sum: '<S25>/Add2' incorporates:
+     *  Constant: '<S25>/Constant4'
+     */
+    t15_2_B.Add2_jd = t15_2_B.Times + t15_2_P.Constant4_Value_f;
+
+    /* DataStoreWrite: '<S25>/Data Store Write19' */
+    t15_2_DWork.tdiv = t15_2_B.Add2_jd;
+
+    /* End of Outputs for SubSystem: '<S17>/If Action Subsystem' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S17>/If Action Subsystem1' incorporates:
+     *  ActionPort: '<S26>/Action Port'
+     */
+    /* Sum: '<S26>/Add2' incorporates:
+     *  Constant: '<S26>/Constant4'
+     */
+    t15_2_B.Add2_i = t15_2_B.Times - t15_2_P.Constant4_Value_m;
+
+    /* DataStoreWrite: '<S26>/Data Store Write19' */
+    t15_2_DWork.tdiv = t15_2_B.Add2_i;
+
+    /* End of Outputs for SubSystem: '<S17>/If Action Subsystem1' */
+  }
+
+  /* End of If: '<S17>/If' */
+
+  /* Gain: '<S23>/1e2' incorporates:
+   *  Inport: '<Root>/In1'
+   *  Inport: '<Root>/In2'
+   */
+  t15_2_B.e2[0] = t15_2_P.e2_Gain * t15_2_U.In2[0];
+  t15_2_B.e2[1] = t15_2_P.e2_Gain * t15_2_U.In2[1];
+  t15_2_B.e2[2] = t15_2_P.e2_Gain * t15_2_U.In1[6];
+  t15_2_B.e2[3] = t15_2_P.e2_Gain * t15_2_U.In2[3];
+  t15_2_B.e2[4] = t15_2_P.e2_Gain * t15_2_U.In2[4];
+  t15_2_B.e2[5] = t15_2_P.e2_Gain * t15_2_U.In1[5];
+
+  /* Level2 S-Function Block: '<S47>/S-Function1' (read_gaps) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[4];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Memory: '<S47>/Memory2' */
+  t15_2_B.Memory2_b = t15_2_DWork.Memory2_PreviousInput_l;
+
+  /* Switch: '<S47>/c_eob  1' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob1_Threshold) {
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S47>/Selector' */
+      t15_2_B.Selector_m[i] = t15_2_B.SFunction1_f[(i << 1) + 1];
+
+      /* Selector: '<S47>/Selector1' */
+      t15_2_B.Selector1_e[i] = t15_2_B.SFunction1_f[i << 1];
     }
 
-    /* Dynamic Look-Up Table Block: '<S29>/I1'
+    /* Dynamic Look-Up Table Block: '<S47>/g1ref'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -447,35 +482,65 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_ib), &t15_2_B.DataStoreRead1_c3[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_nu[0], 499U);
-    t15_2_B.c_eob_b = t15_2_B.I1_ib;
+    LookUp_real_T_real_T( &(t15_2_B.g1ref), &t15_2_B.Selector_m[0],
+                         t15_2_B.Times, &t15_2_B.Selector1_e[0], 49U);
+    t15_2_B.c_eob1 = t15_2_B.g1ref;
   } else {
-    t15_2_B.c_eob_b = t15_2_B.Memory2_f;
+    t15_2_B.c_eob1 = t15_2_B.Memory2_b;
   }
 
-  /* End of Switch: '<S29>/c_eob' */
+  /* End of Switch: '<S47>/c_eob  1' */
 
-  /* Product: '<S29>/Divide1' */
-  t15_2_B.Divide1 = t15_2_B.c_eob_b * t15_2_B.u_n;
+  /* Memory: '<S47>/Memory1' */
+  t15_2_B.Memory1_b = t15_2_DWork.Memory1_PreviousInput_c;
 
-  /* Sum: '<S20>/Add1' */
-  t15_2_B.Add1_g = t15_2_B.e6_m[1] - t15_2_B.Divide1;
+  /* Switch: '<S47>/c_eob  ' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_d) {
+    t15_2_B.c_eob_c = t15_2_B.Times;
+  } else {
+    t15_2_B.c_eob_c = t15_2_B.Memory1_b;
+  }
 
-  /* Memory: '<S27>/Memory2' */
-  t15_2_B.Memory2_k5 = t15_2_DWork.Memory2_PreviousInput_b;
+  /* End of Switch: '<S47>/c_eob  ' */
 
-  /* Switch: '<S27>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_o) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S27>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_pde[i] = t15_2_DWork.scr_data[13 * i + 11];
+  /* Level2 S-Function Block: '<S53>/S-Function1' (read_gaps_term) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[5];
+    sfcnOutputs(rts, 0);
+  }
 
-      /* DataStoreRead: '<S27>/Data Store Read' */
-      t15_2_B.DataStoreRead_ld[i] = t15_2_DWork.scr_data[13 * i];
+  /* Switch: '<S47>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_c) {
+    t15_2_B.c_eob_o = t15_2_B.c_eob1;
+  } else {
+    /* SignalConversion: '<S53>/TmpSignal ConversionAtg1_term,refInport3' */
+    t15_2_B.TmpSignalConversionAtg1_termref[0] = t15_2_B.c_eob1;
+    for (i = 0; i < 49; i++) {
+      /* Selector: '<S53>/Selector' */
+      t15_2_B.Selector[i] = t15_2_B.SFunction1_j[((1 + i) << 1) + 1];
+      t15_2_B.TmpSignalConversionAtg1_termref[i + 1] = t15_2_B.Selector[i];
     }
 
-    /* Dynamic Look-Up Table Block: '<S27>/I1'
+    /* End of SignalConversion: '<S53>/TmpSignal ConversionAtg1_term,refInport3' */
+
+    /* DataStoreRead: '<S53>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_gj = t15_2_DWork.trd_ref;
+
+    /* DataStoreRead: '<S53>/Data Store Read' */
+    t15_2_B.DataStoreRead_n = t15_2_DWork.RupRd[1];
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S53>/Selector1' */
+      t15_2_B.Selector1[i] = t15_2_B.SFunction1_j[i << 1];
+
+      /* Product: '<S53>/Divide6' */
+      t15_2_B.Divide6_d[i] = t15_2_B.Selector1[i] * t15_2_B.DataStoreRead_n /
+        t15_2_B.DataStoreRead1_gj;
+
+      /* Sum: '<S53>/Add2' */
+      t15_2_B.Add2_f[i] = t15_2_B.c_eob_c + t15_2_B.Divide6_d[i];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S53>/g1_term,ref'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -483,35 +548,37 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_d), &t15_2_B.DataStoreRead1_pde[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_ld[0], 499U);
-    t15_2_B.c_eob_c = t15_2_B.I1_d;
-  } else {
-    t15_2_B.c_eob_c = t15_2_B.Memory2_k5;
+    LookUp_real_T_real_T( &(t15_2_B.g1_termref),
+                         &t15_2_B.TmpSignalConversionAtg1_termref[0],
+                         t15_2_B.Times, &t15_2_B.Add2_f[0], 49U);
+    t15_2_B.c_eob_o = t15_2_B.g1_termref;
   }
 
-  /* End of Switch: '<S27>/c_eob' */
+  /* End of Switch: '<S47>/c_eob' */
 
-  /* Product: '<S27>/Divide1' */
-  t15_2_B.Divide1_o = t15_2_B.c_eob_c * t15_2_B.u_n;
+  /* Sum: '<S23>/Add2' */
+  t15_2_B.Add2_h = t15_2_B.e2[0] - t15_2_B.c_eob_o;
 
-  /* Sum: '<S20>/Add10' */
-  t15_2_B.Add10 = t15_2_B.e6_m[9] - t15_2_B.Divide1_o;
+  /* Level2 S-Function Block: '<S42>/S-Function1' (read_gaps) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[6];
+    sfcnOutputs(rts, 0);
+  }
 
-  /* Memory: '<S28>/Memory2' */
-  t15_2_B.Memory2_kw = t15_2_DWork.Memory2_PreviousInput_a;
+  /* Memory: '<S42>/Memory2' */
+  t15_2_B.Memory2_l = t15_2_DWork.Memory2_PreviousInput_f;
 
-  /* Switch: '<S28>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_e) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S28>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_nq[i] = t15_2_DWork.scr_data[13 * i + 12];
+  /* Switch: '<S42>/c_eob  1' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob1_Threshold_a) {
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S42>/Selector' */
+      t15_2_B.Selector_m2[i] = t15_2_B.SFunction1_c[(i << 1) + 1];
 
-      /* DataStoreRead: '<S28>/Data Store Read' */
-      t15_2_B.DataStoreRead_eq[i] = t15_2_DWork.scr_data[13 * i];
+      /* Selector: '<S42>/Selector1' */
+      t15_2_B.Selector1_dx[i] = t15_2_B.SFunction1_c[i << 1];
     }
 
-    /* Dynamic Look-Up Table Block: '<S28>/I1'
+    /* Dynamic Look-Up Table Block: '<S42>/g2ref'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -519,35 +586,65 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_jq), &t15_2_B.DataStoreRead1_nq[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_eq[0], 499U);
-    t15_2_B.c_eob_h = t15_2_B.I1_jq;
+    LookUp_real_T_real_T( &(t15_2_B.g2ref), &t15_2_B.Selector_m2[0],
+                         t15_2_B.Times, &t15_2_B.Selector1_dx[0], 49U);
+    t15_2_B.c_eob1_d = t15_2_B.g2ref;
   } else {
-    t15_2_B.c_eob_h = t15_2_B.Memory2_kw;
+    t15_2_B.c_eob1_d = t15_2_B.Memory2_l;
   }
 
-  /* End of Switch: '<S28>/c_eob' */
+  /* End of Switch: '<S42>/c_eob  1' */
 
-  /* Product: '<S28>/Divide1' */
-  t15_2_B.Divide1_n = t15_2_B.c_eob_h * t15_2_B.u_n;
+  /* Memory: '<S42>/Memory1' */
+  t15_2_B.Memory1_o = t15_2_DWork.Memory1_PreviousInput_mf;
 
-  /* Sum: '<S20>/Add11' */
-  t15_2_B.Add11 = t15_2_B.e6_m[10] - t15_2_B.Divide1_n;
+  /* Switch: '<S42>/c_eob  ' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_k) {
+    t15_2_B.c_eob_m = t15_2_B.Times;
+  } else {
+    t15_2_B.c_eob_m = t15_2_B.Memory1_o;
+  }
 
-  /* Memory: '<S30>/Memory2' */
-  t15_2_B.Memory2_o = t15_2_DWork.Memory2_PreviousInput_d;
+  /* End of Switch: '<S42>/c_eob  ' */
 
-  /* Switch: '<S30>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_o0) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S30>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_a[i] = t15_2_DWork.scr_data[13 * i + 4];
+  /* Level2 S-Function Block: '<S48>/S-Function1' (read_gaps_term) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[7];
+    sfcnOutputs(rts, 0);
+  }
 
-      /* DataStoreRead: '<S30>/Data Store Read' */
-      t15_2_B.DataStoreRead_lz[i] = t15_2_DWork.scr_data[13 * i];
+  /* Switch: '<S42>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_jg) {
+    t15_2_B.c_eob_oh = t15_2_B.c_eob1_d;
+  } else {
+    /* SignalConversion: '<S48>/TmpSignal ConversionAtg2_term,refInport3' */
+    t15_2_B.TmpSignalConversionAtg2_termref[0] = t15_2_B.c_eob1_d;
+    for (i = 0; i < 49; i++) {
+      /* Selector: '<S48>/Selector' */
+      t15_2_B.Selector_au[i] = t15_2_B.SFunction1_g[((1 + i) << 1) + 1];
+      t15_2_B.TmpSignalConversionAtg2_termref[i + 1] = t15_2_B.Selector_au[i];
     }
 
-    /* Dynamic Look-Up Table Block: '<S30>/I1'
+    /* End of SignalConversion: '<S48>/TmpSignal ConversionAtg2_term,refInport3' */
+
+    /* DataStoreRead: '<S48>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_eh = t15_2_DWork.trd_ref;
+
+    /* DataStoreRead: '<S48>/Data Store Read' */
+    t15_2_B.DataStoreRead_p4 = t15_2_DWork.RupRd[1];
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S48>/Selector1' */
+      t15_2_B.Selector1_a[i] = t15_2_B.SFunction1_g[i << 1];
+
+      /* Product: '<S48>/Divide6' */
+      t15_2_B.Divide6_j[i] = t15_2_B.Selector1_a[i] * t15_2_B.DataStoreRead_p4 /
+        t15_2_B.DataStoreRead1_eh;
+
+      /* Sum: '<S48>/Add2' */
+      t15_2_B.Add2_n[i] = t15_2_B.c_eob_m + t15_2_B.Divide6_j[i];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S48>/g2_term,ref'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -555,35 +652,37 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_e), &t15_2_B.DataStoreRead1_a[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_lz[0], 499U);
-    t15_2_B.c_eob_e = t15_2_B.I1_e;
-  } else {
-    t15_2_B.c_eob_e = t15_2_B.Memory2_o;
+    LookUp_real_T_real_T( &(t15_2_B.g2_termref),
+                         &t15_2_B.TmpSignalConversionAtg2_termref[0],
+                         t15_2_B.Times, &t15_2_B.Add2_n[0], 49U);
+    t15_2_B.c_eob_oh = t15_2_B.g2_termref;
   }
 
-  /* End of Switch: '<S30>/c_eob' */
+  /* End of Switch: '<S42>/c_eob' */
 
-  /* Product: '<S30>/Divide1' */
-  t15_2_B.Divide1_h = t15_2_B.c_eob_e * t15_2_B.u_n;
+  /* Sum: '<S23>/Add1' */
+  t15_2_B.Add1_c = t15_2_B.e2[1] - t15_2_B.c_eob_oh;
 
-  /* Sum: '<S20>/Add2' */
-  t15_2_B.Add2_o = t15_2_B.e6_m[2] - t15_2_B.Divide1_h;
+  /* Level2 S-Function Block: '<S43>/S-Function1' (read_gaps) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[8];
+    sfcnOutputs(rts, 0);
+  }
 
-  /* Memory: '<S26>/Memory2' */
-  t15_2_B.Memory2_b = t15_2_DWork.Memory2_PreviousInput_c;
+  /* Memory: '<S43>/Memory2' */
+  t15_2_B.Memory2_o = t15_2_DWork.Memory2_PreviousInput_h;
 
-  /* Switch: '<S26>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_e2) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S26>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_dg[i] = t15_2_DWork.scr_data[13 * i + 2];
+  /* Switch: '<S43>/c_eob  1' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob1_Threshold_e) {
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S43>/Selector' */
+      t15_2_B.Selector_ot[i] = t15_2_B.SFunction1_of[(i << 1) + 1];
 
-      /* DataStoreRead: '<S26>/Data Store Read' */
-      t15_2_B.DataStoreRead_ft[i] = t15_2_DWork.scr_data[13 * i];
+      /* Selector: '<S43>/Selector1' */
+      t15_2_B.Selector1_he[i] = t15_2_B.SFunction1_of[i << 1];
     }
 
-    /* Dynamic Look-Up Table Block: '<S26>/I1'
+    /* Dynamic Look-Up Table Block: '<S43>/g3ref'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -591,32 +690,423 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_o), &t15_2_B.DataStoreRead1_dg[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_ft[0], 499U);
-    t15_2_B.c_eob_cj = t15_2_B.I1_o;
+    LookUp_real_T_real_T( &(t15_2_B.g3ref), &t15_2_B.Selector_ot[0],
+                         t15_2_B.Times, &t15_2_B.Selector1_he[0], 49U);
+    t15_2_B.c_eob1_j = t15_2_B.g3ref;
   } else {
-    t15_2_B.c_eob_cj = t15_2_B.Memory2_b;
+    t15_2_B.c_eob1_j = t15_2_B.Memory2_o;
   }
 
-  /* End of Switch: '<S26>/c_eob' */
+  /* End of Switch: '<S43>/c_eob  1' */
 
-  /* Product: '<S26>/Divide1' */
-  t15_2_B.Divide1_nq = t15_2_B.c_eob_cj * t15_2_B.u_n;
+  /* Memory: '<S43>/Memory1' */
+  t15_2_B.Memory1_e = t15_2_DWork.Memory1_PreviousInput_n;
 
-  /* Sum: '<S20>/Add3' */
-  t15_2_B.Add3_c = t15_2_B.e6_m[0] - t15_2_B.Divide1_nq;
+  /* Switch: '<S43>/c_eob  ' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_e) {
+    t15_2_B.c_eob_n = t15_2_B.Times;
+  } else {
+    t15_2_B.c_eob_n = t15_2_B.Memory1_e;
+  }
+
+  /* End of Switch: '<S43>/c_eob  ' */
+
+  /* Level2 S-Function Block: '<S49>/S-Function1' (read_gaps_term) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[9];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Switch: '<S43>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_m) {
+    t15_2_B.c_eob_o3 = t15_2_B.c_eob1_j;
+  } else {
+    /* SignalConversion: '<S49>/TmpSignal ConversionAtg3_term,refInport3' */
+    t15_2_B.TmpSignalConversionAtg3_termref[0] = t15_2_B.c_eob1_j;
+    for (i = 0; i < 49; i++) {
+      /* Selector: '<S49>/Selector' */
+      t15_2_B.Selector_h[i] = t15_2_B.SFunction1_oy[((1 + i) << 1) + 1];
+      t15_2_B.TmpSignalConversionAtg3_termref[i + 1] = t15_2_B.Selector_h[i];
+    }
+
+    /* End of SignalConversion: '<S49>/TmpSignal ConversionAtg3_term,refInport3' */
+
+    /* DataStoreRead: '<S49>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_d5 = t15_2_DWork.trd_ref;
+
+    /* DataStoreRead: '<S49>/Data Store Read' */
+    t15_2_B.DataStoreRead_m = t15_2_DWork.RupRd[1];
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S49>/Selector1' */
+      t15_2_B.Selector1_ek[i] = t15_2_B.SFunction1_oy[i << 1];
+
+      /* Product: '<S49>/Divide6' */
+      t15_2_B.Divide6_af[i] = t15_2_B.Selector1_ek[i] * t15_2_B.DataStoreRead_m /
+        t15_2_B.DataStoreRead1_d5;
+
+      /* Sum: '<S49>/Add2' */
+      t15_2_B.Add2_kc[i] = t15_2_B.c_eob_n + t15_2_B.Divide6_af[i];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S49>/g3_term,ref'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.g3_termref),
+                         &t15_2_B.TmpSignalConversionAtg3_termref[0],
+                         t15_2_B.Times, &t15_2_B.Add2_kc[0], 49U);
+    t15_2_B.c_eob_o3 = t15_2_B.g3_termref;
+  }
+
+  /* End of Switch: '<S43>/c_eob' */
+
+  /* Sum: '<S23>/Add3' */
+  t15_2_B.Add3 = t15_2_B.e2[2] - t15_2_B.c_eob_o3;
+
+  /* Level2 S-Function Block: '<S44>/S-Function1' (read_gaps) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[10];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Memory: '<S44>/Memory2' */
+  t15_2_B.Memory2_i = t15_2_DWork.Memory2_PreviousInput_d;
+
+  /* Switch: '<S44>/c_eob  1' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob1_Threshold_n) {
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S44>/Selector' */
+      t15_2_B.Selector_ao[i] = t15_2_B.SFunction1_e[(i << 1) + 1];
+
+      /* Selector: '<S44>/Selector1' */
+      t15_2_B.Selector1_fr[i] = t15_2_B.SFunction1_e[i << 1];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S44>/g4ref'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.g4ref), &t15_2_B.Selector_ao[0],
+                         t15_2_B.Times, &t15_2_B.Selector1_fr[0], 49U);
+    t15_2_B.c_eob1_m = t15_2_B.g4ref;
+  } else {
+    t15_2_B.c_eob1_m = t15_2_B.Memory2_i;
+  }
+
+  /* End of Switch: '<S44>/c_eob  1' */
+
+  /* Memory: '<S44>/Memory1' */
+  t15_2_B.Memory1_j = t15_2_DWork.Memory1_PreviousInput_o;
+
+  /* Switch: '<S44>/c_eob  ' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_k5) {
+    t15_2_B.c_eob_g = t15_2_B.Times;
+  } else {
+    t15_2_B.c_eob_g = t15_2_B.Memory1_j;
+  }
+
+  /* End of Switch: '<S44>/c_eob  ' */
+
+  /* Level2 S-Function Block: '<S50>/S-Function1' (read_gaps_term) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[11];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Switch: '<S44>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_g) {
+    t15_2_B.c_eob_a = t15_2_B.c_eob1_m;
+  } else {
+    /* SignalConversion: '<S50>/TmpSignal ConversionAtg4_term,refInport3' */
+    t15_2_B.TmpSignalConversionAtg4_termref[0] = t15_2_B.c_eob1_m;
+    for (i = 0; i < 49; i++) {
+      /* Selector: '<S50>/Selector' */
+      t15_2_B.Selector_n[i] = t15_2_B.SFunction1_fg[((1 + i) << 1) + 1];
+      t15_2_B.TmpSignalConversionAtg4_termref[i + 1] = t15_2_B.Selector_n[i];
+    }
+
+    /* End of SignalConversion: '<S50>/TmpSignal ConversionAtg4_term,refInport3' */
+
+    /* DataStoreRead: '<S50>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_ap = t15_2_DWork.trd_ref;
+
+    /* DataStoreRead: '<S50>/Data Store Read' */
+    t15_2_B.DataStoreRead_f3 = t15_2_DWork.RupRd[1];
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S50>/Selector1' */
+      t15_2_B.Selector1_h[i] = t15_2_B.SFunction1_fg[i << 1];
+
+      /* Product: '<S50>/Divide6' */
+      t15_2_B.Divide6_h[i] = t15_2_B.Selector1_h[i] * t15_2_B.DataStoreRead_f3 /
+        t15_2_B.DataStoreRead1_ap;
+
+      /* Sum: '<S50>/Add2' */
+      t15_2_B.Add2_k[i] = t15_2_B.c_eob_g + t15_2_B.Divide6_h[i];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S50>/g4_term,ref'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.g4_termref),
+                         &t15_2_B.TmpSignalConversionAtg4_termref[0],
+                         t15_2_B.Times, &t15_2_B.Add2_k[0], 49U);
+    t15_2_B.c_eob_a = t15_2_B.g4_termref;
+  }
+
+  /* End of Switch: '<S44>/c_eob' */
+
+  /* Sum: '<S23>/Add4' */
+  t15_2_B.Add4 = t15_2_B.e2[3] - t15_2_B.c_eob_a;
+
+  /* DataStoreRead: '<S23>/Data Store Read' */
+  t15_2_B.DataStoreRead_b = t15_2_DWork.t_tran2D;
+
+  /* RelationalOperator: '<S23>/Relational Operator1' */
+  t15_2_B.RelationalOperator1 = (t15_2_B.Times > t15_2_B.DataStoreRead_b);
+
+  /* Product: '<S23>/Divide12' */
+  t15_2_B.Divide12 = t15_2_B.Add4 * t15_2_B.RelationalOperator1;
+
+  /* Level2 S-Function Block: '<S45>/S-Function1' (read_gaps) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[12];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Memory: '<S45>/Memory2' */
+  t15_2_B.Memory2_g = t15_2_DWork.Memory2_PreviousInput_o;
+
+  /* Switch: '<S45>/c_eob  1' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob1_Threshold_au) {
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S45>/Selector' */
+      t15_2_B.Selector_o[i] = t15_2_B.SFunction1_n[(i << 1) + 1];
+
+      /* Selector: '<S45>/Selector1' */
+      t15_2_B.Selector1_p[i] = t15_2_B.SFunction1_n[i << 1];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S45>/g5ref'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.g5ref), &t15_2_B.Selector_o[0],
+                         t15_2_B.Times, &t15_2_B.Selector1_p[0], 49U);
+    t15_2_B.c_eob1_h = t15_2_B.g5ref;
+  } else {
+    t15_2_B.c_eob1_h = t15_2_B.Memory2_g;
+  }
+
+  /* End of Switch: '<S45>/c_eob  1' */
+
+  /* Memory: '<S45>/Memory1' */
+  t15_2_B.Memory1_oq = t15_2_DWork.Memory1_PreviousInput_b;
+
+  /* Switch: '<S45>/c_eob  ' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_et) {
+    t15_2_B.c_eob_p = t15_2_B.Times;
+  } else {
+    t15_2_B.c_eob_p = t15_2_B.Memory1_oq;
+  }
+
+  /* End of Switch: '<S45>/c_eob  ' */
+
+  /* Level2 S-Function Block: '<S51>/S-Function1' (read_gaps_term) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[13];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Switch: '<S45>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_l) {
+    t15_2_B.c_eob_f = t15_2_B.c_eob1_h;
+  } else {
+    /* SignalConversion: '<S51>/TmpSignal ConversionAtg5_term,refInport3' */
+    t15_2_B.TmpSignalConversionAtg5_termref[0] = t15_2_B.c_eob1_h;
+    for (i = 0; i < 49; i++) {
+      /* Selector: '<S51>/Selector' */
+      t15_2_B.Selector_a[i] = t15_2_B.SFunction1_d[((1 + i) << 1) + 1];
+      t15_2_B.TmpSignalConversionAtg5_termref[i + 1] = t15_2_B.Selector_a[i];
+    }
+
+    /* End of SignalConversion: '<S51>/TmpSignal ConversionAtg5_term,refInport3' */
+
+    /* DataStoreRead: '<S51>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_k3 = t15_2_DWork.trd_ref;
+
+    /* DataStoreRead: '<S51>/Data Store Read' */
+    t15_2_B.DataStoreRead_br = t15_2_DWork.RupRd[1];
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S51>/Selector1' */
+      t15_2_B.Selector1_d[i] = t15_2_B.SFunction1_d[i << 1];
+
+      /* Product: '<S51>/Divide6' */
+      t15_2_B.Divide6_f[i] = t15_2_B.Selector1_d[i] * t15_2_B.DataStoreRead_br /
+        t15_2_B.DataStoreRead1_k3;
+
+      /* Sum: '<S51>/Add2' */
+      t15_2_B.Add2_j[i] = t15_2_B.c_eob_p + t15_2_B.Divide6_f[i];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S51>/g5_term,ref'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.g5_termref),
+                         &t15_2_B.TmpSignalConversionAtg5_termref[0],
+                         t15_2_B.Times, &t15_2_B.Add2_j[0], 49U);
+    t15_2_B.c_eob_f = t15_2_B.g5_termref;
+  }
+
+  /* End of Switch: '<S45>/c_eob' */
+
+  /* Sum: '<S23>/Add5' */
+  t15_2_B.Add5 = t15_2_B.e2[4] - t15_2_B.c_eob_f;
+
+  /* Level2 S-Function Block: '<S46>/S-Function1' (read_gaps) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[14];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Memory: '<S46>/Memory2' */
+  t15_2_B.Memory2_j = t15_2_DWork.Memory2_PreviousInput_b;
+
+  /* Switch: '<S46>/c_eob  1' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob1_Threshold_l) {
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S46>/Selector' */
+      t15_2_B.Selector_mp[i] = t15_2_B.SFunction1_h[(i << 1) + 1];
+
+      /* Selector: '<S46>/Selector1' */
+      t15_2_B.Selector1_f[i] = t15_2_B.SFunction1_h[i << 1];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S46>/g6ref'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.g6ref), &t15_2_B.Selector_mp[0],
+                         t15_2_B.Times, &t15_2_B.Selector1_f[0], 49U);
+    t15_2_B.c_eob1_g = t15_2_B.g6ref;
+  } else {
+    t15_2_B.c_eob1_g = t15_2_B.Memory2_j;
+  }
+
+  /* End of Switch: '<S46>/c_eob  1' */
+
+  /* Memory: '<S46>/Memory1' */
+  t15_2_B.Memory1_p = t15_2_DWork.Memory1_PreviousInput_d;
+
+  /* Switch: '<S46>/c_eob  ' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_lm) {
+    t15_2_B.c_eob_i = t15_2_B.Times;
+  } else {
+    t15_2_B.c_eob_i = t15_2_B.Memory1_p;
+  }
+
+  /* End of Switch: '<S46>/c_eob  ' */
+
+  /* Level2 S-Function Block: '<S52>/S-Function1' (read_gaps_term) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[15];
+    sfcnOutputs(rts, 0);
+  }
+
+  /* Switch: '<S46>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_le) {
+    t15_2_B.c_eob_e = t15_2_B.c_eob1_g;
+  } else {
+    /* SignalConversion: '<S52>/TmpSignal ConversionAtg6_term,refInport3' */
+    t15_2_B.TmpSignalConversionAtg6_termref[0] = t15_2_B.c_eob1_g;
+    for (i = 0; i < 49; i++) {
+      /* Selector: '<S52>/Selector' */
+      t15_2_B.Selector_d[i] = t15_2_B.SFunction1_a[((1 + i) << 1) + 1];
+      t15_2_B.TmpSignalConversionAtg6_termref[i + 1] = t15_2_B.Selector_d[i];
+    }
+
+    /* End of SignalConversion: '<S52>/TmpSignal ConversionAtg6_term,refInport3' */
+
+    /* DataStoreRead: '<S52>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_kz = t15_2_DWork.trd_ref;
+
+    /* DataStoreRead: '<S52>/Data Store Read' */
+    t15_2_B.DataStoreRead_iik = t15_2_DWork.RupRd[1];
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S52>/Selector1' */
+      t15_2_B.Selector1_l[i] = t15_2_B.SFunction1_a[i << 1];
+
+      /* Product: '<S52>/Divide6' */
+      t15_2_B.Divide6_au[i] = t15_2_B.Selector1_l[i] * t15_2_B.DataStoreRead_iik
+        / t15_2_B.DataStoreRead1_kz;
+
+      /* Sum: '<S52>/Add2' */
+      t15_2_B.Add2_f2[i] = t15_2_B.c_eob_i + t15_2_B.Divide6_au[i];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S52>/g6_term,ref'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.g6_termref),
+                         &t15_2_B.TmpSignalConversionAtg6_termref[0],
+                         t15_2_B.Times, &t15_2_B.Add2_f2[0], 49U);
+    t15_2_B.c_eob_e = t15_2_B.g6_termref;
+  }
+
+  /* End of Switch: '<S46>/c_eob' */
+
+  /* Sum: '<S23>/Add6' */
+  t15_2_B.Add6 = t15_2_B.e2[5] - t15_2_B.c_eob_e;
+
+  /* Gain: '<S23>/1e-2' */
+  t15_2_B.e2_h[0] = t15_2_P.e2_Gain_b * t15_2_B.Add2_h;
+  t15_2_B.e2_h[1] = t15_2_P.e2_Gain_b * t15_2_B.Add1_c;
+  t15_2_B.e2_h[2] = t15_2_P.e2_Gain_b * t15_2_B.Add3;
+  t15_2_B.e2_h[3] = t15_2_P.e2_Gain_b * t15_2_B.Divide12;
+  t15_2_B.e2_h[4] = t15_2_P.e2_Gain_b * t15_2_B.Add5;
+  t15_2_B.e2_h[5] = t15_2_P.e2_Gain_b * t15_2_B.Add6;
 
   /* Memory: '<S31>/Memory2' */
-  t15_2_B.Memory2_d = t15_2_DWork.Memory2_PreviousInput_e;
+  t15_2_B.Memory2_d = t15_2_DWork.Memory2_PreviousInput_lr;
 
   /* Switch: '<S31>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_h) {
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_f) {
     for (i = 0; i < 500; i++) {
       /* DataStoreRead: '<S31>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_h[i] = t15_2_DWork.scr_data[13 * i + 5];
+      t15_2_B.DataStoreRead1_ft[i] = t15_2_DWork.scr_data[13 * i + 2];
 
       /* DataStoreRead: '<S31>/Data Store Read' */
-      t15_2_B.DataStoreRead_i4[i] = t15_2_DWork.scr_data[13 * i];
+      t15_2_B.DataStoreRead_fx[i] = t15_2_DWork.scr_data[13 * i];
     }
 
     /* Dynamic Look-Up Table Block: '<S31>/I1'
@@ -627,104 +1117,32 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_i), &t15_2_B.DataStoreRead1_h[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_i4[0], 499U);
-    t15_2_B.c_eob_k = t15_2_B.I1_i;
+    LookUp_real_T_real_T( &(t15_2_B.I1_ot), &t15_2_B.DataStoreRead1_ft[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_fx[0], 499U);
+    t15_2_B.c_eob_fn = t15_2_B.I1_ot;
   } else {
-    t15_2_B.c_eob_k = t15_2_B.Memory2_d;
+    t15_2_B.c_eob_fn = t15_2_B.Memory2_d;
   }
 
   /* End of Switch: '<S31>/c_eob' */
 
   /* Product: '<S31>/Divide1' */
-  t15_2_B.Divide1_p = t15_2_B.c_eob_k * t15_2_B.u_n;
+  t15_2_B.Divide1 = t15_2_B.c_eob_fn * t15_2_B.u_e;
 
-  /* Sum: '<S20>/Add4' */
-  t15_2_B.Add4 = t15_2_B.e6_m[3] - t15_2_B.Divide1_p;
-
-  /* Memory: '<S32>/Memory2' */
-  t15_2_B.Memory2_p = t15_2_DWork.Memory2_PreviousInput_o;
-
-  /* Switch: '<S32>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_on) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S32>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_mj[i] = t15_2_DWork.scr_data[13 * i + 6];
-
-      /* DataStoreRead: '<S32>/Data Store Read' */
-      t15_2_B.DataStoreRead_gy[i] = t15_2_DWork.scr_data[13 * i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S32>/I1'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.I1_c), &t15_2_B.DataStoreRead1_mj[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_gy[0], 499U);
-    t15_2_B.c_eob_g = t15_2_B.I1_c;
-  } else {
-    t15_2_B.c_eob_g = t15_2_B.Memory2_p;
-  }
-
-  /* End of Switch: '<S32>/c_eob' */
-
-  /* Product: '<S32>/Divide1' */
-  t15_2_B.Divide1_l = t15_2_B.c_eob_g * t15_2_B.u_n;
-
-  /* Sum: '<S20>/Add5' */
-  t15_2_B.Add5 = t15_2_B.e6_m[4] - t15_2_B.Divide1_l;
-
-  /* Memory: '<S33>/Memory2' */
-  t15_2_B.Memory2_dq = t15_2_DWork.Memory2_PreviousInput_eq;
-
-  /* Switch: '<S33>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_j) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S33>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_kd[i] = t15_2_DWork.scr_data[13 * i + 7];
-
-      /* DataStoreRead: '<S33>/Data Store Read' */
-      t15_2_B.DataStoreRead_d[i] = t15_2_DWork.scr_data[13 * i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S33>/I1'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.I1_j), &t15_2_B.DataStoreRead1_kd[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_d[0], 499U);
-    t15_2_B.c_eob_l = t15_2_B.I1_j;
-  } else {
-    t15_2_B.c_eob_l = t15_2_B.Memory2_dq;
-  }
-
-  /* End of Switch: '<S33>/c_eob' */
-
-  /* Product: '<S33>/Divide1' */
-  t15_2_B.Divide1_e = t15_2_B.c_eob_l * t15_2_B.u_n;
-
-  /* Sum: '<S20>/Add6' */
-  t15_2_B.Add6 = t15_2_B.e6_m[5] - t15_2_B.Divide1_e;
+  /* Sum: '<S22>/Add3' */
+  t15_2_B.Add3_e = t15_2_B.e6_e[0] - t15_2_B.Divide1;
 
   /* Memory: '<S34>/Memory2' */
-  t15_2_B.Memory2_e = t15_2_DWork.Memory2_PreviousInput_bf;
+  t15_2_B.Memory2_m = t15_2_DWork.Memory2_PreviousInput_c;
 
   /* Switch: '<S34>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_n) {
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_lg) {
     for (i = 0; i < 500; i++) {
       /* DataStoreRead: '<S34>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_fi[i] = t15_2_DWork.scr_data[13 * i + 8];
+      t15_2_B.DataStoreRead1_fj[i] = t15_2_DWork.scr_data[13 * i + 3];
 
       /* DataStoreRead: '<S34>/Data Store Read' */
-      t15_2_B.DataStoreRead_jd[i] = t15_2_DWork.scr_data[13 * i];
+      t15_2_B.DataStoreRead_az[i] = t15_2_DWork.scr_data[13 * i];
     }
 
     /* Dynamic Look-Up Table Block: '<S34>/I1'
@@ -735,32 +1153,32 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_k), &t15_2_B.DataStoreRead1_fi[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_jd[0], 499U);
-    t15_2_B.c_eob_g0 = t15_2_B.I1_k;
+    LookUp_real_T_real_T( &(t15_2_B.I1_jk), &t15_2_B.DataStoreRead1_fj[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_az[0], 499U);
+    t15_2_B.c_eob_l = t15_2_B.I1_jk;
   } else {
-    t15_2_B.c_eob_g0 = t15_2_B.Memory2_e;
+    t15_2_B.c_eob_l = t15_2_B.Memory2_m;
   }
 
   /* End of Switch: '<S34>/c_eob' */
 
   /* Product: '<S34>/Divide1' */
-  t15_2_B.Divide1_f = t15_2_B.c_eob_g0 * t15_2_B.u_n;
+  t15_2_B.Divide1_b = t15_2_B.c_eob_l * t15_2_B.u_e;
 
-  /* Sum: '<S20>/Add7' */
-  t15_2_B.Add7 = t15_2_B.e6_m[6] - t15_2_B.Divide1_f;
+  /* Sum: '<S22>/Add1' */
+  t15_2_B.Add1_ce = t15_2_B.e6_e[1] - t15_2_B.Divide1_b;
 
   /* Memory: '<S35>/Memory2' */
-  t15_2_B.Memory2_j = t15_2_DWork.Memory2_PreviousInput_l;
+  t15_2_B.Memory2_c = t15_2_DWork.Memory2_PreviousInput_dq;
 
   /* Switch: '<S35>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_hg) {
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_jk) {
     for (i = 0; i < 500; i++) {
       /* DataStoreRead: '<S35>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_g[i] = t15_2_DWork.scr_data[13 * i + 9];
+      t15_2_B.DataStoreRead1_d2u[i] = t15_2_DWork.scr_data[13 * i + 4];
 
       /* DataStoreRead: '<S35>/Data Store Read' */
-      t15_2_B.DataStoreRead_ef[i] = t15_2_DWork.scr_data[13 * i];
+      t15_2_B.DataStoreRead_e1[i] = t15_2_DWork.scr_data[13 * i];
     }
 
     /* Dynamic Look-Up Table Block: '<S35>/I1'
@@ -771,32 +1189,32 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1_g), &t15_2_B.DataStoreRead1_g[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_ef[0], 499U);
-    t15_2_B.c_eob_bz = t15_2_B.I1_g;
+    LookUp_real_T_real_T( &(t15_2_B.I1_o), &t15_2_B.DataStoreRead1_d2u[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_e1[0], 499U);
+    t15_2_B.c_eob_j = t15_2_B.I1_o;
   } else {
-    t15_2_B.c_eob_bz = t15_2_B.Memory2_j;
+    t15_2_B.c_eob_j = t15_2_B.Memory2_c;
   }
 
   /* End of Switch: '<S35>/c_eob' */
 
   /* Product: '<S35>/Divide1' */
-  t15_2_B.Divide1_hq = t15_2_B.c_eob_bz * t15_2_B.u_n;
+  t15_2_B.Divide1_j = t15_2_B.c_eob_j * t15_2_B.u_e;
 
-  /* Sum: '<S20>/Add8' */
-  t15_2_B.Add8 = t15_2_B.e6_m[7] - t15_2_B.Divide1_hq;
+  /* Sum: '<S22>/Add2' */
+  t15_2_B.Add2_p = t15_2_B.e6_e[2] - t15_2_B.Divide1_j;
 
   /* Memory: '<S36>/Memory2' */
   t15_2_B.Memory2_a = t15_2_DWork.Memory2_PreviousInput_j;
 
   /* Switch: '<S36>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_m) {
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_jy) {
     for (i = 0; i < 500; i++) {
       /* DataStoreRead: '<S36>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_cq[i] = t15_2_DWork.scr_data[13 * i + 10];
+      t15_2_B.DataStoreRead1_ax[i] = t15_2_DWork.scr_data[13 * i + 5];
 
       /* DataStoreRead: '<S36>/Data Store Read' */
-      t15_2_B.DataStoreRead_cq[i] = t15_2_DWork.scr_data[13 * i];
+      t15_2_B.DataStoreRead_de[i] = t15_2_DWork.scr_data[13 * i];
     }
 
     /* Dynamic Look-Up Table Block: '<S36>/I1'
@@ -807,251 +1225,35 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.I1), &t15_2_B.DataStoreRead1_cq[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_cq[0], 499U);
-    t15_2_B.c_eob_j = t15_2_B.I1;
+    LookUp_real_T_real_T( &(t15_2_B.I1_h), &t15_2_B.DataStoreRead1_ax[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_de[0], 499U);
+    t15_2_B.c_eob_gf = t15_2_B.I1_h;
   } else {
-    t15_2_B.c_eob_j = t15_2_B.Memory2_a;
+    t15_2_B.c_eob_gf = t15_2_B.Memory2_a;
   }
 
   /* End of Switch: '<S36>/c_eob' */
 
   /* Product: '<S36>/Divide1' */
-  t15_2_B.Divide1_d = t15_2_B.c_eob_j * t15_2_B.u_n;
+  t15_2_B.Divide1_m = t15_2_B.c_eob_gf * t15_2_B.u_e;
 
-  /* Sum: '<S20>/Add9' */
-  t15_2_B.Add9 = t15_2_B.e6_m[8] - t15_2_B.Divide1_d;
-
-  /* Sum: '<S16>/Sum2' incorporates:
-   *  Inport: '<Root>/In1'
-   */
-  t15_2_B.Sum2_b = t15_2_U.In1[5] - t15_2_U.In1[7];
-
-  /* Switch: '<S16>/>=0' incorporates:
-   *  Inport: '<Root>/In1'
-   */
-  if (t15_2_B.Sum2_b >= t15_2_P.u_Threshold) {
-    t15_2_B.u_p = t15_2_U.In1[7];
-  } else {
-    t15_2_B.u_p = t15_2_U.In1[5];
-  }
-
-  /* End of Switch: '<S16>/>=0' */
-
-  /* Gain: '<S21>/1e2' incorporates:
-   *  Inport: '<Root>/In1'
-   *  Inport: '<Root>/In2'
-   */
-  t15_2_B.e2[0] = t15_2_P.e2_Gain * t15_2_U.In2[0];
-  t15_2_B.e2[1] = t15_2_P.e2_Gain * t15_2_U.In2[1];
-  t15_2_B.e2[2] = t15_2_P.e2_Gain * t15_2_U.In1[6];
-  t15_2_B.e2[3] = t15_2_P.e2_Gain * t15_2_U.In2[3];
-  t15_2_B.e2[4] = t15_2_P.e2_Gain * t15_2_U.In2[4];
-  t15_2_B.e2[5] = t15_2_P.e2_Gain * t15_2_B.u_p;
-
-  /* Level2 S-Function Block: '<S42>/S-Function1' (read_gaps) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[3];
-    sfcnOutputs(rts, 0);
-  }
-
-  /* Memory: '<S42>/Memory2' */
-  t15_2_B.Memory2_da = t15_2_DWork.Memory2_PreviousInput_o4;
-
-  /* Switch: '<S42>/c_eob  1' */
-  if (t15_2_B.u_n > t15_2_P.c_eob1_Threshold) {
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S42>/Selector' */
-      t15_2_B.Selector_j[i] = t15_2_B.SFunction1_o[(i << 1) + 1];
-
-      /* Selector: '<S42>/Selector1' */
-      t15_2_B.Selector1_n[i] = t15_2_B.SFunction1_o[i << 1];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S42>/g1ref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.g1ref), &t15_2_B.Selector_j[0], t15_2_B.e3,
-                         &t15_2_B.Selector1_n[0], 49U);
-    t15_2_B.c_eob1 = t15_2_B.g1ref;
-  } else {
-    t15_2_B.c_eob1 = t15_2_B.Memory2_da;
-  }
-
-  /* End of Switch: '<S42>/c_eob  1' */
-
-  /* Memory: '<S42>/Memory1' */
-  t15_2_B.Memory1_i = t15_2_DWork.Memory1_PreviousInput_g;
-
-  /* Switch: '<S42>/c_eob  ' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_k) {
-    t15_2_B.c_eob_ej = t15_2_B.e3;
-  } else {
-    t15_2_B.c_eob_ej = t15_2_B.Memory1_i;
-  }
-
-  /* End of Switch: '<S42>/c_eob  ' */
-
-  /* Level2 S-Function Block: '<S48>/S-Function1' (read_gaps_term) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[4];
-    sfcnOutputs(rts, 0);
-  }
-
-  /* Switch: '<S42>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_hx) {
-    t15_2_B.c_eob_jd = t15_2_B.c_eob1;
-  } else {
-    /* SignalConversion: '<S48>/TmpSignal ConversionAtg1_term,refInport3' */
-    t15_2_B.TmpSignalConversionAtg1_termref[0] = t15_2_B.c_eob1;
-    for (i = 0; i < 49; i++) {
-      /* Selector: '<S48>/Selector' */
-      t15_2_B.Selector_k[i] = t15_2_B.SFunction1_p[((1 + i) << 1) + 1];
-      t15_2_B.TmpSignalConversionAtg1_termref[i + 1] = t15_2_B.Selector_k[i];
-    }
-
-    /* End of SignalConversion: '<S48>/TmpSignal ConversionAtg1_term,refInport3' */
-
-    /* DataStoreRead: '<S48>/Data Store Read' */
-    t15_2_B.DataStoreRead_bi = t15_2_DWork.RupRd[1];
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S48>/Selector1' */
-      t15_2_B.Selector1_p[i] = t15_2_B.SFunction1_p[i << 1];
-
-      /* Product: '<S48>/Divide6' incorporates:
-       *  Constant: '<S48>/Constant'
-       */
-      t15_2_B.Divide6_f0[i] = t15_2_B.Selector1_p[i] * t15_2_B.DataStoreRead_bi /
-        t15_2_P.Constant_Value_ow;
-
-      /* Sum: '<S48>/Add2' */
-      t15_2_B.Add2_i[i] = t15_2_B.c_eob_ej + t15_2_B.Divide6_f0[i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S48>/g1_term,ref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.g1_termref),
-                         &t15_2_B.TmpSignalConversionAtg1_termref[0], t15_2_B.e3,
-                         &t15_2_B.Add2_i[0], 49U);
-    t15_2_B.c_eob_jd = t15_2_B.g1_termref;
-  }
-
-  /* End of Switch: '<S42>/c_eob' */
-
-  /* Sum: '<S21>/Add2' */
-  t15_2_B.Add2_b = t15_2_B.e2[0] - t15_2_B.c_eob_jd;
-
-  /* Lookup: '<S21>/Lookup Table1'
-   * About '<S21>/Lookup Table1':
-   * Input0  Data Type:  Floating Point real_T
-   * Output0 Data Type:  Floating Point real_T
-   * Lookup Method: Linear_Endpoint
-   *
-   * XData parameter uses the same data type and scaling as Input0
-   * YData parameter uses the same data type and scaling as Output0
-   */
-  LookUp_real_T_real_T( &(t15_2_B.LookupTable1), t15_2_P.LookupTable1_YData,
-                       t15_2_B.e3, t15_2_P.LookupTable1_XData, 3U);
-
-  /* Product: '<S21>/Divide6' */
-  t15_2_B.Divide6_d = t15_2_B.Add2_b * t15_2_B.LookupTable1;
-
-  /* Level2 S-Function Block: '<S37>/S-Function1' (read_gaps) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[5];
-    sfcnOutputs(rts, 0);
-  }
+  /* Sum: '<S22>/Add4' */
+  t15_2_B.Add4_k = t15_2_B.e6_e[3] - t15_2_B.Divide1_m;
 
   /* Memory: '<S37>/Memory2' */
-  t15_2_B.Memory2_i = t15_2_DWork.Memory2_PreviousInput_mw;
-
-  /* Switch: '<S37>/c_eob  1' */
-  if (t15_2_B.u_n > t15_2_P.c_eob1_Threshold_o) {
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S37>/Selector' */
-      t15_2_B.Selector_lh[i] = t15_2_B.SFunction1_f[(i << 1) + 1];
-
-      /* Selector: '<S37>/Selector1' */
-      t15_2_B.Selector1_ad[i] = t15_2_B.SFunction1_f[i << 1];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S37>/g2ref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.g2ref), &t15_2_B.Selector_lh[0], t15_2_B.e3,
-                         &t15_2_B.Selector1_ad[0], 49U);
-    t15_2_B.c_eob1_b = t15_2_B.g2ref;
-  } else {
-    t15_2_B.c_eob1_b = t15_2_B.Memory2_i;
-  }
-
-  /* End of Switch: '<S37>/c_eob  1' */
-
-  /* Memory: '<S37>/Memory1' */
-  t15_2_B.Memory1_g = t15_2_DWork.Memory1_PreviousInput_d;
-
-  /* Switch: '<S37>/c_eob  ' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_j0) {
-    t15_2_B.c_eob_n = t15_2_B.e3;
-  } else {
-    t15_2_B.c_eob_n = t15_2_B.Memory1_g;
-  }
-
-  /* End of Switch: '<S37>/c_eob  ' */
-
-  /* Level2 S-Function Block: '<S43>/S-Function1' (read_gaps_term) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[6];
-    sfcnOutputs(rts, 0);
-  }
+  t15_2_B.Memory2_gs = t15_2_DWork.Memory2_PreviousInput_d0;
 
   /* Switch: '<S37>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_l) {
-    t15_2_B.c_eob_kt = t15_2_B.c_eob1_b;
-  } else {
-    /* SignalConversion: '<S43>/TmpSignal ConversionAtg2_term,refInport3' */
-    t15_2_B.TmpSignalConversionAtg2_termref[0] = t15_2_B.c_eob1_b;
-    for (i = 0; i < 49; i++) {
-      /* Selector: '<S43>/Selector' */
-      t15_2_B.Selector_k4[i] = t15_2_B.SFunction1_f2[((1 + i) << 1) + 1];
-      t15_2_B.TmpSignalConversionAtg2_termref[i + 1] = t15_2_B.Selector_k4[i];
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_n) {
+    for (i = 0; i < 500; i++) {
+      /* DataStoreRead: '<S37>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_d2[i] = t15_2_DWork.scr_data[13 * i + 6];
+
+      /* DataStoreRead: '<S37>/Data Store Read' */
+      t15_2_B.DataStoreRead_o0[i] = t15_2_DWork.scr_data[13 * i];
     }
 
-    /* End of SignalConversion: '<S43>/TmpSignal ConversionAtg2_term,refInport3' */
-
-    /* DataStoreRead: '<S43>/Data Store Read' */
-    t15_2_B.DataStoreRead_m = t15_2_DWork.RupRd[1];
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S43>/Selector1' */
-      t15_2_B.Selector1_d[i] = t15_2_B.SFunction1_f2[i << 1];
-
-      /* Product: '<S43>/Divide6' incorporates:
-       *  Constant: '<S43>/Constant'
-       */
-      t15_2_B.Divide6_n[i] = t15_2_B.Selector1_d[i] * t15_2_B.DataStoreRead_m /
-        t15_2_P.Constant_Value;
-
-      /* Sum: '<S43>/Add2' */
-      t15_2_B.Add2_p[i] = t15_2_B.c_eob_n + t15_2_B.Divide6_n[i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S43>/g2_term,ref'
+    /* Dynamic Look-Up Table Block: '<S37>/I1'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -1059,117 +1261,35 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.g2_termref),
-                         &t15_2_B.TmpSignalConversionAtg2_termref[0], t15_2_B.e3,
-                         &t15_2_B.Add2_p[0], 49U);
-    t15_2_B.c_eob_kt = t15_2_B.g2_termref;
+    LookUp_real_T_real_T( &(t15_2_B.I1_ju), &t15_2_B.DataStoreRead1_d2[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_o0[0], 499U);
+    t15_2_B.c_eob_k = t15_2_B.I1_ju;
+  } else {
+    t15_2_B.c_eob_k = t15_2_B.Memory2_gs;
   }
 
   /* End of Switch: '<S37>/c_eob' */
 
-  /* Sum: '<S21>/Add1' */
-  t15_2_B.Add1_ia = t15_2_B.e2[1] - t15_2_B.c_eob_kt;
+  /* Product: '<S37>/Divide1' */
+  t15_2_B.Divide1_k = t15_2_B.c_eob_k * t15_2_B.u_e;
 
-  /* Lookup: '<S21>/Lookup Table2'
-   * About '<S21>/Lookup Table2':
-   * Input0  Data Type:  Floating Point real_T
-   * Output0 Data Type:  Floating Point real_T
-   * Lookup Method: Linear_Endpoint
-   *
-   * XData parameter uses the same data type and scaling as Input0
-   * YData parameter uses the same data type and scaling as Output0
-   */
-  LookUp_real_T_real_T( &(t15_2_B.LookupTable2), t15_2_P.LookupTable2_YData,
-                       t15_2_B.e3, t15_2_P.LookupTable2_XData, 3U);
-
-  /* Product: '<S21>/Divide1' */
-  t15_2_B.Divide1_a = t15_2_B.Add1_ia * t15_2_B.LookupTable2;
-
-  /* Level2 S-Function Block: '<S38>/S-Function1' (read_gaps) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[7];
-    sfcnOutputs(rts, 0);
-  }
+  /* Sum: '<S22>/Add5' */
+  t15_2_B.Add5_f = t15_2_B.e6_e[4] - t15_2_B.Divide1_k;
 
   /* Memory: '<S38>/Memory2' */
-  t15_2_B.Memory2_n = t15_2_DWork.Memory2_PreviousInput_h;
-
-  /* Switch: '<S38>/c_eob  1' */
-  if (t15_2_B.u_n > t15_2_P.c_eob1_Threshold_l) {
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S38>/Selector' */
-      t15_2_B.Selector_g[i] = t15_2_B.SFunction1_e[(i << 1) + 1];
-
-      /* Selector: '<S38>/Selector1' */
-      t15_2_B.Selector1_nf[i] = t15_2_B.SFunction1_e[i << 1];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S38>/g3ref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.g3ref), &t15_2_B.Selector_g[0], t15_2_B.e3,
-                         &t15_2_B.Selector1_nf[0], 49U);
-    t15_2_B.c_eob1_i = t15_2_B.g3ref;
-  } else {
-    t15_2_B.c_eob1_i = t15_2_B.Memory2_n;
-  }
-
-  /* End of Switch: '<S38>/c_eob  1' */
-
-  /* Memory: '<S38>/Memory1' */
-  t15_2_B.Memory1_jo = t15_2_DWork.Memory1_PreviousInput_p;
-
-  /* Switch: '<S38>/c_eob  ' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_jk) {
-    t15_2_B.c_eob_lg = t15_2_B.e3;
-  } else {
-    t15_2_B.c_eob_lg = t15_2_B.Memory1_jo;
-  }
-
-  /* End of Switch: '<S38>/c_eob  ' */
-
-  /* Level2 S-Function Block: '<S44>/S-Function1' (read_gaps_term) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[8];
-    sfcnOutputs(rts, 0);
-  }
+  t15_2_B.Memory2_p = t15_2_DWork.Memory2_PreviousInput_f3;
 
   /* Switch: '<S38>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_g2) {
-    t15_2_B.c_eob_lu = t15_2_B.c_eob1_i;
-  } else {
-    /* SignalConversion: '<S44>/TmpSignal ConversionAtg3_term,refInport3' */
-    t15_2_B.TmpSignalConversionAtg3_termref[0] = t15_2_B.c_eob1_i;
-    for (i = 0; i < 49; i++) {
-      /* Selector: '<S44>/Selector' */
-      t15_2_B.Selector_e[i] = t15_2_B.SFunction1_h[((1 + i) << 1) + 1];
-      t15_2_B.TmpSignalConversionAtg3_termref[i + 1] = t15_2_B.Selector_e[i];
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_i) {
+    for (i = 0; i < 500; i++) {
+      /* DataStoreRead: '<S38>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_fl[i] = t15_2_DWork.scr_data[13 * i + 7];
+
+      /* DataStoreRead: '<S38>/Data Store Read' */
+      t15_2_B.DataStoreRead_h5[i] = t15_2_DWork.scr_data[13 * i];
     }
 
-    /* End of SignalConversion: '<S44>/TmpSignal ConversionAtg3_term,refInport3' */
-
-    /* DataStoreRead: '<S44>/Data Store Read' */
-    t15_2_B.DataStoreRead_n2 = t15_2_DWork.RupRd[1];
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S44>/Selector1' */
-      t15_2_B.Selector1_c[i] = t15_2_B.SFunction1_h[i << 1];
-
-      /* Product: '<S44>/Divide6' incorporates:
-       *  Constant: '<S44>/Constant'
-       */
-      t15_2_B.Divide6_p[i] = t15_2_B.Selector1_c[i] * t15_2_B.DataStoreRead_n2 /
-        t15_2_P.Constant_Value_j;
-
-      /* Sum: '<S44>/Add2' */
-      t15_2_B.Add2_oa[i] = t15_2_B.c_eob_lg + t15_2_B.Divide6_p[i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S44>/g3_term,ref'
+    /* Dynamic Look-Up Table Block: '<S38>/I1'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -1177,102 +1297,35 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.g3_termref),
-                         &t15_2_B.TmpSignalConversionAtg3_termref[0], t15_2_B.e3,
-                         &t15_2_B.Add2_oa[0], 49U);
-    t15_2_B.c_eob_lu = t15_2_B.g3_termref;
+    LookUp_real_T_real_T( &(t15_2_B.I1_j), &t15_2_B.DataStoreRead1_fl[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_h5[0], 499U);
+    t15_2_B.c_eob_ib = t15_2_B.I1_j;
+  } else {
+    t15_2_B.c_eob_ib = t15_2_B.Memory2_p;
   }
 
   /* End of Switch: '<S38>/c_eob' */
 
-  /* Sum: '<S21>/Add3' */
-  t15_2_B.Add3_a = t15_2_B.e2[2] - t15_2_B.c_eob_lu;
+  /* Product: '<S38>/Divide1' */
+  t15_2_B.Divide1_br = t15_2_B.c_eob_ib * t15_2_B.u_e;
 
-  /* Level2 S-Function Block: '<S39>/S-Function1' (read_gaps) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[9];
-    sfcnOutputs(rts, 0);
-  }
+  /* Sum: '<S22>/Add6' */
+  t15_2_B.Add6_p = t15_2_B.e6_e[5] - t15_2_B.Divide1_br;
 
   /* Memory: '<S39>/Memory2' */
-  t15_2_B.Memory2_l = t15_2_DWork.Memory2_PreviousInput_g;
-
-  /* Switch: '<S39>/c_eob  1' */
-  if (t15_2_B.u_n > t15_2_P.c_eob1_Threshold_lw) {
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S39>/Selector' */
-      t15_2_B.Selector_d[i] = t15_2_B.SFunction1_fd[(i << 1) + 1];
-
-      /* Selector: '<S39>/Selector1' */
-      t15_2_B.Selector1_ou[i] = t15_2_B.SFunction1_fd[i << 1];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S39>/g4ref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.g4ref), &t15_2_B.Selector_d[0], t15_2_B.e3,
-                         &t15_2_B.Selector1_ou[0], 49U);
-    t15_2_B.c_eob1_d = t15_2_B.g4ref;
-  } else {
-    t15_2_B.c_eob1_d = t15_2_B.Memory2_l;
-  }
-
-  /* End of Switch: '<S39>/c_eob  1' */
-
-  /* Memory: '<S39>/Memory1' */
-  t15_2_B.Memory1_e = t15_2_DWork.Memory1_PreviousInput_h;
-
-  /* Switch: '<S39>/c_eob  ' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_b) {
-    t15_2_B.c_eob_c2 = t15_2_B.e3;
-  } else {
-    t15_2_B.c_eob_c2 = t15_2_B.Memory1_e;
-  }
-
-  /* End of Switch: '<S39>/c_eob  ' */
-
-  /* Level2 S-Function Block: '<S45>/S-Function1' (read_gaps_term) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[10];
-    sfcnOutputs(rts, 0);
-  }
+  t15_2_B.Memory2_dz = t15_2_DWork.Memory2_PreviousInput_p;
 
   /* Switch: '<S39>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_d) {
-    t15_2_B.c_eob_p = t15_2_B.c_eob1_d;
-  } else {
-    /* SignalConversion: '<S45>/TmpSignal ConversionAtg4_term,refInport3' */
-    t15_2_B.TmpSignalConversionAtg4_termref[0] = t15_2_B.c_eob1_d;
-    for (i = 0; i < 49; i++) {
-      /* Selector: '<S45>/Selector' */
-      t15_2_B.Selector_ns[i] = t15_2_B.SFunction1_o5[((1 + i) << 1) + 1];
-      t15_2_B.TmpSignalConversionAtg4_termref[i + 1] = t15_2_B.Selector_ns[i];
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_dk) {
+    for (i = 0; i < 500; i++) {
+      /* DataStoreRead: '<S39>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_l5[i] = t15_2_DWork.scr_data[13 * i + 8];
+
+      /* DataStoreRead: '<S39>/Data Store Read' */
+      t15_2_B.DataStoreRead_cu[i] = t15_2_DWork.scr_data[13 * i];
     }
 
-    /* End of SignalConversion: '<S45>/TmpSignal ConversionAtg4_term,refInport3' */
-
-    /* DataStoreRead: '<S45>/Data Store Read' */
-    t15_2_B.DataStoreRead_cj = t15_2_DWork.RupRd[1];
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S45>/Selector1' */
-      t15_2_B.Selector1_pz[i] = t15_2_B.SFunction1_o5[i << 1];
-
-      /* Product: '<S45>/Divide6' incorporates:
-       *  Constant: '<S45>/Constant'
-       */
-      t15_2_B.Divide6_h[i] = t15_2_B.Selector1_pz[i] * t15_2_B.DataStoreRead_cj /
-        t15_2_P.Constant_Value_i;
-
-      /* Sum: '<S45>/Add2' */
-      t15_2_B.Add2_bw[i] = t15_2_B.c_eob_c2 + t15_2_B.Divide6_h[i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S45>/g4_term,ref'
+    /* Dynamic Look-Up Table Block: '<S39>/I1'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -1280,117 +1333,35 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.g4_termref),
-                         &t15_2_B.TmpSignalConversionAtg4_termref[0], t15_2_B.e3,
-                         &t15_2_B.Add2_bw[0], 49U);
-    t15_2_B.c_eob_p = t15_2_B.g4_termref;
+    LookUp_real_T_real_T( &(t15_2_B.I1_e), &t15_2_B.DataStoreRead1_l5[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_cu[0], 499U);
+    t15_2_B.c_eob_l4 = t15_2_B.I1_e;
+  } else {
+    t15_2_B.c_eob_l4 = t15_2_B.Memory2_dz;
   }
 
   /* End of Switch: '<S39>/c_eob' */
 
-  /* Sum: '<S21>/Add4' */
-  t15_2_B.Add4_i = t15_2_B.e2[3] - t15_2_B.c_eob_p;
+  /* Product: '<S39>/Divide1' */
+  t15_2_B.Divide1_o = t15_2_B.c_eob_l4 * t15_2_B.u_e;
 
-  /* Lookup: '<S21>/Lookup Table3'
-   * About '<S21>/Lookup Table3':
-   * Input0  Data Type:  Floating Point real_T
-   * Output0 Data Type:  Floating Point real_T
-   * Lookup Method: Linear_Endpoint
-   *
-   * XData parameter uses the same data type and scaling as Input0
-   * YData parameter uses the same data type and scaling as Output0
-   */
-  LookUp_real_T_real_T( &(t15_2_B.LookupTable3), t15_2_P.LookupTable3_YData,
-                       t15_2_B.e3, t15_2_P.LookupTable3_XData, 3U);
-
-  /* Product: '<S21>/Divide2' */
-  t15_2_B.Divide2 = t15_2_B.Add4_i * t15_2_B.LookupTable3;
-
-  /* Level2 S-Function Block: '<S40>/S-Function1' (read_gaps) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[11];
-    sfcnOutputs(rts, 0);
-  }
+  /* Sum: '<S22>/Add7' */
+  t15_2_B.Add7 = t15_2_B.e6_e[6] - t15_2_B.Divide1_o;
 
   /* Memory: '<S40>/Memory2' */
-  t15_2_B.Memory2_m = t15_2_DWork.Memory2_PreviousInput_oh;
-
-  /* Switch: '<S40>/c_eob  1' */
-  if (t15_2_B.u_n > t15_2_P.c_eob1_Threshold_h) {
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S40>/Selector' */
-      t15_2_B.Selector_f[i] = t15_2_B.SFunction1_n[(i << 1) + 1];
-
-      /* Selector: '<S40>/Selector1' */
-      t15_2_B.Selector1_a[i] = t15_2_B.SFunction1_n[i << 1];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S40>/g5ref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.g5ref), &t15_2_B.Selector_f[0], t15_2_B.e3,
-                         &t15_2_B.Selector1_a[0], 49U);
-    t15_2_B.c_eob1_c = t15_2_B.g5ref;
-  } else {
-    t15_2_B.c_eob1_c = t15_2_B.Memory2_m;
-  }
-
-  /* End of Switch: '<S40>/c_eob  1' */
-
-  /* Memory: '<S40>/Memory1' */
-  t15_2_B.Memory1_b = t15_2_DWork.Memory1_PreviousInput_gk;
-
-  /* Switch: '<S40>/c_eob  ' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_nn) {
-    t15_2_B.c_eob_nk = t15_2_B.e3;
-  } else {
-    t15_2_B.c_eob_nk = t15_2_B.Memory1_b;
-  }
-
-  /* End of Switch: '<S40>/c_eob  ' */
-
-  /* Level2 S-Function Block: '<S46>/S-Function1' (read_gaps_term) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[12];
-    sfcnOutputs(rts, 0);
-  }
+  t15_2_B.Memory2_e = t15_2_DWork.Memory2_PreviousInput_i;
 
   /* Switch: '<S40>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_a) {
-    t15_2_B.c_eob_cy = t15_2_B.c_eob1_c;
-  } else {
-    /* SignalConversion: '<S46>/TmpSignal ConversionAtg5_term,refInport3' */
-    t15_2_B.TmpSignalConversionAtg5_termref[0] = t15_2_B.c_eob1_c;
-    for (i = 0; i < 49; i++) {
-      /* Selector: '<S46>/Selector' */
-      t15_2_B.Selector_l[i] = t15_2_B.SFunction1_a[((1 + i) << 1) + 1];
-      t15_2_B.TmpSignalConversionAtg5_termref[i + 1] = t15_2_B.Selector_l[i];
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_kh) {
+    for (i = 0; i < 500; i++) {
+      /* DataStoreRead: '<S40>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_bf[i] = t15_2_DWork.scr_data[13 * i + 9];
+
+      /* DataStoreRead: '<S40>/Data Store Read' */
+      t15_2_B.DataStoreRead_py[i] = t15_2_DWork.scr_data[13 * i];
     }
 
-    /* End of SignalConversion: '<S46>/TmpSignal ConversionAtg5_term,refInport3' */
-
-    /* DataStoreRead: '<S46>/Data Store Read' */
-    t15_2_B.DataStoreRead_c = t15_2_DWork.RupRd[1];
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S46>/Selector1' */
-      t15_2_B.Selector1_o[i] = t15_2_B.SFunction1_a[i << 1];
-
-      /* Product: '<S46>/Divide6' incorporates:
-       *  Constant: '<S46>/Constant'
-       */
-      t15_2_B.Divide6_i[i] = t15_2_B.Selector1_o[i] * t15_2_B.DataStoreRead_c /
-        t15_2_P.Constant_Value_o;
-
-      /* Sum: '<S46>/Add2' */
-      t15_2_B.Add2_bd[i] = t15_2_B.c_eob_nk + t15_2_B.Divide6_i[i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S46>/g5_term,ref'
+    /* Dynamic Look-Up Table Block: '<S40>/I1'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -1398,102 +1369,35 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.g5_termref),
-                         &t15_2_B.TmpSignalConversionAtg5_termref[0], t15_2_B.e3,
-                         &t15_2_B.Add2_bd[0], 49U);
-    t15_2_B.c_eob_cy = t15_2_B.g5_termref;
+    LookUp_real_T_real_T( &(t15_2_B.I1_b), &t15_2_B.DataStoreRead1_bf[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_py[0], 499U);
+    t15_2_B.c_eob_h = t15_2_B.I1_b;
+  } else {
+    t15_2_B.c_eob_h = t15_2_B.Memory2_e;
   }
 
   /* End of Switch: '<S40>/c_eob' */
 
-  /* Sum: '<S21>/Add5' */
-  t15_2_B.Add5_n = t15_2_B.e2[4] - t15_2_B.c_eob_cy;
+  /* Product: '<S40>/Divide1' */
+  t15_2_B.Divide1_a = t15_2_B.c_eob_h * t15_2_B.u_e;
 
-  /* Level2 S-Function Block: '<S41>/S-Function1' (read_gaps) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[13];
-    sfcnOutputs(rts, 0);
-  }
+  /* Sum: '<S22>/Add8' */
+  t15_2_B.Add8 = t15_2_B.e6_e[7] - t15_2_B.Divide1_a;
 
   /* Memory: '<S41>/Memory2' */
-  t15_2_B.Memory2_j1 = t15_2_DWork.Memory2_PreviousInput_ef;
-
-  /* Switch: '<S41>/c_eob  1' */
-  if (t15_2_B.u_n > t15_2_P.c_eob1_Threshold_m) {
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S41>/Selector' */
-      t15_2_B.Selector_j2[i] = t15_2_B.SFunction1_p1[(i << 1) + 1];
-
-      /* Selector: '<S41>/Selector1' */
-      t15_2_B.Selector1_f[i] = t15_2_B.SFunction1_p1[i << 1];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S41>/g6ref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.g6ref), &t15_2_B.Selector_j2[0], t15_2_B.e3,
-                         &t15_2_B.Selector1_f[0], 49U);
-    t15_2_B.c_eob1_g = t15_2_B.g6ref;
-  } else {
-    t15_2_B.c_eob1_g = t15_2_B.Memory2_j1;
-  }
-
-  /* End of Switch: '<S41>/c_eob  1' */
-
-  /* Memory: '<S41>/Memory1' */
-  t15_2_B.Memory1_g3 = t15_2_DWork.Memory1_PreviousInput_j;
-
-  /* Switch: '<S41>/c_eob  ' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_mb) {
-    t15_2_B.c_eob_be = t15_2_B.e3;
-  } else {
-    t15_2_B.c_eob_be = t15_2_B.Memory1_g3;
-  }
-
-  /* End of Switch: '<S41>/c_eob  ' */
-
-  /* Level2 S-Function Block: '<S47>/S-Function1' (read_gaps_term) */
-  {
-    SimStruct *rts = t15_2_M->childSfunctions[14];
-    sfcnOutputs(rts, 0);
-  }
+  t15_2_B.Memory2_ii = t15_2_DWork.Memory2_PreviousInput_ic;
 
   /* Switch: '<S41>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_ge) {
-    t15_2_B.c_eob_c3 = t15_2_B.c_eob1_g;
-  } else {
-    /* SignalConversion: '<S47>/TmpSignal ConversionAtg6_term,refInport3' */
-    t15_2_B.TmpSignalConversionAtg6_termref[0] = t15_2_B.c_eob1_g;
-    for (i = 0; i < 49; i++) {
-      /* Selector: '<S47>/Selector' */
-      t15_2_B.Selector_n[i] = t15_2_B.SFunction1_c[((1 + i) << 1) + 1];
-      t15_2_B.TmpSignalConversionAtg6_termref[i + 1] = t15_2_B.Selector_n[i];
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_f5) {
+    for (i = 0; i < 500; i++) {
+      /* DataStoreRead: '<S41>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_nh[i] = t15_2_DWork.scr_data[13 * i + 10];
+
+      /* DataStoreRead: '<S41>/Data Store Read' */
+      t15_2_B.DataStoreRead_nt[i] = t15_2_DWork.scr_data[13 * i];
     }
 
-    /* End of SignalConversion: '<S47>/TmpSignal ConversionAtg6_term,refInport3' */
-
-    /* DataStoreRead: '<S47>/Data Store Read' */
-    t15_2_B.DataStoreRead_ag = t15_2_DWork.RupRd[1];
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S47>/Selector1' */
-      t15_2_B.Selector1_no[i] = t15_2_B.SFunction1_c[i << 1];
-
-      /* Product: '<S47>/Divide6' incorporates:
-       *  Constant: '<S47>/Constant'
-       */
-      t15_2_B.Divide6_fz[i] = t15_2_B.Selector1_no[i] * t15_2_B.DataStoreRead_ag
-        / t15_2_P.Constant_Value_n;
-
-      /* Sum: '<S47>/Add2' */
-      t15_2_B.Add2_no[i] = t15_2_B.c_eob_be + t15_2_B.Divide6_fz[i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S47>/g6_term,ref'
+    /* Dynamic Look-Up Table Block: '<S41>/I1'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -1501,72 +1405,35 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.g6_termref),
-                         &t15_2_B.TmpSignalConversionAtg6_termref[0], t15_2_B.e3,
-                         &t15_2_B.Add2_no[0], 49U);
-    t15_2_B.c_eob_c3 = t15_2_B.g6_termref;
+    LookUp_real_T_real_T( &(t15_2_B.I1), &t15_2_B.DataStoreRead1_nh[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_nt[0], 499U);
+    t15_2_B.c_eob_cs = t15_2_B.I1;
+  } else {
+    t15_2_B.c_eob_cs = t15_2_B.Memory2_ii;
   }
 
   /* End of Switch: '<S41>/c_eob' */
 
-  /* Sum: '<S21>/Add6' */
-  t15_2_B.Add6_b = t15_2_B.e2[5] - t15_2_B.c_eob_c3;
+  /* Product: '<S41>/Divide1' */
+  t15_2_B.Divide1_h = t15_2_B.c_eob_cs * t15_2_B.u_e;
 
-  /* Gain: '<S21>/1e-2' */
-  t15_2_B.e2_n[0] = t15_2_P.e2_Gain_j * t15_2_B.Divide6_d;
-  t15_2_B.e2_n[1] = t15_2_P.e2_Gain_j * t15_2_B.Divide1_a;
-  t15_2_B.e2_n[2] = t15_2_P.e2_Gain_j * t15_2_B.Add3_a;
-  t15_2_B.e2_n[3] = t15_2_P.e2_Gain_j * t15_2_B.Divide2;
-  t15_2_B.e2_n[4] = t15_2_P.e2_Gain_j * t15_2_B.Add5_n;
-  t15_2_B.e2_n[5] = t15_2_P.e2_Gain_j * t15_2_B.Add6_b;
+  /* Sum: '<S22>/Add9' */
+  t15_2_B.Add9 = t15_2_B.e6_e[8] - t15_2_B.Divide1_h;
 
-  /* RelationalOperator: '<S49>/Compare' incorporates:
-   *  Constant: '<S49>/Constant'
-   */
-  t15_2_B.Compare = (uint8_T)(t15_2_B.e6 > t15_2_P.Constant_Value_if);
+  /* Memory: '<S32>/Memory2' */
+  t15_2_B.Memory2_dg = t15_2_DWork.Memory2_PreviousInput_hn;
 
-  /* DataStoreRead: '<S22>/Data Store Read' */
-  t15_2_B.DataStoreRead_or = t15_2_DWork.RupRd[0];
+  /* Switch: '<S32>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_d1) {
+    for (i = 0; i < 500; i++) {
+      /* DataStoreRead: '<S32>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_nd[i] = t15_2_DWork.scr_data[13 * i + 11];
 
-  /* RelationalOperator: '<S22>/Relational Operator' */
-  t15_2_B.RelationalOperator_p = (t15_2_B.e3 > t15_2_B.DataStoreRead_or);
-
-  /* Logic: '<S22>/Logical Operator1' */
-  t15_2_B.LogicalOperator1 = ((t15_2_B.Compare != 0) ||
-    t15_2_B.RelationalOperator_p);
-
-  /* Switch: '<S22>/0.99' incorporates:
-   *  Constant: '<S14>/Constant4'
-   */
-  if (t15_2_B.LogicalOperator1 >= t15_2_P.u9_Threshold) {
-    for (i = 0; i < 6; i++) {
-      t15_2_B.u9[i] = t15_2_B.e2_n[i];
+      /* DataStoreRead: '<S32>/Data Store Read' */
+      t15_2_B.DataStoreRead_ne[i] = t15_2_DWork.scr_data[13 * i];
     }
 
-    t15_2_B.u9[6] = t15_2_P.Constant4_Value_l;
-    t15_2_B.u9[7] = t15_2_B.Add1_i;
-    t15_2_B.u9[8] = t15_2_B.Add3_c;
-    t15_2_B.u9[9] = t15_2_B.Add1_g;
-    t15_2_B.u9[10] = t15_2_B.Add2_o;
-    t15_2_B.u9[11] = t15_2_B.Add4;
-    t15_2_B.u9[12] = t15_2_B.Add5;
-    t15_2_B.u9[13] = t15_2_B.Add6;
-    t15_2_B.u9[14] = t15_2_B.Add7;
-    t15_2_B.u9[15] = t15_2_B.Add8;
-    t15_2_B.u9[16] = t15_2_B.Add9;
-    t15_2_B.u9[17] = t15_2_B.Add10;
-    t15_2_B.u9[18] = t15_2_B.Add11;
-    t15_2_B.u9[19] = t15_2_P.Constant4_Value_l;
-  } else {
-    for (i = 0; i < 50; i++) {
-      /* Selector: '<S19>/Selector' */
-      t15_2_B.Selector[i] = t15_2_B.SFunction1_i[(i << 1) + 1];
-
-      /* Selector: '<S19>/Selector1' */
-      t15_2_B.Selector1[i] = t15_2_B.SFunction1_i[i << 1];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S19>/elong'
+    /* Dynamic Look-Up Table Block: '<S32>/I1'
      * Input0  Data Type:  Floating Point real_T
      * Input1  Data Type:  Floating Point real_T
      * Input2  Data Type:  Floating Point real_T
@@ -1574,88 +1441,193 @@ void t15_2_step(void)
      * Lookup Method: Linear_Endpoint
      *
      */
-    LookUp_real_T_real_T( &(t15_2_B.elong), &t15_2_B.Selector[0], t15_2_B.e3,
-                         &t15_2_B.Selector1[0], 49U);
+    LookUp_real_T_real_T( &(t15_2_B.I1_g), &t15_2_B.DataStoreRead1_nd[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_ne[0], 499U);
+    t15_2_B.c_eob_jo = t15_2_B.I1_g;
+  } else {
+    t15_2_B.c_eob_jo = t15_2_B.Memory2_dg;
+  }
+
+  /* End of Switch: '<S32>/c_eob' */
+
+  /* Product: '<S32>/Divide1' */
+  t15_2_B.Divide1_p = t15_2_B.c_eob_jo * t15_2_B.u_e;
+
+  /* Sum: '<S22>/Add10' */
+  t15_2_B.Add10 = t15_2_B.e6_e[9] - t15_2_B.Divide1_p;
+
+  /* Memory: '<S33>/Memory2' */
+  t15_2_B.Memory2_n = t15_2_DWork.Memory2_PreviousInput_bh;
+
+  /* Switch: '<S33>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_dy) {
+    for (i = 0; i < 500; i++) {
+      /* DataStoreRead: '<S33>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_i[i] = t15_2_DWork.scr_data[13 * i + 12];
+
+      /* DataStoreRead: '<S33>/Data Store Read' */
+      t15_2_B.DataStoreRead_eq[i] = t15_2_DWork.scr_data[13 * i];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S33>/I1'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.I1_a), &t15_2_B.DataStoreRead1_i[0],
+                         t15_2_B.Times, &t15_2_B.DataStoreRead_eq[0], 499U);
+    t15_2_B.c_eob_g4 = t15_2_B.I1_a;
+  } else {
+    t15_2_B.c_eob_g4 = t15_2_B.Memory2_n;
+  }
+
+  /* End of Switch: '<S33>/c_eob' */
+
+  /* Product: '<S33>/Divide1' */
+  t15_2_B.Divide1_c = t15_2_B.c_eob_g4 * t15_2_B.u_e;
+
+  /* Sum: '<S22>/Add11' */
+  t15_2_B.Add11 = t15_2_B.e6_e[10] - t15_2_B.Divide1_c;
+
+  /* Switch: '<S17>/1' incorporates:
+   *  Constant: '<S14>/Constant4'
+   */
+  if (t15_2_B.LogicalOperator_f >= t15_2_P._Threshold_f) {
+    for (i = 0; i < 6; i++) {
+      t15_2_B.u_c[i] = t15_2_B.e2_h[i];
+    }
+
+    t15_2_B.u_c[6] = t15_2_P.Constant4_Value_l;
+    t15_2_B.u_c[7] = t15_2_B.Add1_d;
+    t15_2_B.u_c[8] = t15_2_B.Add3_e;
+    t15_2_B.u_c[9] = t15_2_B.Add1_ce;
+    t15_2_B.u_c[10] = t15_2_B.Add2_p;
+    t15_2_B.u_c[11] = t15_2_B.Add4_k;
+    t15_2_B.u_c[12] = t15_2_B.Add5_f;
+    t15_2_B.u_c[13] = t15_2_B.Add6_p;
+    t15_2_B.u_c[14] = t15_2_B.Add7;
+    t15_2_B.u_c[15] = t15_2_B.Add8;
+    t15_2_B.u_c[16] = t15_2_B.Add9;
+    t15_2_B.u_c[17] = t15_2_B.Add10;
+    t15_2_B.u_c[18] = t15_2_B.Add11;
+    t15_2_B.u_c[19] = t15_2_P.Constant4_Value_l;
+  } else {
+    for (i = 0; i < 50; i++) {
+      /* Selector: '<S21>/Selector' */
+      t15_2_B.Selector_p[i] = t15_2_B.SFunction1_o[(i << 1) + 1];
+
+      /* Selector: '<S21>/Selector1' */
+      t15_2_B.Selector1_j[i] = t15_2_B.SFunction1_o[i << 1];
+    }
+
+    /* Dynamic Look-Up Table Block: '<S21>/elong'
+     * Input0  Data Type:  Floating Point real_T
+     * Input1  Data Type:  Floating Point real_T
+     * Input2  Data Type:  Floating Point real_T
+     * Output0 Data Type:  Floating Point real_T
+     * Lookup Method: Linear_Endpoint
+     *
+     */
+    LookUp_real_T_real_T( &(t15_2_B.elong), &t15_2_B.Selector_p[0],
+                         t15_2_B.Times, &t15_2_B.Selector1_j[0], 49U);
 
     /* Sum: '<S14>/Add2' incorporates:
      *  Inport: '<Root>/In1'
      */
-    t15_2_B.Add2_m = t15_2_U.In1[2] - t15_2_B.elong;
+    t15_2_B.Add2_l = t15_2_U.In1[2] - t15_2_B.elong;
 
-    /* Gain: '<S14>/k_gaplim' */
-    t15_2_B.k_gaplim[0] = t15_2_P.k_gaplim_Gain[0] * t15_2_B.e2_n[2];
-    t15_2_B.k_gaplim[1] = t15_2_P.k_gaplim_Gain[1] * t15_2_B.e2_n[3];
-    t15_2_B.k_gaplim[2] = t15_2_P.k_gaplim_Gain[2] * t15_2_B.e2_n[4];
-    t15_2_B.k_gaplim[3] = t15_2_P.k_gaplim_Gain[3] * t15_2_B.e2_n[5];
-    t15_2_B.u9[0] = t15_2_B.Add2_m;
-    t15_2_B.u9[1] = t15_2_P.Constant4_Value_l;
-    t15_2_B.u9[2] = t15_2_B.k_gaplim[0];
-    t15_2_B.u9[3] = t15_2_B.k_gaplim[1];
-    t15_2_B.u9[4] = t15_2_B.k_gaplim[2];
-    t15_2_B.u9[5] = t15_2_B.k_gaplim[3];
-    t15_2_B.u9[6] = t15_2_P.Constant4_Value_l;
-    t15_2_B.u9[7] = t15_2_B.Add1_i;
-    t15_2_B.u9[8] = t15_2_B.Add3_c;
-    t15_2_B.u9[9] = t15_2_B.Add1_g;
-    t15_2_B.u9[10] = t15_2_B.Add2_o;
-    t15_2_B.u9[11] = t15_2_B.Add4;
-    t15_2_B.u9[12] = t15_2_B.Add5;
-    t15_2_B.u9[13] = t15_2_B.Add6;
-    t15_2_B.u9[14] = t15_2_B.Add7;
-    t15_2_B.u9[15] = t15_2_B.Add8;
-    t15_2_B.u9[16] = t15_2_B.Add9;
-    t15_2_B.u9[17] = t15_2_B.Add10;
-    t15_2_B.u9[18] = t15_2_B.Add11;
-    t15_2_B.u9[19] = t15_2_P.Constant4_Value_l;
+    /* DataStoreRead: '<S24>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_aj = t15_2_DWork.k_g4;
+
+    /* Product: '<S24>/Divide' incorporates:
+     *  Constant: '<S24>/Constant1'
+     *  Constant: '<S24>/Constant2'
+     *  Constant: '<S24>/Constant4'
+     */
+    t15_2_B.Divide_n[0] = t15_2_B.e2_h[2] * t15_2_P.Constant4_Value;
+    t15_2_B.Divide_n[1] = t15_2_B.e2_h[3] * t15_2_B.DataStoreRead1_aj;
+    t15_2_B.Divide_n[2] = t15_2_B.e2_h[4] * t15_2_P.Constant1_Value;
+    t15_2_B.Divide_n[3] = t15_2_B.e2_h[5] * t15_2_P.Constant2_Value;
+    t15_2_B.u_c[0] = t15_2_B.Add2_l;
+    t15_2_B.u_c[1] = t15_2_P.Constant4_Value_l;
+    t15_2_B.u_c[2] = t15_2_B.Divide_n[0];
+    t15_2_B.u_c[3] = t15_2_B.Divide_n[1];
+    t15_2_B.u_c[4] = t15_2_B.Divide_n[2];
+    t15_2_B.u_c[5] = t15_2_B.Divide_n[3];
+    t15_2_B.u_c[6] = t15_2_P.Constant4_Value_l;
+    t15_2_B.u_c[7] = t15_2_B.Add1_d;
+    t15_2_B.u_c[8] = t15_2_B.Add3_e;
+    t15_2_B.u_c[9] = t15_2_B.Add1_ce;
+    t15_2_B.u_c[10] = t15_2_B.Add2_p;
+    t15_2_B.u_c[11] = t15_2_B.Add4_k;
+    t15_2_B.u_c[12] = t15_2_B.Add5_f;
+    t15_2_B.u_c[13] = t15_2_B.Add6_p;
+    t15_2_B.u_c[14] = t15_2_B.Add7;
+    t15_2_B.u_c[15] = t15_2_B.Add8;
+    t15_2_B.u_c[16] = t15_2_B.Add9;
+    t15_2_B.u_c[17] = t15_2_B.Add10;
+    t15_2_B.u_c[18] = t15_2_B.Add11;
+    t15_2_B.u_c[19] = t15_2_P.Constant4_Value_l;
   }
 
-  /* End of Switch: '<S22>/0.99' */
+  /* End of Switch: '<S17>/1' */
 
-  /* Gain: '<S23>/1e6' */
-  t15_2_B.e6_i = t15_2_P.e6_Gain_m * t15_2_B.Add2;
+  /* UnitDelay: '<S29>/UD' */
+  t15_2_B.Uk1 = t15_2_DWork.UD_DSTATE;
 
-  /* Memory: '<S50>/Memory3' */
+  /* Sum: '<S29>/Diff' incorporates:
+   *  Inport: '<Root>/In1'
+   */
+  t15_2_B.Diff = t15_2_U.In1[0] - t15_2_B.Uk1;
+
+  /* UnitDelay: '<S30>/UD' */
+  t15_2_B.Uk1_p = t15_2_DWork.UD_DSTATE_i;
+
+  /* Sum: '<S30>/Diff' */
+  t15_2_B.Diff_i = t15_2_B.Times - t15_2_B.Uk1_p;
+
+  /* Product: '<S20>/Divide' */
+  t15_2_B.Divide = t15_2_B.Diff / t15_2_B.Diff_i;
+
+  /* DataStoreRead: '<S54>/Data Store Read' */
+  t15_2_B.DataStoreRead_i = t15_2_DWork.ref_ramp;
+
+  /* DataStoreRead: '<S54>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_fr = t15_2_DWork.tdiv;
+
+  /* Memory: '<S54>/Memory3' */
   t15_2_B.Memory3 = t15_2_DWork.Memory3_PreviousInput;
 
-  /* RelationalOperator: '<S66>/Compare' incorporates:
-   *  Constant: '<S66>/Constant'
-   */
-  t15_2_B.Compare_p = (uint8_T)(t15_2_B.e6 > t15_2_P.Constant_Value_e);
+  /* RelationalOperator: '<S54>/Relational Operator1' */
+  t15_2_B.RelationalOperator1_h = (t15_2_B.Times > t15_2_B.DataStoreRead1_fr);
 
-  /* DataStoreRead: '<S67>/Data Store Read' */
-  t15_2_B.DataStoreRead_f = t15_2_DWork.RupRd[0];
-
-  /* RelationalOperator: '<S67>/Relational Operator' */
-  t15_2_B.RelationalOperator_d = (t15_2_B.e3 > t15_2_B.DataStoreRead_f);
-
-  /* Logic: '<S50>/Logical Operator1' */
-  t15_2_B.LogicalOperator1_h = ((t15_2_B.Compare_p != 0) ||
-    t15_2_B.RelationalOperator_d);
-
-  /* Switch: '<S50>/0.9999' */
-  if (t15_2_B.LogicalOperator1_h > t15_2_P.u999_Threshold) {
-    t15_2_B.u999 = t15_2_B.Memory3;
+  /* Switch: '<S54>/switch1 ' */
+  if (t15_2_B.RelationalOperator1_h >= t15_2_P.switch1_Threshold_f) {
+    t15_2_B.switch1_i = t15_2_B.Memory3;
   } else {
-    t15_2_B.u999 = t15_2_B.e3;
+    t15_2_B.switch1_i = t15_2_B.Times;
   }
 
-  /* End of Switch: '<S50>/0.9999' */
+  /* End of Switch: '<S54>/switch1 ' */
 
-  /* Sum: '<S50>/Subtract2' */
-  t15_2_B.Subtract2 = t15_2_B.e3 - t15_2_B.u999;
+  /* Sum: '<S54>/Subtract2' */
+  t15_2_B.Subtract2 = t15_2_B.switch1_i - t15_2_B.Times;
 
-  /* Gain: '<S50>/Gain1' */
-  t15_2_B.Gain1 = t15_2_P.Gain1_Gain_j * t15_2_B.Subtract2;
+  /* Product: '<S54>/Divide1' */
+  t15_2_B.Divide1_av = 1.0 / t15_2_B.DataStoreRead_i * t15_2_B.Subtract2;
 
-  /* Sum: '<S50>/Subtract1' incorporates:
-   *  Constant: '<S50>/1'
+  /* Sum: '<S54>/Subtract1' incorporates:
+   *  Constant: '<S54>/1'
    */
-  t15_2_B.Subtract1 = t15_2_B.Gain1 + t15_2_P._Value_n;
+  t15_2_B.Subtract1 = t15_2_B.Divide1_av + t15_2_P._Value_c;
 
-  /* Saturate: '<S50>/Saturation1' */
+  /* Saturate: '<S54>/Saturation1' */
   tmin = t15_2_B.Subtract1;
-  u = t15_2_P.Saturation1_LowerSat;
-  u_0 = t15_2_P.Saturation1_UpperSat;
+  u = t15_2_P.Saturation1_LowerSat_m;
+  u_0 = t15_2_P.Saturation1_UpperSat_l;
   if (tmin >= u_0) {
     t15_2_B.Saturation1 = u_0;
   } else if (tmin <= u) {
@@ -1664,130 +1636,71 @@ void t15_2_step(void)
     t15_2_B.Saturation1 = tmin;
   }
 
-  /* End of Saturate: '<S50>/Saturation1' */
+  /* End of Saturate: '<S54>/Saturation1' */
 
-  /* Memory: '<S51>/Memory1' */
-  t15_2_B.Memory1_a = t15_2_DWork.Memory1_PreviousInput_l;
+  /* DataStoreRead: '<S55>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_a = t15_2_DWork.c_cur_max;
 
   /* DataStoreRead: '<S68>/Data Store Read' */
   t15_2_B.DataStoreRead_l = t15_2_DWork.RupRd[2];
 
   /* Abs: '<S68>/Abs' */
-  t15_2_B.Abs = fabs(t15_2_B.DataStoreRead_l);
+  t15_2_B.Abs_p = fabs(t15_2_B.DataStoreRead_l);
 
   /* RelationalOperator: '<S68>/Relational Operator' */
-  t15_2_B.RelationalOperator_f = (t15_2_B.e6 < t15_2_B.Abs);
+  t15_2_B.RelationalOperator_k = (t15_2_B.e6 < t15_2_B.Abs_p);
 
-  /* DataStoreRead: '<S69>/Data Store Read' */
-  t15_2_B.DataStoreRead_i = t15_2_DWork.RupRd[0];
-
-  /* RelationalOperator: '<S69>/Relational Operator' */
-  t15_2_B.RelationalOperator_d5 = (t15_2_B.e3 > t15_2_B.DataStoreRead_i);
-
-  /* Logic: '<S51>/Logical Operator2' */
-  t15_2_B.LogicalOperator2 = (t15_2_B.RelationalOperator_f &&
-    t15_2_B.RelationalOperator_d5);
-
-  /* Switch: '<S51>/0.9999' */
-  if (t15_2_B.LogicalOperator2 > t15_2_P.u999_Threshold_f) {
-    t15_2_B.u999_d = t15_2_B.Memory1_a;
-  } else {
-    t15_2_B.u999_d = t15_2_B.e3;
-  }
-
-  /* End of Switch: '<S51>/0.9999' */
-
-  /* Sum: '<S51>/Subtract2' */
-  t15_2_B.Subtract2_h = t15_2_B.e3 - t15_2_B.u999_d;
-
-  /* Gain: '<S51>/Gain1' */
-  t15_2_B.Gain1_j = t15_2_P.Gain1_Gain_j0 * t15_2_B.Subtract2_h;
-
-  /* Sum: '<S51>/Subtract3' incorporates:
-   *  Constant: '<S51>/1'
+  /* RelationalOperator: '<S89>/Compare' incorporates:
+   *  Constant: '<S89>/Constant'
    */
-  t15_2_B.Subtract3 = t15_2_B.Gain1_j + t15_2_P._Value_f;
+  t15_2_B.Compare_ev = (t15_2_B.u_e < t15_2_P.Constant_Value_n);
 
-  /* Saturate: '<S51>/Saturation' */
-  tmin = t15_2_B.Subtract3;
-  u = t15_2_P.Saturation_LowerSat_d;
-  u_0 = t15_2_P.Saturation_UpperSat_o;
-  if (tmin >= u_0) {
-    t15_2_B.Saturation = u_0;
-  } else if (tmin <= u) {
-    t15_2_B.Saturation = u;
-  } else {
-    t15_2_B.Saturation = tmin;
-  }
+  /* Logic: '<S68>/Logical Operator2' */
+  t15_2_B.LogicalOperator2 = (t15_2_B.RelationalOperator_k && t15_2_B.Compare_ev);
 
-  /* End of Saturate: '<S51>/Saturation' */
+  /* Memory: '<S90>/Memory' */
+  t15_2_B.Memory_m = t15_2_DWork.Memory_PreviousInput_a;
 
-  /* Sum: '<S51>/Subtract1' incorporates:
-   *  Constant: '<S51>/1'
-   */
-  t15_2_B.Subtract1_k = t15_2_P._Value_f - t15_2_B.Saturation;
-
-  /* Sum: '<S51>/Subtract4' incorporates:
-   *  Constant: '<S51>/1'
-   */
-  t15_2_B.Subtract4 = t15_2_P._Value_f - t15_2_B.LogicalOperator2;
-
-  /* DataStoreRead: '<S52>/Data Store Read1' */
-  t15_2_B.DataStoreRead1_kb = t15_2_DWork.c_cur_max;
-
-  /* DataStoreRead: '<S60>/Data Store Read' */
-  t15_2_B.DataStoreRead_ln = t15_2_DWork.RupRd[2];
-
-  /* Abs: '<S60>/Abs' */
-  t15_2_B.Abs_c = fabs(t15_2_B.DataStoreRead_ln);
-
-  /* RelationalOperator: '<S60>/Relational Operator' */
-  t15_2_B.RelationalOperator_nb = (t15_2_B.e6 < t15_2_B.Abs_c);
-
-  /* DataStoreRead: '<S60>/Data Store Read1' */
-  t15_2_B.DataStoreRead1_f = t15_2_DWork.RupRd[0];
-
-  /* RelationalOperator: '<S60>/Relational Operator1' */
-  t15_2_B.RelationalOperator1_f = (t15_2_B.e3 > t15_2_B.DataStoreRead1_f);
-
-  /* Logic: '<S60>/Logical Operator2' */
-  t15_2_B.LogicalOperator2_g = (t15_2_B.RelationalOperator_nb &&
-    t15_2_B.RelationalOperator1_f);
+  /* Logic: '<S90>/Logical Operator' */
+  t15_2_B.LogicalOperator_i = ((t15_2_B.LogicalOperator2 != 0.0) ||
+    (t15_2_B.Memory_m != 0.0));
   for (i = 0; i < 11; i++) {
-    /* Gain: '<S52>/1e3' */
-    t15_2_B.e3_h[i] = t15_2_P.e3_Gain_f * t15_2_B.e6_m[i];
+    /* Gain: '<S55>/1e3' */
+    t15_2_B.e3_h[i] = t15_2_P.e3_Gain_a * t15_2_B.e6_e[i];
 
-    /* Abs: '<S52>/Abs' */
-    t15_2_B.Abs_a[i] = fabs(t15_2_B.e3_h[i]);
+    /* Abs: '<S55>/Abs' */
+    t15_2_B.Abs[i] = fabs(t15_2_B.e3_h[i]);
 
     /* DataStoreRead: '<S15>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_k[i] = t15_2_DWork.Imax[i];
+    t15_2_B.DataStoreRead1_n[i] = t15_2_DWork.Imax[i];
 
-    /* Product: '<S52>/Divide5' incorporates:
-     *  Constant: '<S52>/ntur(1:11)'
-     */
-    t15_2_B.Divide5[i] = t15_2_B.DataStoreRead1_k[i] * t15_2_P.ntur111_Value[i];
+    /* DataStoreRead: '<S55>/Data Store Read2' */
+    t15_2_B.DataStoreRead2_a[i] = t15_2_DWork.ntur[i];
 
-    /* Sum: '<S52>/Sum2' */
-    t15_2_B.Sum2_k[i] = t15_2_B.Divide5[i] - t15_2_B.Abs_a[i];
+    /* Product: '<S55>/Divide5' */
+    t15_2_B.Divide5[i] = t15_2_B.DataStoreRead1_n[i] *
+      t15_2_B.DataStoreRead2_a[i];
 
-    /* Product: '<S52>/Divide3' */
-    t15_2_B.Divide3[i] = t15_2_B.Divide5[i] * t15_2_B.DataStoreRead1_kb;
+    /* Sum: '<S55>/Sum2' */
+    t15_2_B.Sum2_a[i] = t15_2_B.Divide5[i] - t15_2_B.Abs[i];
 
-    /* Sum: '<S52>/Sum1' */
+    /* Product: '<S55>/Divide3' */
+    t15_2_B.Divide3[i] = t15_2_B.Divide5[i] * t15_2_B.DataStoreRead1_a;
+
+    /* Sum: '<S55>/Sum1' */
     t15_2_B.Sum1[i] = t15_2_B.Divide5[i] - t15_2_B.Divide3[i];
 
-    /* Product: '<S52>/Divide4' */
-    t15_2_B.Divide4[i] = t15_2_B.Sum2_k[i] / t15_2_B.Sum1[i];
+    /* Product: '<S55>/Divide4' */
+    t15_2_B.Divide4[i] = t15_2_B.Sum2_a[i] / t15_2_B.Sum1[i];
 
-    /* Product: '<S52>/Divide1' */
-    t15_2_B.Divide1_ps[i] = t15_2_B.Divide4[i] * t15_2_B.Divide4[i] *
+    /* Product: '<S55>/Divide1' */
+    t15_2_B.Divide1_mp[i] = t15_2_B.Divide4[i] * t15_2_B.Divide4[i] *
       t15_2_B.Divide4[i];
 
-    /* Saturate: '<S52>/Saturation' */
-    tmin = t15_2_B.Divide1_ps[i];
-    u = t15_2_P.Saturation_LowerSat_p;
-    u_0 = t15_2_P.Saturation_UpperSat_cy;
+    /* Saturate: '<S55>/Saturation' */
+    tmin = t15_2_B.Divide1_mp[i];
+    u = t15_2_P.Saturation_LowerSat_l;
+    u_0 = t15_2_P.Saturation_UpperSat_l;
     if (tmin >= u_0) {
       tmin = u_0;
     } else {
@@ -1796,55 +1709,163 @@ void t15_2_step(void)
       }
     }
 
-    t15_2_B.Saturation_k[i] = tmin;
+    t15_2_B.Saturation[i] = tmin;
 
-    /* End of Saturate: '<S52>/Saturation' */
+    /* End of Saturate: '<S55>/Saturation' */
 
     /* RelationalOperator: '<S70>/Compare' incorporates:
      *  Constant: '<S70>/Constant'
      */
-    t15_2_B.Compare_i[i] = (uint8_T)(t15_2_B.Saturation_k[i] <
-      t15_2_P.Constant_Value_c);
+    t15_2_B.Compare[i] = (uint8_T)(t15_2_B.Saturation[i] <
+      t15_2_P.Constant_Value);
 
-    /* Memory: '<S60>/Memory1' */
-    t15_2_B.Memory1_k[i] = t15_2_DWork.Memory1_PreviousInput_b[i];
+    /* Memory: '<S68>/Memory1' */
+    t15_2_B.Memory1_g[i] = t15_2_DWork.Memory1_PreviousInput_e[i];
 
-    /* Memory: '<S63>/Memory' */
-    t15_2_B.Memory[i] = t15_2_DWork.Memory_PreviousInput[i];
+    /* Memory: '<S60>/Memory' */
+    t15_2_B.Memory_c[i] = t15_2_DWork.Memory_PreviousInput_m[i];
   }
 
-  /* RelationalOperator: '<S76>/Compare' incorporates:
-   *  Constant: '<S76>/Constant'
+  /* DataStoreRead: '<S60>/Data Store Read' */
+  t15_2_B.DataStoreRead_ii = t15_2_DWork.Ip_rd;
+
+  /* RelationalOperator: '<S60>/Relational Operator1' */
+  t15_2_B.RelationalOperator1_k = (t15_2_B.e6 < t15_2_B.DataStoreRead_ii);
+
+  /* RelationalOperator: '<S78>/Compare' incorporates:
+   *  Constant: '<S78>/Constant'
    */
-  t15_2_B.Compare_l = (uint8_T)(t15_2_B.e6 < t15_2_P.Constant_Value_a);
+  t15_2_B.Compare_i = (t15_2_B.u_e < t15_2_P.Constant_Value_d);
 
-  /* DataStoreRead: '<S77>/Data Store Read' */
-  t15_2_B.DataStoreRead_j = t15_2_DWork.RupRd[0];
+  /* DataStoreRead: '<S60>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_b = t15_2_DWork.RupRd[2];
 
-  /* RelationalOperator: '<S77>/Relational Operator' */
-  t15_2_B.RelationalOperator_g4 = (t15_2_B.e3 > t15_2_B.DataStoreRead_j);
+  /* Abs: '<S60>/Abs' */
+  t15_2_B.Abs_m = fabs(t15_2_B.DataStoreRead1_b);
 
-  /* DataStoreRead: '<S63>/Data Store Read1' */
-  t15_2_B.DataStoreRead1_p = t15_2_DWork.RupRd[2];
+  /* RelationalOperator: '<S60>/Relational Operator' */
+  t15_2_B.RelationalOperator_i = (t15_2_B.e6 > t15_2_B.Abs_m);
 
-  /* Abs: '<S63>/Abs' */
-  t15_2_B.Abs_e = fabs(t15_2_B.DataStoreRead1_p);
+  /* Logic: '<S60>/Logical Operator1' */
+  t15_2_B.LogicalOperator1 = (t15_2_B.RelationalOperator1_k && t15_2_B.Compare_i
+    && t15_2_B.RelationalOperator_i);
 
-  /* RelationalOperator: '<S63>/Relational Operator' */
-  t15_2_B.RelationalOperator_pi = (t15_2_B.e6 > t15_2_B.Abs_e);
+  /* Memory: '<S79>/Memory' */
+  t15_2_B.Memory_k = t15_2_DWork.Memory_PreviousInput_l;
 
-  /* Logic: '<S63>/Logical Operator1' */
-  t15_2_B.LogicalOperator1_i = ((t15_2_B.Compare_l != 0) &&
-    t15_2_B.RelationalOperator_g4 && t15_2_B.RelationalOperator_pi);
+  /* Logic: '<S79>/Logical Operator' */
+  t15_2_B.LogicalOperator_h = ((t15_2_B.LogicalOperator1 != 0.0) ||
+    (t15_2_B.Memory_k != 0.0));
+
+  /* Memory: '<S66>/Memory1' */
+  t15_2_B.Memory1_k = t15_2_DWork.Memory1_PreviousInput_l;
+
+  /* Switch: '<S66>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_fg) {
+    t15_2_B.c_eob_d = t15_2_B.e6;
+  } else {
+    t15_2_B.c_eob_d = t15_2_B.Memory1_k;
+  }
+
+  /* End of Switch: '<S66>/c_eob' */
+
+  /* Switch: '<S15>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_h) {
+    /* DataStoreRead: '<S15>/Data Store Read2' */
+    t15_2_B.DataStoreRead2_b = t15_2_DWork.c_a_tpl2;
+
+    /* Gain: '<S15>/ 1//15 ' */
+    t15_2_B.u15_i = t15_2_P.u15_Gain * t15_2_B.DataStoreRead2_b;
+
+    /* Product: '<S15>/Divide9' */
+    t15_2_B.Divide9 = t15_2_B.e6 * t15_2_B.u15_i;
+
+    /* Saturate: '<S15>/Saturation' */
+    tmin = t15_2_B.Divide9;
+    u = t15_2_P.Saturation_LowerSat;
+    u_0 = t15_2_P.Saturation_UpperSat;
+    if (tmin >= u_0) {
+      t15_2_B.Saturation_mu = u_0;
+    } else if (tmin <= u) {
+      t15_2_B.Saturation_mu = u;
+    } else {
+      t15_2_B.Saturation_mu = tmin;
+    }
+
+    /* End of Saturate: '<S15>/Saturation' */
+    t15_2_B.c_eob_e2 = t15_2_B.Saturation_mu;
+  } else {
+    /* DataStoreRead: '<S66>/Data Store Read2' */
+    t15_2_B.DataStoreRead2_l = t15_2_DWork.y0;
+
+    /* Sum: '<S66>/Sum3' incorporates:
+     *  Constant: '<S66>/2'
+     */
+    t15_2_B.Sum3_h = t15_2_P._Value - t15_2_B.DataStoreRead2_l;
+
+    /* DataStoreRead: '<S66>/Data Store Read4' */
+    t15_2_B.DataStoreRead4_o = t15_2_DWork.c2_y0;
+
+    /* DataStoreRead: '<S66>/Data Store Read3' */
+    t15_2_B.DataStoreRead3_f = t15_2_DWork.c1_y0;
+
+    /* Sum: '<S66>/Sum2' */
+    t15_2_B.Sum2_l = t15_2_B.DataStoreRead4_o - t15_2_B.DataStoreRead3_f;
+
+    /* Product: '<S66>/Divide1' */
+    t15_2_B.Divide1_d = 1.0 / t15_2_B.Sum2_l * t15_2_B.Sum3_h;
+
+    /* Product: '<S66>/Divide6' */
+    t15_2_B.Divide6_a = t15_2_B.c_eob_d * t15_2_B.u_e;
+
+    /* Sum: '<S66>/Sum' */
+    t15_2_B.Sum = t15_2_B.Divide6_a - t15_2_B.DataStoreRead3_f;
+
+    /* Product: '<S66>/Divide2' */
+    t15_2_B.Divide2_d = t15_2_B.Sum * t15_2_B.Divide1_d;
+
+    /* Sum: '<S66>/Sum1' */
+    t15_2_B.Sum1_c = t15_2_B.Divide2_d + t15_2_B.DataStoreRead2_l;
+
+    /* RelationalOperator: '<S88>/LowerRelop1' incorporates:
+     *  Constant: '<S66>/1'
+     */
+    t15_2_B.LowerRelop1_n = (t15_2_B.Sum1_c > t15_2_P._Value_k);
+
+    /* Switch: '<S88>/Switch2' incorporates:
+     *  Constant: '<S66>/1'
+     */
+    if (t15_2_B.LowerRelop1_n) {
+      t15_2_B.Switch2_o = t15_2_P._Value_k;
+    } else {
+      /* RelationalOperator: '<S88>/UpperRelop' */
+      t15_2_B.UpperRelop_n = (t15_2_B.Sum1_c < t15_2_B.DataStoreRead2_l);
+
+      /* Switch: '<S88>/Switch' */
+      if (t15_2_B.UpperRelop_n) {
+        t15_2_B.Switch_lx = t15_2_B.DataStoreRead2_l;
+      } else {
+        t15_2_B.Switch_lx = t15_2_B.Sum1_c;
+      }
+
+      /* End of Switch: '<S88>/Switch' */
+      t15_2_B.Switch2_o = t15_2_B.Switch_lx;
+    }
+
+    /* End of Switch: '<S88>/Switch2' */
+    t15_2_B.c_eob_e2 = t15_2_B.Switch2_o;
+  }
+
+  /* End of Switch: '<S15>/c_eob' */
 
   /* Product: '<S15>/Divide2' */
   for (i = 0; i < 20; i++) {
-    t15_2_B.Divide2_b[i] = t15_2_B.LogicalOperator1_h * t15_2_B.u9[i];
+    t15_2_B.Divide2[i] = t15_2_B.RelationalOperator1_h * t15_2_B.u_c[i];
   }
 
   /* End of Product: '<S15>/Divide2' */
 
-  /* DiscreteStateSpace: '<S54>/Div. contr.' */
+  /* DiscreteStateSpace: '<S15>/Div. contr.' */
   {
     {
       static const int_T colCidxRow0[20] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -1867,7 +1888,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow0[0];
       const real_T *pD0 = t15_2_P.Divcontr_D;
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y0 = &t15_2_B.Divcontr[0];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -1896,7 +1917,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow1[0];
       const real_T *pD17 = &t15_2_P.Divcontr_D[17];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y1 = &t15_2_B.Divcontr[1];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -1925,7 +1946,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow2[0];
       const real_T *pD34 = &t15_2_P.Divcontr_D[34];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y2 = &t15_2_B.Divcontr[2];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -1954,7 +1975,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow3[0];
       const real_T *pD51 = &t15_2_P.Divcontr_D[51];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y3 = &t15_2_B.Divcontr[3];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -1976,7 +1997,7 @@ void t15_2_step(void)
       }
     }
 
-    t15_2_B.Divcontr[4] += (t15_2_P.Divcontr_D[68])*t15_2_B.Divide2_b[12];
+    t15_2_B.Divcontr[4] += (t15_2_P.Divcontr_D[68])*t15_2_B.Divide2[12];
 
     {
       static const int_T colCidxRow5[20] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -1999,7 +2020,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow5[0];
       const real_T *pD69 = &t15_2_P.Divcontr_D[69];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y5 = &t15_2_B.Divcontr[5];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2028,7 +2049,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow6[0];
       const real_T *pD86 = &t15_2_P.Divcontr_D[86];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y6 = &t15_2_B.Divcontr[6];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2057,7 +2078,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow7[0];
       const real_T *pD103 = &t15_2_P.Divcontr_D[103];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y7 = &t15_2_B.Divcontr[7];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2086,7 +2107,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow8[0];
       const real_T *pD120 = &t15_2_P.Divcontr_D[120];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y8 = &t15_2_B.Divcontr[8];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2115,7 +2136,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow9[0];
       const real_T *pD137 = &t15_2_P.Divcontr_D[137];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y9 = &t15_2_B.Divcontr[9];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2144,7 +2165,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow10[0];
       const real_T *pD154 = &t15_2_P.Divcontr_D[154];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *y10 = &t15_2_B.Divcontr[10];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2153,61 +2174,69 @@ void t15_2_step(void)
     }
   }
 
-  /* Switch: '<S63>/0.99' */
-  if (t15_2_B.LogicalOperator1_i >= t15_2_P.u9_Threshold_k) {
-    memcpy(&t15_2_B.u9_b[0], &t15_2_B.Memory[0], 11U * sizeof(real_T));
+  /* Switch: '<S60>/1' */
+  if (t15_2_B.LogicalOperator_h >= t15_2_P._Threshold_d) {
+    memcpy(&t15_2_B.u_h[0], &t15_2_B.Memory_c[0], 11U * sizeof(real_T));
   } else {
-    /* Sum: '<S50>/Subtract3' incorporates:
-     *  Constant: '<S50>/1'
+    /* Sum: '<S54>/Subtract3' incorporates:
+     *  Constant: '<S54>/1'
      */
-    t15_2_B.Subtract3_h = t15_2_P._Value_n - t15_2_B.Saturation1;
+    t15_2_B.Subtract3_b = t15_2_P._Value_c - t15_2_B.Saturation1;
 
     /* Product: '<S15>/Divide' */
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide_e[i] = t15_2_B.Subtract3_h * t15_2_B.Divcontr[i];
-      t15_2_B.u9_b[i] = t15_2_B.Divide_e[i];
+      t15_2_B.Divide_o[i] = t15_2_B.c_eob_e2 * t15_2_B.Divcontr[i] *
+        t15_2_B.Subtract3_b;
+      t15_2_B.u_h[i] = t15_2_B.Divide_o[i];
     }
 
     /* End of Product: '<S15>/Divide' */
   }
 
-  /* End of Switch: '<S63>/0.99' */
+  /* End of Switch: '<S60>/1' */
 
-  /* Memory: '<S62>/Memory1' */
-  t15_2_B.Memory1_ec = t15_2_DWork.Memory1_PreviousInput_o;
+  /* Memory: '<S64>/Memory1' */
+  t15_2_B.Memory1_h = t15_2_DWork.Memory1_PreviousInput_p;
 
-  /* RelationalOperator: '<S74>/Compare' incorporates:
-   *  Constant: '<S74>/Constant'
+  /* DataStoreRead: '<S64>/Data Store Read' */
+  t15_2_B.DataStoreRead_k = t15_2_DWork.Ip_rd;
+
+  /* RelationalOperator: '<S64>/Relational Operator1' */
+  t15_2_B.RelationalOperator1_p0 = (t15_2_B.e6 < t15_2_B.DataStoreRead_k);
+
+  /* RelationalOperator: '<S84>/Compare' incorporates:
+   *  Constant: '<S84>/Constant'
    */
-  t15_2_B.Compare_o = (uint8_T)(t15_2_B.e6 < t15_2_P.Constant_Value_b);
+  t15_2_B.Compare_k = (t15_2_B.u_e < t15_2_P.Constant_Value_n4);
 
-  /* DataStoreRead: '<S75>/Data Store Read' */
-  t15_2_B.DataStoreRead_p = t15_2_DWork.RupRd[0];
+  /* Logic: '<S64>/Logical Operator1' */
+  t15_2_B.LogicalOperator1_l = (t15_2_B.RelationalOperator1_p0 &&
+    t15_2_B.Compare_k);
 
-  /* RelationalOperator: '<S75>/Relational Operator' */
-  t15_2_B.RelationalOperator_m = (t15_2_B.e3 > t15_2_B.DataStoreRead_p);
+  /* Memory: '<S85>/Memory' */
+  t15_2_B.Memory_d = t15_2_DWork.Memory_PreviousInput_o;
 
-  /* Logic: '<S62>/Logical Operator1' */
-  t15_2_B.LogicalOperator1_a = ((t15_2_B.Compare_o != 0) &&
-    t15_2_B.RelationalOperator_m);
+  /* Logic: '<S85>/Logical Operator' */
+  t15_2_B.LogicalOperator_b = ((t15_2_B.LogicalOperator1_l != 0.0) ||
+    (t15_2_B.Memory_d != 0.0));
 
-  /* Switch: '<S62>/0.9999' */
-  if (t15_2_B.LogicalOperator1_a > t15_2_P.u999_Threshold_i) {
-    t15_2_B.u999_b = t15_2_B.Memory1_ec;
+  /* Switch: '<S64>/switch1' */
+  if (t15_2_B.LogicalOperator_b >= t15_2_P.switch1_Threshold_c) {
+    t15_2_B.switch1_j = t15_2_B.Memory1_h;
   } else {
-    t15_2_B.u999_b = t15_2_B.e3;
+    t15_2_B.switch1_j = t15_2_B.Times;
   }
 
-  /* End of Switch: '<S62>/0.9999' */
+  /* End of Switch: '<S64>/switch1' */
 
   /* Product: '<S15>/Divide13' */
   for (i = 0; i < 20; i++) {
-    t15_2_B.Divide13[i] = t15_2_B.Divide2_b[i] * t15_2_B.LogicalOperator1_a;
+    t15_2_B.Divide13[i] = t15_2_B.Divide2[i] * t15_2_B.LogicalOperator_b;
   }
 
   /* End of Product: '<S15>/Divide13' */
 
-  /* DiscreteStateSpace: '<S55>/Div_rd contr' */
+  /* DiscreteStateSpace: '<S15>/Div_rd contr' */
   {
     {
       static const int_T colCidxRow0[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -2529,143 +2558,124 @@ void t15_2_step(void)
     }
   }
 
-  /* Memory: '<S59>/Memory1' */
-  t15_2_B.Memory1_l = t15_2_DWork.Memory1_PreviousInput_f;
-
-  /* Switch: '<S59>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_p) {
-    for (i = 0; i < 500; i++) {
-      /* DataStoreRead: '<S59>/Data Store Read1' */
-      t15_2_B.DataStoreRead1_ph[i] = t15_2_DWork.scr_data[13 * i + 1];
-
-      /* DataStoreRead: '<S59>/Data Store Read' */
-      t15_2_B.DataStoreRead_h[i] = t15_2_DWork.scr_data[13 * i];
-    }
-
-    /* Dynamic Look-Up Table Block: '<S59>/Ipref'
-     * Input0  Data Type:  Floating Point real_T
-     * Input1  Data Type:  Floating Point real_T
-     * Input2  Data Type:  Floating Point real_T
-     * Output0 Data Type:  Floating Point real_T
-     * Lookup Method: Linear_Endpoint
-     *
-     */
-    LookUp_real_T_real_T( &(t15_2_B.Ipref), &t15_2_B.DataStoreRead1_ph[0],
-                         t15_2_B.e3, &t15_2_B.DataStoreRead_h[0], 499U);
-    t15_2_B.c_eob_e3 = t15_2_B.Ipref;
+  /* Switch: '<S68>/1' */
+  if (t15_2_B.LogicalOperator_i >= t15_2_P._Threshold_l) {
+    memcpy(&t15_2_B.u_f[0], &t15_2_B.Memory1_g[0], 11U * sizeof(real_T));
   } else {
-    t15_2_B.c_eob_e3 = t15_2_B.Memory1_l;
-  }
+    /* Sum: '<S64>/Subtract2' */
+    t15_2_B.Subtract2_l = t15_2_B.switch1_j - t15_2_B.Times;
 
-  /* End of Switch: '<S59>/c_eob' */
+    /* DataStoreRead: '<S64>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_az = t15_2_DWork.ref_ramp;
 
-  /* Switch: '<S60>/0.999' */
-  if (t15_2_B.LogicalOperator2_g > t15_2_P.u99_Threshold_c) {
-    memcpy(&t15_2_B.u99_i[0], &t15_2_B.Memory1_k[0], 11U * sizeof(real_T));
-  } else {
-    /* Sum: '<S62>/Subtract2' */
-    t15_2_B.Subtract2_b = t15_2_B.e3 - t15_2_B.u999_b;
+    /* Product: '<S64>/Divide4' */
+    t15_2_B.Divide4_o = 1.0 / t15_2_B.DataStoreRead1_az * t15_2_B.Subtract2_l;
 
-    /* Gain: '<S62>/Gain1' */
-    t15_2_B.Gain1_l = t15_2_P.Gain1_Gain_h * t15_2_B.Subtract2_b;
-
-    /* Sum: '<S62>/Subtract3' incorporates:
-     *  Constant: '<S62>/1'
+    /* Sum: '<S64>/Subtract3' incorporates:
+     *  Constant: '<S64>/1'
      */
-    t15_2_B.Subtract3_l = t15_2_B.Gain1_l + t15_2_P._Value;
+    t15_2_B.Subtract3_f = t15_2_B.Divide4_o + t15_2_P._Value_i;
 
-    /* Saturate: '<S62>/Saturation' */
-    tmin = t15_2_B.Subtract3_l;
-    u = t15_2_P.Saturation_LowerSat_c;
-    u_0 = t15_2_P.Saturation_UpperSat_c;
+    /* Saturate: '<S64>/Saturation' */
+    tmin = t15_2_B.Subtract3_f;
+    u = t15_2_P.Saturation_LowerSat_p;
+    u_0 = t15_2_P.Saturation_UpperSat_a;
     if (tmin >= u_0) {
-      t15_2_B.Saturation_i = u_0;
+      t15_2_B.Saturation_m = u_0;
     } else if (tmin <= u) {
-      t15_2_B.Saturation_i = u;
+      t15_2_B.Saturation_m = u;
     } else {
-      t15_2_B.Saturation_i = tmin;
+      t15_2_B.Saturation_m = tmin;
     }
 
-    /* End of Saturate: '<S62>/Saturation' */
+    /* End of Saturate: '<S64>/Saturation' */
 
-    /* Sum: '<S62>/Subtract1' incorporates:
-     *  Constant: '<S62>/1'
+    /* Sum: '<S64>/Subtract1' incorporates:
+     *  Constant: '<S64>/1'
      */
-    t15_2_B.Subtract1_l = t15_2_P._Value - t15_2_B.Saturation_i;
-
-    /* Switch: '<S15>/c_eob' */
-    if (t15_2_B.u_n > t15_2_P.c_eob_Threshold) {
-      /* Gain: '<S15>/lim. gain' */
-      t15_2_B.limgain = t15_2_P.limgain_Gain * t15_2_B.e6;
-
-      /* Saturate: '<S15>/Saturation' */
-      tmin = t15_2_B.limgain;
-      u = t15_2_P.Saturation_LowerSat;
-      u_0 = t15_2_P.Saturation_UpperSat;
-      if (tmin >= u_0) {
-        t15_2_B.Saturation_b = u_0;
-      } else if (tmin <= u) {
-        t15_2_B.Saturation_b = u;
-      } else {
-        t15_2_B.Saturation_b = tmin;
-      }
-
-      /* End of Saturate: '<S15>/Saturation' */
-      t15_2_B.c_eob_bc = t15_2_B.Saturation_b;
-    } else {
-      /* Product: '<S59>/Divide6' */
-      t15_2_B.Divide6_c = t15_2_B.c_eob_e3 * t15_2_B.u_n;
-
-      /* Sum: '<S59>/Sum' incorporates:
-       *  Constant: '<S59>/c1_y0'
-       */
-      t15_2_B.Sum = t15_2_B.Divide6_c - t15_2_P.c1_y0_Value;
-
-      /* Product: '<S59>/Divide2' incorporates:
-       *  Constant: '<S59>/(1-y0)//...'
-       */
-      t15_2_B.Divide2_n = t15_2_B.Sum * t15_2_P.uy0_Value;
-
-      /* Sum: '<S59>/Sum1' incorporates:
-       *  Constant: '<S59>/y0'
-       */
-      t15_2_B.Sum1_a = t15_2_B.Divide2_n + t15_2_P.y0_Value;
-
-      /* Saturate: '<S59>/[1 y0]' */
-      tmin = t15_2_B.Sum1_a;
-      u = t15_2_P.uy0_LowerSat;
-      u_0 = t15_2_P.uy0_UpperSat;
-      if (tmin >= u_0) {
-        t15_2_B.uy0 = u_0;
-      } else if (tmin <= u) {
-        t15_2_B.uy0 = u;
-      } else {
-        t15_2_B.uy0 = tmin;
-      }
-
-      /* End of Saturate: '<S59>/[1 y0]' */
-      t15_2_B.c_eob_bc = t15_2_B.uy0;
-    }
-
+    t15_2_B.Subtract1_mr = t15_2_P._Value_i - t15_2_B.Saturation_m;
     for (i = 0; i < 11; i++) {
       /* Product: '<S15>/Divide3' */
-      t15_2_B.Divide3_p[i] = t15_2_B.Div_rdcontr[i] * t15_2_B.c_eob_bc *
-        t15_2_B.Subtract1_l;
+      t15_2_B.Divide3_d[i] = t15_2_B.Div_rdcontr[i] * t15_2_B.c_eob_e2 *
+        t15_2_B.Subtract1_mr;
 
       /* Product: '<S15>/Divide1' */
-      t15_2_B.Divide1_jp[i] = t15_2_B.u9_b[i] * t15_2_B.Saturation_i;
+      t15_2_B.Divide1_fj[i] = t15_2_B.u_h[i] * t15_2_B.Saturation_m;
 
       /* Sum: '<S15>/Sum2' */
-      t15_2_B.Sum2_h[i] = t15_2_B.Divide1_jp[i] + t15_2_B.Divide3_p[i];
-      t15_2_B.u99_i[i] = t15_2_B.Sum2_h[i];
+      t15_2_B.Sum2_b[i] = t15_2_B.Divide1_fj[i] + t15_2_B.Divide3_d[i];
+      t15_2_B.u_f[i] = t15_2_B.Sum2_b[i];
     }
-
-    /* End of Switch: '<S15>/c_eob' */
   }
 
-  /* End of Switch: '<S60>/0.999' */
+  /* End of Switch: '<S68>/1' */
 
-  /* DiscreteStateSpace: '<S53>/Curr. term. contr' */
+  /* DataStoreRead: '<S56>/Data Store Read' */
+  t15_2_B.DataStoreRead_p = t15_2_DWork.ref_ramp;
+
+  /* Memory: '<S56>/Memory1' */
+  t15_2_B.Memory1_hd = t15_2_DWork.Memory1_PreviousInput_ma;
+
+  /* DataStoreRead: '<S73>/Data Store Read' */
+  t15_2_B.DataStoreRead_k2 = t15_2_DWork.RupRd[2];
+
+  /* Abs: '<S73>/Abs' */
+  t15_2_B.Abs_f = fabs(t15_2_B.DataStoreRead_k2);
+
+  /* RelationalOperator: '<S73>/Relational Operator' */
+  t15_2_B.RelationalOperator_bi = (t15_2_B.e6 < t15_2_B.Abs_f);
+
+  /* RelationalOperator: '<S72>/Compare' incorporates:
+   *  Constant: '<S72>/Constant'
+   */
+  t15_2_B.Compare_j = (t15_2_B.u_e < t15_2_P.Constant_Value_p);
+
+  /* Logic: '<S56>/Logical Operator2' */
+  t15_2_B.LogicalOperator2_d = (t15_2_B.RelationalOperator_bi &&
+    t15_2_B.Compare_j);
+
+  /* Memory: '<S74>/Memory' */
+  t15_2_B.Memory_mo = t15_2_DWork.Memory_PreviousInput_ok;
+
+  /* Logic: '<S74>/Logical Operator' */
+  t15_2_B.LogicalOperator_l = ((t15_2_B.LogicalOperator2_d != 0.0) ||
+    (t15_2_B.Memory_mo != 0.0));
+
+  /* Switch: '<S56>/1 ' */
+  if (t15_2_B.LogicalOperator_l >= t15_2_P._Threshold_i) {
+    t15_2_B.u_b = t15_2_B.Memory1_hd;
+  } else {
+    t15_2_B.u_b = t15_2_B.Times;
+  }
+
+  /* End of Switch: '<S56>/1 ' */
+
+  /* Sum: '<S56>/Subtract2' */
+  t15_2_B.Subtract2_g = t15_2_B.u_b - t15_2_B.Times;
+
+  /* Product: '<S56>/Divide4' */
+  t15_2_B.Divide4_d = 1.0 / t15_2_B.DataStoreRead_p * t15_2_B.Subtract2_g;
+
+  /* Sum: '<S56>/Subtract3' incorporates:
+   *  Constant: '<S56>/1'
+   */
+  t15_2_B.Subtract3 = t15_2_B.Divide4_d + t15_2_P._Value_if;
+
+  /* Saturate: '<S56>/Saturation' */
+  tmin = t15_2_B.Subtract3;
+  u = t15_2_P.Saturation_LowerSat_a;
+  u_0 = t15_2_P.Saturation_UpperSat_d;
+  if (tmin >= u_0) {
+    t15_2_B.Saturation_k = u_0;
+  } else if (tmin <= u) {
+    t15_2_B.Saturation_k = u;
+  } else {
+    t15_2_B.Saturation_k = tmin;
+  }
+
+  /* End of Saturate: '<S56>/Saturation' */
+
+  /* DiscreteStateSpace: '<S15>/Curr. term. contr' */
   {
     t15_2_B.Currtermcontr[0] = (t15_2_P.Currtermcontr_C[0])*
       t15_2_DWork.Currtermcontr_DSTATE[0];
@@ -2691,31 +2701,41 @@ void t15_2_step(void)
       t15_2_DWork.Currtermcontr_DSTATE[10];
   }
 
+  /* Sum: '<S56>/Subtract1' incorporates:
+   *  Constant: '<S56>/1'
+   */
+  t15_2_B.Subtract1_m = t15_2_P._Value_if - t15_2_B.Saturation_k;
   for (i = 0; i < 11; i++) {
     /* Product: '<S15>/Divide4' */
-    t15_2_B.Divide4_p[i] = t15_2_B.u99_i[i] * t15_2_B.Saturation;
+    t15_2_B.Divide4_i[i] = t15_2_B.u_f[i] * t15_2_B.Saturation_k;
 
     /* Product: '<S15>/Divide5' */
-    t15_2_B.Divide5_p[i] = t15_2_B.Currtermcontr[i] * t15_2_B.Subtract1_k;
+    t15_2_B.Divide5_k[i] = t15_2_B.Currtermcontr[i] * t15_2_B.Subtract1_m;
 
-    /* Memory: '<S56>/Memory2' */
-    t15_2_B.Memory2_kr[i] = t15_2_DWork.Memory2_PreviousInput_dn[i];
+    /* Memory: '<S77>/Memory2' */
+    t15_2_B.Memory2_g5[i] = t15_2_DWork.Memory2_PreviousInput_n[i];
   }
 
-  /* Switch: '<S56>/tcont2 ' incorporates:
-   *  Constant: '<S56>/zeros(20,1)'
-   */
+  /* DataStoreRead: '<S77>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_p = t15_2_DWork.tdiv;
+
+  /* RelationalOperator: '<S77>/Relational Operator1' */
+  t15_2_B.RelationalOperator1_p = (t15_2_B.Times > t15_2_B.DataStoreRead1_p);
+
+  /* DataStoreRead: '<S76>/Data Store Read' */
+  t15_2_B.DataStoreRead_a = t15_2_DWork.tcont2;
+
+  /* RelationalOperator: '<S76>/Relational Operator' */
+  t15_2_B.RelationalOperator_p = (t15_2_B.Times > t15_2_B.DataStoreRead_a);
+
+  /* Product: '<S76>/Divide12' */
   for (i = 0; i < 20; i++) {
-    if (t15_2_B.e3 > t15_2_P.tcont2_Threshold_f) {
-      t15_2_B.tcont2[i] = t15_2_B.u9[i];
-    } else {
-      t15_2_B.tcont2[i] = t15_2_P.zeros201_Value[i];
-    }
+    t15_2_B.Divide12_g[i] = t15_2_B.u_c[i] * t15_2_B.RelationalOperator_p;
   }
 
-  /* End of Switch: '<S56>/tcont2 ' */
+  /* End of Product: '<S76>/Divide12' */
 
-  /* DiscreteStateSpace: '<S56>/Lim. contr.' */
+  /* DiscreteStateSpace: '<S57>/Lim. contr.' */
   {
     {
       static const int_T colCidxRow0[46] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -2739,7 +2759,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow0[0];
       const real_T *pD0 = t15_2_P.Limcontr_D;
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y0 = &t15_2_B.Limcontr[0];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2769,7 +2789,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow1[0];
       const real_T *pD17 = &t15_2_P.Limcontr_D[17];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y1 = &t15_2_B.Limcontr[1];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2799,7 +2819,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow2[0];
       const real_T *pD34 = &t15_2_P.Limcontr_D[34];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y2 = &t15_2_B.Limcontr[2];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2829,7 +2849,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow3[0];
       const real_T *pD51 = &t15_2_P.Limcontr_D[51];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y3 = &t15_2_B.Limcontr[3];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2859,7 +2879,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow4[0];
       const real_T *pD68 = &t15_2_P.Limcontr_D[68];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y4 = &t15_2_B.Limcontr[4];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2889,7 +2909,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow5[0];
       const real_T *pD85 = &t15_2_P.Limcontr_D[85];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y5 = &t15_2_B.Limcontr[5];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2919,7 +2939,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow6[0];
       const real_T *pD102 = &t15_2_P.Limcontr_D[102];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y6 = &t15_2_B.Limcontr[6];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2949,7 +2969,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow7[0];
       const real_T *pD119 = &t15_2_P.Limcontr_D[119];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y7 = &t15_2_B.Limcontr[7];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -2979,7 +2999,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow8[0];
       const real_T *pD136 = &t15_2_P.Limcontr_D[136];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y8 = &t15_2_B.Limcontr[8];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -3009,7 +3029,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow9[0];
       const real_T *pD153 = &t15_2_P.Limcontr_D[153];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y9 = &t15_2_B.Limcontr[9];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -3039,7 +3059,7 @@ void t15_2_step(void)
 
       const int_T *pDidx = &colDidxRow10[0];
       const real_T *pD170 = &t15_2_P.Limcontr_D[170];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *y10 = &t15_2_B.Limcontr[10];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -3048,7 +3068,7 @@ void t15_2_step(void)
     }
   }
 
-  /* DiscreteStateSpace: '<S56>/Curr. contr.' */
+  /* DiscreteStateSpace: '<S57>/Curr. contr.' */
   {
     {
       static const int_T colCidxRow0[11] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -3205,155 +3225,179 @@ void t15_2_step(void)
     }
   }
 
-  /* Switch: '<S56>/Ip>Ip_div ' incorporates:
-   *  Switch: '<S56>/tcont2'
-   */
-  if (t15_2_B.e6 > t15_2_P.IpIp_div_Threshold_l) {
-    memcpy(&t15_2_B.IpIp_div[0], &t15_2_B.Memory2_kr[0], 11U * sizeof(real_T));
-  } else {
-    if (t15_2_B.e3 > t15_2_P.tcont2_Threshold) {
-      /* Lookup: '<S56>/gain_cont2'
-       * About '<S56>/gain_cont2':
-       * Input0  Data Type:  Floating Point real_T
-       * Output0 Data Type:  Floating Point real_T
-       * Lookup Method: Linear_Endpoint
-       *
-       * XData parameter uses the same data type and scaling as Input0
-       * YData parameter uses the same data type and scaling as Output0
-       */
-      LookUp_real_T_real_T( &(t15_2_B.gain_cont2), t15_2_P.gain_cont2_YData,
-                           t15_2_B.e3, t15_2_P.gain_cont2_XData, 3U);
-      for (i = 0; i < 11; i++) {
-        /* Product: '<S56>/Divide ' */
-        t15_2_B.Divide_f[i] = t15_2_B.Limcontr[i] * t15_2_B.gain_cont2;
-        t15_2_B.tcont2_a[i] = t15_2_B.Divide_f[i];
-      }
-    } else {
-      for (i = 0; i < 11; i++) {
-        /* Product: '<S56>/Divide 2' incorporates:
-         *  Constant: '<S56>/ntur(1:11)'
-         *  Switch: '<S56>/tcont2'
-         */
-        t15_2_B.Divide2_a[i] = t15_2_B.Currcontr[i] / t15_2_P.ntur111_Value_c[i];
+  /* DataStoreRead: '<S57>/Data Store Read2' */
+  memcpy(&t15_2_B.DataStoreRead2_g[0], &t15_2_DWork.ntur[0], 11U * sizeof(real_T));
 
-        /* Switch: '<S56>/tcont2' */
-        t15_2_B.tcont2_a[i] = t15_2_B.Divide2_a[i];
+  /* Switch: '<S77>/ 1 ' */
+  if (t15_2_B.RelationalOperator1_p >= t15_2_P.u_Threshold) {
+    memcpy(&t15_2_B.u_o[0], &t15_2_B.Memory2_g5[0], 11U * sizeof(real_T));
+  } else {
+    /* DataStoreRead: '<S77>/Data Store Read' */
+    t15_2_B.DataStoreRead_lj = t15_2_DWork.tcont2;
+
+    /* RelationalOperator: '<S77>/Relational Operator' */
+    t15_2_B.RelationalOperator_et = (t15_2_B.Times > t15_2_B.DataStoreRead_lj);
+
+    /* Switch: '<S77>/1' */
+    if (t15_2_B.RelationalOperator_et >= t15_2_P._Threshold) {
+      /* DataStoreRead: '<S75>/Data Store Read1' */
+      t15_2_B.DataStoreRead1_f3 = t15_2_DWork.dtcont2;
+
+      /* DataStoreRead: '<S75>/Data Store Read' */
+      t15_2_B.DataStoreRead_d = t15_2_DWork.tcont2;
+
+      /* Sum: '<S75>/Subtract3' */
+      t15_2_B.Subtract3_j = t15_2_B.Times - t15_2_B.DataStoreRead_d;
+
+      /* Product: '<S75>/Divide2' */
+      t15_2_B.Divide2_l = t15_2_B.Subtract3_j / t15_2_B.DataStoreRead1_f3;
+
+      /* Saturate: '<S75>/Saturation1' */
+      tmin = t15_2_B.Divide2_l;
+      u = t15_2_P.Saturation1_LowerSat;
+      u_0 = t15_2_P.Saturation1_UpperSat;
+      if (tmin >= u_0) {
+        t15_2_B.Saturation1_o = u_0;
+      } else if (tmin <= u) {
+        t15_2_B.Saturation1_o = u;
+      } else {
+        t15_2_B.Saturation1_o = tmin;
       }
+
+      /* End of Saturate: '<S75>/Saturation1' */
+
+      /* Product: '<S57>/Divide ' */
+      for (i = 0; i < 11; i++) {
+        t15_2_B.Divide_m[i] = t15_2_B.Limcontr[i] * t15_2_B.Saturation1_o;
+        t15_2_B.u_p[i] = t15_2_B.Divide_m[i];
+      }
+
+      /* End of Product: '<S57>/Divide ' */
+    } else {
+      /* Product: '<S57>/Divide2' */
+      for (i = 0; i < 11; i++) {
+        t15_2_B.Divide2_n0[i] = t15_2_B.Currcontr[i] /
+          t15_2_B.DataStoreRead2_g[i];
+        t15_2_B.u_p[i] = t15_2_B.Divide2_n0[i];
+      }
+
+      /* End of Product: '<S57>/Divide2' */
     }
 
-    memcpy(&t15_2_B.IpIp_div[0], &t15_2_B.tcont2_a[0], 11U * sizeof(real_T));
+    /* End of Switch: '<S77>/1' */
+    memcpy(&t15_2_B.u_o[0], &t15_2_B.u_p[0], 11U * sizeof(real_T));
   }
 
-  /* End of Switch: '<S56>/Ip>Ip_div ' */
+  /* End of Switch: '<S77>/ 1 ' */
 
-  /* Product: '<S15>/Divide6' */
+  /* Product: '<S15>/Divide14' */
   for (i = 0; i < 11; i++) {
-    t15_2_B.Divide6_l[i] = t15_2_B.Saturation1 * t15_2_B.IpIp_div[i];
+    t15_2_B.Divide14[i] = t15_2_B.Saturation1 * t15_2_B.u_o[i];
   }
 
   for (i = 0; i < 500; i++) {
-    /* DataStoreRead: '<S80>/Data Store Read' */
-    t15_2_B.DataStoreRead_p1[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S91>/Data Store Read' */
+    t15_2_B.DataStoreRead_lx[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S80>/0.001' */
-    t15_2_B.u01[i] = t15_2_P.u01_Gain * t15_2_B.DataStoreRead_p1[i];
+    /* Gain: '<S91>/0.001' */
+    t15_2_B.u01[i] = t15_2_P.u01_Gain * t15_2_B.DataStoreRead_lx[i];
 
-    /* DataStoreRead: '<S80>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_d[i] = t15_2_DWork.volt[20 * i + 1];
+    /* DataStoreRead: '<S91>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_g[i] = t15_2_DWork.volt[20 * i + 1];
 
-    /* DataStoreRead: '<S83>/Data Store Read' */
-    t15_2_B.DataStoreRead_a[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S94>/Data Store Read' */
+    t15_2_B.DataStoreRead_h[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S83>/0.001' */
-    t15_2_B.u01_o[i] = t15_2_P.u01_Gain_o * t15_2_B.DataStoreRead_a[i];
+    /* Gain: '<S94>/0.001' */
+    t15_2_B.u01_p[i] = t15_2_P.u01_Gain_a * t15_2_B.DataStoreRead_h[i];
 
-    /* DataStoreRead: '<S83>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_c[i] = t15_2_DWork.volt[20 * i + 2];
+    /* DataStoreRead: '<S94>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_m[i] = t15_2_DWork.volt[20 * i + 2];
 
-    /* DataStoreRead: '<S84>/Data Store Read' */
-    t15_2_B.DataStoreRead_i1[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S95>/Data Store Read' */
+    t15_2_B.DataStoreRead_it[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S84>/0.001' */
-    t15_2_B.u01_g[i] = t15_2_P.u01_Gain_ox * t15_2_B.DataStoreRead_i1[i];
+    /* Gain: '<S95>/0.001' */
+    t15_2_B.u01_d[i] = t15_2_P.u01_Gain_f * t15_2_B.DataStoreRead_it[i];
 
-    /* DataStoreRead: '<S84>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_b[i] = t15_2_DWork.volt[20 * i + 3];
+    /* DataStoreRead: '<S95>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_k[i] = t15_2_DWork.volt[20 * i + 3];
 
-    /* DataStoreRead: '<S85>/Data Store Read' */
-    t15_2_B.DataStoreRead_i2[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S96>/Data Store Read' */
+    t15_2_B.DataStoreRead_i0[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S85>/0.001' */
-    t15_2_B.u01_b[i] = t15_2_P.u01_Gain_f * t15_2_B.DataStoreRead_i2[i];
+    /* Gain: '<S96>/0.001' */
+    t15_2_B.u01_k[i] = t15_2_P.u01_Gain_l * t15_2_B.DataStoreRead_i0[i];
 
-    /* DataStoreRead: '<S85>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_e[i] = t15_2_DWork.volt[20 * i + 4];
+    /* DataStoreRead: '<S96>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_c[i] = t15_2_DWork.volt[20 * i + 4];
 
-    /* DataStoreRead: '<S86>/Data Store Read' */
-    t15_2_B.DataStoreRead_n[i] = t15_2_DWork.volt[20 * i];
-
-    /* Gain: '<S86>/0.001' */
-    t15_2_B.u01_h[i] = t15_2_P.u01_Gain_b * t15_2_B.DataStoreRead_n[i];
-
-    /* DataStoreRead: '<S86>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_pd[i] = t15_2_DWork.volt[20 * i + 5];
-
-    /* DataStoreRead: '<S87>/Data Store Read' */
-    t15_2_B.DataStoreRead_oy[i] = t15_2_DWork.volt[20 * i];
-
-    /* Gain: '<S87>/0.001' */
-    t15_2_B.u01_f[i] = t15_2_P.u01_Gain_e * t15_2_B.DataStoreRead_oy[i];
-
-    /* DataStoreRead: '<S87>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_m[i] = t15_2_DWork.volt[20 * i + 6];
-
-    /* DataStoreRead: '<S88>/Data Store Read' */
+    /* DataStoreRead: '<S97>/Data Store Read' */
     t15_2_B.DataStoreRead_e[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S88>/0.001' */
-    t15_2_B.u01_b3[i] = t15_2_P.u01_Gain_k * t15_2_B.DataStoreRead_e[i];
+    /* Gain: '<S97>/0.001' */
+    t15_2_B.u01_e[i] = t15_2_P.u01_Gain_o * t15_2_B.DataStoreRead_e[i];
 
-    /* DataStoreRead: '<S88>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_ee[i] = t15_2_DWork.volt[20 * i + 7];
+    /* DataStoreRead: '<S97>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_o[i] = t15_2_DWork.volt[20 * i + 5];
 
-    /* DataStoreRead: '<S89>/Data Store Read' */
-    t15_2_B.DataStoreRead_g[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S98>/Data Store Read' */
+    t15_2_B.DataStoreRead_c[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S89>/0.001' */
-    t15_2_B.u01_bc[i] = t15_2_P.u01_Gain_d * t15_2_B.DataStoreRead_g[i];
+    /* Gain: '<S98>/0.001' */
+    t15_2_B.u01_f[i] = t15_2_P.u01_Gain_fv * t15_2_B.DataStoreRead_c[i];
 
-    /* DataStoreRead: '<S89>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_cn[i] = t15_2_DWork.volt[20 * i + 8];
+    /* DataStoreRead: '<S98>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_nc[i] = t15_2_DWork.volt[20 * i + 6];
 
-    /* DataStoreRead: '<S90>/Data Store Read' */
-    t15_2_B.DataStoreRead_f3[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S99>/Data Store Read' */
+    t15_2_B.DataStoreRead_o[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S90>/0.001' */
-    t15_2_B.u01_l[i] = t15_2_P.u01_Gain_fh * t15_2_B.DataStoreRead_f3[i];
+    /* Gain: '<S99>/0.001' */
+    t15_2_B.u01_k4[i] = t15_2_P.u01_Gain_d * t15_2_B.DataStoreRead_o[i];
 
-    /* DataStoreRead: '<S90>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_fq[i] = t15_2_DWork.volt[20 * i + 9];
+    /* DataStoreRead: '<S99>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_mq[i] = t15_2_DWork.volt[20 * i + 7];
 
-    /* DataStoreRead: '<S81>/Data Store Read' */
-    t15_2_B.DataStoreRead_ou[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S100>/Data Store Read' */
+    t15_2_B.DataStoreRead_ai[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S81>/0.001' */
-    t15_2_B.u01_e[i] = t15_2_P.u01_Gain_l * t15_2_B.DataStoreRead_ou[i];
+    /* Gain: '<S100>/0.001' */
+    t15_2_B.u01_j[i] = t15_2_P.u01_Gain_g * t15_2_B.DataStoreRead_ai[i];
 
-    /* DataStoreRead: '<S81>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_dy[i] = t15_2_DWork.volt[20 * i + 10];
+    /* DataStoreRead: '<S100>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_b3[i] = t15_2_DWork.volt[20 * i + 8];
 
-    /* DataStoreRead: '<S82>/Data Store Read' */
-    t15_2_B.DataStoreRead_fr[i] = t15_2_DWork.volt[20 * i];
+    /* DataStoreRead: '<S101>/Data Store Read' */
+    t15_2_B.DataStoreRead_ee[i] = t15_2_DWork.volt[20 * i];
 
-    /* Gain: '<S82>/0.001' */
-    t15_2_B.u01_f1[i] = t15_2_P.u01_Gain_ey * t15_2_B.DataStoreRead_fr[i];
+    /* Gain: '<S101>/0.001' */
+    t15_2_B.u01_m[i] = t15_2_P.u01_Gain_e * t15_2_B.DataStoreRead_ee[i];
 
-    /* DataStoreRead: '<S82>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_n[i] = t15_2_DWork.volt[20 * i + 11];
+    /* DataStoreRead: '<S101>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_a1[i] = t15_2_DWork.volt[20 * i + 9];
+
+    /* DataStoreRead: '<S92>/Data Store Read' */
+    t15_2_B.DataStoreRead_hr[i] = t15_2_DWork.volt[20 * i];
+
+    /* Gain: '<S92>/0.001' */
+    t15_2_B.u01_fe[i] = t15_2_P.u01_Gain_n * t15_2_B.DataStoreRead_hr[i];
+
+    /* DataStoreRead: '<S92>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_ky[i] = t15_2_DWork.volt[20 * i + 10];
+
+    /* DataStoreRead: '<S93>/Data Store Read' */
+    t15_2_B.DataStoreRead_av[i] = t15_2_DWork.volt[20 * i];
+
+    /* Gain: '<S93>/0.001' */
+    t15_2_B.u01_h[i] = t15_2_P.u01_Gain_fl * t15_2_B.DataStoreRead_av[i];
+
+    /* DataStoreRead: '<S93>/Data Store Read1' */
+    t15_2_B.DataStoreRead1_ab[i] = t15_2_DWork.volt[20 * i + 11];
   }
 
-  /* End of Product: '<S15>/Divide6' */
-  /* Dynamic Look-Up Table Block: '<S80>/volt1'
+  /* End of Product: '<S15>/Divide14' */
+  /* Dynamic Look-Up Table Block: '<S91>/volt1'
    * Input0  Data Type:  Floating Point real_T
    * Input1  Data Type:  Floating Point real_T
    * Input2  Data Type:  Floating Point real_T
@@ -3361,54 +3405,10 @@ void t15_2_step(void)
    * Lookup Method: Linear_Endpoint
    *
    */
-  LookUp_real_T_real_T( &(t15_2_B.volt1), &t15_2_B.DataStoreRead1_d[0],
-                       t15_2_B.e3, &t15_2_B.u01[0], 499U);
+  LookUp_real_T_real_T( &(t15_2_B.volt1), &t15_2_B.DataStoreRead1_g[0],
+                       t15_2_B.Times, &t15_2_B.u01[0], 499U);
 
-  /* Dynamic Look-Up Table Block: '<S83>/volt1'
-   * Input0  Data Type:  Floating Point real_T
-   * Input1  Data Type:  Floating Point real_T
-   * Input2  Data Type:  Floating Point real_T
-   * Output0 Data Type:  Floating Point real_T
-   * Lookup Method: Linear_Endpoint
-   *
-   */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_b), &t15_2_B.DataStoreRead1_c[0],
-                       t15_2_B.e3, &t15_2_B.u01_o[0], 499U);
-
-  /* Dynamic Look-Up Table Block: '<S84>/volt1'
-   * Input0  Data Type:  Floating Point real_T
-   * Input1  Data Type:  Floating Point real_T
-   * Input2  Data Type:  Floating Point real_T
-   * Output0 Data Type:  Floating Point real_T
-   * Lookup Method: Linear_Endpoint
-   *
-   */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_i), &t15_2_B.DataStoreRead1_b[0],
-                       t15_2_B.e3, &t15_2_B.u01_g[0], 499U);
-
-  /* Dynamic Look-Up Table Block: '<S85>/volt1'
-   * Input0  Data Type:  Floating Point real_T
-   * Input1  Data Type:  Floating Point real_T
-   * Input2  Data Type:  Floating Point real_T
-   * Output0 Data Type:  Floating Point real_T
-   * Lookup Method: Linear_Endpoint
-   *
-   */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_o), &t15_2_B.DataStoreRead1_e[0],
-                       t15_2_B.e3, &t15_2_B.u01_b[0], 499U);
-
-  /* Dynamic Look-Up Table Block: '<S86>/volt1'
-   * Input0  Data Type:  Floating Point real_T
-   * Input1  Data Type:  Floating Point real_T
-   * Input2  Data Type:  Floating Point real_T
-   * Output0 Data Type:  Floating Point real_T
-   * Lookup Method: Linear_Endpoint
-   *
-   */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_d), &t15_2_B.DataStoreRead1_pd[0],
-                       t15_2_B.e3, &t15_2_B.u01_h[0], 499U);
-
-  /* Dynamic Look-Up Table Block: '<S87>/volt1'
+  /* Dynamic Look-Up Table Block: '<S94>/volt1'
    * Input0  Data Type:  Floating Point real_T
    * Input1  Data Type:  Floating Point real_T
    * Input2  Data Type:  Floating Point real_T
@@ -3417,9 +3417,9 @@ void t15_2_step(void)
    *
    */
   LookUp_real_T_real_T( &(t15_2_B.volt1_m), &t15_2_B.DataStoreRead1_m[0],
-                       t15_2_B.e3, &t15_2_B.u01_f[0], 499U);
+                       t15_2_B.Times, &t15_2_B.u01_p[0], 499U);
 
-  /* Dynamic Look-Up Table Block: '<S88>/volt1'
+  /* Dynamic Look-Up Table Block: '<S95>/volt1'
    * Input0  Data Type:  Floating Point real_T
    * Input1  Data Type:  Floating Point real_T
    * Input2  Data Type:  Floating Point real_T
@@ -3427,10 +3427,10 @@ void t15_2_step(void)
    * Lookup Method: Linear_Endpoint
    *
    */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_j), &t15_2_B.DataStoreRead1_ee[0],
-                       t15_2_B.e3, &t15_2_B.u01_b3[0], 499U);
+  LookUp_real_T_real_T( &(t15_2_B.volt1_o), &t15_2_B.DataStoreRead1_k[0],
+                       t15_2_B.Times, &t15_2_B.u01_d[0], 499U);
 
-  /* Dynamic Look-Up Table Block: '<S89>/volt1'
+  /* Dynamic Look-Up Table Block: '<S96>/volt1'
    * Input0  Data Type:  Floating Point real_T
    * Input1  Data Type:  Floating Point real_T
    * Input2  Data Type:  Floating Point real_T
@@ -3438,10 +3438,10 @@ void t15_2_step(void)
    * Lookup Method: Linear_Endpoint
    *
    */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_b2), &t15_2_B.DataStoreRead1_cn[0],
-                       t15_2_B.e3, &t15_2_B.u01_bc[0], 499U);
+  LookUp_real_T_real_T( &(t15_2_B.volt1_d), &t15_2_B.DataStoreRead1_c[0],
+                       t15_2_B.Times, &t15_2_B.u01_k[0], 499U);
 
-  /* Dynamic Look-Up Table Block: '<S90>/volt1'
+  /* Dynamic Look-Up Table Block: '<S97>/volt1'
    * Input0  Data Type:  Floating Point real_T
    * Input1  Data Type:  Floating Point real_T
    * Input2  Data Type:  Floating Point real_T
@@ -3449,10 +3449,10 @@ void t15_2_step(void)
    * Lookup Method: Linear_Endpoint
    *
    */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_ia), &t15_2_B.DataStoreRead1_fq[0],
-                       t15_2_B.e3, &t15_2_B.u01_l[0], 499U);
+  LookUp_real_T_real_T( &(t15_2_B.volt1_j), &t15_2_B.DataStoreRead1_o[0],
+                       t15_2_B.Times, &t15_2_B.u01_e[0], 499U);
 
-  /* Dynamic Look-Up Table Block: '<S81>/volt1'
+  /* Dynamic Look-Up Table Block: '<S98>/volt1'
    * Input0  Data Type:  Floating Point real_T
    * Input1  Data Type:  Floating Point real_T
    * Input2  Data Type:  Floating Point real_T
@@ -3460,10 +3460,10 @@ void t15_2_step(void)
    * Lookup Method: Linear_Endpoint
    *
    */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_a), &t15_2_B.DataStoreRead1_dy[0],
-                       t15_2_B.e3, &t15_2_B.u01_e[0], 499U);
+  LookUp_real_T_real_T( &(t15_2_B.volt1_b), &t15_2_B.DataStoreRead1_nc[0],
+                       t15_2_B.Times, &t15_2_B.u01_f[0], 499U);
 
-  /* Dynamic Look-Up Table Block: '<S82>/volt1'
+  /* Dynamic Look-Up Table Block: '<S99>/volt1'
    * Input0  Data Type:  Floating Point real_T
    * Input1  Data Type:  Floating Point real_T
    * Input2  Data Type:  Floating Point real_T
@@ -3471,117 +3471,144 @@ void t15_2_step(void)
    * Lookup Method: Linear_Endpoint
    *
    */
-  LookUp_real_T_real_T( &(t15_2_B.volt1_e), &t15_2_B.DataStoreRead1_n[0],
-                       t15_2_B.e3, &t15_2_B.u01_f1[0], 499U);
+  LookUp_real_T_real_T( &(t15_2_B.volt1_p), &t15_2_B.DataStoreRead1_mq[0],
+                       t15_2_B.Times, &t15_2_B.u01_k4[0], 499U);
+
+  /* Dynamic Look-Up Table Block: '<S100>/volt1'
+   * Input0  Data Type:  Floating Point real_T
+   * Input1  Data Type:  Floating Point real_T
+   * Input2  Data Type:  Floating Point real_T
+   * Output0 Data Type:  Floating Point real_T
+   * Lookup Method: Linear_Endpoint
+   *
+   */
+  LookUp_real_T_real_T( &(t15_2_B.volt1_du), &t15_2_B.DataStoreRead1_b3[0],
+                       t15_2_B.Times, &t15_2_B.u01_j[0], 499U);
+
+  /* Dynamic Look-Up Table Block: '<S101>/volt1'
+   * Input0  Data Type:  Floating Point real_T
+   * Input1  Data Type:  Floating Point real_T
+   * Input2  Data Type:  Floating Point real_T
+   * Output0 Data Type:  Floating Point real_T
+   * Lookup Method: Linear_Endpoint
+   *
+   */
+  LookUp_real_T_real_T( &(t15_2_B.volt1_bc), &t15_2_B.DataStoreRead1_a1[0],
+                       t15_2_B.Times, &t15_2_B.u01_m[0], 499U);
+
+  /* Dynamic Look-Up Table Block: '<S92>/volt1'
+   * Input0  Data Type:  Floating Point real_T
+   * Input1  Data Type:  Floating Point real_T
+   * Input2  Data Type:  Floating Point real_T
+   * Output0 Data Type:  Floating Point real_T
+   * Lookup Method: Linear_Endpoint
+   *
+   */
+  LookUp_real_T_real_T( &(t15_2_B.volt1_pz), &t15_2_B.DataStoreRead1_ky[0],
+                       t15_2_B.Times, &t15_2_B.u01_fe[0], 499U);
+
+  /* Dynamic Look-Up Table Block: '<S93>/volt1'
+   * Input0  Data Type:  Floating Point real_T
+   * Input1  Data Type:  Floating Point real_T
+   * Input2  Data Type:  Floating Point real_T
+   * Output0 Data Type:  Floating Point real_T
+   * Lookup Method: Linear_Endpoint
+   *
+   */
+  LookUp_real_T_real_T( &(t15_2_B.volt1_c), &t15_2_B.DataStoreRead1_ab[0],
+                       t15_2_B.Times, &t15_2_B.u01_h[0], 499U);
+
+  /* Sum: '<S56>/Subtract4' incorporates:
+   *  Constant: '<S56>/1'
+   */
+  t15_2_B.Subtract4 = t15_2_P._Value_if - t15_2_B.LogicalOperator_l;
 
   /* Product: '<S15>/Divide7' */
   t15_2_B.Divide7[0] = t15_2_B.volt1 * t15_2_B.Subtract4;
-  t15_2_B.Divide7[1] = t15_2_B.volt1_b * t15_2_B.Subtract4;
-  t15_2_B.Divide7[2] = t15_2_B.volt1_i * t15_2_B.Subtract4;
-  t15_2_B.Divide7[3] = t15_2_B.volt1_o * t15_2_B.Subtract4;
-  t15_2_B.Divide7[4] = t15_2_B.volt1_d * t15_2_B.Subtract4;
-  t15_2_B.Divide7[5] = t15_2_B.volt1_m * t15_2_B.Subtract4;
-  t15_2_B.Divide7[6] = t15_2_B.volt1_j * t15_2_B.Subtract4;
-  t15_2_B.Divide7[7] = t15_2_B.volt1_b2 * t15_2_B.Subtract4;
-  t15_2_B.Divide7[8] = t15_2_B.volt1_ia * t15_2_B.Subtract4;
-  t15_2_B.Divide7[9] = t15_2_B.volt1_a * t15_2_B.Subtract4;
-  t15_2_B.Divide7[10] = t15_2_B.volt1_e * t15_2_B.Subtract4;
+  t15_2_B.Divide7[1] = t15_2_B.volt1_m * t15_2_B.Subtract4;
+  t15_2_B.Divide7[2] = t15_2_B.volt1_o * t15_2_B.Subtract4;
+  t15_2_B.Divide7[3] = t15_2_B.volt1_d * t15_2_B.Subtract4;
+  t15_2_B.Divide7[4] = t15_2_B.volt1_j * t15_2_B.Subtract4;
+  t15_2_B.Divide7[5] = t15_2_B.volt1_b * t15_2_B.Subtract4;
+  t15_2_B.Divide7[6] = t15_2_B.volt1_p * t15_2_B.Subtract4;
+  t15_2_B.Divide7[7] = t15_2_B.volt1_du * t15_2_B.Subtract4;
+  t15_2_B.Divide7[8] = t15_2_B.volt1_bc * t15_2_B.Subtract4;
+  t15_2_B.Divide7[9] = t15_2_B.volt1_pz * t15_2_B.Subtract4;
+  t15_2_B.Divide7[10] = t15_2_B.volt1_c * t15_2_B.Subtract4;
   for (i = 0; i < 11; i++) {
     /* Sum: '<S15>/Sum3' */
-    t15_2_B.Sum3[i] = ((t15_2_B.Divide4_p[i] + t15_2_B.Divide5_p[i]) +
-                       t15_2_B.Divide6_l[i]) + t15_2_B.Divide7[i];
+    t15_2_B.Sum3[i] = ((t15_2_B.Divide4_i[i] + t15_2_B.Divide5_k[i]) +
+                       t15_2_B.Divide14[i]) + t15_2_B.Divide7[i];
 
-    /* Product: '<S52>/Divide2' */
-    t15_2_B.Divide2_j[i] = t15_2_B.e6_m[i] * t15_2_B.Sum3[i];
+    /* Product: '<S55>/Divide2' */
+    t15_2_B.Divide2_a[i] = t15_2_B.e6_e[i] * t15_2_B.Sum3[i];
 
     /* RelationalOperator: '<S71>/Compare' incorporates:
      *  Constant: '<S71>/Constant'
      */
-    t15_2_B.Compare_p3[i] = (uint8_T)(t15_2_B.Divide2_j[i] <
-      t15_2_P.Constant_Value_bp);
+    t15_2_B.Compare_e[i] = (uint8_T)(t15_2_B.Divide2_a[i] <
+      t15_2_P.Constant_Value_nf);
 
-    /* Logic: '<S52>/Logical Operator' */
-    t15_2_B.LogicalOperator[i] = ((t15_2_B.Compare_i[i] != 0) &&
-      (t15_2_B.Compare_p3[i] != 0));
+    /* Logic: '<S55>/Logical Operator' */
+    t15_2_B.LogicalOperator_ie[i] = ((t15_2_B.Compare[i] != 0) &&
+      (t15_2_B.Compare_e[i] != 0));
 
-    /* Sum: '<S52>/Sum3' */
-    t15_2_B.Sum3_b[i] = t15_2_B.Saturation_k[i] + (real_T)
-      t15_2_B.LogicalOperator[i];
-
-    /* Saturate: '<S52>/Saturation1' */
-    tmin = t15_2_B.Sum3_b[i];
-    u = t15_2_P.Saturation1_LowerSat_n;
-    u_0 = t15_2_P.Saturation1_UpperSat_o;
-    if (tmin >= u_0) {
-      tmin = u_0;
+    /* Switch: '<S55>/Switch' incorporates:
+     *  Constant: '<S55>/1'
+     */
+    if (t15_2_B.LogicalOperator_ie[i] >= t15_2_P.Switch_Threshold) {
+      t15_2_B.Switch[i] = t15_2_P._Value_d;
     } else {
-      if (tmin <= u) {
-        tmin = u;
-      }
+      t15_2_B.Switch[i] = t15_2_B.Saturation[i];
     }
 
-    t15_2_B.Saturation1_g[i] = tmin;
+    /* End of Switch: '<S55>/Switch' */
 
-    /* End of Saturate: '<S52>/Saturation1' */
-
-    /* Product: '<S52>/Divide6' */
-    t15_2_B.Divide6_f[i] = t15_2_B.Sum3[i] * t15_2_B.Saturation1_g[i];
+    /* Product: '<S55>/Divide6' */
+    t15_2_B.Divide6_l[i] = t15_2_B.Sum3[i] * t15_2_B.Switch[i];
   }
 
-  /* UniformRandomNumber: '<S61>/Uniform Random Number' */
+  /* UniformRandomNumber: '<S65>/Uniform Random Number' */
   t15_2_B.UniformRandomNumber = t15_2_DWork.UniformRandomNumber_NextOutput;
 
-  /* UnitDelay: '<S73>/UD' */
-  t15_2_B.Uk1_m = t15_2_DWork.UD_DSTATE_c;
+  /* DataStoreRead: '<S86>/Data Store Read' */
+  t15_2_B.DataStoreRead_ie = t15_2_DWork.RupRd[5];
 
-  /* Switch: '<S15>/t>t_tran2d' incorporates:
-   *  Constant: '<S15>/zeros(2,1)'
-   */
-  if (t15_2_B.e3 > t15_2_P.tt_tran2d_Threshold) {
-    /* Sum: '<S73>/Diff' */
-    t15_2_B.Diff_f = t15_2_B.e3 - t15_2_B.Uk1_m;
+  /* Gain: '<S86>/1.75' */
+  t15_2_B.u5 = t15_2_P.u5_Gain_m * t15_2_B.DataStoreRead_ie;
 
-    /* Gain: '<S72>/2e3' */
-    t15_2_B.e3_i = t15_2_P.e3_Gain * t15_2_B.Diff_f;
+  /* Product: '<S86>/Divide11' */
+  t15_2_B.Divide11 = t15_2_B.UniformRandomNumber * t15_2_B.u5;
 
-    /* Sqrt: '<S72>/Sqrt' */
-    t15_2_B.Sqrt = sqrt(t15_2_B.e3_i);
+  /* UnitDelay: '<S87>/UD' */
+  t15_2_B.Uk1_g = t15_2_DWork.UD_DSTATE_h;
 
-    /* DataStoreRead: '<S72>/Data Store Read' */
-    t15_2_B.DataStoreRead_nz = t15_2_DWork.RupRd[5];
+  /* Sum: '<S87>/Diff' */
+  t15_2_B.Diff_p = t15_2_B.Times - t15_2_B.Uk1_g;
 
-    /* Gain: '<S72>/1.75' */
-    t15_2_B.u5 = t15_2_P.u5_Gain * t15_2_B.DataStoreRead_nz;
+  /* Gain: '<S86>/2e3' */
+  t15_2_B.e3_n = t15_2_P.e3_Gain_n * t15_2_B.Diff_p;
 
-    /* Product: '<S72>/Divide11' */
-    t15_2_B.Divide11_d = t15_2_B.UniformRandomNumber * t15_2_B.u5;
+  /* Sqrt: '<S86>/Sqrt' */
+  t15_2_B.Sqrt = sqrt(t15_2_B.e3_n);
 
-    /* Product: '<S72>/Divide1' */
-    t15_2_B.Divide1_g = t15_2_B.Divide11_d / t15_2_B.Sqrt;
+  /* Product: '<S86>/Divide1' */
+  t15_2_B.Divide1_f = t15_2_B.Divide11 / t15_2_B.Sqrt;
 
-    /* Sum: '<S25>/Diff' */
-    t15_2_B.Diff_o = t15_2_B.e3 - t15_2_B.Uk1_d;
+  /* Sum: '<S65>/Sum2' */
+  t15_2_B.Sum2_j = t15_2_B.Divide1_f + t15_2_B.Divide;
 
-    /* Sum: '<S24>/Diff' incorporates:
-     *  Inport: '<Root>/In1'
-     */
-    t15_2_B.Diff_n = t15_2_U.In1[0] - t15_2_B.Uk1;
+  /* DataStoreRead: '<S67>/Data Store Read' */
+  t15_2_B.DataStoreRead_ea = t15_2_DWork.t_tran2D;
 
-    /* Product: '<S18>/Divide' */
-    t15_2_B.Divide_c = t15_2_B.Diff_n / t15_2_B.Diff_o;
+  /* RelationalOperator: '<S67>/Relational Operator1' */
+  t15_2_B.RelationalOperator1_a = (t15_2_B.Times > t15_2_B.DataStoreRead_ea);
 
-    /* Sum: '<S61>/Sum2' */
-    t15_2_B.Sum2_e = t15_2_B.Divide1_g + t15_2_B.Divide_c;
-    t15_2_B.tt_tran2d[0] = t15_2_B.Sum2_e;
-    t15_2_B.tt_tran2d[1] = t15_2_B.e6_m[11];
-  } else {
-    t15_2_B.tt_tran2d[0] = t15_2_P.zeros21_Value[0];
-    t15_2_B.tt_tran2d[1] = t15_2_P.zeros21_Value[1];
-  }
+  /* Product: '<S67>/Divide12' */
+  t15_2_B.Divide12_g2[0] = t15_2_B.Sum2_j * t15_2_B.RelationalOperator1_a;
+  t15_2_B.Divide12_g2[1] = t15_2_B.e6_e[11] * t15_2_B.RelationalOperator1_a;
 
-  /* End of Switch: '<S15>/t>t_tran2d' */
-
-  /* DiscreteStateSpace: '<S57>/VS. contr' */
+  /* DiscreteStateSpace: '<S62>/VS. contr' */
   {
     {
       static const int_T colCidxRow0[5] = { 3, 4, 5, 6, 7 };
@@ -3597,8 +3624,8 @@ void t15_2_step(void)
       }
     }
 
-    t15_2_B.VScontr[0] += (t15_2_P.VScontr_D[0])*t15_2_B.tt_tran2d[0] +
-      (t15_2_P.VScontr_D[1])*t15_2_B.tt_tran2d[1];
+    t15_2_B.VScontr[0] += (t15_2_P.VScontr_D[0])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_D[1])*t15_2_B.Divide12_g2[1];
 
     {
       static const int_T colCidxRow1[5] = { 0, 1, 2, 7, 8 };
@@ -3614,20 +3641,20 @@ void t15_2_step(void)
       }
     }
 
-    t15_2_B.VScontr[1] += (t15_2_P.VScontr_D[2])*t15_2_B.tt_tran2d[0] +
-      (t15_2_P.VScontr_D[3])*t15_2_B.tt_tran2d[1];
+    t15_2_B.VScontr[1] += (t15_2_P.VScontr_D[2])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_D[3])*t15_2_B.Divide12_g2[1];
   }
 
-  /* RelationalOperator: '<S57>/Relational Operator' incorporates:
-   *  Constant: '<S57>/c_eob '
+  /* RelationalOperator: '<S82>/Compare' incorporates:
+   *  Constant: '<S82>/Constant'
    */
-  t15_2_B.RelationalOperator_g = (t15_2_B.u_n < t15_2_P.c_eob_Value);
+  t15_2_B.Compare_l = (t15_2_B.u_e < t15_2_P.Constant_Value_o);
 
-  /* Product: '<S57>/Divide4' */
-  t15_2_B.Divide4_j[0] = t15_2_B.RelationalOperator_g * t15_2_B.tt_tran2d[0];
-  t15_2_B.Divide4_j[1] = t15_2_B.RelationalOperator_g * t15_2_B.tt_tran2d[1];
+  /* Product: '<S62>/Divide4' */
+  t15_2_B.Divide4_a[0] = (real_T)t15_2_B.Compare_l * t15_2_B.Divide12_g2[0];
+  t15_2_B.Divide4_a[1] = (real_T)t15_2_B.Compare_l * t15_2_B.Divide12_g2[1];
 
-  /* DiscreteStateSpace: '<S57>/VS. contr hl' */
+  /* DiscreteStateSpace: '<S62>/VS. contr hl' */
   {
     {
       static const int_T colCidxRow0[5] = { 3, 4, 5, 6, 7 };
@@ -3643,89 +3670,134 @@ void t15_2_step(void)
       }
     }
 
-    t15_2_B.VScontrhl[0] += (t15_2_P.VScontrhl_D[0])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_D[1])*t15_2_B.Divide4_j[1];
+    t15_2_B.VScontrhl[0] += (t15_2_P.VScontrhl_D[0])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_D[1])*t15_2_B.Divide4_a[1];
     t15_2_B.VScontrhl[1] = (t15_2_P.VScontrhl_C[5])*
       t15_2_DWork.VScontrhl_DSTATE[0] + (t15_2_P.VScontrhl_C[6])*
       t15_2_DWork.VScontrhl_DSTATE[1]
       + (t15_2_P.VScontrhl_C[7])*t15_2_DWork.VScontrhl_DSTATE[2]
       + (t15_2_P.VScontrhl_C[8])*t15_2_DWork.VScontrhl_DSTATE[7];
-    t15_2_B.VScontrhl[1] += (t15_2_P.VScontrhl_D[2])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_D[3])*t15_2_B.Divide4_j[1];
+    t15_2_B.VScontrhl[1] += (t15_2_P.VScontrhl_D[2])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_D[3])*t15_2_B.Divide4_a[1];
   }
 
-  /* Switch: '<S57>/c_eob' */
-  if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_lk) {
-    t15_2_B.c_eob_ku[0] = t15_2_B.VScontr[0];
-    t15_2_B.c_eob_ku[1] = t15_2_B.VScontr[1];
+  /* Switch: '<S62>/c_eob' */
+  if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold_c1) {
+    t15_2_B.c_eob_b[0] = t15_2_B.VScontr[0];
+    t15_2_B.c_eob_b[1] = t15_2_B.VScontr[1];
   } else {
-    t15_2_B.c_eob_ku[0] = t15_2_B.VScontrhl[0];
-    t15_2_B.c_eob_ku[1] = t15_2_B.VScontrhl[1];
+    t15_2_B.c_eob_b[0] = t15_2_B.VScontrhl[0];
+    t15_2_B.c_eob_b[1] = t15_2_B.VScontrhl[1];
   }
 
-  /* End of Switch: '<S57>/c_eob' */
+  /* End of Switch: '<S62>/c_eob' */
 
-  /* RelationalOperator: '<S78>/Compare' incorporates:
-   *  Constant: '<S78>/Constant'
+  /* DataStoreRead: '<S61>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_d = t15_2_DWork.Ip_rd;
+
+  /* RelationalOperator: '<S61>/Relational Operator2' */
+  t15_2_B.RelationalOperator2 = (t15_2_B.e6 < t15_2_B.DataStoreRead1_d);
+
+  /* DataStoreRead: '<S61>/Data Store Read' */
+  t15_2_B.DataStoreRead_op = t15_2_DWork.RupRd[2];
+
+  /* Abs: '<S61>/Abs' */
+  t15_2_B.Abs_g = fabs(t15_2_B.DataStoreRead_op);
+
+  /* RelationalOperator: '<S61>/Relational Operator1' */
+  t15_2_B.RelationalOperator1_b = (t15_2_B.e6 > t15_2_B.Abs_g);
+
+  /* RelationalOperator: '<S80>/Compare' incorporates:
+   *  Constant: '<S80>/Constant'
    */
-  t15_2_B.Compare_d = (uint8_T)(t15_2_B.e6 < t15_2_P.Constant_Value_k);
+  t15_2_B.Compare_m = (t15_2_B.u_e < t15_2_P.Constant_Value_c);
 
-  /* DataStoreRead: '<S79>/Data Store Read' */
-  t15_2_B.DataStoreRead_gb = t15_2_DWork.RupRd[0];
+  /* Logic: '<S61>/Logical Operator1' */
+  t15_2_B.LogicalOperator1_p = ((t15_2_B.RelationalOperator2 != 0.0) &&
+    (t15_2_B.RelationalOperator1_b != 0.0) && t15_2_B.Compare_m);
 
-  /* RelationalOperator: '<S79>/Relational Operator' */
-  t15_2_B.RelationalOperator_o = (t15_2_B.e3 > t15_2_B.DataStoreRead_gb);
+  /* Memory: '<S81>/Memory' */
+  t15_2_B.Memory_p = t15_2_DWork.Memory_PreviousInput_h;
 
-  /* DataStoreRead: '<S64>/Data Store Read' */
-  t15_2_B.DataStoreRead_b = t15_2_DWork.RupRd[2];
+  /* Logic: '<S81>/Logical Operator' */
+  t15_2_B.LogicalOperator_h3 = ((t15_2_B.LogicalOperator1_p != 0.0) ||
+    (t15_2_B.Memory_p != 0.0));
 
-  /* Abs: '<S64>/Abs' */
-  t15_2_B.Abs_l = fabs(t15_2_B.DataStoreRead_b);
+  /* DataStoreRead: '<S63>/Data Store Read' */
+  t15_2_B.DataStoreRead_a4 = t15_2_DWork.c_a_tpl1;
 
-  /* RelationalOperator: '<S64>/Relational Operator' */
-  t15_2_B.RelationalOperator_c = (t15_2_B.e6 > t15_2_B.Abs_l);
+  /* Gain: '<S63>/1//15' */
+  t15_2_B.u5_j = t15_2_P.u5_Gain_p * t15_2_B.DataStoreRead_a4;
 
-  /* Logic: '<S64>/Logical Operator1' */
-  t15_2_B.LogicalOperator1_k = ((t15_2_B.Compare_d != 0) &&
-    t15_2_B.RelationalOperator_o && t15_2_B.RelationalOperator_c);
+  /* Product: '<S63>/Div' */
+  t15_2_B.Div = t15_2_B.e6 * t15_2_B.u5_j;
 
-  /* Gain: '<S58>/atpl1//15' */
-  t15_2_B.atpl115 = t15_2_P.atpl115_Gain * t15_2_B.e6;
-
-  /* Switch: '<S64>/0.99' incorporates:
+  /* Switch: '<S61>/1' incorporates:
    *  Switch: '<S15>/c_eob '
    */
-  if (t15_2_B.LogicalOperator1_k >= t15_2_P.u9_Threshold_n) {
-    /* Gain: '<S15>/VS gain 3' */
-    t15_2_B.VSgain3 = t15_2_P.VSgain3_Gain * t15_2_B.e6;
+  if (t15_2_B.LogicalOperator_h3 >= t15_2_P._Threshold_fi) {
+    /* DataStoreRead: '<S15>/Data Store Read' */
+    t15_2_B.DataStoreRead_ok = t15_2_DWork.c_a_tpl1_eob;
 
-    /* Saturate: '<S15>/Saturation4' */
-    tmin = t15_2_B.VSgain3;
-    u = t15_2_P.Saturation4_LowerSat;
-    u_0 = t15_2_P.Saturation4_UpperSat;
-    if (tmin >= u_0) {
-      t15_2_B.Saturation4 = u_0;
-    } else if (tmin <= u) {
-      t15_2_B.Saturation4 = u;
+    /* Gain: '<S15>/ 1//15' */
+    t15_2_B.u15 = t15_2_P.u15_Gain_o * t15_2_B.DataStoreRead_ok;
+
+    /* Product: '<S15>/Divide6' */
+    t15_2_B.Divide6_k = t15_2_B.u15 * t15_2_B.e6;
+
+    /* RelationalOperator: '<S58>/LowerRelop1' incorporates:
+     *  Constant: '<S15>/1'
+     */
+    t15_2_B.LowerRelop1_p = (t15_2_B.Divide6_k > t15_2_P._Value_h);
+
+    /* Switch: '<S58>/Switch2' incorporates:
+     *  Constant: '<S15>/1'
+     */
+    if (t15_2_B.LowerRelop1_p) {
+      t15_2_B.Switch2_h = t15_2_P._Value_h;
     } else {
-      t15_2_B.Saturation4 = tmin;
+      /* DataStoreRead: '<S15>/Data Store Read3' */
+      t15_2_B.DataStoreRead3_l = t15_2_DWork.c_a_tpl_min;
+
+      /* RelationalOperator: '<S58>/UpperRelop' */
+      t15_2_B.UpperRelop_b = (t15_2_B.Divide6_k < t15_2_B.DataStoreRead3_l);
+
+      /* Switch: '<S58>/Switch' */
+      if (t15_2_B.UpperRelop_b) {
+        t15_2_B.Switch_i = t15_2_B.DataStoreRead3_l;
+      } else {
+        t15_2_B.Switch_i = t15_2_B.Divide6_k;
+      }
+
+      /* End of Switch: '<S58>/Switch' */
+      t15_2_B.Switch2_h = t15_2_B.Switch_i;
     }
 
-    /* End of Saturate: '<S15>/Saturation4' */
+    /* End of Switch: '<S58>/Switch2' */
 
     /* Product: '<S15>/Divide11' */
-    t15_2_B.Divide11[0] = t15_2_B.Saturation4 * t15_2_B.c_eob_ku[0];
-    t15_2_B.Divide11[1] = t15_2_B.Saturation4 * t15_2_B.c_eob_ku[1];
-    t15_2_B.u9_o[0] = t15_2_B.Divide11[0];
-    t15_2_B.u9_o[1] = t15_2_B.Divide11[1];
+    t15_2_B.Divide11_a[0] = t15_2_B.Switch2_h * t15_2_B.c_eob_b[0];
+    t15_2_B.Divide11_a[1] = t15_2_B.Switch2_h * t15_2_B.c_eob_b[1];
+    t15_2_B.u_i[0] = t15_2_B.Divide11_a[0];
+    t15_2_B.u_i[1] = t15_2_B.Divide11_a[1];
   } else {
-    if (t15_2_B.u_n > t15_2_P.c_eob_Threshold_i) {
-      /* Switch: '<S58>/Ip>Ip_div' incorporates:
+    if (t15_2_B.u_e >= t15_2_P.c_eob_Threshold) {
+      /* DataStoreRead: '<S63>/Data Store Read1' incorporates:
        *  Switch: '<S15>/c_eob '
        */
-      if (t15_2_B.e6 > t15_2_P.IpIp_div_Threshold) {
-        /* Saturate: '<S58>/Sat. Div' */
-        tmin = t15_2_B.atpl115;
+      t15_2_B.DataStoreRead1_l = t15_2_DWork.tdiv;
+
+      /* RelationalOperator: '<S63>/Relational Operator2' incorporates:
+       *  Switch: '<S15>/c_eob '
+       */
+      t15_2_B.RelationalOperator2_l = (t15_2_B.Times > t15_2_B.DataStoreRead1_l);
+
+      /* Switch: '<S63>/Lim. Div. tr.' incorporates:
+       *  Switch: '<S15>/c_eob '
+       */
+      if (t15_2_B.RelationalOperator2_l >= t15_2_P.LimDivtr_Threshold) {
+        /* Saturate: '<S63>/Sat. Div' */
+        tmin = t15_2_B.Div;
         u = t15_2_P.SatDiv_LowerSat;
         u_0 = t15_2_P.SatDiv_UpperSat;
         if (tmin >= u_0) {
@@ -3736,306 +3808,355 @@ void t15_2_step(void)
           t15_2_B.SatDiv = tmin;
         }
 
-        /* End of Saturate: '<S58>/Sat. Div' */
-        t15_2_B.IpIp_div_b = t15_2_B.SatDiv;
+        /* End of Saturate: '<S63>/Sat. Div' */
+        t15_2_B.LimDivtr = t15_2_B.SatDiv;
       } else {
-        /* Saturate: '<S58>/Sat. Lim' */
-        tmin = t15_2_B.atpl115;
-        u = t15_2_P.SatLim_LowerSat;
-        u_0 = t15_2_P.SatLim_UpperSat;
-        if (tmin >= u_0) {
-          t15_2_B.SatLim = u_0;
-        } else if (tmin <= u) {
-          t15_2_B.SatLim = u;
+        /* DataStoreRead: '<S63>/Data Store Read2' */
+        t15_2_B.DataStoreRead2_h = t15_2_DWork.max_VS_lim;
+
+        /* RelationalOperator: '<S83>/LowerRelop1' */
+        t15_2_B.LowerRelop1_f = (t15_2_B.Div > t15_2_B.DataStoreRead2_h);
+
+        /* Switch: '<S83>/Switch2' */
+        if (t15_2_B.LowerRelop1_f) {
+          t15_2_B.Switch2_a = t15_2_B.DataStoreRead2_h;
         } else {
-          t15_2_B.SatLim = tmin;
+          /* RelationalOperator: '<S83>/UpperRelop' incorporates:
+           *  Constant: '<S63>/1'
+           */
+          t15_2_B.UpperRelop_h = (t15_2_B.Div < t15_2_P._Value_n);
+
+          /* Switch: '<S83>/Switch' incorporates:
+           *  Constant: '<S63>/1'
+           */
+          if (t15_2_B.UpperRelop_h) {
+            t15_2_B.Switch_d = t15_2_P._Value_n;
+          } else {
+            t15_2_B.Switch_d = t15_2_B.Div;
+          }
+
+          /* End of Switch: '<S83>/Switch' */
+          t15_2_B.Switch2_a = t15_2_B.Switch_d;
         }
 
-        /* End of Saturate: '<S58>/Sat. Lim' */
-        t15_2_B.IpIp_div_b = t15_2_B.SatLim;
+        /* End of Switch: '<S83>/Switch2' */
+        t15_2_B.LimDivtr = t15_2_B.Switch2_a;
       }
 
-      /* End of Switch: '<S58>/Ip>Ip_div' */
+      /* End of Switch: '<S63>/Lim. Div. tr.' */
 
       /* Product: '<S15>/Divide8' incorporates:
        *  Switch: '<S15>/c_eob '
        */
-      t15_2_B.Divide8[0] = t15_2_B.IpIp_div_b * t15_2_B.c_eob_ku[0];
-      t15_2_B.Divide8[1] = t15_2_B.IpIp_div_b * t15_2_B.c_eob_ku[1];
+      t15_2_B.Divide8[0] = t15_2_B.LimDivtr * t15_2_B.c_eob_b[0];
+      t15_2_B.Divide8[1] = t15_2_B.LimDivtr * t15_2_B.c_eob_b[1];
 
       /* Switch: '<S15>/c_eob ' */
-      t15_2_B.c_eob_b4[0] = t15_2_B.Divide8[0];
-      t15_2_B.c_eob_b4[1] = t15_2_B.Divide8[1];
+      t15_2_B.c_eob_am[0] = t15_2_B.Divide8[0];
+      t15_2_B.c_eob_am[1] = t15_2_B.Divide8[1];
     } else {
-      /* Gain: '<S15>/VS gain 2' incorporates:
+      /* Gain: '<S15>/1//15' incorporates:
        *  Switch: '<S15>/c_eob '
        */
-      t15_2_B.VSgain2 = t15_2_P.VSgain2_Gain * t15_2_B.e6;
+      t15_2_B.u5_m = t15_2_P.u5_Gain * t15_2_B.e6;
 
-      /* Saturate: '<S15>/Saturation3' incorporates:
+      /* RelationalOperator: '<S59>/LowerRelop1' incorporates:
+       *  Constant: '<S15>/2'
        *  Switch: '<S15>/c_eob '
        */
-      tmin = t15_2_B.VSgain2;
-      u = t15_2_P.Saturation3_LowerSat;
-      u_0 = t15_2_P.Saturation3_UpperSat;
-      if (tmin >= u_0) {
-        t15_2_B.Saturation3 = u_0;
-      } else if (tmin <= u) {
-        t15_2_B.Saturation3 = u;
+      t15_2_B.LowerRelop1_o = (t15_2_B.u5_m > t15_2_P._Value_kj);
+
+      /* Switch: '<S59>/Switch2' incorporates:
+       *  Constant: '<S15>/2'
+       *  Switch: '<S15>/c_eob '
+       */
+      if (t15_2_B.LowerRelop1_o) {
+        t15_2_B.Switch2_e = t15_2_P._Value_kj;
       } else {
-        t15_2_B.Saturation3 = tmin;
+        /* DataStoreRead: '<S15>/Data Store Read4' */
+        t15_2_B.DataStoreRead4 = t15_2_DWork.c_a_tpl_min;
+
+        /* RelationalOperator: '<S59>/UpperRelop' */
+        t15_2_B.UpperRelop_p = (t15_2_B.u5_m < t15_2_B.DataStoreRead4);
+
+        /* Switch: '<S59>/Switch' */
+        if (t15_2_B.UpperRelop_p) {
+          t15_2_B.Switch_lv = t15_2_B.DataStoreRead4;
+        } else {
+          t15_2_B.Switch_lv = t15_2_B.u5_m;
+        }
+
+        /* End of Switch: '<S59>/Switch' */
+        t15_2_B.Switch2_e = t15_2_B.Switch_lv;
       }
 
-      /* End of Saturate: '<S15>/Saturation3' */
+      /* End of Switch: '<S59>/Switch2' */
 
       /* Product: '<S15>/Divide ' incorporates:
        *  Switch: '<S15>/c_eob '
        */
-      t15_2_B.Divide_g[0] = t15_2_B.c_eob_ku[0] * t15_2_B.Saturation3;
-      t15_2_B.Divide_g[1] = t15_2_B.c_eob_ku[1] * t15_2_B.Saturation3;
+      t15_2_B.Divide_k[0] = t15_2_B.c_eob_b[0] * t15_2_B.Switch2_e;
+      t15_2_B.Divide_k[1] = t15_2_B.c_eob_b[1] * t15_2_B.Switch2_e;
 
       /* Switch: '<S15>/c_eob ' */
-      t15_2_B.c_eob_b4[0] = t15_2_B.Divide_g[0];
-      t15_2_B.c_eob_b4[1] = t15_2_B.Divide_g[1];
+      t15_2_B.c_eob_am[0] = t15_2_B.Divide_k[0];
+      t15_2_B.c_eob_am[1] = t15_2_B.Divide_k[1];
     }
 
-    t15_2_B.u9_o[0] = t15_2_B.c_eob_b4[0];
-    t15_2_B.u9_o[1] = t15_2_B.c_eob_b4[1];
+    t15_2_B.u_i[0] = t15_2_B.c_eob_am[0];
+    t15_2_B.u_i[1] = t15_2_B.c_eob_am[1];
   }
 
-  /* End of Switch: '<S64>/0.99' */
+  /* End of Switch: '<S61>/1' */
 
   /* Product: '<S15>/Divide10' */
-  t15_2_B.Divide10[0] = t15_2_B.Subtract4 * t15_2_B.u9_o[0];
-  t15_2_B.Divide10[1] = t15_2_B.Subtract4 * t15_2_B.u9_o[1];
-
-  /* Product: '<S15>/Divide12' */
+  t15_2_B.Divide10[0] = t15_2_B.Subtract4 * t15_2_B.u_i[0];
+  t15_2_B.Divide10[1] = t15_2_B.Subtract4 * t15_2_B.u_i[1];
   for (i = 0; i < 20; i++) {
-    t15_2_B.Divide12[i] = t15_2_B.Divide2_b[i] * t15_2_B.LogicalOperator2;
+    /* Gain: '<S15>/G_curr_term' */
+    t15_2_B.G_curr_term[i] = 0.0;
+    for (i_0 = 0; i_0 < 11; i_0++) {
+      t15_2_B.G_curr_term[i] += t15_2_P.G_curr_term_Gain[20 * i_0 + i] *
+        t15_2_B.e6_e[i_0];
+    }
+
+    /* End of Gain: '<S15>/G_curr_term' */
+
+    /* Product: '<S15>/Divide12' */
+    t15_2_B.Divide12_b[i] = t15_2_B.G_curr_term[i] * t15_2_B.LogicalOperator_l;
   }
 
   for (i = 0; i < 11; i++) {
-    /* Product: '<S56>/Divide 1' incorporates:
-     *  Constant: '<S56>/ntur(1:11)'
-     */
-    t15_2_B.Divide1_j[i] = t15_2_B.u9[i + 8] / t15_2_P.ntur111_Value_c[i];
+    /* Product: '<S57>/Divide1' */
+    t15_2_B.Divide1_m4[i] = t15_2_B.u_c[i + 8] / t15_2_B.DataStoreRead2_g[i];
 
-    /* Product: '<S5>/Divide4' incorporates:
-     *  Constant: '<S5>/ntur(1:11)'
-     */
-    t15_2_B.Divide4_f[i] = t15_2_P.ntur111_Value_a[i] * t15_2_B.Divide6_f[i];
+    /* Gain: '<S57>/1e6' */
+    t15_2_B.e6_ed[i] = t15_2_P.e6_Gain_o * t15_2_B.Divide1_m4[i];
+
+    /* DataStoreRead: '<S5>/Data Store Read2' */
+    t15_2_B.DataStoreRead2_o[i] = t15_2_DWork.ntur[i];
+
+    /* Product: '<S5>/Divide4' */
+    t15_2_B.Divide4_b[i] = t15_2_B.DataStoreRead2_o[i] * t15_2_B.Divide6_l[i];
   }
-
-  /* End of Product: '<S15>/Divide12' */
 
   /* Level2 S-Function Block: '<S1>/S-Function' (read_tt_kavin2) */
   {
-    SimStruct *rts = t15_2_M->childSfunctions[15];
+    SimStruct *rts = t15_2_M->childSfunctions[16];
     sfcnOutputs(rts, 0);
   }
 
+  /* DataStoreWrite: '<S1>/Data Store Write1' */
+  memcpy(&t15_2_DWork.ntur[0], &t15_2_B.SFunction_n[32], 12U * sizeof(real_T));
+
   /* DataStoreWrite: '<S1>/Data Store Write2' */
   for (i = 0; i < 6; i++) {
-    t15_2_DWork.RupRd[i] = t15_2_B.SFunction[i];
+    t15_2_DWork.RupRd[i] = t15_2_B.SFunction_n[i];
   }
 
   /* End of DataStoreWrite: '<S1>/Data Store Write2' */
 
   /* DataStoreWrite: '<S1>/Data Store Write3' */
-  t15_2_DWork.VS3_up = t15_2_B.SFunction[7];
+  t15_2_DWork.VS3_up = t15_2_B.SFunction_n[7];
 
   /* DataStoreWrite: '<S1>/Data Store Write5' */
-  t15_2_DWork.VS1_up = t15_2_B.SFunction[6];
+  t15_2_DWork.VS1_up = t15_2_B.SFunction_n[6];
 
   /* DataStoreWrite: '<S1>/Data Store Write7' */
-  t15_2_DWork.Tu = t15_2_B.SFunction[19];
+  t15_2_DWork.Tu = t15_2_B.SFunction_n[19];
 
   /* DataStoreWrite: '<S1>/Data Store Write8' */
-  t15_2_DWork.c_cur_max = t15_2_B.SFunction[20];
+  t15_2_DWork.c_cur_max = t15_2_B.SFunction_n[20];
 
   /* DataStoreRead: '<S8>/Data Store Read3' */
   t15_2_B.DataStoreRead3 = t15_2_DWork.Tu;
 
   /* UnitDelay: '<S6>/UD' */
-  t15_2_B.Uk1_l = t15_2_DWork.UD_DSTATE_i;
+  t15_2_B.Uk1_l = t15_2_DWork.UD_DSTATE_a;
 
   /* Sum: '<S6>/Diff' */
-  t15_2_B.Diff = t15_2_B.e3 - t15_2_B.Uk1_l;
+  t15_2_B.Diff_a = t15_2_B.Times - t15_2_B.Uk1_l;
   for (i = 0; i < 11; i++) {
     /* DataStoreWrite: '<S1>/Data Store Write4' */
-    t15_2_DWork.Vcspf_up[i] = t15_2_B.SFunction[i + 8];
+    t15_2_DWork.Vcspf_up[i] = t15_2_B.SFunction_n[i + 8];
 
     /* DataStoreWrite: '<S1>/Data Store Write9' */
-    t15_2_DWork.Imax[i] = t15_2_B.SFunction[i + 21];
+    t15_2_DWork.Imax[i] = t15_2_B.SFunction_n[i + 21];
 
     /* DataStoreRead: '<S9>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_kx[i] = t15_2_DWork.Vcspf_up[i];
+    t15_2_B.DataStoreRead1_nw[i] = t15_2_DWork.Vcspf_up[i];
 
     /* Memory: '<S7>/Memory1' */
-    t15_2_B.Memory1_ek[i] = t15_2_DWork.Memory1_PreviousInput_p2[i];
+    t15_2_B.Memory1_bt[i] = t15_2_DWork.Memory1_PreviousInput_bg[i];
 
     /* DataStoreRead: '<S8>/Data Store Read1' */
-    t15_2_B.DataStoreRead1_o[i] = t15_2_DWork.Vcspf_up[i];
+    t15_2_B.DataStoreRead1_h[i] = t15_2_DWork.Vcspf_up[i];
 
     /* Gain: '<S8>/2' */
-    t15_2_B.u_j[i] = t15_2_P._Gain * t15_2_B.DataStoreRead1_o[i];
+    t15_2_B.u_hn[i] = t15_2_P._Gain * t15_2_B.DataStoreRead1_h[i];
 
     /* Product: '<S8>/Divide1' */
-    t15_2_B.Divide1_o5[i] = t15_2_B.u_j[i] / t15_2_B.DataStoreRead3;
+    t15_2_B.Divide1_ht[i] = t15_2_B.u_hn[i] / t15_2_B.DataStoreRead3;
 
     /* Sum: '<S7>/Add1' */
-    t15_2_B.Add1_gy[i] = t15_2_B.Divide4_f[i] - t15_2_B.Memory1_ek[i];
+    t15_2_B.Add1_a[i] = t15_2_B.Divide4_b[i] - t15_2_B.Memory1_bt[i];
 
     /* Product: '<S7>/Divide' */
-    t15_2_B.Divide[i] = t15_2_B.Add1_gy[i] / t15_2_B.Diff;
+    t15_2_B.Divide_c[i] = t15_2_B.Add1_a[i] / t15_2_B.Diff_a;
 
     /* RelationalOperator: '<S10>/LowerRelop1' */
-    t15_2_B.LowerRelop1[i] = (t15_2_B.Divide[i] > t15_2_B.Divide1_o5[i]);
+    t15_2_B.LowerRelop1[i] = (t15_2_B.Divide_c[i] > t15_2_B.Divide1_ht[i]);
 
     /* Gain: '<S8>/-1' */
-    t15_2_B.u_e[i] = t15_2_P.u_Gain_e * t15_2_B.Divide1_o5[i];
+    t15_2_B.u_f0[i] = t15_2_P.u_Gain_j * t15_2_B.Divide1_ht[i];
 
     /* RelationalOperator: '<S10>/UpperRelop' */
-    t15_2_B.UpperRelop[i] = (t15_2_B.Divide[i] < t15_2_B.u_e[i]);
+    t15_2_B.UpperRelop[i] = (t15_2_B.Divide_c[i] < t15_2_B.u_f0[i]);
 
     /* Switch: '<S10>/Switch' */
     if (t15_2_B.UpperRelop[i]) {
-      t15_2_B.Switch[i] = t15_2_B.u_e[i];
+      t15_2_B.Switch_l[i] = t15_2_B.u_f0[i];
     } else {
-      t15_2_B.Switch[i] = t15_2_B.Divide[i];
+      t15_2_B.Switch_l[i] = t15_2_B.Divide_c[i];
     }
 
     /* End of Switch: '<S10>/Switch' */
 
     /* Switch: '<S10>/Switch2' */
     if (t15_2_B.LowerRelop1[i]) {
-      t15_2_B.Switch2[i] = t15_2_B.Divide1_o5[i];
+      t15_2_B.Switch2[i] = t15_2_B.Divide1_ht[i];
     } else {
-      t15_2_B.Switch2[i] = t15_2_B.Switch[i];
+      t15_2_B.Switch2[i] = t15_2_B.Switch_l[i];
     }
 
     /* End of Switch: '<S10>/Switch2' */
 
     /* Product: '<S7>/Divide1' */
-    t15_2_B.Divide1_k[i] = t15_2_B.Switch2[i] * t15_2_B.Diff;
+    t15_2_B.Divide1_ja[i] = t15_2_B.Switch2[i] * t15_2_B.Diff_a;
 
     /* Sum: '<S7>/Add2' */
-    t15_2_B.Add2_n[i] = t15_2_B.Memory1_ek[i] + t15_2_B.Divide1_k[i];
+    t15_2_B.Add2_a[i] = t15_2_B.Memory1_bt[i] + t15_2_B.Divide1_ja[i];
 
     /* RelationalOperator: '<S11>/LowerRelop1' */
-    t15_2_B.LowerRelop1_g[i] = (t15_2_B.Add2_n[i] > t15_2_B.DataStoreRead1_kx[i]);
+    t15_2_B.LowerRelop1_e[i] = (t15_2_B.Add2_a[i] > t15_2_B.DataStoreRead1_nw[i]);
 
     /* Gain: '<S9>/Gain' */
-    t15_2_B.Gain[i] = t15_2_P.Gain_Gain_f * t15_2_B.DataStoreRead1_kx[i];
+    t15_2_B.Gain[i] = t15_2_P.Gain_Gain_d * t15_2_B.DataStoreRead1_nw[i];
 
     /* RelationalOperator: '<S11>/UpperRelop' */
-    t15_2_B.UpperRelop_c[i] = (t15_2_B.Add2_n[i] < t15_2_B.Gain[i]);
+    t15_2_B.UpperRelop_c[i] = (t15_2_B.Add2_a[i] < t15_2_B.Gain[i]);
 
     /* Switch: '<S11>/Switch' */
     if (t15_2_B.UpperRelop_c[i]) {
-      t15_2_B.Switch_l[i] = t15_2_B.Gain[i];
+      t15_2_B.Switch_b[i] = t15_2_B.Gain[i];
     } else {
-      t15_2_B.Switch_l[i] = t15_2_B.Add2_n[i];
+      t15_2_B.Switch_b[i] = t15_2_B.Add2_a[i];
     }
 
     /* End of Switch: '<S11>/Switch' */
 
     /* Switch: '<S11>/Switch2' */
-    if (t15_2_B.LowerRelop1_g[i]) {
-      t15_2_B.Switch2_c[i] = t15_2_B.DataStoreRead1_kx[i];
+    if (t15_2_B.LowerRelop1_e[i]) {
+      t15_2_B.Switch2_c[i] = t15_2_B.DataStoreRead1_nw[i];
     } else {
-      t15_2_B.Switch2_c[i] = t15_2_B.Switch_l[i];
+      t15_2_B.Switch2_c[i] = t15_2_B.Switch_b[i];
     }
 
     /* End of Switch: '<S11>/Switch2' */
 
-    /* Gain: '<S2>/1//ntur' */
-    t15_2_B.ntur[i] = t15_2_P.ntur_Gain[i] * t15_2_B.Switch2_c[i];
+    /* DataStoreRead: '<S2>/Data Store Read2' */
+    t15_2_B.DataStoreRead2_oo[i] = t15_2_DWork.ntur[i];
+
+    /* Product: '<S2>/Divide3' */
+    t15_2_B.Divide3_f[i] = t15_2_B.Switch2_c[i] / t15_2_B.DataStoreRead2_oo[i];
+
+    /* Product: '<S2>/Divide1' incorporates:
+     *  Constant: '<S2>/wz1'
+     */
+    t15_2_B.Divide1_fq[i] = t15_2_P.wz1_Value[i] / t15_2_B.DataStoreRead2_oo[i];
   }
 
   /* DataStoreRead: '<S4>/Data Store Read1' */
-  t15_2_B.DataStoreRead1_j = t15_2_DWork.VS1_up;
+  t15_2_B.DataStoreRead1_mv = t15_2_DWork.VS1_up;
 
   /* RelationalOperator: '<S12>/LowerRelop1' */
-  t15_2_B.LowerRelop1_j = (t15_2_B.Divide10[0] > t15_2_B.DataStoreRead1_j);
+  t15_2_B.LowerRelop1_d = (t15_2_B.Divide10[0] > t15_2_B.DataStoreRead1_mv);
 
   /* Switch: '<S12>/Switch2' */
-  if (t15_2_B.LowerRelop1_j) {
-    t15_2_B.Switch2_h = t15_2_B.DataStoreRead1_j;
+  if (t15_2_B.LowerRelop1_d) {
+    t15_2_B.Switch2_l = t15_2_B.DataStoreRead1_mv;
   } else {
     /* Gain: '<S4>/Gain' */
-    t15_2_B.Gain_l = t15_2_P.Gain_Gain * t15_2_B.DataStoreRead1_j;
+    t15_2_B.Gain_h = t15_2_P.Gain_Gain * t15_2_B.DataStoreRead1_mv;
 
     /* RelationalOperator: '<S12>/UpperRelop' */
-    t15_2_B.UpperRelop_m = (t15_2_B.Divide10[0] < t15_2_B.Gain_l);
+    t15_2_B.UpperRelop_m = (t15_2_B.Divide10[0] < t15_2_B.Gain_h);
 
     /* Switch: '<S12>/Switch' */
     if (t15_2_B.UpperRelop_m) {
-      t15_2_B.Switch_k = t15_2_B.Gain_l;
+      t15_2_B.Switch_c = t15_2_B.Gain_h;
     } else {
-      t15_2_B.Switch_k = t15_2_B.Divide10[0];
+      t15_2_B.Switch_c = t15_2_B.Divide10[0];
     }
 
     /* End of Switch: '<S12>/Switch' */
-    t15_2_B.Switch2_h = t15_2_B.Switch_k;
+    t15_2_B.Switch2_l = t15_2_B.Switch_c;
+  }
+
+  for (i = 0; i < 11; i++) {
+    /* Product: '<S2>/Divide2' */
+    t15_2_B.Divide2_n[i] = t15_2_B.Divide1_fq[i] * t15_2_B.Switch2_l;
+
+    /* Sum: '<S2>/Add1' */
+    t15_2_B.Add1_l[i] = t15_2_B.Divide3_f[i] + t15_2_B.Divide2_n[i];
   }
 
   /* End of Switch: '<S12>/Switch2' */
 
+  /* DataStoreRead: '<S2>/Data Store Read1' */
+  t15_2_B.DataStoreRead1_f0 = t15_2_DWork.ntur[11];
+
+  /* Product: '<S2>/Divide4' incorporates:
+   *  Constant: '<S2>/wz2'
+   */
+  t15_2_B.Divide4_ah = t15_2_P.wz2_Value / t15_2_B.DataStoreRead1_f0;
+
   /* DataStoreRead: '<S4>/Data Store Read3' */
-  t15_2_B.DataStoreRead3_a = t15_2_DWork.VS3_up;
+  t15_2_B.DataStoreRead3_g = t15_2_DWork.VS3_up;
 
   /* RelationalOperator: '<S13>/LowerRelop1' */
-  t15_2_B.LowerRelop1_j5 = (t15_2_B.Divide10[1] > t15_2_B.DataStoreRead3_a);
+  t15_2_B.LowerRelop1_l = (t15_2_B.Divide10[1] > t15_2_B.DataStoreRead3_g);
 
   /* Switch: '<S13>/Switch2' */
-  if (t15_2_B.LowerRelop1_j5) {
-    t15_2_B.Switch2_f = t15_2_B.DataStoreRead3_a;
+  if (t15_2_B.LowerRelop1_l) {
+    t15_2_B.Switch2_p = t15_2_B.DataStoreRead3_g;
   } else {
     /* Gain: '<S4>/Gain1' */
-    t15_2_B.Gain1_h = t15_2_P.Gain1_Gain * t15_2_B.DataStoreRead3_a;
+    t15_2_B.Gain1 = t15_2_P.Gain1_Gain * t15_2_B.DataStoreRead3_g;
 
     /* RelationalOperator: '<S13>/UpperRelop' */
-    t15_2_B.UpperRelop_d = (t15_2_B.Divide10[1] < t15_2_B.Gain1_h);
+    t15_2_B.UpperRelop_j = (t15_2_B.Divide10[1] < t15_2_B.Gain1);
 
     /* Switch: '<S13>/Switch' */
-    if (t15_2_B.UpperRelop_d) {
-      t15_2_B.Switch_c = t15_2_B.Gain1_h;
+    if (t15_2_B.UpperRelop_j) {
+      t15_2_B.Switch_m = t15_2_B.Gain1;
     } else {
-      t15_2_B.Switch_c = t15_2_B.Divide10[1];
+      t15_2_B.Switch_m = t15_2_B.Divide10[1];
     }
 
     /* End of Switch: '<S13>/Switch' */
-    t15_2_B.Switch2_f = t15_2_B.Switch_c;
+    t15_2_B.Switch2_p = t15_2_B.Switch_m;
   }
 
   /* End of Switch: '<S13>/Switch2' */
 
-  /* SignalConversion: '<S2>/TmpSignal ConversionAtwzInport1' */
-  t15_2_B.TmpSignalConversionAtwzInport1[0] = t15_2_B.Switch2_h;
-  t15_2_B.TmpSignalConversionAtwzInport1[1] = t15_2_B.Switch2_f;
-
-  /* Gain: '<S2>/wz' */
-  for (i = 0; i < 12; i++) {
-    t15_2_B.wz[i] = 0.0;
-    t15_2_B.wz[i] += t15_2_P.wz_Gain[i] *
-      t15_2_B.TmpSignalConversionAtwzInport1[0];
-    t15_2_B.wz[i] += t15_2_P.wz_Gain[i + 12] *
-      t15_2_B.TmpSignalConversionAtwzInport1[1];
-  }
-
-  for (i = 0; i < 11; i++) {
-    /* Sum: '<S2>/Add1' */
-    t15_2_B.Add1_k[i] = t15_2_B.ntur[i] + t15_2_B.wz[i];
-
-    /* SignalConversion: '<S2>/TmpSignal ConversionAtnpf,12Inport1' */
-    t15_2_B.TmpSignalConversionAtnpf12Inpor[i] = t15_2_B.Add1_k[i];
-  }
-
-  /* End of Gain: '<S2>/wz' */
+  /* Product: '<S2>/Divide5' */
+  t15_2_B.Divide5_f = t15_2_B.Divide4_ah * t15_2_B.Switch2_p;
 
   /* SignalConversion: '<S2>/TmpSignal ConversionAtnpf,12Inport1' */
-  t15_2_B.TmpSignalConversionAtnpf12Inpor[11] = t15_2_B.wz[11];
+  memcpy(&t15_2_B.TmpSignalConversionAtnpf12Inpor[0], &t15_2_B.Add1_l[0], 11U *
+         sizeof(real_T));
+  t15_2_B.TmpSignalConversionAtnpf12Inpor[11] = t15_2_B.Divide5_f;
   for (i = 0; i < 15; i++) {
     /* Gain: '<S2>/npf,12' */
     t15_2_B.npf12[i] = 0.0;
@@ -4051,105 +4172,132 @@ void t15_2_step(void)
   }
 
   /* Outport: '<Root>/to_DINA' */
-  memcpy(&t15_2_Y.to_DINA[15], &t15_2_B.ntur[0], 11U * sizeof(real_T));
-  memcpy(&t15_2_Y.to_DINA[26], &t15_2_B.wz[0], 12U * sizeof(real_T));
+  memcpy(&t15_2_Y.to_DINA[15], &t15_2_B.Divide3_f[0], 11U * sizeof(real_T));
+  for (i = 0; i < 11; i++) {
+    /* Outport: '<Root>/to_DINA' */
+    t15_2_Y.to_DINA[i + 26] = t15_2_B.Divide2_n[i];
+
+    /* Update for Memory: '<S68>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_e[i] = t15_2_B.u_f[i];
+
+    /* Update for Memory: '<S60>/Memory' */
+    t15_2_DWork.Memory_PreviousInput_m[i] = t15_2_B.u_h[i];
+
+    /* Update for Memory: '<S77>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_n[i] = t15_2_B.u_o[i];
+
+    /* Update for Memory: '<S7>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_bg[i] = t15_2_B.Switch2_c[i];
+  }
+
+  /* Outport: '<Root>/to_DINA' */
+  t15_2_Y.to_DINA[37] = t15_2_B.Divide5_f;
 
   /* Update for Memory: '<S5>/Memory2' */
   t15_2_DWork.Memory2_PreviousInput = t15_2_B.Ip1e4;
 
-  /* Update for Memory: '<S23>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_k = t15_2_B.e6_i;
+  /* Update for Memory: '<S18>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput = t15_2_B.switch1;
 
-  /* Update for Memory: '<S23>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput = t15_2_B.u99;
+  /* Update for Memory: '<S28>/Memory' */
+  t15_2_DWork.Memory_PreviousInput = t15_2_B.LogicalOperator;
 
-  /* Update for Memory: '<S17>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_c = t15_2_B.c_eob;
+  /* Update for Memory: '<S19>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_m = t15_2_B.c_eob;
 
-  /* Update for UnitDelay: '<S24>/UD' incorporates:
+  /* Update for Memory: '<S27>/Memory' */
+  t15_2_DWork.Memory_PreviousInput_p = t15_2_B.LogicalOperator_f;
+
+  /* Update for Memory: '<S47>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_l = t15_2_B.c_eob1;
+
+  /* Update for Memory: '<S47>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_c = t15_2_B.c_eob_c;
+
+  /* Update for Memory: '<S42>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_f = t15_2_B.c_eob1_d;
+
+  /* Update for Memory: '<S42>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_mf = t15_2_B.c_eob_m;
+
+  /* Update for Memory: '<S43>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_h = t15_2_B.c_eob1_j;
+
+  /* Update for Memory: '<S43>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_n = t15_2_B.c_eob_n;
+
+  /* Update for Memory: '<S44>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_d = t15_2_B.c_eob1_m;
+
+  /* Update for Memory: '<S44>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_o = t15_2_B.c_eob_g;
+
+  /* Update for Memory: '<S45>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_o = t15_2_B.c_eob1_h;
+
+  /* Update for Memory: '<S45>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_b = t15_2_B.c_eob_p;
+
+  /* Update for Memory: '<S46>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_b = t15_2_B.c_eob1_g;
+
+  /* Update for Memory: '<S46>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_d = t15_2_B.c_eob_i;
+
+  /* Update for Memory: '<S31>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_lr = t15_2_B.c_eob_fn;
+
+  /* Update for Memory: '<S34>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_c = t15_2_B.c_eob_l;
+
+  /* Update for Memory: '<S35>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_dq = t15_2_B.c_eob_j;
+
+  /* Update for Memory: '<S36>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_j = t15_2_B.c_eob_gf;
+
+  /* Update for Memory: '<S37>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_d0 = t15_2_B.c_eob_k;
+
+  /* Update for Memory: '<S38>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_f3 = t15_2_B.c_eob_ib;
+
+  /* Update for Memory: '<S39>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_p = t15_2_B.c_eob_l4;
+
+  /* Update for Memory: '<S40>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_i = t15_2_B.c_eob_h;
+
+  /* Update for Memory: '<S41>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_ic = t15_2_B.c_eob_cs;
+
+  /* Update for Memory: '<S32>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_hn = t15_2_B.c_eob_jo;
+
+  /* Update for Memory: '<S33>/Memory2' */
+  t15_2_DWork.Memory2_PreviousInput_bh = t15_2_B.c_eob_g4;
+
+  /* Update for UnitDelay: '<S29>/UD' incorporates:
    *  Inport: '<Root>/In1'
    */
   t15_2_DWork.UD_DSTATE = t15_2_U.In1[0];
 
-  /* Update for UnitDelay: '<S25>/UD' */
-  t15_2_DWork.UD_DSTATE_j = t15_2_B.e3;
+  /* Update for UnitDelay: '<S30>/UD' */
+  t15_2_DWork.UD_DSTATE_i = t15_2_B.Times;
 
-  /* Update for Memory: '<S29>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_m = t15_2_B.c_eob_b;
+  /* Update for Memory: '<S54>/Memory3' */
+  t15_2_DWork.Memory3_PreviousInput = t15_2_B.switch1_i;
 
-  /* Update for Memory: '<S27>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_b = t15_2_B.c_eob_c;
+  /* Update for Memory: '<S90>/Memory' */
+  t15_2_DWork.Memory_PreviousInput_a = t15_2_B.LogicalOperator_i;
 
-  /* Update for Memory: '<S28>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_a = t15_2_B.c_eob_h;
+  /* Update for Memory: '<S79>/Memory' */
+  t15_2_DWork.Memory_PreviousInput_l = t15_2_B.LogicalOperator_h;
 
-  /* Update for Memory: '<S30>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_d = t15_2_B.c_eob_e;
+  /* Update for Memory: '<S66>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_l = t15_2_B.c_eob_d;
 
-  /* Update for Memory: '<S26>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_c = t15_2_B.c_eob_cj;
-
-  /* Update for Memory: '<S31>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_e = t15_2_B.c_eob_k;
-
-  /* Update for Memory: '<S32>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_o = t15_2_B.c_eob_g;
-
-  /* Update for Memory: '<S33>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_eq = t15_2_B.c_eob_l;
-
-  /* Update for Memory: '<S34>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_bf = t15_2_B.c_eob_g0;
-
-  /* Update for Memory: '<S35>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_l = t15_2_B.c_eob_bz;
-
-  /* Update for Memory: '<S36>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_j = t15_2_B.c_eob_j;
-
-  /* Update for Memory: '<S42>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_o4 = t15_2_B.c_eob1;
-
-  /* Update for Memory: '<S42>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_g = t15_2_B.c_eob_ej;
-
-  /* Update for Memory: '<S37>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_mw = t15_2_B.c_eob1_b;
-
-  /* Update for Memory: '<S37>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_d = t15_2_B.c_eob_n;
-
-  /* Update for Memory: '<S38>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_h = t15_2_B.c_eob1_i;
-
-  /* Update for Memory: '<S38>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_p = t15_2_B.c_eob_lg;
-
-  /* Update for Memory: '<S39>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_g = t15_2_B.c_eob1_d;
-
-  /* Update for Memory: '<S39>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_h = t15_2_B.c_eob_c2;
-
-  /* Update for Memory: '<S40>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_oh = t15_2_B.c_eob1_c;
-
-  /* Update for Memory: '<S40>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_gk = t15_2_B.c_eob_nk;
-
-  /* Update for Memory: '<S41>/Memory2' */
-  t15_2_DWork.Memory2_PreviousInput_ef = t15_2_B.c_eob1_g;
-
-  /* Update for Memory: '<S41>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_j = t15_2_B.c_eob_be;
-
-  /* Update for Memory: '<S50>/Memory3' */
-  t15_2_DWork.Memory3_PreviousInput = t15_2_B.u999;
-
-  /* Update for Memory: '<S51>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_l = t15_2_B.u999_d;
-
-  /* Update for DiscreteStateSpace: '<S54>/Div. contr.' */
+  /* Update for DiscreteStateSpace: '<S15>/Div. contr.' */
   {
     real_T xnew[32];
 
@@ -4174,7 +4322,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow0[0];
       const real_T *pB0 = t15_2_P.Divcontr_B;
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew0 = &xnew[0];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4203,7 +4351,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow1[0];
       const real_T *pB17 = &t15_2_P.Divcontr_B[17];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew1 = &xnew[1];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4232,7 +4380,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow2[0];
       const real_T *pB34 = &t15_2_P.Divcontr_B[34];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew2 = &xnew[2];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4261,7 +4409,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow3[0];
       const real_T *pB51 = &t15_2_P.Divcontr_B[51];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew3 = &xnew[3];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4290,7 +4438,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow4[0];
       const real_T *pB68 = &t15_2_P.Divcontr_B[68];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew4 = &xnew[4];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4319,7 +4467,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow5[0];
       const real_T *pB85 = &t15_2_P.Divcontr_B[85];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew5 = &xnew[5];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4348,7 +4496,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow6[0];
       const real_T *pB102 = &t15_2_P.Divcontr_B[102];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew6 = &xnew[6];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4377,7 +4525,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow7[0];
       const real_T *pB119 = &t15_2_P.Divcontr_B[119];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew7 = &xnew[7];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4406,7 +4554,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow8[0];
       const real_T *pB136 = &t15_2_P.Divcontr_B[136];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew8 = &xnew[8];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4435,7 +4583,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow9[0];
       const real_T *pB153 = &t15_2_P.Divcontr_B[153];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew9 = &xnew[9];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4464,7 +4612,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow10[0];
       const real_T *pB170 = &t15_2_P.Divcontr_B[170];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew10 = &xnew[10];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4493,7 +4641,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow11[0];
       const real_T *pB187 = &t15_2_P.Divcontr_B[187];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew11 = &xnew[11];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4522,7 +4670,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow12[0];
       const real_T *pB204 = &t15_2_P.Divcontr_B[204];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew12 = &xnew[12];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4551,7 +4699,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow13[0];
       const real_T *pB221 = &t15_2_P.Divcontr_B[221];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew13 = &xnew[13];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4580,7 +4728,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow14[0];
       const real_T *pB238 = &t15_2_P.Divcontr_B[238];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew14 = &xnew[14];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4609,7 +4757,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow15[0];
       const real_T *pB255 = &t15_2_P.Divcontr_B[255];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew15 = &xnew[15];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4638,7 +4786,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow16[0];
       const real_T *pB272 = &t15_2_P.Divcontr_B[272];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew16 = &xnew[16];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4667,7 +4815,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow17[0];
       const real_T *pB289 = &t15_2_P.Divcontr_B[289];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew17 = &xnew[17];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4696,7 +4844,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow18[0];
       const real_T *pB306 = &t15_2_P.Divcontr_B[306];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew18 = &xnew[18];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4725,7 +4873,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow19[0];
       const real_T *pB323 = &t15_2_P.Divcontr_B[323];
-      const real_T *u = &t15_2_B.Divide2_b[0];
+      const real_T *u = &t15_2_B.Divide2[0];
       real_T *pxnew19 = &xnew[19];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -4747,7 +4895,7 @@ void t15_2_step(void)
       }
     }
 
-    xnew[20] += (t15_2_P.Divcontr_B[340])*t15_2_B.Divide2_b[12];
+    xnew[20] += (t15_2_P.Divcontr_B[340])*t15_2_B.Divide2[12];
 
     {
       static const int_T colAidxRow21[5] = { 20, 21, 22, 23, 24 };
@@ -4763,7 +4911,7 @@ void t15_2_step(void)
       }
     }
 
-    xnew[21] += (t15_2_P.Divcontr_B[341])*t15_2_B.Divide2_b[12];
+    xnew[21] += (t15_2_P.Divcontr_B[341])*t15_2_B.Divide2[12];
 
     {
       static const int_T colAidxRow22[5] = { 20, 21, 22, 23, 24 };
@@ -4779,7 +4927,7 @@ void t15_2_step(void)
       }
     }
 
-    xnew[22] += (t15_2_P.Divcontr_B[342])*t15_2_B.Divide2_b[12];
+    xnew[22] += (t15_2_P.Divcontr_B[342])*t15_2_B.Divide2[12];
 
     {
       static const int_T colAidxRow23[5] = { 20, 21, 22, 23, 24 };
@@ -4795,7 +4943,7 @@ void t15_2_step(void)
       }
     }
 
-    xnew[23] += (t15_2_P.Divcontr_B[343])*t15_2_B.Divide2_b[12];
+    xnew[23] += (t15_2_P.Divcontr_B[343])*t15_2_B.Divide2[12];
 
     {
       static const int_T colAidxRow24[5] = { 20, 21, 22, 23, 24 };
@@ -4811,29 +4959,32 @@ void t15_2_step(void)
       }
     }
 
-    xnew[24] += (t15_2_P.Divcontr_B[344])*t15_2_B.Divide2_b[12];
+    xnew[24] += (t15_2_P.Divcontr_B[344])*t15_2_B.Divide2[12];
     xnew[25] = (t15_2_P.Divcontr_A[565])*t15_2_DWork.Divcontr_DSTATE[25];
-    xnew[25] += (t15_2_P.Divcontr_B[345])*t15_2_B.Divide2_b[0];
+    xnew[25] += (t15_2_P.Divcontr_B[345])*t15_2_B.Divide2[0];
     xnew[26] = (t15_2_P.Divcontr_A[566])*t15_2_DWork.Divcontr_DSTATE[26];
-    xnew[26] += (t15_2_P.Divcontr_B[346])*t15_2_B.Divide2_b[1];
+    xnew[26] += (t15_2_P.Divcontr_B[346])*t15_2_B.Divide2[1];
     xnew[27] = (t15_2_P.Divcontr_A[567])*t15_2_DWork.Divcontr_DSTATE[27];
-    xnew[27] += (t15_2_P.Divcontr_B[347])*t15_2_B.Divide2_b[2];
+    xnew[27] += (t15_2_P.Divcontr_B[347])*t15_2_B.Divide2[2];
     xnew[28] = (t15_2_P.Divcontr_A[568])*t15_2_DWork.Divcontr_DSTATE[28];
-    xnew[28] += (t15_2_P.Divcontr_B[348])*t15_2_B.Divide2_b[3];
+    xnew[28] += (t15_2_P.Divcontr_B[348])*t15_2_B.Divide2[3];
     xnew[29] = (t15_2_P.Divcontr_A[569])*t15_2_DWork.Divcontr_DSTATE[29];
-    xnew[29] += (t15_2_P.Divcontr_B[349])*t15_2_B.Divide2_b[4];
+    xnew[29] += (t15_2_P.Divcontr_B[349])*t15_2_B.Divide2[4];
     xnew[30] = (t15_2_P.Divcontr_A[570])*t15_2_DWork.Divcontr_DSTATE[30];
-    xnew[30] += (t15_2_P.Divcontr_B[350])*t15_2_B.Divide2_b[5];
+    xnew[30] += (t15_2_P.Divcontr_B[350])*t15_2_B.Divide2[5];
     xnew[31] = (t15_2_P.Divcontr_A[571])*t15_2_DWork.Divcontr_DSTATE[31];
-    xnew[31] += (t15_2_P.Divcontr_B[351])*t15_2_B.Divide2_b[7];
+    xnew[31] += (t15_2_P.Divcontr_B[351])*t15_2_B.Divide2[7];
     (void) memcpy(&t15_2_DWork.Divcontr_DSTATE[0], xnew,
                   sizeof(real_T)*32);
   }
 
-  /* Update for Memory: '<S62>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_o = t15_2_B.u999_b;
+  /* Update for Memory: '<S64>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_p = t15_2_B.switch1_j;
 
-  /* Update for DiscreteStateSpace: '<S55>/Div_rd contr' */
+  /* Update for Memory: '<S85>/Memory' */
+  t15_2_DWork.Memory_PreviousInput_o = t15_2_B.LogicalOperator_b;
+
+  /* Update for DiscreteStateSpace: '<S15>/Div_rd contr' */
   {
     real_T xnew[22];
 
@@ -5290,10 +5441,13 @@ void t15_2_step(void)
                   sizeof(real_T)*22);
   }
 
-  /* Update for Memory: '<S59>/Memory1' */
-  t15_2_DWork.Memory1_PreviousInput_f = t15_2_B.c_eob_e3;
+  /* Update for Memory: '<S56>/Memory1' */
+  t15_2_DWork.Memory1_PreviousInput_ma = t15_2_B.u_b;
 
-  /* Update for DiscreteStateSpace: '<S53>/Curr. term. contr' */
+  /* Update for Memory: '<S74>/Memory' */
+  t15_2_DWork.Memory_PreviousInput_ok = t15_2_B.LogicalOperator_l;
+
+  /* Update for DiscreteStateSpace: '<S15>/Curr. term. contr' */
   {
     real_T xnew[22];
 
@@ -5483,7 +5637,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow11[0];
       const real_T *pB0 = t15_2_P.Currtermcontr_B;
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew11 = &xnew[11];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5512,7 +5666,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow12[0];
       const real_T *pB11 = &t15_2_P.Currtermcontr_B[11];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew12 = &xnew[12];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5541,7 +5695,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow13[0];
       const real_T *pB22 = &t15_2_P.Currtermcontr_B[22];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew13 = &xnew[13];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5570,7 +5724,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow14[0];
       const real_T *pB33 = &t15_2_P.Currtermcontr_B[33];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew14 = &xnew[14];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5599,7 +5753,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow15[0];
       const real_T *pB44 = &t15_2_P.Currtermcontr_B[44];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew15 = &xnew[15];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5628,7 +5782,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow16[0];
       const real_T *pB55 = &t15_2_P.Currtermcontr_B[55];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew16 = &xnew[16];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5657,7 +5811,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow17[0];
       const real_T *pB66 = &t15_2_P.Currtermcontr_B[66];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew17 = &xnew[17];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5686,7 +5840,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow18[0];
       const real_T *pB77 = &t15_2_P.Currtermcontr_B[77];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew18 = &xnew[18];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5715,7 +5869,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow19[0];
       const real_T *pB88 = &t15_2_P.Currtermcontr_B[88];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew19 = &xnew[19];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5744,7 +5898,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow20[0];
       const real_T *pB99 = &t15_2_P.Currtermcontr_B[99];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew20 = &xnew[20];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5773,7 +5927,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow21[0];
       const real_T *pB110 = &t15_2_P.Currtermcontr_B[110];
-      const real_T *u = &t15_2_B.Divide12[0];
+      const real_T *u = &t15_2_B.Divide12_b[0];
       real_T *pxnew21 = &xnew[21];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -5785,7 +5939,7 @@ void t15_2_step(void)
                   sizeof(real_T)*22);
   }
 
-  /* Update for DiscreteStateSpace: '<S56>/Lim. contr.' */
+  /* Update for DiscreteStateSpace: '<S57>/Lim. contr.' */
   {
     real_T xnew[46];
 
@@ -5811,7 +5965,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow0[0];
       const real_T *pB0 = t15_2_P.Limcontr_B;
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew0 = &xnew[0];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -5841,7 +5995,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow1[0];
       const real_T *pB17 = &t15_2_P.Limcontr_B[17];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew1 = &xnew[1];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -5871,7 +6025,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow2[0];
       const real_T *pB34 = &t15_2_P.Limcontr_B[34];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew2 = &xnew[2];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -5901,7 +6055,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow3[0];
       const real_T *pB51 = &t15_2_P.Limcontr_B[51];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew3 = &xnew[3];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -5931,7 +6085,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow4[0];
       const real_T *pB68 = &t15_2_P.Limcontr_B[68];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew4 = &xnew[4];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -5961,7 +6115,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow5[0];
       const real_T *pB85 = &t15_2_P.Limcontr_B[85];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew5 = &xnew[5];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -5991,7 +6145,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow6[0];
       const real_T *pB102 = &t15_2_P.Limcontr_B[102];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew6 = &xnew[6];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6021,7 +6175,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow7[0];
       const real_T *pB119 = &t15_2_P.Limcontr_B[119];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew7 = &xnew[7];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6051,7 +6205,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow8[0];
       const real_T *pB136 = &t15_2_P.Limcontr_B[136];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew8 = &xnew[8];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6081,7 +6235,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow9[0];
       const real_T *pB153 = &t15_2_P.Limcontr_B[153];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew9 = &xnew[9];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6111,7 +6265,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow10[0];
       const real_T *pB170 = &t15_2_P.Limcontr_B[170];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew10 = &xnew[10];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6141,7 +6295,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow11[0];
       const real_T *pB187 = &t15_2_P.Limcontr_B[187];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew11 = &xnew[11];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6171,7 +6325,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow12[0];
       const real_T *pB204 = &t15_2_P.Limcontr_B[204];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew12 = &xnew[12];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6201,7 +6355,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow13[0];
       const real_T *pB221 = &t15_2_P.Limcontr_B[221];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew13 = &xnew[13];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6231,7 +6385,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow14[0];
       const real_T *pB238 = &t15_2_P.Limcontr_B[238];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew14 = &xnew[14];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6261,7 +6415,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow15[0];
       const real_T *pB255 = &t15_2_P.Limcontr_B[255];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew15 = &xnew[15];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6291,7 +6445,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow16[0];
       const real_T *pB272 = &t15_2_P.Limcontr_B[272];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew16 = &xnew[16];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6321,7 +6475,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow17[0];
       const real_T *pB289 = &t15_2_P.Limcontr_B[289];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew17 = &xnew[17];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6351,7 +6505,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow18[0];
       const real_T *pB306 = &t15_2_P.Limcontr_B[306];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew18 = &xnew[18];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6381,7 +6535,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow19[0];
       const real_T *pB323 = &t15_2_P.Limcontr_B[323];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew19 = &xnew[19];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6411,7 +6565,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow20[0];
       const real_T *pB340 = &t15_2_P.Limcontr_B[340];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew20 = &xnew[20];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6441,7 +6595,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow21[0];
       const real_T *pB357 = &t15_2_P.Limcontr_B[357];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew21 = &xnew[21];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6471,7 +6625,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow22[0];
       const real_T *pB374 = &t15_2_P.Limcontr_B[374];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew22 = &xnew[22];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6501,7 +6655,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow23[0];
       const real_T *pB391 = &t15_2_P.Limcontr_B[391];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew23 = &xnew[23];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6531,7 +6685,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow24[0];
       const real_T *pB408 = &t15_2_P.Limcontr_B[408];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew24 = &xnew[24];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6561,7 +6715,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow25[0];
       const real_T *pB425 = &t15_2_P.Limcontr_B[425];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew25 = &xnew[25];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6591,7 +6745,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow26[0];
       const real_T *pB442 = &t15_2_P.Limcontr_B[442];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew26 = &xnew[26];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6621,7 +6775,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow27[0];
       const real_T *pB459 = &t15_2_P.Limcontr_B[459];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew27 = &xnew[27];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6651,7 +6805,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow28[0];
       const real_T *pB476 = &t15_2_P.Limcontr_B[476];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew28 = &xnew[28];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6681,7 +6835,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow29[0];
       const real_T *pB493 = &t15_2_P.Limcontr_B[493];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew29 = &xnew[29];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6711,7 +6865,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow30[0];
       const real_T *pB510 = &t15_2_P.Limcontr_B[510];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew30 = &xnew[30];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6741,7 +6895,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow31[0];
       const real_T *pB527 = &t15_2_P.Limcontr_B[527];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew31 = &xnew[31];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6771,7 +6925,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow32[0];
       const real_T *pB544 = &t15_2_P.Limcontr_B[544];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew32 = &xnew[32];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6801,7 +6955,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow33[0];
       const real_T *pB561 = &t15_2_P.Limcontr_B[561];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew33 = &xnew[33];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6831,7 +6985,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow34[0];
       const real_T *pB578 = &t15_2_P.Limcontr_B[578];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew34 = &xnew[34];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6861,7 +7015,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow35[0];
       const real_T *pB595 = &t15_2_P.Limcontr_B[595];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew35 = &xnew[35];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6891,7 +7045,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow36[0];
       const real_T *pB612 = &t15_2_P.Limcontr_B[612];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew36 = &xnew[36];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6921,7 +7075,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow37[0];
       const real_T *pB629 = &t15_2_P.Limcontr_B[629];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew37 = &xnew[37];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6951,7 +7105,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow38[0];
       const real_T *pB646 = &t15_2_P.Limcontr_B[646];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew38 = &xnew[38];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -6981,7 +7135,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow39[0];
       const real_T *pB663 = &t15_2_P.Limcontr_B[663];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew39 = &xnew[39];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -7011,7 +7165,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow40[0];
       const real_T *pB680 = &t15_2_P.Limcontr_B[680];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew40 = &xnew[40];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -7041,7 +7195,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow41[0];
       const real_T *pB697 = &t15_2_P.Limcontr_B[697];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew41 = &xnew[41];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -7071,7 +7225,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow42[0];
       const real_T *pB714 = &t15_2_P.Limcontr_B[714];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew42 = &xnew[42];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -7101,7 +7255,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow43[0];
       const real_T *pB731 = &t15_2_P.Limcontr_B[731];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew43 = &xnew[43];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -7131,7 +7285,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow44[0];
       const real_T *pB748 = &t15_2_P.Limcontr_B[748];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew44 = &xnew[44];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -7161,7 +7315,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow45[0];
       const real_T *pB765 = &t15_2_P.Limcontr_B[765];
-      const real_T *u = &t15_2_B.tcont2[0];
+      const real_T *u = &t15_2_B.Divide12_g[0];
       real_T *pxnew45 = &xnew[45];
       int_T numNonZero = 17;
       while (numNonZero--) {
@@ -7173,7 +7327,7 @@ void t15_2_step(void)
                   sizeof(real_T)*46);
   }
 
-  /* Update for DiscreteStateSpace: '<S56>/Curr. contr.' */
+  /* Update for DiscreteStateSpace: '<S57>/Curr. contr.' */
   {
     real_T xnew[11];
 
@@ -7196,7 +7350,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow0[0];
       const real_T *pB0 = t15_2_P.Currcontr_B;
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew0 = &xnew[0];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7223,7 +7377,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow1[0];
       const real_T *pB11 = &t15_2_P.Currcontr_B[11];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew1 = &xnew[1];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7250,7 +7404,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow2[0];
       const real_T *pB22 = &t15_2_P.Currcontr_B[22];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew2 = &xnew[2];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7277,7 +7431,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow3[0];
       const real_T *pB33 = &t15_2_P.Currcontr_B[33];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew3 = &xnew[3];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7304,7 +7458,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow4[0];
       const real_T *pB44 = &t15_2_P.Currcontr_B[44];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew4 = &xnew[4];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7331,7 +7485,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow5[0];
       const real_T *pB55 = &t15_2_P.Currcontr_B[55];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew5 = &xnew[5];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7358,7 +7512,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow6[0];
       const real_T *pB66 = &t15_2_P.Currcontr_B[66];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew6 = &xnew[6];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7385,7 +7539,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow7[0];
       const real_T *pB77 = &t15_2_P.Currcontr_B[77];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew7 = &xnew[7];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7412,7 +7566,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow8[0];
       const real_T *pB88 = &t15_2_P.Currcontr_B[88];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew8 = &xnew[8];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7439,7 +7593,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow9[0];
       const real_T *pB99 = &t15_2_P.Currcontr_B[99];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew9 = &xnew[9];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7466,7 +7620,7 @@ void t15_2_step(void)
 
       const int_T *pBidx = &colBidxRow10[0];
       const real_T *pB110 = &t15_2_P.Currcontr_B[110];
-      const real_T *u = &t15_2_B.Divide1_j[0];
+      const real_T *u = &t15_2_B.e6_ed[0];
       real_T *pxnew10 = &xnew[10];
       int_T numNonZero = 11;
       while (numNonZero--) {
@@ -7478,36 +7632,36 @@ void t15_2_step(void)
                   sizeof(real_T)*11);
   }
 
-  /* Update for UniformRandomNumber: '<S61>/Uniform Random Number' */
+  /* Update for UniformRandomNumber: '<S65>/Uniform Random Number' */
   tmin = t15_2_P.UniformRandomNumber_Minimum;
   t15_2_DWork.UniformRandomNumber_NextOutput =
     (t15_2_P.UniformRandomNumber_Maximum - tmin) * rt_urand_Upu32_Yd_f_pw_snf
     (&t15_2_DWork.RandSeed) + tmin;
 
-  /* Update for UnitDelay: '<S73>/UD' */
-  t15_2_DWork.UD_DSTATE_c = t15_2_B.e3;
+  /* Update for UnitDelay: '<S87>/UD' */
+  t15_2_DWork.UD_DSTATE_h = t15_2_B.Times;
 
-  /* Update for DiscreteStateSpace: '<S57>/VS. contr' */
+  /* Update for DiscreteStateSpace: '<S62>/VS. contr' */
   {
     real_T xnew[9];
     xnew[0] = (t15_2_P.VScontr_A[0])*t15_2_DWork.VScontr_DSTATE[0] +
       (t15_2_P.VScontr_A[1])*t15_2_DWork.VScontr_DSTATE[1]
       + (t15_2_P.VScontr_A[2])*t15_2_DWork.VScontr_DSTATE[2]
       + (t15_2_P.VScontr_A[3])*t15_2_DWork.VScontr_DSTATE[7];
-    xnew[0] += (t15_2_P.VScontr_B[0])*t15_2_B.tt_tran2d[0] + (t15_2_P.VScontr_B
-      [1])*t15_2_B.tt_tran2d[1];
+    xnew[0] += (t15_2_P.VScontr_B[0])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_B[1])*t15_2_B.Divide12_g2[1];
     xnew[1] = (t15_2_P.VScontr_A[4])*t15_2_DWork.VScontr_DSTATE[0] +
       (t15_2_P.VScontr_A[5])*t15_2_DWork.VScontr_DSTATE[1]
       + (t15_2_P.VScontr_A[6])*t15_2_DWork.VScontr_DSTATE[2]
       + (t15_2_P.VScontr_A[7])*t15_2_DWork.VScontr_DSTATE[7];
-    xnew[1] += (t15_2_P.VScontr_B[2])*t15_2_B.tt_tran2d[0] + (t15_2_P.VScontr_B
-      [3])*t15_2_B.tt_tran2d[1];
+    xnew[1] += (t15_2_P.VScontr_B[2])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_B[3])*t15_2_B.Divide12_g2[1];
     xnew[2] = (t15_2_P.VScontr_A[8])*t15_2_DWork.VScontr_DSTATE[0] +
       (t15_2_P.VScontr_A[9])*t15_2_DWork.VScontr_DSTATE[1]
       + (t15_2_P.VScontr_A[10])*t15_2_DWork.VScontr_DSTATE[2]
       + (t15_2_P.VScontr_A[11])*t15_2_DWork.VScontr_DSTATE[7];
-    xnew[2] += (t15_2_P.VScontr_B[4])*t15_2_B.tt_tran2d[0] + (t15_2_P.VScontr_B
-      [5])*t15_2_B.tt_tran2d[1];
+    xnew[2] += (t15_2_P.VScontr_B[4])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_B[5])*t15_2_B.Divide12_g2[1];
 
     {
       static const int_T colAidxRow3[5] = { 3, 4, 5, 6, 7 };
@@ -7523,8 +7677,8 @@ void t15_2_step(void)
       }
     }
 
-    xnew[3] += (t15_2_P.VScontr_B[6])*t15_2_B.tt_tran2d[0] + (t15_2_P.VScontr_B
-      [7])*t15_2_B.tt_tran2d[1];
+    xnew[3] += (t15_2_P.VScontr_B[6])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_B[7])*t15_2_B.Divide12_g2[1];
 
     {
       static const int_T colAidxRow4[5] = { 3, 4, 5, 6, 7 };
@@ -7540,8 +7694,8 @@ void t15_2_step(void)
       }
     }
 
-    xnew[4] += (t15_2_P.VScontr_B[8])*t15_2_B.tt_tran2d[0] + (t15_2_P.VScontr_B
-      [9])*t15_2_B.tt_tran2d[1];
+    xnew[4] += (t15_2_P.VScontr_B[8])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_B[9])*t15_2_B.Divide12_g2[1];
 
     {
       static const int_T colAidxRow5[5] = { 3, 4, 5, 6, 7 };
@@ -7557,8 +7711,8 @@ void t15_2_step(void)
       }
     }
 
-    xnew[5] += (t15_2_P.VScontr_B[10])*t15_2_B.tt_tran2d[0] +
-      (t15_2_P.VScontr_B[11])*t15_2_B.tt_tran2d[1];
+    xnew[5] += (t15_2_P.VScontr_B[10])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_B[11])*t15_2_B.Divide12_g2[1];
 
     {
       static const int_T colAidxRow6[5] = { 3, 4, 5, 6, 7 };
@@ -7574,37 +7728,37 @@ void t15_2_step(void)
       }
     }
 
-    xnew[6] += (t15_2_P.VScontr_B[12])*t15_2_B.tt_tran2d[0] +
-      (t15_2_P.VScontr_B[13])*t15_2_B.tt_tran2d[1];
+    xnew[6] += (t15_2_P.VScontr_B[12])*t15_2_B.Divide12_g2[0] +
+      (t15_2_P.VScontr_B[13])*t15_2_B.Divide12_g2[1];
     xnew[7] = (t15_2_P.VScontr_A[32])*t15_2_DWork.VScontr_DSTATE[7];
-    xnew[7] += (t15_2_P.VScontr_B[14])*t15_2_B.tt_tran2d[0];
+    xnew[7] += (t15_2_P.VScontr_B[14])*t15_2_B.Divide12_g2[0];
     xnew[8] = (t15_2_P.VScontr_A[33])*t15_2_DWork.VScontr_DSTATE[8];
-    xnew[8] += (t15_2_P.VScontr_B[15])*t15_2_B.tt_tran2d[1];
+    xnew[8] += (t15_2_P.VScontr_B[15])*t15_2_B.Divide12_g2[1];
     (void) memcpy(&t15_2_DWork.VScontr_DSTATE[0], xnew,
                   sizeof(real_T)*9);
   }
 
-  /* Update for DiscreteStateSpace: '<S57>/VS. contr hl' */
+  /* Update for DiscreteStateSpace: '<S62>/VS. contr hl' */
   {
     real_T xnew[8];
     xnew[0] = (t15_2_P.VScontrhl_A[0])*t15_2_DWork.VScontrhl_DSTATE[0] +
       (t15_2_P.VScontrhl_A[1])*t15_2_DWork.VScontrhl_DSTATE[1]
       + (t15_2_P.VScontrhl_A[2])*t15_2_DWork.VScontrhl_DSTATE[2]
       + (t15_2_P.VScontrhl_A[3])*t15_2_DWork.VScontrhl_DSTATE[7];
-    xnew[0] += (t15_2_P.VScontrhl_B[0])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_B[1])*t15_2_B.Divide4_j[1];
+    xnew[0] += (t15_2_P.VScontrhl_B[0])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_B[1])*t15_2_B.Divide4_a[1];
     xnew[1] = (t15_2_P.VScontrhl_A[4])*t15_2_DWork.VScontrhl_DSTATE[0] +
       (t15_2_P.VScontrhl_A[5])*t15_2_DWork.VScontrhl_DSTATE[1]
       + (t15_2_P.VScontrhl_A[6])*t15_2_DWork.VScontrhl_DSTATE[2]
       + (t15_2_P.VScontrhl_A[7])*t15_2_DWork.VScontrhl_DSTATE[7];
-    xnew[1] += (t15_2_P.VScontrhl_B[2])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_B[3])*t15_2_B.Divide4_j[1];
+    xnew[1] += (t15_2_P.VScontrhl_B[2])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_B[3])*t15_2_B.Divide4_a[1];
     xnew[2] = (t15_2_P.VScontrhl_A[8])*t15_2_DWork.VScontrhl_DSTATE[0] +
       (t15_2_P.VScontrhl_A[9])*t15_2_DWork.VScontrhl_DSTATE[1]
       + (t15_2_P.VScontrhl_A[10])*t15_2_DWork.VScontrhl_DSTATE[2]
       + (t15_2_P.VScontrhl_A[11])*t15_2_DWork.VScontrhl_DSTATE[7];
-    xnew[2] += (t15_2_P.VScontrhl_B[4])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_B[5])*t15_2_B.Divide4_j[1];
+    xnew[2] += (t15_2_P.VScontrhl_B[4])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_B[5])*t15_2_B.Divide4_a[1];
 
     {
       static const int_T colAidxRow3[5] = { 3, 4, 5, 6, 7 };
@@ -7620,8 +7774,8 @@ void t15_2_step(void)
       }
     }
 
-    xnew[3] += (t15_2_P.VScontrhl_B[6])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_B[7])*t15_2_B.Divide4_j[1];
+    xnew[3] += (t15_2_P.VScontrhl_B[6])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_B[7])*t15_2_B.Divide4_a[1];
 
     {
       static const int_T colAidxRow4[5] = { 3, 4, 5, 6, 7 };
@@ -7637,8 +7791,8 @@ void t15_2_step(void)
       }
     }
 
-    xnew[4] += (t15_2_P.VScontrhl_B[8])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_B[9])*t15_2_B.Divide4_j[1];
+    xnew[4] += (t15_2_P.VScontrhl_B[8])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_B[9])*t15_2_B.Divide4_a[1];
 
     {
       static const int_T colAidxRow5[5] = { 3, 4, 5, 6, 7 };
@@ -7654,8 +7808,8 @@ void t15_2_step(void)
       }
     }
 
-    xnew[5] += (t15_2_P.VScontrhl_B[10])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_B[11])*t15_2_B.Divide4_j[1];
+    xnew[5] += (t15_2_P.VScontrhl_B[10])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_B[11])*t15_2_B.Divide4_a[1];
 
     {
       static const int_T colAidxRow6[5] = { 3, 4, 5, 6, 7 };
@@ -7671,30 +7825,19 @@ void t15_2_step(void)
       }
     }
 
-    xnew[6] += (t15_2_P.VScontrhl_B[12])*t15_2_B.Divide4_j[0] +
-      (t15_2_P.VScontrhl_B[13])*t15_2_B.Divide4_j[1];
+    xnew[6] += (t15_2_P.VScontrhl_B[12])*t15_2_B.Divide4_a[0] +
+      (t15_2_P.VScontrhl_B[13])*t15_2_B.Divide4_a[1];
     xnew[7] = (t15_2_P.VScontrhl_A[32])*t15_2_DWork.VScontrhl_DSTATE[7];
-    xnew[7] += (t15_2_P.VScontrhl_B[14])*t15_2_B.Divide4_j[0];
+    xnew[7] += (t15_2_P.VScontrhl_B[14])*t15_2_B.Divide4_a[0];
     (void) memcpy(&t15_2_DWork.VScontrhl_DSTATE[0], xnew,
                   sizeof(real_T)*8);
   }
 
-  for (i = 0; i < 11; i++) {
-    /* Update for Memory: '<S60>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_b[i] = t15_2_B.u99_i[i];
-
-    /* Update for Memory: '<S63>/Memory' */
-    t15_2_DWork.Memory_PreviousInput[i] = t15_2_B.u9_b[i];
-
-    /* Update for Memory: '<S56>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_dn[i] = t15_2_B.IpIp_div[i];
-
-    /* Update for Memory: '<S7>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_p2[i] = t15_2_B.Switch2_c[i];
-  }
+  /* Update for Memory: '<S81>/Memory' */
+  t15_2_DWork.Memory_PreviousInput_h = t15_2_B.LogicalOperator_h3;
 
   /* Update for UnitDelay: '<S6>/UD' */
-  t15_2_DWork.UD_DSTATE_i = t15_2_B.e3;
+  t15_2_DWork.UD_DSTATE_a = t15_2_B.Times;
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
@@ -7709,336 +7852,9 @@ void t15_2_step(void)
 /* Model initialize function */
 void t15_2_initialize(void)
 {
-//	FILE *prob1, *f;
-	char b[256];
-
-      int i,j,ii,jj,kk;
-	  double tcont2,Ip_div,ref_ramp,Ip_rd,trd_ref,c_a_tpl1,c_a_tpl1_eob;
-      double c_a_tpl2,c_a_tpl_min,y0,t_tran2d,c1_y0,c2_y0,g2_ramp;
-
-	  if( kpr == 1){
-  
-	  printf("---t15_2_initialize \n");
-
-	  control_data_read();
-
-	  printf("+++control_data2.dat \n");
-
-tcont2=mem1.tcont2;
-Ip_div=mem1.Ip_div;
-ref_ramp=mem1.ref_ramp;
-Ip_rd=mem1.Ip_rd;
-trd_ref=mem1.trd_ref;
-
-	  printf("  tcont2,Ip_div,ref_ramp,Ip_rd,trd_ref \n");
-  	  printf("%g   %g   %g  %g   %g \n ",tcont2,Ip_div,ref_ramp,Ip_rd,trd_ref);
-
-
-
-c_a_tpl1=mem1.c_a_tpl1;
-c_a_tpl1_eob=mem1.c_a_tpl1_eob;
-c_a_tpl2=mem1.c_a_tpl2;
-c_a_tpl_min=mem1.c_a_tpl_min;
-y0=mem1.y0;
-c1_y0=mem1.c1_y0;
-c2_y0=mem1.c2_y0;
-
-	  printf("  c_a_tpl1,c_a_tpl1_eob,c_a_tpl2,c_a_tpl_min \n");
-  	  printf("%g   %g   %g  %g \n ",c_a_tpl1,c_a_tpl1_eob,c_a_tpl2,c_a_tpl_min);
-
-	  printf("  y0,c1_y0,c2_y0 \n");
-  	  printf("%g   %g   %g  \n ",y0,c1_y0,c2_y0);
-
-
-//fclose(f);
-
-
-
-	   printf("  tcont2_Threshold  tcont2_Threshold_f\n");
-  	  printf("%g   %g   \n",t15_2_P.tcont2_Threshold, 
-		  t15_2_P.tcont2_Threshold_f);
-	  printf("\n");
-
-	t15_2_P.tcont2_Threshold=tcont2;
-	t15_2_P.tcont2_Threshold_f=tcont2;
-
-	   printf("  tcont2_Threshold  tcont2_Threshold_f\n");
-  	  printf("%g   %g   \n",t15_2_P.tcont2_Threshold, 
-		  t15_2_P.tcont2_Threshold_f);
-	  printf("\n");
-
-
-	  printf("  t15_2_P.gain_cont2_XData\n");
-	  ii=4;
-	  for (i = 0; i < ii; i++) {
-		printf("%g ",t15_2_P.gain_cont2_XData[i]);
-	  } 
-	  printf("\n");
-	
-//tgain_cont2=[0  tcont2 tcont2+0.3   1e6];
-t15_2_P.gain_cont2_XData[1]=tcont2;
-t15_2_P.gain_cont2_XData[2]=tcont2+0.3;
-
-	  printf("  t15_2_P.gain_cont2_XData\n");
-	  ii=4;
-	  for (i = 0; i < ii; i++) {
-		printf("%g ",t15_2_P.gain_cont2_XData[i]);
-	  } 
-	  printf("\n");
-
-	  printf("  IpIp_div_Threshold  IpIp_div_Threshold_l \n");
-  	  printf("%g   %g  ",t15_2_P.IpIp_div_Threshold, 
-		  t15_2_P.IpIp_div_Threshold_l);
-	  printf("\n");
-	
-	  t15_2_P.IpIp_div_Threshold=Ip_div;
-	  t15_2_P.IpIp_div_Threshold_l=Ip_div;
-
-	   printf("  IpIp_div_Threshold  IpIp_div_Threshold_l \n");
-  	  printf("%g   %g  ",t15_2_P.IpIp_div_Threshold, 
-		  t15_2_P.IpIp_div_Threshold_l);
-	  printf("\n");
-
-	   printf("  t15_2_P.Gain1_Gain_h \n");
-  	  printf("%g   ",t15_2_P.Gain1_Gain_h);
-	  printf("\n");
-
-	  t15_2_P.Gain1_Gain_h=-1./ref_ramp;
-
-	  printf("  t15_2_P.Gain1_Gain_h \n");
-  	  printf("%g   ",t15_2_P.Gain1_Gain_h);
-	  printf("\n");
-
-	   printf("  t15_2_P.Gain1_Gain_j0 \n");
-  	  printf("%g   ",t15_2_P.Gain1_Gain_j0);
-	  printf("\n");
-	  t15_2_P.Gain1_Gain_j0=-1./ref_ramp;
-	   printf("  t15_2_P.Gain1_Gain_j0 \n");
-  	  printf("%g   ",t15_2_P.Gain1_Gain_j0);
-	  printf("\n");
-
-	   printf("  t15_2_P.Gain1_Gain_j \n");
-  	  printf("%g   ",t15_2_P.Gain1_Gain_j);
-	  printf("\n");
-	  t15_2_P.Gain1_Gain_j=-1./ref_ramp;
-	   printf("  t15_2_P.Gain1_Gain_j \n");
-  	  printf("%g   ",t15_2_P.Gain1_Gain_j);
-	  printf("\n");
-
-
-	  printf("  t15_2_P.Constant_Value_b \n");
-  	  printf("%g   ",t15_2_P.Constant_Value_b);
-	  printf("\n");
-
-	  t15_2_P.Constant_Value_b=Ip_rd;
-
-	  printf("  t15_2_P.Constant_Value_b \n");
-  	  printf("%g   ",t15_2_P.Constant_Value_b);
-	  printf("\n");
-
-
-//	  t15_2_P.LookupTable1_XData[4]
-//Expression: [0 t_tran2D t_tran2D+ref_ramp 1e6]
-	  t_tran2d=t15_2_P.tt_tran2d_Threshold;
-
-	  printf("  LookupTable1_XData[2] LookupTable2_XData[2] LookupTable3_XData[2] \n");
-  	  printf("%g %g %g   ",t15_2_P.LookupTable1_XData[2],t15_2_P.LookupTable2_XData[2],
-		  t15_2_P.LookupTable3_XData[2]);
-	  printf("\n");
-	  t15_2_P.LookupTable1_XData[2]=t_tran2d+ref_ramp;
-	  t15_2_P.LookupTable2_XData[2]=t_tran2d+ref_ramp;
-	  t15_2_P.LookupTable3_XData[2]=t_tran2d+ref_ramp;
-
-	  printf("  LookupTable1_XData[2] LookupTable2_XData[2] LookupTable3_XData[2] \n");
-  	  printf("%g  %g %g ",t15_2_P.LookupTable1_XData[2],t15_2_P.LookupTable2_XData[2],
-		  t15_2_P.LookupTable3_XData[2]);
-	  printf("\n");
-
-
-	   printf("  Constant_Value  Constant_Value_j Constant_Value_i\n");
-  	  printf("%g   %g   %g \n",t15_2_P.Constant_Value, 
-		  t15_2_P.Constant_Value_j,t15_2_P.Constant_Value_i);
-	   printf("  Constant_Value_g  Constant_Value_h Constant_Value_mf\n");
-  	  printf("%g   %g   %g \n",t15_2_P.Constant_Value_o, 
-		  t15_2_P.Constant_Value_n,t15_2_P.Constant_Value_ow);
-	  printf("\n");
-
-	 t15_2_P.Constant_Value=trd_ref;
-	 t15_2_P.Constant_Value_j=trd_ref;
-	 t15_2_P.Constant_Value_i=trd_ref;
-	 t15_2_P.Constant_Value_o=trd_ref;
-	 t15_2_P.Constant_Value_n=trd_ref;
-	 t15_2_P.Constant_Value_ow=trd_ref;
-
-	   printf("  Constant_Value  Constant_Value_j Constant_Value_i\n");
-  	  printf("%g   %g   %g \n",t15_2_P.Constant_Value, 
-		  t15_2_P.Constant_Value_j,t15_2_P.Constant_Value_i);
-	   printf("  Constant_Value_g  Constant_Value_h Constant_Value_mf\n");
-  	  printf("%g   %g   %g \n",t15_2_P.Constant_Value_o, 
-		  t15_2_P.Constant_Value_n,t15_2_P.Constant_Value_ow);
-	  printf("\n");
-
-
-	   printf("  Constant_Value_e  Ip_div\n");
-  	  printf("%g   %g  \n",t15_2_P.Constant_Value_e, 
-		  Ip_div);
-	  
-	  t15_2_P.Constant_Value_e=Ip_div;
-
-	   printf("  Constant_Value_a  Ip_rd\n");
-  	  printf("%g   %g  \n",t15_2_P.Constant_Value_a, 
-		  Ip_rd);
-	  
-	  t15_2_P.Constant_Value_a=Ip_rd;
-
-	  printf("  Constant_Value_b  Ip_rd\n");
-  	  printf("%g   %g  \n",t15_2_P.Constant_Value_b, 
-		  Ip_rd);
-	  
-	  t15_2_P.Constant_Value_b=Ip_rd;
-
-	  printf("  Constant_Value_k  Ip_rd\n");
-  	  printf("%g   %g  \n",t15_2_P.Constant_Value_k, 
-		  Ip_rd);
-	  
-	  t15_2_P.Constant_Value_k=Ip_rd;
-
-
-	  printf("  t15_2_P.VSgain3_Gain \n");
-  	  printf("%g   ",t15_2_P.VSgain3_Gain);
-	  printf("\n");
-
-	  t15_2_P.VSgain3_Gain=c_a_tpl1_eob/15.;
-
-	  printf("  t15_2_P.VSgain3_Gain \n");
-  	  printf("%g   ",t15_2_P.VSgain3_Gain);
-	  printf("\n");
-
-	  printf("  t15_2_P.atpl115_Gain \n");
-  	  printf("%g   ",t15_2_P.atpl115_Gain);
-	  printf("\n");
-
-	  t15_2_P.atpl115_Gain=c_a_tpl1/15.;
-
-	  printf("  t15_2_P.atpl115_Gain \n");
-  	  printf("%g   ",t15_2_P.atpl115_Gain);
-	  printf("\n");
-
-	  printf("  t15_2_P.limgain_Gain \n");
-  	  printf("%g   ",t15_2_P.limgain_Gain);
-	  printf("\n");
-	  t15_2_P.limgain_Gain=c_a_tpl2/15.;
-
-	  printf("  t15_2_P.limgain_Gain \n");
-  	  printf("%g   ",t15_2_P.limgain_Gain);
-	  printf("\n");
-
-	  printf("  t15_2_P.Saturation3_LowerSat t15_2_P.Saturation4_LowerSat \n");
-  	  printf("%g %g  ",t15_2_P.Saturation3_LowerSat,t15_2_P.Saturation4_LowerSat);
-	  printf("\n");
-	t15_2_P.Saturation3_LowerSat=c_a_tpl_min;
-	t15_2_P.Saturation4_LowerSat=c_a_tpl_min;
-	  printf("  t15_2_P.Saturation3_LowerSat t15_2_P.Saturation4_LowerSat \n");
-  	  printf("%g %g   ",t15_2_P.Saturation3_LowerSat,t15_2_P.Saturation4_LowerSat);
-	  printf("\n");
-
-	   printf("  t15_2_P.y0_Value  t15_2_P.uy0_Value t15_2_P.uy0_LowerSat\n");
-  	  printf("%g   %g   %g \n",t15_2_P.y0_Value, 
-		  t15_2_P.uy0_Value,t15_2_P.uy0_LowerSat);
-
-
-	  t15_2_P.y0_Value=y0;
-//Expression: (1-y0)/(c2_y0-c1_y0)
-	  printf("  y0 t15_2_P.c1_y0_Value c2_y0\n");
-  	  printf("%g %g  %g   ",y0,t15_2_P.c1_y0_Value,c2_y0);
-	  printf("\n");
-
-	  t15_2_P.c1_y0_Value=c1_y0;
-	  t15_2_P.uy0_Value=(1.-y0)/(c2_y0-c1_y0);
-
-	  t15_2_P.uy0_LowerSat=y0;
-
-	  printf("  y0 t15_2_P.c1_y0_Value c2_y0\n");
-  	  printf("%g %g  %g   ",y0,t15_2_P.c1_y0_Value,c2_y0);
-	  printf("\n");
-
-	   printf("  t15_2_P.y0_Value  t15_2_P.uy0_Value t15_2_P.uy0_LowerSat\n");
-  	  printf("%g   %g   %g \n",t15_2_P.y0_Value, 
-		  t15_2_P.uy0_Value,t15_2_P.uy0_LowerSat);
-
-	
-	   printf("  Constant_Value_if Ip_div\n");
-  	  printf("%g   %g  \n",t15_2_P.Constant_Value_if, 
-		  Ip_div);
-	
-	  t15_2_P.Constant_Value_if=Ip_div;
-
-
-printf("  t15_2_P.ntur111_Value\n");
-  	  for(i=0;i<11;i++)printf("%g   ",t15_2_P.ntur111_Value[i]);
-
-	  printf("  t15_2_P.ntur111_Value\n");
-	  for(i=0;i<11;i++){
-		  t15_2_P.ntur111_Value[i]=mem8.ntur[i];
-		  printf("%g   ",t15_2_P.ntur111_Value[i]);}
-
-	  printf("\n");
-
-
-printf("  t15_2_P.ntur111_Value_c\n");
-  	  for(i=0;i<11;i++)printf("%g   ",t15_2_P.ntur111_Value_c[i]);
-
-	  printf("  t15_2_P.ntur111_Value_c\n");
-	  for(i=0;i<11;i++){
-		  t15_2_P.ntur111_Value_c[i]=mem8.ntur[i];
-		  printf("%g   ",t15_2_P.ntur111_Value_c[i]);}
-
-	  printf("\n");
-
-	  printf("  t15_2_P.ntur111_Value_a\n");
-  	  for(i=0;i<11;i++)printf("%g   ",t15_2_P.ntur111_Value_a[i]);
-
-	  printf("  t15_2_P.ntur111_Value_a\n");
-	  for(i=0;i<11;i++){
-		  t15_2_P.ntur111_Value_a[i]=mem8.ntur[i];
-		  printf("%g   ",t15_2_P.ntur111_Value_a[i]);}
-
-	  printf("\n");
-
-	  printf("  t15_2_P.ntur_Gain\n");
-  	  for(i=0;i<11;i++)printf("%g   ",t15_2_P.ntur_Gain[i]);
-
-	  printf("  t15_2_P.ntur_Gain\n");
-	  for(i=0;i<11;i++){
-			  t15_2_P.ntur_Gain[i]=1./mem8.ntur[i];
-
-	  printf("%g   ",t15_2_P.ntur_Gain[i]);}
-
-	  printf("\n");
-
-	  printf("  t15_2_P.ntur3_Value\n");
-  	  printf("%g   ",t15_2_P.ntur3_Value);
-
-	  printf("  t15_2_P.ntur3_Value\n");
-	  t15_2_P.ntur3_Value=mem8.ntur[2];
-	  printf("%g   ",t15_2_P.ntur3_Value);
-
-	  printf("\n");
-
-
-//ntur111_Value[11];            /* Expression: ntur(1:11)*/
-//ntur111_Value_c[11];          /* Expression: ntur(1:11)*/
-//ntur111_Value_a[11];          /* Expression: ntur(1:11)*/
-//ntur_Gain[11];                /* Expression: 1./ntur(1:n_mc)*/
-//ntur3_Value;                  /* Expression: ntur(3)*/
-
-
-	  } 
-
-
-
-	sleep(10);
   /* Registration code */
+
+mexPrintf("---t15_2_initialize \n");
 
   /* initialize non-finites */
   rt_InitInfAndNaN(sizeof(real_T));
@@ -8093,12 +7909,16 @@ printf("  t15_2_P.ntur111_Value_c\n");
       t15_2_B.SFunction2[i] = 0.0;
     }
 
+    for (i = 0; i < 17; i++) {
+      t15_2_B.SFunction[i] = 0.0;
+    }
+
     for (i = 0; i < 15; i++) {
-      t15_2_B.e6_m[i] = 0.0;
+      t15_2_B.e6_e[i] = 0.0;
     }
 
     for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_i[i] = 0.0;
+      t15_2_B.SFunction1_o[i] = 0.0;
     }
 
     for (i = 0; i < 6; i++) {
@@ -8106,19 +7926,27 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_o[i] = 0.0;
-    }
-
-    for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_p[i] = 0.0;
-    }
-
-    for (i = 0; i < 100; i++) {
       t15_2_B.SFunction1_f[i] = 0.0;
     }
 
     for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_f2[i] = 0.0;
+      t15_2_B.SFunction1_j[i] = 0.0;
+    }
+
+    for (i = 0; i < 100; i++) {
+      t15_2_B.SFunction1_c[i] = 0.0;
+    }
+
+    for (i = 0; i < 100; i++) {
+      t15_2_B.SFunction1_g[i] = 0.0;
+    }
+
+    for (i = 0; i < 100; i++) {
+      t15_2_B.SFunction1_of[i] = 0.0;
+    }
+
+    for (i = 0; i < 100; i++) {
+      t15_2_B.SFunction1_oy[i] = 0.0;
     }
 
     for (i = 0; i < 100; i++) {
@@ -8126,15 +7954,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_h[i] = 0.0;
-    }
-
-    for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_fd[i] = 0.0;
-    }
-
-    for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_o5[i] = 0.0;
+      t15_2_B.SFunction1_fg[i] = 0.0;
     }
 
     for (i = 0; i < 100; i++) {
@@ -8142,23 +7962,23 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 100; i++) {
+      t15_2_B.SFunction1_d[i] = 0.0;
+    }
+
+    for (i = 0; i < 100; i++) {
+      t15_2_B.SFunction1_h[i] = 0.0;
+    }
+
+    for (i = 0; i < 100; i++) {
       t15_2_B.SFunction1_a[i] = 0.0;
     }
 
-    for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_p1[i] = 0.0;
-    }
-
-    for (i = 0; i < 100; i++) {
-      t15_2_B.SFunction1_c[i] = 0.0;
-    }
-
     for (i = 0; i < 6; i++) {
-      t15_2_B.e2_n[i] = 0.0;
+      t15_2_B.e2_h[i] = 0.0;
     }
 
     for (i = 0; i < 20; i++) {
-      t15_2_B.u9[i] = 0.0;
+      t15_2_B.u_c[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8166,11 +7986,15 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Abs_a[i] = 0.0;
+      t15_2_B.Abs[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.DataStoreRead1_k[i] = 0.0;
+      t15_2_B.DataStoreRead1_n[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.DataStoreRead2_a[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8178,7 +8002,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Sum2_k[i] = 0.0;
+      t15_2_B.Sum2_a[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8194,23 +8018,23 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide1_ps[i] = 0.0;
+      t15_2_B.Divide1_mp[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Saturation_k[i] = 0.0;
+      t15_2_B.Saturation[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Memory1_k[i] = 0.0;
+      t15_2_B.Memory1_g[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Memory[i] = 0.0;
+      t15_2_B.Memory_c[i] = 0.0;
     }
 
     for (i = 0; i < 20; i++) {
-      t15_2_B.Divide2_b[i] = 0.0;
+      t15_2_B.Divide2[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8218,7 +8042,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.u9_b[i] = 0.0;
+      t15_2_B.u_h[i] = 0.0;
     }
 
     for (i = 0; i < 20; i++) {
@@ -8230,11 +8054,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.u99_i[i] = 0.0;
+      t15_2_B.u_f[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide4_p[i] = 0.0;
+      t15_2_B.Divide4_i[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8242,15 +8066,15 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide5_p[i] = 0.0;
+      t15_2_B.Divide5_k[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Memory2_kr[i] = 0.0;
+      t15_2_B.Memory2_g5[i] = 0.0;
     }
 
     for (i = 0; i < 20; i++) {
-      t15_2_B.tcont2[i] = 0.0;
+      t15_2_B.Divide12_g[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8262,15 +8086,19 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.IpIp_div[i] = 0.0;
+      t15_2_B.DataStoreRead2_g[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide6_l[i] = 0.0;
+      t15_2_B.u_o[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide14[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_p1[i] = 0.0;
+      t15_2_B.DataStoreRead_lx[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
@@ -8278,63 +8106,15 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_d[i] = 0.0;
+      t15_2_B.DataStoreRead1_g[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_a[i] = 0.0;
+      t15_2_B.DataStoreRead_h[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.u01_o[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_c[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_i1[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.u01_g[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_b[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_i2[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.u01_b[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_e[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_n[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.u01_h[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_pd[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_oy[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.u01_f[i] = 0.0;
+      t15_2_B.u01_p[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
@@ -8342,43 +8122,31 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead_it[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.u01_d[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead1_k[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead_i0[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.u01_k[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead1_c[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
       t15_2_B.DataStoreRead_e[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.u01_b3[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_ee[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_g[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.u01_bc[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_cn[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_f3[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.u01_l[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_fq[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_ou[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
@@ -8386,19 +8154,79 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_dy[i] = 0.0;
+      t15_2_B.DataStoreRead1_o[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_fr[i] = 0.0;
+      t15_2_B.DataStoreRead_c[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.u01_f1[i] = 0.0;
+      t15_2_B.u01_f[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_n[i] = 0.0;
+      t15_2_B.DataStoreRead1_nc[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead_o[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.u01_k4[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead1_mq[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead_ai[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.u01_j[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead1_b3[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead_ee[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.u01_m[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead1_a1[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead_hr[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.u01_fe[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead1_ky[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead_av[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.u01_h[i] = 0.0;
+    }
+
+    for (i = 0; i < 500; i++) {
+      t15_2_B.DataStoreRead1_ab[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8410,67 +8238,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide2_j[i] = 0.0;
+      t15_2_B.Divide2_a[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Sum3_b[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Saturation1_g[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide6_f[i] = 0.0;
-    }
-
-    for (i = 0; i < 20; i++) {
-      t15_2_B.Divide12[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide1_j[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide4_f[i] = 0.0;
-    }
-
-    for (i = 0; i < 32; i++) {
-      t15_2_B.SFunction[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.DataStoreRead1_kx[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Memory1_ek[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.DataStoreRead1_o[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.u_j[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide1_o5[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Add1_gy[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.Divide[i] = 0.0;
-    }
-
-    for (i = 0; i < 11; i++) {
-      t15_2_B.u_e[i] = 0.0;
+      t15_2_B.LogicalOperator_ie[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8478,19 +8250,67 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Switch2[i] = 0.0;
+      t15_2_B.Divide6_l[i] = 0.0;
+    }
+
+    for (i = 0; i < 20; i++) {
+      t15_2_B.G_curr_term[i] = 0.0;
+    }
+
+    for (i = 0; i < 20; i++) {
+      t15_2_B.Divide12_b[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide1_k[i] = 0.0;
+      t15_2_B.Divide1_m4[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Add2_n[i] = 0.0;
+      t15_2_B.e6_ed[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Gain[i] = 0.0;
+      t15_2_B.DataStoreRead2_o[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide4_b[i] = 0.0;
+    }
+
+    for (i = 0; i < 44; i++) {
+      t15_2_B.SFunction_n[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.DataStoreRead1_nw[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Memory1_bt[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.DataStoreRead1_h[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.u_hn[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide1_ht[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Add1_a[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide_c[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.u_f0[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
@@ -8498,19 +8318,47 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
+      t15_2_B.Switch2[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide1_ja[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Add2_a[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Gain[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Switch_b[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
       t15_2_B.Switch2_c[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.ntur[i] = 0.0;
-    }
-
-    for (i = 0; i < 12; i++) {
-      t15_2_B.wz[i] = 0.0;
+      t15_2_B.DataStoreRead2_oo[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Add1_k[i] = 0.0;
+      t15_2_B.Divide3_f[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide1_fq[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Divide2_n[i] = 0.0;
+    }
+
+    for (i = 0; i < 11; i++) {
+      t15_2_B.Add1_l[i] = 0.0;
     }
 
     for (i = 0; i < 12; i++) {
@@ -8522,51 +8370,35 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide_e[i] = 0.0;
+      t15_2_B.Divide3_d[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide3_p[i] = 0.0;
+      t15_2_B.Divide1_fj[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide1_jp[i] = 0.0;
+      t15_2_B.Sum2_b[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Sum2_h[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_ph[i] = 0.0;
-    }
-
-    for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_h[i] = 0.0;
+      t15_2_B.Divide_o[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.tcont2_a[i] = 0.0;
+      t15_2_B.u_p[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide_f[i] = 0.0;
+      t15_2_B.Divide_m[i] = 0.0;
     }
 
     for (i = 0; i < 11; i++) {
-      t15_2_B.Divide2_a[i] = 0.0;
-    }
-
-    for (i = 0; i < 50; i++) {
-      t15_2_B.Selector[i] = 0.0;
-    }
-
-    for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1[i] = 0.0;
+      t15_2_B.Divide2_n0[i] = 0.0;
     }
 
     for (i = 0; i < 49; i++) {
-      t15_2_B.Selector_k[i] = 0.0;
+      t15_2_B.Selector[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8574,27 +8406,27 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_p[i] = 0.0;
+      t15_2_B.Selector1[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Divide6_f0[i] = 0.0;
+      t15_2_B.Divide6_d[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Add2_i[i] = 0.0;
+      t15_2_B.Add2_f[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector_j[i] = 0.0;
+      t15_2_B.Selector_m[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_n[i] = 0.0;
+      t15_2_B.Selector1_e[i] = 0.0;
     }
 
     for (i = 0; i < 49; i++) {
-      t15_2_B.Selector_n[i] = 0.0;
+      t15_2_B.Selector_d[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8602,19 +8434,19 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_no[i] = 0.0;
+      t15_2_B.Selector1_l[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Divide6_fz[i] = 0.0;
+      t15_2_B.Divide6_au[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Add2_no[i] = 0.0;
+      t15_2_B.Add2_f2[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector_j2[i] = 0.0;
+      t15_2_B.Selector_mp[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8622,7 +8454,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 49; i++) {
-      t15_2_B.Selector_l[i] = 0.0;
+      t15_2_B.Selector_a[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8630,27 +8462,27 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_o[i] = 0.0;
+      t15_2_B.Selector1_d[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Divide6_i[i] = 0.0;
+      t15_2_B.Divide6_f[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Add2_bd[i] = 0.0;
+      t15_2_B.Add2_j[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector_f[i] = 0.0;
+      t15_2_B.Selector_o[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_a[i] = 0.0;
+      t15_2_B.Selector1_p[i] = 0.0;
     }
 
     for (i = 0; i < 49; i++) {
-      t15_2_B.Selector_ns[i] = 0.0;
+      t15_2_B.Selector_n[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8658,7 +8490,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_pz[i] = 0.0;
+      t15_2_B.Selector1_h[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8666,19 +8498,19 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Add2_bw[i] = 0.0;
+      t15_2_B.Add2_k[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector_d[i] = 0.0;
+      t15_2_B.Selector_ao[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_ou[i] = 0.0;
+      t15_2_B.Selector1_fr[i] = 0.0;
     }
 
     for (i = 0; i < 49; i++) {
-      t15_2_B.Selector_e[i] = 0.0;
+      t15_2_B.Selector_h[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8686,27 +8518,27 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_c[i] = 0.0;
+      t15_2_B.Selector1_ek[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Divide6_p[i] = 0.0;
+      t15_2_B.Divide6_af[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Add2_oa[i] = 0.0;
+      t15_2_B.Add2_kc[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector_g[i] = 0.0;
+      t15_2_B.Selector_ot[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_nf[i] = 0.0;
+      t15_2_B.Selector1_he[i] = 0.0;
     }
 
     for (i = 0; i < 49; i++) {
-      t15_2_B.Selector_k4[i] = 0.0;
+      t15_2_B.Selector_au[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
@@ -8714,91 +8546,91 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_d[i] = 0.0;
+      t15_2_B.Selector1_a[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Divide6_n[i] = 0.0;
+      t15_2_B.Divide6_j[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Add2_p[i] = 0.0;
+      t15_2_B.Add2_n[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector_lh[i] = 0.0;
+      t15_2_B.Selector_m2[i] = 0.0;
     }
 
     for (i = 0; i < 50; i++) {
-      t15_2_B.Selector1_ad[i] = 0.0;
+      t15_2_B.Selector1_dx[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_cq[i] = 0.0;
+      t15_2_B.DataStoreRead1_nh[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_cq[i] = 0.0;
+      t15_2_B.DataStoreRead_nt[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_g[i] = 0.0;
+      t15_2_B.DataStoreRead1_bf[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_ef[i] = 0.0;
+      t15_2_B.DataStoreRead_py[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_fi[i] = 0.0;
+      t15_2_B.DataStoreRead1_l5[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_jd[i] = 0.0;
+      t15_2_B.DataStoreRead_cu[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_kd[i] = 0.0;
+      t15_2_B.DataStoreRead1_fl[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_d[i] = 0.0;
+      t15_2_B.DataStoreRead_h5[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_mj[i] = 0.0;
+      t15_2_B.DataStoreRead1_d2[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_gy[i] = 0.0;
+      t15_2_B.DataStoreRead_o0[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_h[i] = 0.0;
+      t15_2_B.DataStoreRead1_ax[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_i4[i] = 0.0;
+      t15_2_B.DataStoreRead_de[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_a[i] = 0.0;
+      t15_2_B.DataStoreRead1_d2u[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_lz[i] = 0.0;
+      t15_2_B.DataStoreRead_e1[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_c3[i] = 0.0;
+      t15_2_B.DataStoreRead1_fj[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_nu[i] = 0.0;
+      t15_2_B.DataStoreRead_az[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_nq[i] = 0.0;
+      t15_2_B.DataStoreRead1_i[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
@@ -8806,312 +8638,372 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_pde[i] = 0.0;
+      t15_2_B.DataStoreRead1_nd[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_ld[i] = 0.0;
+      t15_2_B.DataStoreRead_ne[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_dg[i] = 0.0;
+      t15_2_B.DataStoreRead1_ft[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_ft[i] = 0.0;
+      t15_2_B.DataStoreRead_fx[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead1_d5[i] = 0.0;
+      t15_2_B.DataStoreRead1_pg[i] = 0.0;
     }
 
     for (i = 0; i < 500; i++) {
-      t15_2_B.DataStoreRead_h4[i] = 0.0;
+      t15_2_B.DataStoreRead_cq[i] = 0.0;
     }
 
-    t15_2_B.e3 = 0.0;
+    for (i = 0; i < 50; i++) {
+      t15_2_B.Selector_p[i] = 0.0;
+    }
+
+    for (i = 0; i < 50; i++) {
+      t15_2_B.Selector1_j[i] = 0.0;
+    }
+
+    t15_2_B.Times = 0.0;
     t15_2_B.Memory2 = 0.0;
     t15_2_B.u = 0.0;
     t15_2_B.Ip1e4 = 0.0;
     t15_2_B.DataStoreRead = 0.0;
     t15_2_B.Sum2 = 0.0;
-    t15_2_B.e6 = 0.0;
-    t15_2_B.Memory2_k = 0.0;
-    t15_2_B.Add3 = 0.0;
     t15_2_B.DataStoreRead1 = 0.0;
-    t15_2_B.e3_k = 0.0;
+    t15_2_B.e6 = 0.0;
+    t15_2_B.Memory1 = 0.0;
+    t15_2_B.DataStoreRead1_e = 0.0;
+    t15_2_B.e3 = 0.0;
+    t15_2_B.DataStoreRead2 = 0.0;
     t15_2_B.Product1 = 0.0;
     t15_2_B.RelationalOperator = 0.0;
-    t15_2_B.Memory1 = 0.0;
-    t15_2_B.u99 = 0.0;
+    t15_2_B.Memory = 0.0;
+    t15_2_B.LogicalOperator = 0.0;
+    t15_2_B.switch1 = 0.0;
     t15_2_B.Add2 = 0.0;
-    t15_2_B.DataStoreRead_o = 0.0;
+    t15_2_B.DataStoreRead_f = 0.0;
     t15_2_B.Product = 0.0;
     t15_2_B.Add1 = 0.0;
-    t15_2_B.u_n = 0.0;
-    t15_2_B.Memory1_j = 0.0;
+    t15_2_B.u_e = 0.0;
+    t15_2_B.Memory1_i = 0.0;
     t15_2_B.c_eob = 0.0;
     t15_2_B.Divide6 = 0.0;
-    t15_2_B.Add1_i = 0.0;
-    t15_2_B.Uk1 = 0.0;
-    t15_2_B.Uk1_d = 0.0;
-    t15_2_B.Memory2_f = 0.0;
-    t15_2_B.c_eob_b = 0.0;
-    t15_2_B.Divide1 = 0.0;
-    t15_2_B.Add1_g = 0.0;
-    t15_2_B.Memory2_k5 = 0.0;
-    t15_2_B.c_eob_c = 0.0;
-    t15_2_B.Divide1_o = 0.0;
-    t15_2_B.Add10 = 0.0;
-    t15_2_B.Memory2_kw = 0.0;
-    t15_2_B.c_eob_h = 0.0;
-    t15_2_B.Divide1_n = 0.0;
-    t15_2_B.Add11 = 0.0;
-    t15_2_B.Memory2_o = 0.0;
-    t15_2_B.c_eob_e = 0.0;
-    t15_2_B.Divide1_h = 0.0;
-    t15_2_B.Add2_o = 0.0;
+    t15_2_B.Add1_d = 0.0;
+    t15_2_B.DataStoreRead1_f = 0.0;
+    t15_2_B.RelationalOperator_e = 0.0;
+    t15_2_B.Memory_b = 0.0;
+    t15_2_B.LogicalOperator_f = 0.0;
     t15_2_B.Memory2_b = 0.0;
-    t15_2_B.c_eob_cj = 0.0;
-    t15_2_B.Divide1_nq = 0.0;
-    t15_2_B.Add3_c = 0.0;
-    t15_2_B.Memory2_d = 0.0;
-    t15_2_B.c_eob_k = 0.0;
-    t15_2_B.Divide1_p = 0.0;
-    t15_2_B.Add4 = 0.0;
-    t15_2_B.Memory2_p = 0.0;
-    t15_2_B.c_eob_g = 0.0;
-    t15_2_B.Divide1_l = 0.0;
-    t15_2_B.Add5 = 0.0;
-    t15_2_B.Memory2_dq = 0.0;
-    t15_2_B.c_eob_l = 0.0;
-    t15_2_B.Divide1_e = 0.0;
-    t15_2_B.Add6 = 0.0;
-    t15_2_B.Memory2_e = 0.0;
-    t15_2_B.c_eob_g0 = 0.0;
-    t15_2_B.Divide1_f = 0.0;
-    t15_2_B.Add7 = 0.0;
-    t15_2_B.Memory2_j = 0.0;
-    t15_2_B.c_eob_bz = 0.0;
-    t15_2_B.Divide1_hq = 0.0;
-    t15_2_B.Add8 = 0.0;
-    t15_2_B.Memory2_a = 0.0;
-    t15_2_B.c_eob_j = 0.0;
-    t15_2_B.Divide1_d = 0.0;
-    t15_2_B.Add9 = 0.0;
-    t15_2_B.Sum2_b = 0.0;
-    t15_2_B.u_p = 0.0;
-    t15_2_B.Memory2_da = 0.0;
     t15_2_B.c_eob1 = 0.0;
-    t15_2_B.Memory1_i = 0.0;
-    t15_2_B.c_eob_ej = 0.0;
-    t15_2_B.c_eob_jd = 0.0;
-    t15_2_B.Add2_b = 0.0;
-    t15_2_B.LookupTable1 = 0.0;
-    t15_2_B.Divide6_d = 0.0;
-    t15_2_B.Memory2_i = 0.0;
-    t15_2_B.c_eob1_b = 0.0;
-    t15_2_B.Memory1_g = 0.0;
-    t15_2_B.c_eob_n = 0.0;
-    t15_2_B.c_eob_kt = 0.0;
-    t15_2_B.Add1_ia = 0.0;
-    t15_2_B.LookupTable2 = 0.0;
-    t15_2_B.Divide1_a = 0.0;
-    t15_2_B.Memory2_n = 0.0;
-    t15_2_B.c_eob1_i = 0.0;
-    t15_2_B.Memory1_jo = 0.0;
-    t15_2_B.c_eob_lg = 0.0;
-    t15_2_B.c_eob_lu = 0.0;
-    t15_2_B.Add3_a = 0.0;
+    t15_2_B.Memory1_b = 0.0;
+    t15_2_B.c_eob_c = 0.0;
+    t15_2_B.c_eob_o = 0.0;
+    t15_2_B.Add2_h = 0.0;
     t15_2_B.Memory2_l = 0.0;
     t15_2_B.c_eob1_d = 0.0;
+    t15_2_B.Memory1_o = 0.0;
+    t15_2_B.c_eob_m = 0.0;
+    t15_2_B.c_eob_oh = 0.0;
+    t15_2_B.Add1_c = 0.0;
+    t15_2_B.Memory2_o = 0.0;
+    t15_2_B.c_eob1_j = 0.0;
     t15_2_B.Memory1_e = 0.0;
-    t15_2_B.c_eob_c2 = 0.0;
+    t15_2_B.c_eob_n = 0.0;
+    t15_2_B.c_eob_o3 = 0.0;
+    t15_2_B.Add3 = 0.0;
+    t15_2_B.Memory2_i = 0.0;
+    t15_2_B.c_eob1_m = 0.0;
+    t15_2_B.Memory1_j = 0.0;
+    t15_2_B.c_eob_g = 0.0;
+    t15_2_B.c_eob_a = 0.0;
+    t15_2_B.Add4 = 0.0;
+    t15_2_B.DataStoreRead_b = 0.0;
+    t15_2_B.RelationalOperator1 = 0.0;
+    t15_2_B.Divide12 = 0.0;
+    t15_2_B.Memory2_g = 0.0;
+    t15_2_B.c_eob1_h = 0.0;
+    t15_2_B.Memory1_oq = 0.0;
     t15_2_B.c_eob_p = 0.0;
-    t15_2_B.Add4_i = 0.0;
-    t15_2_B.LookupTable3 = 0.0;
-    t15_2_B.Divide2 = 0.0;
-    t15_2_B.Memory2_m = 0.0;
-    t15_2_B.c_eob1_c = 0.0;
-    t15_2_B.Memory1_b = 0.0;
-    t15_2_B.c_eob_nk = 0.0;
-    t15_2_B.c_eob_cy = 0.0;
-    t15_2_B.Add5_n = 0.0;
-    t15_2_B.Memory2_j1 = 0.0;
+    t15_2_B.c_eob_f = 0.0;
+    t15_2_B.Add5 = 0.0;
+    t15_2_B.Memory2_j = 0.0;
     t15_2_B.c_eob1_g = 0.0;
-    t15_2_B.Memory1_g3 = 0.0;
-    t15_2_B.c_eob_be = 0.0;
-    t15_2_B.c_eob_c3 = 0.0;
-    t15_2_B.Add6_b = 0.0;
-    t15_2_B.DataStoreRead_or = 0.0;
-    t15_2_B.LogicalOperator1 = 0.0;
-    t15_2_B.e6_i = 0.0;
+    t15_2_B.Memory1_p = 0.0;
+    t15_2_B.c_eob_i = 0.0;
+    t15_2_B.c_eob_e = 0.0;
+    t15_2_B.Add6 = 0.0;
+    t15_2_B.Memory2_d = 0.0;
+    t15_2_B.c_eob_fn = 0.0;
+    t15_2_B.Divide1 = 0.0;
+    t15_2_B.Add3_e = 0.0;
+    t15_2_B.Memory2_m = 0.0;
+    t15_2_B.c_eob_l = 0.0;
+    t15_2_B.Divide1_b = 0.0;
+    t15_2_B.Add1_ce = 0.0;
+    t15_2_B.Memory2_c = 0.0;
+    t15_2_B.c_eob_j = 0.0;
+    t15_2_B.Divide1_j = 0.0;
+    t15_2_B.Add2_p = 0.0;
+    t15_2_B.Memory2_a = 0.0;
+    t15_2_B.c_eob_gf = 0.0;
+    t15_2_B.Divide1_m = 0.0;
+    t15_2_B.Add4_k = 0.0;
+    t15_2_B.Memory2_gs = 0.0;
+    t15_2_B.c_eob_k = 0.0;
+    t15_2_B.Divide1_k = 0.0;
+    t15_2_B.Add5_f = 0.0;
+    t15_2_B.Memory2_p = 0.0;
+    t15_2_B.c_eob_ib = 0.0;
+    t15_2_B.Divide1_br = 0.0;
+    t15_2_B.Add6_p = 0.0;
+    t15_2_B.Memory2_dz = 0.0;
+    t15_2_B.c_eob_l4 = 0.0;
+    t15_2_B.Divide1_o = 0.0;
+    t15_2_B.Add7 = 0.0;
+    t15_2_B.Memory2_e = 0.0;
+    t15_2_B.c_eob_h = 0.0;
+    t15_2_B.Divide1_a = 0.0;
+    t15_2_B.Add8 = 0.0;
+    t15_2_B.Memory2_ii = 0.0;
+    t15_2_B.c_eob_cs = 0.0;
+    t15_2_B.Divide1_h = 0.0;
+    t15_2_B.Add9 = 0.0;
+    t15_2_B.Memory2_dg = 0.0;
+    t15_2_B.c_eob_jo = 0.0;
+    t15_2_B.Divide1_p = 0.0;
+    t15_2_B.Add10 = 0.0;
+    t15_2_B.Memory2_n = 0.0;
+    t15_2_B.c_eob_g4 = 0.0;
+    t15_2_B.Divide1_c = 0.0;
+    t15_2_B.Add11 = 0.0;
+    t15_2_B.Uk1 = 0.0;
+    t15_2_B.Diff = 0.0;
+    t15_2_B.Uk1_p = 0.0;
+    t15_2_B.Diff_i = 0.0;
+    t15_2_B.Divide = 0.0;
+    t15_2_B.DataStoreRead_i = 0.0;
+    t15_2_B.DataStoreRead1_fr = 0.0;
     t15_2_B.Memory3 = 0.0;
-    t15_2_B.DataStoreRead_f = 0.0;
-    t15_2_B.LogicalOperator1_h = 0.0;
-    t15_2_B.u999 = 0.0;
+    t15_2_B.RelationalOperator1_h = 0.0;
+    t15_2_B.switch1_i = 0.0;
     t15_2_B.Subtract2 = 0.0;
-    t15_2_B.Gain1 = 0.0;
+    t15_2_B.Divide1_av = 0.0;
     t15_2_B.Subtract1 = 0.0;
     t15_2_B.Saturation1 = 0.0;
-    t15_2_B.Memory1_a = 0.0;
+    t15_2_B.DataStoreRead1_a = 0.0;
     t15_2_B.DataStoreRead_l = 0.0;
-    t15_2_B.Abs = 0.0;
-    t15_2_B.DataStoreRead_i = 0.0;
+    t15_2_B.Abs_p = 0.0;
     t15_2_B.LogicalOperator2 = 0.0;
-    t15_2_B.u999_d = 0.0;
-    t15_2_B.Subtract2_h = 0.0;
-    t15_2_B.Gain1_j = 0.0;
-    t15_2_B.Subtract3 = 0.0;
-    t15_2_B.Saturation = 0.0;
-    t15_2_B.Subtract1_k = 0.0;
-    t15_2_B.Subtract4 = 0.0;
-    t15_2_B.DataStoreRead1_kb = 0.0;
-    t15_2_B.DataStoreRead_ln = 0.0;
-    t15_2_B.Abs_c = 0.0;
-    t15_2_B.DataStoreRead1_f = 0.0;
-    t15_2_B.LogicalOperator2_g = 0.0;
-    t15_2_B.DataStoreRead_j = 0.0;
-    t15_2_B.DataStoreRead1_p = 0.0;
-    t15_2_B.Abs_e = 0.0;
-    t15_2_B.LogicalOperator1_i = 0.0;
-    t15_2_B.Memory1_ec = 0.0;
+    t15_2_B.Memory_m = 0.0;
+    t15_2_B.LogicalOperator_i = 0.0;
+    t15_2_B.DataStoreRead_ii = 0.0;
+    t15_2_B.DataStoreRead1_b = 0.0;
+    t15_2_B.Abs_m = 0.0;
+    t15_2_B.LogicalOperator1 = 0.0;
+    t15_2_B.Memory_k = 0.0;
+    t15_2_B.LogicalOperator_h = 0.0;
+    t15_2_B.Memory1_k = 0.0;
+    t15_2_B.c_eob_d = 0.0;
+    t15_2_B.c_eob_e2 = 0.0;
+    t15_2_B.Memory1_h = 0.0;
+    t15_2_B.DataStoreRead_k = 0.0;
+    t15_2_B.LogicalOperator1_l = 0.0;
+    t15_2_B.Memory_d = 0.0;
+    t15_2_B.LogicalOperator_b = 0.0;
+    t15_2_B.switch1_j = 0.0;
     t15_2_B.DataStoreRead_p = 0.0;
-    t15_2_B.LogicalOperator1_a = 0.0;
-    t15_2_B.u999_b = 0.0;
-    t15_2_B.Memory1_l = 0.0;
-    t15_2_B.c_eob_e3 = 0.0;
+    t15_2_B.Memory1_hd = 0.0;
+    t15_2_B.DataStoreRead_k2 = 0.0;
+    t15_2_B.Abs_f = 0.0;
+    t15_2_B.LogicalOperator2_d = 0.0;
+    t15_2_B.Memory_mo = 0.0;
+    t15_2_B.LogicalOperator_l = 0.0;
+    t15_2_B.u_b = 0.0;
+    t15_2_B.Subtract2_g = 0.0;
+    t15_2_B.Divide4_d = 0.0;
+    t15_2_B.Subtract3 = 0.0;
+    t15_2_B.Saturation_k = 0.0;
+    t15_2_B.Subtract1_m = 0.0;
+    t15_2_B.DataStoreRead1_p = 0.0;
+    t15_2_B.RelationalOperator1_p = 0.0;
+    t15_2_B.DataStoreRead_a = 0.0;
+    t15_2_B.RelationalOperator_p = 0.0;
     t15_2_B.volt1 = 0.0;
-    t15_2_B.volt1_b = 0.0;
-    t15_2_B.volt1_i = 0.0;
+    t15_2_B.volt1_m = 0.0;
     t15_2_B.volt1_o = 0.0;
     t15_2_B.volt1_d = 0.0;
-    t15_2_B.volt1_m = 0.0;
     t15_2_B.volt1_j = 0.0;
-    t15_2_B.volt1_b2 = 0.0;
-    t15_2_B.volt1_ia = 0.0;
-    t15_2_B.volt1_a = 0.0;
-    t15_2_B.volt1_e = 0.0;
+    t15_2_B.volt1_b = 0.0;
+    t15_2_B.volt1_p = 0.0;
+    t15_2_B.volt1_du = 0.0;
+    t15_2_B.volt1_bc = 0.0;
+    t15_2_B.volt1_pz = 0.0;
+    t15_2_B.volt1_c = 0.0;
+    t15_2_B.Subtract4 = 0.0;
     t15_2_B.UniformRandomNumber = 0.0;
-    t15_2_B.Uk1_m = 0.0;
-    t15_2_B.tt_tran2d[0] = 0.0;
-    t15_2_B.tt_tran2d[1] = 0.0;
+    t15_2_B.DataStoreRead_ie = 0.0;
+    t15_2_B.u5 = 0.0;
+    t15_2_B.Divide11 = 0.0;
+    t15_2_B.Uk1_g = 0.0;
+    t15_2_B.Diff_p = 0.0;
+    t15_2_B.e3_n = 0.0;
+    t15_2_B.Sqrt = 0.0;
+    t15_2_B.Divide1_f = 0.0;
+    t15_2_B.Sum2_j = 0.0;
+    t15_2_B.DataStoreRead_ea = 0.0;
+    t15_2_B.RelationalOperator1_a = 0.0;
+    t15_2_B.Divide12_g2[0] = 0.0;
+    t15_2_B.Divide12_g2[1] = 0.0;
     t15_2_B.VScontr[0] = 0.0;
     t15_2_B.VScontr[1] = 0.0;
-    t15_2_B.RelationalOperator_g = 0.0;
-    t15_2_B.Divide4_j[0] = 0.0;
-    t15_2_B.Divide4_j[1] = 0.0;
+    t15_2_B.Divide4_a[0] = 0.0;
+    t15_2_B.Divide4_a[1] = 0.0;
     t15_2_B.VScontrhl[0] = 0.0;
     t15_2_B.VScontrhl[1] = 0.0;
-    t15_2_B.c_eob_ku[0] = 0.0;
-    t15_2_B.c_eob_ku[1] = 0.0;
-    t15_2_B.DataStoreRead_gb = 0.0;
-    t15_2_B.DataStoreRead_b = 0.0;
-    t15_2_B.Abs_l = 0.0;
-    t15_2_B.LogicalOperator1_k = 0.0;
-    t15_2_B.atpl115 = 0.0;
-    t15_2_B.u9_o[0] = 0.0;
-    t15_2_B.u9_o[1] = 0.0;
+    t15_2_B.c_eob_b[0] = 0.0;
+    t15_2_B.c_eob_b[1] = 0.0;
+    t15_2_B.DataStoreRead1_d = 0.0;
+    t15_2_B.RelationalOperator2 = 0.0;
+    t15_2_B.DataStoreRead_op = 0.0;
+    t15_2_B.Abs_g = 0.0;
+    t15_2_B.RelationalOperator1_b = 0.0;
+    t15_2_B.LogicalOperator1_p = 0.0;
+    t15_2_B.Memory_p = 0.0;
+    t15_2_B.LogicalOperator_h3 = 0.0;
+    t15_2_B.DataStoreRead_a4 = 0.0;
+    t15_2_B.u5_j = 0.0;
+    t15_2_B.Div = 0.0;
+    t15_2_B.u_i[0] = 0.0;
+    t15_2_B.u_i[1] = 0.0;
     t15_2_B.Divide10[0] = 0.0;
     t15_2_B.Divide10[1] = 0.0;
     t15_2_B.DataStoreRead3 = 0.0;
     t15_2_B.Uk1_l = 0.0;
-    t15_2_B.Diff = 0.0;
-    t15_2_B.DataStoreRead1_j = 0.0;
+    t15_2_B.Diff_a = 0.0;
+    t15_2_B.DataStoreRead1_mv = 0.0;
+    t15_2_B.Switch2_l = 0.0;
+    t15_2_B.DataStoreRead1_f0 = 0.0;
+    t15_2_B.Divide4_ah = 0.0;
+    t15_2_B.DataStoreRead3_g = 0.0;
+    t15_2_B.Switch2_p = 0.0;
+    t15_2_B.Divide5_f = 0.0;
+    t15_2_B.Subtract2_l = 0.0;
+    t15_2_B.DataStoreRead1_az = 0.0;
+    t15_2_B.Divide4_o = 0.0;
+    t15_2_B.Subtract3_f = 0.0;
+    t15_2_B.Saturation_m = 0.0;
+    t15_2_B.Subtract1_mr = 0.0;
+    t15_2_B.DataStoreRead_ok = 0.0;
+    t15_2_B.u15 = 0.0;
+    t15_2_B.Divide6_k = 0.0;
     t15_2_B.Switch2_h = 0.0;
-    t15_2_B.DataStoreRead3_a = 0.0;
-    t15_2_B.Switch2_f = 0.0;
-    t15_2_B.TmpSignalConversionAtwzInport1[0] = 0.0;
-    t15_2_B.TmpSignalConversionAtwzInport1[1] = 0.0;
-    t15_2_B.VSgain3 = 0.0;
-    t15_2_B.Saturation4 = 0.0;
-    t15_2_B.Divide11[0] = 0.0;
-    t15_2_B.Divide11[1] = 0.0;
-    t15_2_B.c_eob_b4[0] = 0.0;
-    t15_2_B.c_eob_b4[1] = 0.0;
-    t15_2_B.IpIp_div_b = 0.0;
+    t15_2_B.Divide11_a[0] = 0.0;
+    t15_2_B.Divide11_a[1] = 0.0;
+    t15_2_B.DataStoreRead3_l = 0.0;
+    t15_2_B.Switch_i = 0.0;
+    t15_2_B.c_eob_am[0] = 0.0;
+    t15_2_B.c_eob_am[1] = 0.0;
+    t15_2_B.DataStoreRead1_l = 0.0;
+    t15_2_B.RelationalOperator2_l = 0.0;
+    t15_2_B.LimDivtr = 0.0;
     t15_2_B.Divide8[0] = 0.0;
     t15_2_B.Divide8[1] = 0.0;
     t15_2_B.SatDiv = 0.0;
-    t15_2_B.SatLim = 0.0;
-    t15_2_B.VSgain2 = 0.0;
-    t15_2_B.Saturation3 = 0.0;
-    t15_2_B.Divide_g[0] = 0.0;
-    t15_2_B.Divide_g[1] = 0.0;
-    t15_2_B.Subtract3_h = 0.0;
-    t15_2_B.Subtract2_b = 0.0;
-    t15_2_B.Gain1_l = 0.0;
-    t15_2_B.Subtract3_l = 0.0;
-    t15_2_B.Saturation_i = 0.0;
-    t15_2_B.Subtract1_l = 0.0;
-    t15_2_B.c_eob_bc = 0.0;
-    t15_2_B.limgain = 0.0;
-    t15_2_B.Saturation_b = 0.0;
-    t15_2_B.Divide6_c = 0.0;
+    t15_2_B.DataStoreRead2_h = 0.0;
+    t15_2_B.Switch2_a = 0.0;
+    t15_2_B.Switch_d = 0.0;
+    t15_2_B.u5_m = 0.0;
+    t15_2_B.Switch2_e = 0.0;
+    t15_2_B.Divide_k[0] = 0.0;
+    t15_2_B.Divide_k[1] = 0.0;
+    t15_2_B.DataStoreRead4 = 0.0;
+    t15_2_B.Switch_lv = 0.0;
+    t15_2_B.Subtract3_b = 0.0;
+    t15_2_B.DataStoreRead_lj = 0.0;
+    t15_2_B.RelationalOperator_et = 0.0;
+    t15_2_B.DataStoreRead1_f3 = 0.0;
+    t15_2_B.DataStoreRead_d = 0.0;
+    t15_2_B.Subtract3_j = 0.0;
+    t15_2_B.Divide2_l = 0.0;
+    t15_2_B.Saturation1_o = 0.0;
+    t15_2_B.DataStoreRead2_b = 0.0;
+    t15_2_B.u15_i = 0.0;
+    t15_2_B.Divide9 = 0.0;
+    t15_2_B.Saturation_mu = 0.0;
+    t15_2_B.DataStoreRead2_l = 0.0;
+    t15_2_B.Sum3_h = 0.0;
+    t15_2_B.DataStoreRead4_o = 0.0;
+    t15_2_B.DataStoreRead3_f = 0.0;
+    t15_2_B.Sum2_l = 0.0;
+    t15_2_B.Divide1_d = 0.0;
+    t15_2_B.Divide6_a = 0.0;
     t15_2_B.Sum = 0.0;
-    t15_2_B.Divide2_n = 0.0;
-    t15_2_B.Sum1_a = 0.0;
-    t15_2_B.uy0 = 0.0;
-    t15_2_B.Ipref = 0.0;
-    t15_2_B.gain_cont2 = 0.0;
-    t15_2_B.Diff_f = 0.0;
-    t15_2_B.e3_i = 0.0;
-    t15_2_B.Sqrt = 0.0;
-    t15_2_B.DataStoreRead_nz = 0.0;
-    t15_2_B.u5 = 0.0;
-    t15_2_B.Divide11_d = 0.0;
-    t15_2_B.Divide1_g = 0.0;
-    t15_2_B.Diff_o = 0.0;
-    t15_2_B.Diff_n = 0.0;
-    t15_2_B.Divide_c = 0.0;
-    t15_2_B.Sum2_e = 0.0;
-    t15_2_B.elong = 0.0;
-    t15_2_B.Add2_m = 0.0;
-    t15_2_B.k_gaplim[0] = 0.0;
-    t15_2_B.k_gaplim[1] = 0.0;
-    t15_2_B.k_gaplim[2] = 0.0;
-    t15_2_B.k_gaplim[3] = 0.0;
-    t15_2_B.DataStoreRead_bi = 0.0;
+    t15_2_B.Divide2_d = 0.0;
+    t15_2_B.Sum1_c = 0.0;
+    t15_2_B.Switch2_o = 0.0;
+    t15_2_B.Switch_lx = 0.0;
+    t15_2_B.DataStoreRead1_gj = 0.0;
+    t15_2_B.DataStoreRead_n = 0.0;
     t15_2_B.g1_termref = 0.0;
     t15_2_B.g1ref = 0.0;
-    t15_2_B.DataStoreRead_ag = 0.0;
+    t15_2_B.DataStoreRead1_kz = 0.0;
+    t15_2_B.DataStoreRead_iik = 0.0;
     t15_2_B.g6_termref = 0.0;
     t15_2_B.g6ref = 0.0;
-    t15_2_B.DataStoreRead_c = 0.0;
+    t15_2_B.DataStoreRead1_k3 = 0.0;
+    t15_2_B.DataStoreRead_br = 0.0;
     t15_2_B.g5_termref = 0.0;
     t15_2_B.g5ref = 0.0;
-    t15_2_B.DataStoreRead_cj = 0.0;
+    t15_2_B.DataStoreRead1_ap = 0.0;
+    t15_2_B.DataStoreRead_f3 = 0.0;
     t15_2_B.g4_termref = 0.0;
     t15_2_B.g4ref = 0.0;
-    t15_2_B.DataStoreRead_n2 = 0.0;
+    t15_2_B.DataStoreRead1_d5 = 0.0;
+    t15_2_B.DataStoreRead_m = 0.0;
     t15_2_B.g3_termref = 0.0;
     t15_2_B.g3ref = 0.0;
-    t15_2_B.DataStoreRead_m = 0.0;
+    t15_2_B.DataStoreRead1_eh = 0.0;
+    t15_2_B.DataStoreRead_p4 = 0.0;
     t15_2_B.g2_termref = 0.0;
     t15_2_B.g2ref = 0.0;
     t15_2_B.I1 = 0.0;
-    t15_2_B.I1_g = 0.0;
-    t15_2_B.I1_k = 0.0;
-    t15_2_B.I1_j = 0.0;
-    t15_2_B.I1_c = 0.0;
-    t15_2_B.I1_i = 0.0;
+    t15_2_B.I1_b = 0.0;
     t15_2_B.I1_e = 0.0;
-    t15_2_B.I1_ib = 0.0;
-    t15_2_B.I1_jq = 0.0;
-    t15_2_B.I1_d = 0.0;
+    t15_2_B.I1_j = 0.0;
+    t15_2_B.I1_ju = 0.0;
+    t15_2_B.I1_h = 0.0;
     t15_2_B.I1_o = 0.0;
-    t15_2_B.Ipref_h = 0.0;
-    t15_2_B.Gain1_h = 0.0;
+    t15_2_B.I1_jk = 0.0;
+    t15_2_B.I1_a = 0.0;
+    t15_2_B.I1_g = 0.0;
+    t15_2_B.I1_ot = 0.0;
+    t15_2_B.Ipref = 0.0;
+    t15_2_B.Add2_i = 0.0;
+    t15_2_B.Add2_jd = 0.0;
+    t15_2_B.elong = 0.0;
+    t15_2_B.Add2_l = 0.0;
+    t15_2_B.DataStoreRead1_aj = 0.0;
+    t15_2_B.Divide_n[0] = 0.0;
+    t15_2_B.Divide_n[1] = 0.0;
+    t15_2_B.Divide_n[2] = 0.0;
+    t15_2_B.Divide_n[3] = 0.0;
+    t15_2_B.Gain1 = 0.0;
+    t15_2_B.Switch_m = 0.0;
+    t15_2_B.Gain_h = 0.0;
     t15_2_B.Switch_c = 0.0;
-    t15_2_B.Gain_l = 0.0;
-    t15_2_B.Switch_k = 0.0;
   }
 
   /* states (dwork) */
   (void) memset((void *)&t15_2_DWork, 0,
                 sizeof(D_Work_t15_2));
   t15_2_DWork.UD_DSTATE = 0.0;
-  t15_2_DWork.UD_DSTATE_j = 0.0;
+  t15_2_DWork.UD_DSTATE_i = 0.0;
 
   {
     int_T i;
@@ -9148,7 +9040,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
   }
 
-  t15_2_DWork.UD_DSTATE_c = 0.0;
+  t15_2_DWork.UD_DSTATE_h = 0.0;
 
   {
     int_T i;
@@ -9164,69 +9056,69 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
   }
 
-  t15_2_DWork.UD_DSTATE_i = 0.0;
+  t15_2_DWork.UD_DSTATE_a = 0.0;
   t15_2_DWork.Memory2_PreviousInput = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_k = 0.0;
   t15_2_DWork.Memory1_PreviousInput = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_c = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_m = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_b = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_a = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_d = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_c = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_e = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_o = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_eq = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_bf = 0.0;
+  t15_2_DWork.Memory_PreviousInput = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_m = 0.0;
+  t15_2_DWork.Memory_PreviousInput_p = 0.0;
   t15_2_DWork.Memory2_PreviousInput_l = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_j = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_o4 = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_g = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_mw = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_d = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_c = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_f = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_mf = 0.0;
   t15_2_DWork.Memory2_PreviousInput_h = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_p = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_g = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_h = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_oh = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_gk = 0.0;
-  t15_2_DWork.Memory2_PreviousInput_ef = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_j = 0.0;
-  t15_2_DWork.Memory3_PreviousInput = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_l = 0.0;
-
-  {
-    int_T i;
-    for (i = 0; i < 11; i++) {
-      t15_2_DWork.Memory1_PreviousInput_b[i] = 0.0;
-    }
-  }
-
-  {
-    int_T i;
-    for (i = 0; i < 11; i++) {
-      t15_2_DWork.Memory_PreviousInput[i] = 0.0;
-    }
-  }
-
+  t15_2_DWork.Memory1_PreviousInput_n = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_d = 0.0;
   t15_2_DWork.Memory1_PreviousInput_o = 0.0;
-  t15_2_DWork.Memory1_PreviousInput_f = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_o = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_b = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_b = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_d = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_lr = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_c = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_dq = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_j = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_d0 = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_f3 = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_p = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_i = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_ic = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_hn = 0.0;
+  t15_2_DWork.Memory2_PreviousInput_bh = 0.0;
+  t15_2_DWork.Memory3_PreviousInput = 0.0;
 
   {
     int_T i;
     for (i = 0; i < 11; i++) {
-      t15_2_DWork.Memory2_PreviousInput_dn[i] = 0.0;
+      t15_2_DWork.Memory1_PreviousInput_e[i] = 0.0;
     }
   }
 
+  t15_2_DWork.Memory_PreviousInput_a = 0.0;
+
   {
     int_T i;
     for (i = 0; i < 11; i++) {
-      t15_2_DWork.Sum3_DWORK1[i] = 0.0;
+      t15_2_DWork.Memory_PreviousInput_m[i] = 0.0;
+    }
+  }
+
+  t15_2_DWork.Memory_PreviousInput_l = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_l = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_p = 0.0;
+  t15_2_DWork.Memory_PreviousInput_o = 0.0;
+  t15_2_DWork.Memory1_PreviousInput_ma = 0.0;
+  t15_2_DWork.Memory_PreviousInput_ok = 0.0;
+
+  {
+    int_T i;
+    for (i = 0; i < 11; i++) {
+      t15_2_DWork.Memory2_PreviousInput_n[i] = 0.0;
     }
   }
 
   t15_2_DWork.UniformRandomNumber_NextOutput = 0.0;
+  t15_2_DWork.Memory_PreviousInput_h = 0.0;
 
   {
     int_T i;
@@ -9242,10 +9134,36 @@ printf("  t15_2_P.ntur111_Value_c\n");
     }
   }
 
+  t15_2_DWork.c_a_tpl1_eob = 0.0;
+  t15_2_DWork.c_a_tpl2 = 0.0;
+  t15_2_DWork.c_a_tpl_min = 0.0;
+  t15_2_DWork.y0 = 0.0;
+  t15_2_DWork.c1_y0 = 0.0;
+  t15_2_DWork.c2_y0 = 0.0;
+  t15_2_DWork.t_tran2D = 0.0;
+  t15_2_DWork.max_VS_lim = 0.0;
+  t15_2_DWork.k_g4 = 0.0;
+  t15_2_DWork.tdiv = 0.0;
+  t15_2_DWork.c_a_tpl1 = 0.0;
+  t15_2_DWork.tcont2 = 0.0;
+  t15_2_DWork.Ip_div = 0.0;
+  t15_2_DWork.ref_ramp = 0.0;
+  t15_2_DWork.dtcont2 = 0.0;
+  t15_2_DWork.Ip_rd = 0.0;
+  t15_2_DWork.trd_ref = 0.0;
+  t15_2_DWork.Time_stop = 0.0;
+
   {
     int_T i;
     for (i = 0; i < 11; i++) {
-      t15_2_DWork.Memory1_PreviousInput_p2[i] = 0.0;
+      t15_2_DWork.Memory1_PreviousInput_bg[i] = 0.0;
+    }
+  }
+
+  {
+    int_T i;
+    for (i = 0; i < 12; i++) {
+      t15_2_DWork.ntur[i] = 0.0;
     }
   }
 
@@ -9323,17 +9241,17 @@ printf("  t15_2_P.ntur111_Value_c\n");
     rtssSetSolverInfoPtr(sfcnInfo, &t15_2_M->solverInfoPtr);
   }
 
-  t15_2_M->Sizes.numSFcns = (16);
+  t15_2_M->Sizes.numSFcns = (17);
 
   /* register each child */
   {
     (void) memset((void *)&t15_2_M->NonInlinedSFcns.childSFunctions[0], 0,
-                  16*sizeof(SimStruct));
+                  17*sizeof(SimStruct));
     t15_2_M->childSfunctions = (&t15_2_M->NonInlinedSFcns.childSFunctionPtrs[0]);
 
     {
       int_T i;
-      for (i = 0; i < 16; i++) {
+      for (i = 0; i < 17; i++) {
         t15_2_M->childSfunctions[i] = (&t15_2_M->
           NonInlinedSFcns.childSFunctions[i]);
       }
@@ -9525,7 +9443,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S19>/S-Function1 (read_gaps) */
+    /* Level2 S-Function Block: t15_2/<S5>/S-Function (read_control_data2) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[2];
 
@@ -9571,36 +9489,25 @@ printf("  t15_2_P.ntur111_Value_c\n");
 
         /* port 0 */
         {
-          int_T *dimensions = (int_T *) &t15_2_M->NonInlinedSFcns.Sfcn2.oDims0;
-          dimensions[0] = 2;
-          dimensions[1] = 50;
-          _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
-          _ssSetOutputPortNumDimensions(rts, 0, 2);
-          ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_i));
+          _ssSetOutputPortNumDimensions(rts, 0, 1);
+          ssSetOutputPortWidth(rts, 0, 17);
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction));
         }
       }
 
       /* path info */
-      ssSetModelName(rts, "S-Function1");
-      ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/elong_ref.dat/S-Function1");
+      ssSetModelName(rts, "S-Function");
+      ssSetPath(rts, "t15_2/Pow. Supply MC 2/kavin_contr/S-Function");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
       ssSetVersion(rts, SIMSTRUCT_VERSION_LEVEL2);
 
-      /* parameters */
-      {
-        mxArray **sfcnParams = (mxArray **)
-          &t15_2_M->NonInlinedSFcns.Sfcn2.params;
-        ssSetSFcnParamsCount(rts, 1);
-        ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_l);
-      }
-
       /* registration */
-      read_gaps(rts);
+      read_control_data2(rts);
+
+	  mexPrintf("---read_control_data2 \n");
+
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -9619,7 +9526,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S42>/S-Function1 (read_gaps) */
+    /* Level2 S-Function Block: t15_2/<S21>/S-Function1 (read_gaps) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[3];
 
@@ -9678,7 +9585,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem6/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/elong_ref.dat/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -9690,7 +9597,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn3.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_m);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_c);
       }
 
       /* registration */
@@ -9713,7 +9620,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S48>/S-Function1 (read_gaps_term) */
+    /* Level2 S-Function Block: t15_2/<S47>/S-Function1 (read_gaps) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[4];
 
@@ -9765,14 +9672,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_p));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_f));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem6/g1_term,ref/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem6/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -9784,11 +9691,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn4.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_f);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_a);
       }
 
       /* registration */
-      read_gaps_term(rts);
+      read_gaps(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -9807,7 +9714,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S37>/S-Function1 (read_gaps) */
+    /* Level2 S-Function Block: t15_2/<S53>/S-Function1 (read_gaps_term) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[5];
 
@@ -9859,14 +9766,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_f));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_j));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem1/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem6/g1_term,ref/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -9878,11 +9785,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn5.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_n);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_d);
       }
 
       /* registration */
-      read_gaps(rts);
+      read_gaps_term(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -9901,7 +9808,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S43>/S-Function1 (read_gaps_term) */
+    /* Level2 S-Function Block: t15_2/<S42>/S-Function1 (read_gaps) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[6];
 
@@ -9953,14 +9860,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_f2));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_c));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem1/g2_term,ref/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem1/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -9972,11 +9879,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn6.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_mz);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_cv);
       }
 
       /* registration */
-      read_gaps_term(rts);
+      read_gaps(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -9995,7 +9902,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S38>/S-Function1 (read_gaps) */
+    /* Level2 S-Function Block: t15_2/<S48>/S-Function1 (read_gaps_term) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[7];
 
@@ -10047,14 +9954,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_e));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_g));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem2/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem1/g2_term,ref/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10066,11 +9973,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn7.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_b);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_i);
       }
 
       /* registration */
-      read_gaps(rts);
+      read_gaps_term(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10089,7 +9996,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S44>/S-Function1 (read_gaps_term) */
+    /* Level2 S-Function Block: t15_2/<S43>/S-Function1 (read_gaps) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[8];
 
@@ -10141,14 +10048,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_h));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_of));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem2/g3_term,ref/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem2/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10160,11 +10067,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn8.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_o);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_a3);
       }
 
       /* registration */
-      read_gaps_term(rts);
+      read_gaps(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10183,7 +10090,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S39>/S-Function1 (read_gaps) */
+    /* Level2 S-Function Block: t15_2/<S49>/S-Function1 (read_gaps_term) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[9];
 
@@ -10235,14 +10142,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_fd));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_oy));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem3/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem2/g3_term,ref/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10254,11 +10161,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn9.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_c);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_b);
       }
 
       /* registration */
-      read_gaps(rts);
+      read_gaps_term(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10277,7 +10184,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S45>/S-Function1 (read_gaps_term) */
+    /* Level2 S-Function Block: t15_2/<S44>/S-Function1 (read_gaps) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[10];
 
@@ -10329,14 +10236,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_o5));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_e));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem3/g4_term,ref/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem3/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10348,11 +10255,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn10.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_bi);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_g);
       }
 
       /* registration */
-      read_gaps_term(rts);
+      read_gaps(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10371,7 +10278,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S40>/S-Function1 (read_gaps) */
+    /* Level2 S-Function Block: t15_2/<S50>/S-Function1 (read_gaps_term) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[11];
 
@@ -10423,14 +10330,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_n));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_fg));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem4/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem3/g4_term,ref/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10442,11 +10349,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn11.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_e);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_k);
       }
 
       /* registration */
-      read_gaps(rts);
+      read_gaps_term(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10465,7 +10372,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S46>/S-Function1 (read_gaps_term) */
+    /* Level2 S-Function Block: t15_2/<S45>/S-Function1 (read_gaps) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[12];
 
@@ -10517,14 +10424,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_a));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_n));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem4/g5_term,ref/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem4/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10536,11 +10443,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn12.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_p);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_dm);
       }
 
       /* registration */
-      read_gaps_term(rts);
+      read_gaps(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10559,7 +10466,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S41>/S-Function1 (read_gaps) */
+    /* Level2 S-Function Block: t15_2/<S51>/S-Function1 (read_gaps_term) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[13];
 
@@ -10611,14 +10518,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_p1));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_d));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem5/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem4/g5_term,ref/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10630,11 +10537,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn13.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_bq);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_l);
       }
 
       /* registration */
-      read_gaps(rts);
+      read_gaps_term(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10653,7 +10560,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S47>/S-Function1 (read_gaps_term) */
+    /* Level2 S-Function Block: t15_2/<S46>/S-Function1 (read_gaps) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[14];
 
@@ -10705,14 +10612,14 @@ printf("  t15_2_P.ntur111_Value_c\n");
           _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
           _ssSetOutputPortNumDimensions(rts, 0, 2);
           ssSetOutputPortWidth(rts, 0, 100);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_c));
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_h));
         }
       }
 
       /* path info */
       ssSetModelName(rts, "S-Function1");
       ssSetPath(rts,
-                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem5/g6_term,ref/S-Function1");
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem5/S-Function1");
       ssSetRTModel(rts,t15_2_M);
       ssSetParentSS(rts, (NULL));
       ssSetRootSS(rts, rts);
@@ -10724,11 +10631,11 @@ printf("  t15_2_P.ntur111_Value_c\n");
           &t15_2_M->NonInlinedSFcns.Sfcn14.params;
         ssSetSFcnParamsCount(rts, 1);
         ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
-        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_a);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_o);
       }
 
       /* registration */
-      read_gaps_term(rts);
+      read_gaps(rts);
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10747,7 +10654,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       /* Update the BufferDstPort flags for each input port */
     }
 
-    /* Level2 S-Function Block: t15_2/<S1>/S-Function (read_tt_kavin2) */
+    /* Level2 S-Function Block: t15_2/<S52>/S-Function1 (read_gaps_term) */
     {
       SimStruct *rts = t15_2_M->childSfunctions[15];
 
@@ -10793,9 +10700,103 @@ printf("  t15_2_P.ntur111_Value_c\n");
 
         /* port 0 */
         {
+          int_T *dimensions = (int_T *) &t15_2_M->NonInlinedSFcns.Sfcn15.oDims0;
+          dimensions[0] = 2;
+          dimensions[1] = 50;
+          _ssSetOutputPortDimensionsPtr(rts, 0, dimensions);
+          _ssSetOutputPortNumDimensions(rts, 0, 2);
+          ssSetOutputPortWidth(rts, 0, 100);
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction1_a));
+        }
+      }
+
+      /* path info */
+      ssSetModelName(rts, "S-Function1");
+      ssSetPath(rts,
+                "t15_2/Pow. Supply MC 2/kavin_contr/Control inputs 1/g1-g6.dat,g1_term-g6_term.dat/Subsystem5/g6_term,ref/S-Function1");
+      ssSetRTModel(rts,t15_2_M);
+      ssSetParentSS(rts, (NULL));
+      ssSetRootSS(rts, rts);
+      ssSetVersion(rts, SIMSTRUCT_VERSION_LEVEL2);
+
+      /* parameters */
+      {
+        mxArray **sfcnParams = (mxArray **)
+          &t15_2_M->NonInlinedSFcns.Sfcn15.params;
+        ssSetSFcnParamsCount(rts, 1);
+        ssSetSFcnParamsPtr(rts, &sfcnParams[0]);
+        ssSetSFcnParam(rts, 0, (mxArray*)t15_2_P.SFunction1_P1_Size_b0);
+      }
+
+      /* registration */
+      read_gaps_term(rts);
+      sfcnInitializeSizes(rts);
+      sfcnInitializeSampleTimes(rts);
+
+      /* adjust sample time */
+      ssSetSampleTime(rts, 0, 0.002);
+      ssSetOffsetTime(rts, 0, 0.0);
+      sfcnTsMap[0] = 0;
+
+      /* set compiled values of dynamic vector attributes */
+      ssSetNumNonsampledZCs(rts, 0);
+
+      /* Update connectivity flags for each port */
+      _ssSetOutputPortConnected(rts, 0, 1);
+      _ssSetOutputPortBeingMerged(rts, 0, 0);
+
+      /* Update the BufferDstPort flags for each input port */
+    }
+
+    /* Level2 S-Function Block: t15_2/<S1>/S-Function (read_tt_kavin2) */
+    {
+      SimStruct *rts = t15_2_M->childSfunctions[16];
+
+      /* timing info */
+      time_T *sfcnPeriod = t15_2_M->NonInlinedSFcns.Sfcn16.sfcnPeriod;
+      time_T *sfcnOffset = t15_2_M->NonInlinedSFcns.Sfcn16.sfcnOffset;
+      int_T *sfcnTsMap = t15_2_M->NonInlinedSFcns.Sfcn16.sfcnTsMap;
+      (void) memset((void*)sfcnPeriod, 0,
+                    sizeof(time_T)*1);
+      (void) memset((void*)sfcnOffset, 0,
+                    sizeof(time_T)*1);
+      ssSetSampleTimePtr(rts, &sfcnPeriod[0]);
+      ssSetOffsetTimePtr(rts, &sfcnOffset[0]);
+      ssSetSampleTimeTaskIDPtr(rts, sfcnTsMap);
+
+      /* Set up the mdlInfo pointer */
+      {
+        ssSetBlkInfo2Ptr(rts, &t15_2_M->NonInlinedSFcns.blkInfo2[16]);
+      }
+
+      ssSetRTWSfcnInfo(rts, t15_2_M->sfcnInfo);
+
+      /* Allocate memory of model methods 2 */
+      {
+        ssSetModelMethods2(rts, &t15_2_M->NonInlinedSFcns.methods2[16]);
+      }
+
+      /* Allocate memory of model methods 3 */
+      {
+        ssSetModelMethods3(rts, &t15_2_M->NonInlinedSFcns.methods3[16]);
+      }
+
+      /* Allocate memory for states auxilliary information */
+      {
+        ssSetStatesInfo2(rts, &t15_2_M->NonInlinedSFcns.statesInfo2[16]);
+      }
+
+      /* outputs */
+      {
+        ssSetPortInfoForOutputs(rts,
+          &t15_2_M->NonInlinedSFcns.Sfcn16.outputPortInfo[0]);
+        _ssSetNumOutputPorts(rts, 1);
+
+        /* port 0 */
+        {
           _ssSetOutputPortNumDimensions(rts, 0, 1);
-          ssSetOutputPortWidth(rts, 0, 32);
-          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction));
+          ssSetOutputPortWidth(rts, 0, 44);
+          ssSetOutputPortSignal(rts, 0, ((real_T *) t15_2_B.SFunction_n));
         }
       }
 
@@ -10809,6 +10810,9 @@ printf("  t15_2_P.ntur111_Value_c\n");
 
       /* registration */
       read_tt_kavin2(rts);
+
+	mexPrintf("after read_tt_kavin2 \n");
+
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10834,7 +10838,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
     int32_T t;
     real_T tmin;
 
-    /* Start for UniformRandomNumber: '<S61>/Uniform Random Number' */
+    /* Start for UniformRandomNumber: '<S65>/Uniform Random Number' */
     tmin = floor(t15_2_P.UniformRandomNumber_Seed);
     if (rtIsNaN(tmin) || rtIsInf(tmin)) {
       tmin = 0.0;
@@ -10860,7 +10864,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       (t15_2_P.UniformRandomNumber_Maximum - tmin) * rt_urand_Upu32_Yd_f_pw_snf(
       &t15_2_DWork.RandSeed) + tmin;
 
-    /* End of Start for UniformRandomNumber: '<S61>/Uniform Random Number' */
+    /* End of Start for UniformRandomNumber: '<S65>/Uniform Random Number' */
 
     /* Start for DataStoreMemory: '<S5>/Data Store Memory' */
     memcpy(&t15_2_DWork.scr_data[0], &t15_2_P.DataStoreMemory_InitialValue[0],
@@ -10870,30 +10874,88 @@ printf("  t15_2_P.ntur111_Value_c\n");
     memcpy(&t15_2_DWork.volt[0], &t15_2_P.DataStoreMemory1_InitialValue[0],
            10000U * sizeof(real_T));
 
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory10' */
+    t15_2_DWork.c_a_tpl1_eob = t15_2_P.DataStoreMemory10_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory11' */
+    t15_2_DWork.c_a_tpl2 = t15_2_P.DataStoreMemory11_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory12' */
+    t15_2_DWork.c_a_tpl_min = t15_2_P.DataStoreMemory12_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory13' */
+    t15_2_DWork.y0 = t15_2_P.DataStoreMemory13_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory14' */
+    t15_2_DWork.c1_y0 = t15_2_P.DataStoreMemory14_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory15' */
+    t15_2_DWork.c2_y0 = t15_2_P.DataStoreMemory15_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory16' */
+    t15_2_DWork.t_tran2D = t15_2_P.DataStoreMemory16_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory17' */
+    t15_2_DWork.max_VS_lim = t15_2_P.DataStoreMemory17_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory18' */
+    t15_2_DWork.k_g4 = t15_2_P.DataStoreMemory18_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory19' */
+    t15_2_DWork.tdiv = t15_2_P.DataStoreMemory19_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory2' */
+    t15_2_DWork.c_a_tpl1 = t15_2_P.DataStoreMemory2_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory3' */
+    t15_2_DWork.tcont2 = t15_2_P.DataStoreMemory3_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory4' */
+    t15_2_DWork.Ip_div = t15_2_P.DataStoreMemory4_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory5' */
+    t15_2_DWork.ref_ramp = t15_2_P.DataStoreMemory5_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory6' */
+    t15_2_DWork.dtcont2 = t15_2_P.DataStoreMemory6_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory7' */
+    t15_2_DWork.Ip_rd = t15_2_P.DataStoreMemory7_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory8' */
+    t15_2_DWork.trd_ref = t15_2_P.DataStoreMemory8_InitialValue;
+
+    /* Start for DataStoreMemory: '<S5>/Data Store Memory9' */
+    t15_2_DWork.Time_stop = t15_2_P.DataStoreMemory9_InitialValue;
+
+    /* Start for DataStoreMemory: '<S1>/Data Store Memory1' */
+    memcpy(&t15_2_DWork.ntur[0], &t15_2_P.DataStoreMemory1_InitialValue_p[0],
+           12U * sizeof(real_T));
+
     /* Start for DataStoreMemory: '<S1>/Data Store Memory2' */
     for (r = 0; r < 6; r++) {
-      t15_2_DWork.RupRd[r] = t15_2_P.DataStoreMemory2_InitialValue[r];
+      t15_2_DWork.RupRd[r] = t15_2_P.DataStoreMemory2_InitialValue_o[r];
     }
 
     /* End of Start for DataStoreMemory: '<S1>/Data Store Memory2' */
 
     /* Start for DataStoreMemory: '<S1>/Data Store Memory3' */
-    t15_2_DWork.VS3_up = t15_2_P.DataStoreMemory3_InitialValue;
+    t15_2_DWork.VS3_up = t15_2_P.DataStoreMemory3_InitialValue_p;
 
     /* Start for DataStoreMemory: '<S1>/Data Store Memory5' */
-    t15_2_DWork.VS1_up = t15_2_P.DataStoreMemory5_InitialValue;
+    t15_2_DWork.VS1_up = t15_2_P.DataStoreMemory5_InitialValue_a;
 
     /* Start for DataStoreMemory: '<S1>/Data Store Memory7' */
-    t15_2_DWork.Tu = t15_2_P.DataStoreMemory7_InitialValue;
+    t15_2_DWork.Tu = t15_2_P.DataStoreMemory7_InitialValue_h;
 
     /* Start for DataStoreMemory: '<S1>/Data Store Memory8' */
-    t15_2_DWork.c_cur_max = t15_2_P.DataStoreMemory8_InitialValue;
+    t15_2_DWork.c_cur_max = t15_2_P.DataStoreMemory8_InitialValue_b;
     for (r = 0; r < 11; r++) {
       /* Start for DataStoreMemory: '<S1>/Data Store Memory4' */
-      t15_2_DWork.Vcspf_up[r] = t15_2_P.DataStoreMemory4_InitialValue[r];
+      t15_2_DWork.Vcspf_up[r] = t15_2_P.DataStoreMemory4_InitialValue_c[r];
 
       /* Start for DataStoreMemory: '<S1>/Data Store Memory9' */
-      t15_2_DWork.Imax[r] = t15_2_P.DataStoreMemory9_InitialValue[r];
+      t15_2_DWork.Imax[r] = t15_2_P.DataStoreMemory9_InitialValue_p[r];
     }
   }
 
@@ -10903,97 +10965,106 @@ printf("  t15_2_P.ntur111_Value_c\n");
     /* InitializeConditions for Memory: '<S5>/Memory2' */
     t15_2_DWork.Memory2_PreviousInput = t15_2_P.Memory2_X0;
 
-    /* InitializeConditions for Memory: '<S23>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_k = t15_2_P.Memory2_X0_f;
-
-    /* InitializeConditions for Memory: '<S23>/Memory1' */
+    /* InitializeConditions for Memory: '<S18>/Memory1' */
     t15_2_DWork.Memory1_PreviousInput = t15_2_P.Memory1_X0;
 
-    /* InitializeConditions for Memory: '<S17>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_c = t15_2_P.Memory1_X0_b;
+    /* InitializeConditions for Memory: '<S28>/Memory' */
+    t15_2_DWork.Memory_PreviousInput = t15_2_P.Memory_X0;
 
-    /* InitializeConditions for UnitDelay: '<S24>/UD' */
-    t15_2_DWork.UD_DSTATE = t15_2_P.UD_InitialCondition;
+    /* InitializeConditions for Memory: '<S19>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_m = t15_2_P.Memory1_X0_k;
 
-    /* InitializeConditions for UnitDelay: '<S25>/UD' */
-    t15_2_DWork.UD_DSTATE_j = t15_2_P.UD_InitialCondition_b;
+    /* InitializeConditions for Memory: '<S27>/Memory' */
+    t15_2_DWork.Memory_PreviousInput_p = t15_2_P.Memory_X0_j;
 
-    /* InitializeConditions for Memory: '<S29>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_m = t15_2_P.Memory2_X0_h;
+    /* InitializeConditions for Memory: '<S47>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_l = t15_2_P.Memory2_X0_h;
 
-    /* InitializeConditions for Memory: '<S27>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_b = t15_2_P.Memory2_X0_d;
-
-    /* InitializeConditions for Memory: '<S28>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_a = t15_2_P.Memory2_X0_a;
-
-    /* InitializeConditions for Memory: '<S30>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_d = t15_2_P.Memory2_X0_n;
-
-    /* InitializeConditions for Memory: '<S26>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_c = t15_2_P.Memory2_X0_e;
-
-    /* InitializeConditions for Memory: '<S31>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_e = t15_2_P.Memory2_X0_b;
-
-    /* InitializeConditions for Memory: '<S32>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_o = t15_2_P.Memory2_X0_hi;
-
-    /* InitializeConditions for Memory: '<S33>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_eq = t15_2_P.Memory2_X0_dv;
-
-    /* InitializeConditions for Memory: '<S34>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_bf = t15_2_P.Memory2_X0_k;
-
-    /* InitializeConditions for Memory: '<S35>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_l = t15_2_P.Memory2_X0_bq;
-
-    /* InitializeConditions for Memory: '<S36>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_j = t15_2_P.Memory2_X0_p;
+    /* InitializeConditions for Memory: '<S47>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_c = t15_2_P.Memory1_X0_g;
 
     /* InitializeConditions for Memory: '<S42>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_o4 = t15_2_P.Memory2_X0_o;
+    t15_2_DWork.Memory2_PreviousInput_f = t15_2_P.Memory2_X0_l;
 
     /* InitializeConditions for Memory: '<S42>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_g = t15_2_P.Memory1_X0_f;
+    t15_2_DWork.Memory1_PreviousInput_mf = t15_2_P.Memory1_X0_b;
+
+    /* InitializeConditions for Memory: '<S43>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_h = t15_2_P.Memory2_X0_p;
+
+    /* InitializeConditions for Memory: '<S43>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_n = t15_2_P.Memory1_X0_a;
+
+    /* InitializeConditions for Memory: '<S44>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_d = t15_2_P.Memory2_X0_d;
+
+    /* InitializeConditions for Memory: '<S44>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_o = t15_2_P.Memory1_X0_gh;
+
+    /* InitializeConditions for Memory: '<S45>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_o = t15_2_P.Memory2_X0_c;
+
+    /* InitializeConditions for Memory: '<S45>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_b = t15_2_P.Memory1_X0_n;
+
+    /* InitializeConditions for Memory: '<S46>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_b = t15_2_P.Memory2_X0_a;
+
+    /* InitializeConditions for Memory: '<S46>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_d = t15_2_P.Memory1_X0_m;
+
+    /* InitializeConditions for Memory: '<S31>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_lr = t15_2_P.Memory2_X0_ca;
+
+    /* InitializeConditions for Memory: '<S34>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_c = t15_2_P.Memory2_X0_g;
+
+    /* InitializeConditions for Memory: '<S35>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_dq = t15_2_P.Memory2_X0_df;
+
+    /* InitializeConditions for Memory: '<S36>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_j = t15_2_P.Memory2_X0_la;
 
     /* InitializeConditions for Memory: '<S37>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_mw = t15_2_P.Memory2_X0_oh;
-
-    /* InitializeConditions for Memory: '<S37>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_d = t15_2_P.Memory1_X0_h;
+    t15_2_DWork.Memory2_PreviousInput_d0 = t15_2_P.Memory2_X0_p5;
 
     /* InitializeConditions for Memory: '<S38>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_h = t15_2_P.Memory2_X0_kw;
-
-    /* InitializeConditions for Memory: '<S38>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_p = t15_2_P.Memory1_X0_n;
+    t15_2_DWork.Memory2_PreviousInput_f3 = t15_2_P.Memory2_X0_l5;
 
     /* InitializeConditions for Memory: '<S39>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_g = t15_2_P.Memory2_X0_nw;
-
-    /* InitializeConditions for Memory: '<S39>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_h = t15_2_P.Memory1_X0_g;
+    t15_2_DWork.Memory2_PreviousInput_p = t15_2_P.Memory2_X0_dd;
 
     /* InitializeConditions for Memory: '<S40>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_oh = t15_2_P.Memory2_X0_nr;
-
-    /* InitializeConditions for Memory: '<S40>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_gk = t15_2_P.Memory1_X0_m;
+    t15_2_DWork.Memory2_PreviousInput_i = t15_2_P.Memory2_X0_lz;
 
     /* InitializeConditions for Memory: '<S41>/Memory2' */
-    t15_2_DWork.Memory2_PreviousInput_ef = t15_2_P.Memory2_X0_c;
+    t15_2_DWork.Memory2_PreviousInput_ic = t15_2_P.Memory2_X0_e;
 
-    /* InitializeConditions for Memory: '<S41>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_j = t15_2_P.Memory1_X0_j;
+    /* InitializeConditions for Memory: '<S32>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_hn = t15_2_P.Memory2_X0_j;
 
-    /* InitializeConditions for Memory: '<S50>/Memory3' */
+    /* InitializeConditions for Memory: '<S33>/Memory2' */
+    t15_2_DWork.Memory2_PreviousInput_bh = t15_2_P.Memory2_X0_laf;
+
+    /* InitializeConditions for UnitDelay: '<S29>/UD' */
+    t15_2_DWork.UD_DSTATE = t15_2_P.UD_InitialCondition;
+
+    /* InitializeConditions for UnitDelay: '<S30>/UD' */
+    t15_2_DWork.UD_DSTATE_i = t15_2_P.UD_InitialCondition_j;
+
+    /* InitializeConditions for Memory: '<S54>/Memory3' */
     t15_2_DWork.Memory3_PreviousInput = t15_2_P.Memory3_X0;
 
-    /* InitializeConditions for Memory: '<S51>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_l = t15_2_P.Memory1_X0_fe;
+    /* InitializeConditions for Memory: '<S90>/Memory' */
+    t15_2_DWork.Memory_PreviousInput_a = t15_2_P.Memory_X0_g;
 
-    /* InitializeConditions for DiscreteStateSpace: '<S54>/Div. contr.' */
+    /* InitializeConditions for Memory: '<S79>/Memory' */
+    t15_2_DWork.Memory_PreviousInput_l = t15_2_P.Memory_X0_o;
+
+    /* InitializeConditions for Memory: '<S66>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_l = t15_2_P.Memory1_X0_hj;
+
+    /* InitializeConditions for DiscreteStateSpace: '<S15>/Div. contr.' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.Divcontr_DSTATE[0];
@@ -11002,10 +11073,13 @@ printf("  t15_2_P.ntur111_Value_c\n");
       }
     }
 
-    /* InitializeConditions for Memory: '<S62>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_o = t15_2_P.Memory1_X0_fo;
+    /* InitializeConditions for Memory: '<S64>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_p = t15_2_P.Memory1_X0_p;
 
-    /* InitializeConditions for DiscreteStateSpace: '<S55>/Div_rd contr' */
+    /* InitializeConditions for Memory: '<S85>/Memory' */
+    t15_2_DWork.Memory_PreviousInput_o = t15_2_P.Memory_X0_n;
+
+    /* InitializeConditions for DiscreteStateSpace: '<S15>/Div_rd contr' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.Div_rdcontr_DSTATE[0];
@@ -11014,10 +11088,13 @@ printf("  t15_2_P.ntur111_Value_c\n");
       }
     }
 
-    /* InitializeConditions for Memory: '<S59>/Memory1' */
-    t15_2_DWork.Memory1_PreviousInput_f = t15_2_P.Memory1_X0_c;
+    /* InitializeConditions for Memory: '<S56>/Memory1' */
+    t15_2_DWork.Memory1_PreviousInput_ma = t15_2_P.Memory1_X0_j;
 
-    /* InitializeConditions for DiscreteStateSpace: '<S53>/Curr. term. contr' */
+    /* InitializeConditions for Memory: '<S74>/Memory' */
+    t15_2_DWork.Memory_PreviousInput_ok = t15_2_P.Memory_X0_oc;
+
+    /* InitializeConditions for DiscreteStateSpace: '<S15>/Curr. term. contr' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.Currtermcontr_DSTATE[0];
@@ -11026,7 +11103,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       }
     }
 
-    /* InitializeConditions for DiscreteStateSpace: '<S56>/Lim. contr.' */
+    /* InitializeConditions for DiscreteStateSpace: '<S57>/Lim. contr.' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.Limcontr_DSTATE[0];
@@ -11035,7 +11112,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       }
     }
 
-    /* InitializeConditions for DiscreteStateSpace: '<S56>/Curr. contr.' */
+    /* InitializeConditions for DiscreteStateSpace: '<S57>/Curr. contr.' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.Currcontr_DSTATE[0];
@@ -11044,10 +11121,10 @@ printf("  t15_2_P.ntur111_Value_c\n");
       }
     }
 
-    /* InitializeConditions for UnitDelay: '<S73>/UD' */
-    t15_2_DWork.UD_DSTATE_c = t15_2_P.UD_InitialCondition_e;
+    /* InitializeConditions for UnitDelay: '<S87>/UD' */
+    t15_2_DWork.UD_DSTATE_h = t15_2_P.UD_InitialCondition_jj;
 
-    /* InitializeConditions for DiscreteStateSpace: '<S57>/VS. contr' */
+    /* InitializeConditions for DiscreteStateSpace: '<S62>/VS. contr' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.VScontr_DSTATE[0];
@@ -11056,7 +11133,7 @@ printf("  t15_2_P.ntur111_Value_c\n");
       }
     }
 
-    /* InitializeConditions for DiscreteStateSpace: '<S57>/VS. contr hl' */
+    /* InitializeConditions for DiscreteStateSpace: '<S62>/VS. contr hl' */
     {
       int_T i1;
       real_T *dw_DSTATE = &t15_2_DWork.VScontrhl_DSTATE[0];
@@ -11065,22 +11142,24 @@ printf("  t15_2_P.ntur111_Value_c\n");
       }
     }
 
+    /* InitializeConditions for Memory: '<S81>/Memory' */
+    t15_2_DWork.Memory_PreviousInput_h = t15_2_P.Memory_X0_c;
     for (i = 0; i < 11; i++) {
-      /* InitializeConditions for Memory: '<S60>/Memory1' */
-      t15_2_DWork.Memory1_PreviousInput_b[i] = t15_2_P.Memory1_X0_h2;
+      /* InitializeConditions for Memory: '<S68>/Memory1' */
+      t15_2_DWork.Memory1_PreviousInput_e[i] = t15_2_P.Memory1_X0_h;
 
-      /* InitializeConditions for Memory: '<S63>/Memory' */
-      t15_2_DWork.Memory_PreviousInput[i] = t15_2_P.Memory_X0;
+      /* InitializeConditions for Memory: '<S60>/Memory' */
+      t15_2_DWork.Memory_PreviousInput_m[i] = t15_2_P.Memory_X0_d;
 
-      /* InitializeConditions for Memory: '<S56>/Memory2' */
-      t15_2_DWork.Memory2_PreviousInput_dn[i] = t15_2_P.Memory2_X0_ai;
+      /* InitializeConditions for Memory: '<S77>/Memory2' */
+      t15_2_DWork.Memory2_PreviousInput_n[i] = t15_2_P.Memory2_X0_l4;
 
       /* InitializeConditions for Memory: '<S7>/Memory1' */
-      t15_2_DWork.Memory1_PreviousInput_p2[i] = t15_2_P.Memory1_X0_fq;
+      t15_2_DWork.Memory1_PreviousInput_bg[i] = t15_2_P.Memory1_X0_c;
     }
 
     /* InitializeConditions for UnitDelay: '<S6>/UD' */
-    t15_2_DWork.UD_DSTATE_i = t15_2_P.UD_InitialCondition_m;
+    t15_2_DWork.UD_DSTATE_a = t15_2_P.UD_InitialCondition_e;
   }
 }
 
@@ -11099,87 +11178,93 @@ void t15_2_terminate(void)
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S19>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S5>/S-Function' (read_control_data2) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[2];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S42>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S21>/S-Function1' (read_gaps) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[3];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S48>/S-Function1' (read_gaps_term) */
+  /* Level2 S-Function Block: '<S47>/S-Function1' (read_gaps) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[4];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S37>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S53>/S-Function1' (read_gaps_term) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[5];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S43>/S-Function1' (read_gaps_term) */
+  /* Level2 S-Function Block: '<S42>/S-Function1' (read_gaps) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[6];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S38>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S48>/S-Function1' (read_gaps_term) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[7];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S44>/S-Function1' (read_gaps_term) */
+  /* Level2 S-Function Block: '<S43>/S-Function1' (read_gaps) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[8];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S39>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S49>/S-Function1' (read_gaps_term) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[9];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S45>/S-Function1' (read_gaps_term) */
+  /* Level2 S-Function Block: '<S44>/S-Function1' (read_gaps) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[10];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S40>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S50>/S-Function1' (read_gaps_term) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[11];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S46>/S-Function1' (read_gaps_term) */
+  /* Level2 S-Function Block: '<S45>/S-Function1' (read_gaps) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[12];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S41>/S-Function1' (read_gaps) */
+  /* Level2 S-Function Block: '<S51>/S-Function1' (read_gaps_term) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[13];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S47>/S-Function1' (read_gaps_term) */
+  /* Level2 S-Function Block: '<S46>/S-Function1' (read_gaps) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[14];
     sfcnTerminate(rts);
   }
 
-  /* Level2 S-Function Block: '<S1>/S-Function' (read_tt_kavin2) */
+  /* Level2 S-Function Block: '<S52>/S-Function1' (read_gaps_term) */
   {
     SimStruct *rts = t15_2_M->childSfunctions[15];
+    sfcnTerminate(rts);
+  }
+
+  /* Level2 S-Function Block: '<S1>/S-Function' (read_tt_kavin2) */
+  {
+    SimStruct *rts = t15_2_M->childSfunctions[16];
     sfcnTerminate(rts);
   }
 }
@@ -11218,7 +11303,7 @@ if( kpr == -1){
     }
     ki=k;
 
-if( kpr ==- 1){
+if( kpr == 1){
 		  printf("k  ki %d %d  \n",k,ki);
 
 	  printf("nbrInputArgs "
@@ -11233,7 +11318,7 @@ if( kpr ==- 1){
 	  t15_2_step();
 
 
-//	  printf("---t15_2_step  \n");
+	  printf("---t15_2_step  \n");
 
 
 
@@ -11244,15 +11329,16 @@ if( kpr ==- 1){
       for (i = 0; i < 15; i++) 
 	  { output[i]=t15_2_Y.to_DINA[i] ;
 	  k=k+1;
+	  printf(" outp i k  %g %d  \n",output[i],i,k);
       }
 	  
 	  ki=k;
 
       for (i = 0; i < 11; i++) 
 //	  { output[i+ki]=t15_2_B.Saturation[i] ;
-	  { output[i+ki]=t15_2_DWork.Vcspf_up[i] ;
+//	  { output[i+ki]=t15_2_DWork.Vcspf_up[i] ;
 
-//	  { output[i+ki]=0.0 ;
+	  { output[i+ki]=0.0 ;
 	  k=k+1;
       }
 
@@ -11261,14 +11347,14 @@ if( kpr ==- 1){
 	  ki=k;
 
       for (i = 0; i < 11; i++) 
-	  { output[i+ki]=t15_2_B.wz[i] ;
-//	  { output[i+ki]=0.0 ;
+//	  { output[i+ki]=t15_2_B.wz[i] ;
+	  { output[i+ki]=0.0 ;
 	  k=k+1;
       }
 
 	  i=11;
-	  output[i+ki]=t15_2_B.wz[i] ;
-//	  output[i+ki]=0.0 ;
+//	  output[i+ki]=t15_2_B.wz[i] ;
+	  output[i+ki]=0.0 ;
 
 	  ki=k;
 
@@ -11291,848 +11377,3 @@ if( kpr ==- 1){
 	  }
 
 }
-	void control_data_read(void)
-{
-//	FILE *prob1, *f;
-	char b[256];
-
-
-      int i,j,ii,jj,kk;
-	  double tcont2,Ip_div,ref_ramp,Ip_rd,trd_ref,c_a_tpl1,c_a_tpl1_eob;
-      double c_a_tpl2,c_a_tpl_min,y0,t_tran2d,c1_y0,c2_y0,g2_ramp;
-
-int k,N; double y[500][20];
-int k_time; double y2,yy[500][20]; 
-
-
-	  if( kpr == 1){
-  
-	  printf("---t15_2_initialize \n");
-
-	  printf("---control_data2.dat \n");
-
-//f=fopen("control_data2.dat","r");
-f=fopen("control_init.dat","r");
-f1=f;
-
-fgets(b,255,f);
-	fscanf(f,"%lf",&tcont2);
-	fscanf(f,"%lf",&Ip_div);
-	fscanf(f,"%lf",&ref_ramp);
-	fscanf(f,"%lf ",&Ip_rd);
-	fscanf(f,"%lf \n",&trd_ref);
-	  printf("  tcont2,Ip_div,ref_ramp,Ip_rd,trd_ref \n");
-  	  printf("%g   %g   %g  %g   %g \n ",tcont2,Ip_div,ref_ramp,Ip_rd,trd_ref);
-
-mem1.tcont2=tcont2;
-mem1.Ip_div=Ip_div;
-mem1.ref_ramp=ref_ramp;
-mem1.Ip_rd=Ip_rd;
-mem1.trd_ref=trd_ref;
-
-
-fgets(b,255,f);
-
-fscanf(f,"%lf",&c_a_tpl1);
-fscanf(f,"%lf",&c_a_tpl1_eob);
-fscanf(f,"%lf",&c_a_tpl2);
-fscanf(f,"%lf",&c_a_tpl_min);
-fscanf(f,"%lf",&y0);
-fscanf(f,"%lf \n",&c1_y0);
-fscanf(f,"%lf \n",&c2_y0);
-
-	  printf("  c_a_tpl1,c_a_tpl1_eob,c_a_tpl2,c_a_tpl_min \n");
-  	  printf("%g   %g   %g  %g \n ",c_a_tpl1,c_a_tpl1_eob,c_a_tpl2,c_a_tpl_min);
-
-	  printf("  y0,c1_y0,c2_y0 \n");
-  	  printf("%g   %g   %g  \n ",y0,c1_y0,c2_y0);
-
-mem1.c_a_tpl1=c_a_tpl1;
-mem1.c_a_tpl1_eob=c_a_tpl1_eob;
-mem1.c_a_tpl2=c_a_tpl2;
-mem1.c_a_tpl_min=c_a_tpl_min;
-mem1.y0=y0;
-mem1.c1_y0=c1_y0;
-mem1.c2_y0=c2_y0;
-
-//return;
-
-printf("---volt.dat \n");
-//N=*n_mc; /*mexPrintf(" N %d\n",N);*/
-
-N=12;
-
-fgets(b,255,f);
-	fscanf(f,"%d \n",&k_time);
-printf("---k_time N volt.dat  %d %d\n",k_time,N);
-
-fgets(b,255,f);
-
-printf("      %s \n",b);
-
-for(k=0;k<k_time;k++){
-i=k;
-fscanf(f,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-yy[i],yy[i]+1,yy[i]+2,yy[i]+3,yy[i]+4,yy[i]+5,yy[i]+6,yy[i]+7,
-yy[i]+8,yy[i]+9,yy[i]+10,yy[i]+11);
-//y[i],y[i]+1,y[i]+2,y[i]+3,y[i]+4,y[i]+5,y[i]+6,y[i]+7,y[i]+8,y[i]+9,y[i]+10,y[i]+11);
-	
-	for(ii=0;ii<N;ii++){
-//	fscanf(f,"%lf ",&yy[ii]);
-//printf("---k ii yy  %d %d %g\n",k,ii,yy[ii]);
-	y[k][ii]=yy[k][ii];}
-}
-fscanf(f, "\n");
-
-	mem2.N=N; /*mexPrintf(" N %d\n",N);*/
-	mem2.k_time=k_time;
-
-for(k=0;k<k_time;k++){
-//	printf("---+-k==   %d\n",k);
-for(ii=0;ii<N;ii++){
-	mem2.y[k][ii]=y[k][ii];
- //   printf(" -+ y==  %g  ",y[k][ii]);
-}
-}
-
-
-//fclose(f);
-	} 
-
-for (ii=0;ii<7;ii++){
-read_gaps_data(ii);
-read_gaps_term_data(ii);
-}
-
-read_general_data();
-read_tt_kavin2_data();
-read_control_data();
-
-read_ntur_data();
-
-
-
-
-}
-void read_gaps_data(int n_gaps)
-{
-
-int N,i,j,k,N_g; static int kl0,kl1,kl2,kl3,kl4,kl5,kl6;
-static double y_0[50][2],y1[50][2],y2[50][2],y3[50][2],y4[50][2],y5[50][2],y6[50][2];
-//FILE*f;
-char b[256];
-char b1[1024];
-
-int i2;
-
-
-N_g=n_gaps; /*mexPrintf(" N_g %d\n",N_g);*/
-
-//N_g=6; /*mexPrintf(" N_g %d\n",N_g);*/
-
-//	printf("---READ_GAPS N_g %d \n",N_g);
-
-if(N_g==0){
-if(kl0==0){
-
-	printf("---elong_ref.dat \n");
-
-//f=fopen("elong_ref.dat","r");
-
-//fgets(b,255,f1);
-
-//fscanf(f1," %s ",b);
-//printf ("     %s",b);
-
-fgets(b1,1023,f1);
-printf ("%s",b1);
-
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-
-printf("---elong_ref.dat  N=   %d  \n",N);
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_0[i],y_0[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_0[j][k]=0;*/
-
-mem3.N[N_g]=N;
-
-for(j=i;j<50;j++){y_0[j][0]=y_0[j-1][0]+1; y_0[j][1]=y_0[j-1][1];}
-//for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y_0[j][k];
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem3.y_0[j][k]=y_0[j][k];
-
-j=1;
-printf("---elong_ref.dat N y_01 y_02=  %d %g %g \n",N,y_0[j-1][0],y_0[j-1][1]);
-j=N-1;
-printf("---elong_ref.dat j-1 y_01 y_02=  %d %g %g \n",j-1,y_0[j-1][0],y_0[j-1][1]);
-printf("---elong_ref.dat j y_01 y_02=  %d %g %g \n",j,y_0[j][0],y_0[j][1]);
-
-kl0=1;}
-//printf("---READ_GAPS N_g kl0 y0  %d %d %g %g %g \n",N_g,kl0,y0[0],y0[1],y0[2]);
-}
-
-if(N_g==1){
-if(kl1==0){
-
-	printf("---g1.dat \n");
-
-//f=fopen("g1.dat","r");
-
-//	fscanf(f1," %s ",b);
-//printf ("     %s",b);
-
-fgets(b1,1023,f1);
-printf ("     %s",b1);
-
-
-fscanf(f1,"%d \n",&N); 
-printf("---g1.dat N=  %d  \n",N);
-
-fgets(b,255,f1);
-printf ("     %s",b);
-
-mem3.N[N_g]=N;
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y1[i],y1[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y1[j][k]=0;*/
-for(j=i;j<50;j++){y1[j][0]=y1[j-1][0]+1; y1[j][1]=y1[j-1][1];}
-//for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y1[j][k];
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem3.y1[j][k]=y1[j][k];
-
-j=1;
-printf("---g1.dat N y_01 y_02=  %d %g %g \n",N,y1[j-1][0],y1[j-1][1]);
-j=N-1;
-printf("---g1.dat j-1 y_01 y_02=  %d %g %g \n",j-1,y1[j-1][0],y1[j-1][1]);
-printf("---g1.dat j y_01 y_02=  %d %g %g \n",j,y1[j][0],y1[j][1]);
-
-printf("---g1.dat end \n");
-
-//stop:
-
-kl1=1;}}
-
-if(N_g==2){
-if(kl2==0){
-
-	printf("---g2.dat \n");
-
-//f=fopen("g2.dat","r");
-//	fscanf(f1," %s ",b);
-//printf ("     %s",b);
-fgets(b,255,f1);
-printf ("     %s",b);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-
-printf("---g2.dat N=   %d  \n",N);
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y2[i],y2[i]+1);
-//fclose(f);
-
-mem3.N[N_g]=N;
-
-
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y2[j][k]=0;*/
-for(j=i;j<50;j++){y2[j][0]=y2[j-1][0]+1; y2[j][1]=y2[j-1][1];}
-//for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y2[j][k];
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem3.y2[j][k]=y2[j][k];
-
-j=1;
-printf("---g2.dat N y_01 y_02=  %d %g %g \n",N,y2[j-1][0],y2[j-1][1]);
-j=N-1;
-printf("---g2.dat j-1 y_01 y_02=  %d %g %g \n",j-1,y2[j-1][0],y2[j-1][1]);
-printf("---g2.dat j y_01 y_02=  %d %g %g \n",j,y2[j][0],y2[j][1]);
-
-printf("---g2.dat end \n");
-
-kl2=1;}}
-
-if(N_g==3){
-if(kl3==0){
-
-	printf("---g3.dat \n");
-
-//f=fopen("g3.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-
-printf("---g3.dat N=   %d  \n",N);
-
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y3[i],y3[i]+1);
-//fclose(f);
-
-printf("---g3.dat end \n");
-
-mem3.N[N_g]=N;
-
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y3[j][k]=0;*/
-for(j=i;j<50;j++){y3[j][0]=y3[j-1][0]+1; y3[j][1]=y3[j-1][1];}
-//for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y3[j][k];
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem3.y3[j][k]=y3[j][k];
-
-j=1;
-printf("---g3.dat N y_01 y_02=   %d %g %g \n",N,y3[j-1][0],y3[j-1][1]);
-j=N-1;
-printf("---g3.dat j-1 y_01 y_02=  %d %g %g \n",j-1,y3[j-1][0],y3[j-1][1]);
-printf("---g3.dat j y_01 y_02=  %d %g %g \n",j,y3[j][0],y3[j][1]);
-
-
-kl3=1;}
-//printf("---READ_GAPS N_g kl3 y0  %d %d %g %g %g \n",N_g,kl3,y0[0],y0[1],y0[2]);
-}
-
-if(N_g==4){
-if(kl4==0){
-
-	printf("---g4.dat \n");
-
-//	f=fopen("g4.dat","r");
-//	fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-
-printf("---g4.dat N=   %d  \n",N);
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y4[i],y4[i]+1);
-//fclose(f);
-
-mem3.N[N_g]=N;
-
-
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y4[j][k]=0;*/
-for(j=i;j<50;j++){y4[j][0]=y4[j-1][0]+1; y4[j][1]=y4[j-1][1];}
-//for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y4[j][k];
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem3.y4[j][k]=y4[j][k];
-
-j=1;
-printf("---g4.dat N y_01 y_02=   %d %g %g \n",N,y4[j-1][0],y4[j-1][1]);
-j=N-1;
-printf("---g4.dat j-1 y_01 y_02=   %d %g %g \n",j-1,y4[j-1][0],y4[j-1][1]);
-printf("---g4.dat j y_01 y_02=   %d %g %g \n",j,y4[j][0],y4[j][1]);
-
-printf("---g4.dat end \n");
-
-kl4=1;}}
-
-if(N_g==5){
-if(kl5==0){
-
-	printf("---g5.dat \n");
-
-//f=fopen("g5.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-
-printf("---g5.dat N=   %d  \n",N);
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y5[i],y5[i]+1);
-//fclose(f);
-mem3.N[N_g]=N;
-
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y5[j][k]=0;*/
-for(j=i;j<50;j++){y5[j][0]=y5[j-1][0]+1; y5[j][1]=y5[j-1][1];}
-//for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y5[j][k];
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem3.y5[j][k]=y5[j][k];
-
-j=1;
-printf("---g5.dat N y_01 y_02=   %d %g %g \n",N,y5[j-1][0],y5[j-1][1]);
-j=N-1;
-printf("---g5.dat j-1 y_01 y_02=  %d %g %g \n",j-1,y5[j-1][0],y5[j-1][1]);
-printf("---g5.dat j y_01 y_02=  %d %g %g \n",j,y5[j][0],y5[j][1]);
-
-printf("---g5.dat end \n");
-kl5=1;}}
-
-if(N_g==6){
-if(kl6==0){
-
-	printf("---g6.dat \n");
-
-//f=fopen("g6.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); fgets(b,255,f1);
-
-printf("---g6.dat N=   %d  \n",N);
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y6[i],y6[i]+1);
-//fclose(f);
-
-mem3.N[N_g]=N;
-
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y6[j][k]=0;*/
-for(j=i;j<50;j++){y6[j][0]=y6[j-1][0]+1; y6[j][1]=y6[j-1][1];}
-//for(k=0;k<2;k++)for(j=0;j<50;j++)y0[k+j*2]=y6[j][k];
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem3.y6[j][k]=y6[j][k];
-j=1;
-printf("---g6.dat N y_01 y_02=  %d %g %g \n",N,y6[j-1][0],y6[j-1][1]);
-j=N-1;
-printf("---g6.dat j-1 y_01 y_02=  %d %g %g \n",j-1,y6[j-1][0],y6[j-1][1]);
-printf("---g6.dat j y_01 y_02=  %d %g %g \n",j,y6[j][0],y6[j][1]);
-
-printf("---g6.dat end \n");
-kl6=1;}}
-/* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */
-
-
-}
-
-void read_gaps_term_data(n_gaps)
-{
-int N,i,j,k,N_g; static int k1,k2,k3,k4,k5,k6;
-double y_1[50][2],y_2[50][2],y_3[50][2],y_4[50][2],y_5[50][2],y_6[50][2];
-//FILE*f;
-char b[256];
-int i2;
-
-
-N_g=n_gaps; /*mexPrintf(" N_g %d\n",N_g);*/
-
-//N_g=6; 
-
-
-
-if(N_g==1){
-if(k1==0){
-
-	printf("---g1_term.dat \n");
-
-//f=fopen("g1_term.dat","r");
-//	fscanf(f1," %s ",b);
-//printf ("     %s",b);
-
-fgets(b,255,f1);
-printf ("     %s",b);
-
-
-fscanf(f1,"%d \n",&N); 
-printf("---g1_term.dat N  %d  \n",N);
-
-fgets(b,255,f1);
-printf ("     %s",b);
-
-mem4.N[N_g]=N;
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_1[i],y_1[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_1[j][k]=0;
-for(j=i;j<50;j++)y_1[j][0]=y_1[j-1][0]+1;*/
-for(j=i;j<50;j++){y_1[j][0]=y_1[j-1][0]+1; y_1[j][1]=y_1[j-1][1];}
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem4.y_1[j][k]=y_1[j][k];
-
-j=1;
-printf("---g1_term.dat N y_01 y_02 %d %g %g \n",N,y_1[j-1][0],y_1[j-1][1]);
-j=N-1;
-printf("---g1_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_1[j-1][0],y_1[j-1][1]);
-printf("---g1_term.dat j y_01 y_02 %d %g %g \n",j,y_1[j][0],y_1[j][1]);
-
-printf("---g1_term-- end.dat \n");
-
-//scanf("%d", &i2);
-
-
-k1=1;}}
-
-if(N_g==2){
-if(k2==0){
-
-	printf("---g2_term.dat \n");
-
-//f=fopen("g2_term.dat","r");
-//	fscanf(f1," %s ",b);
-//printf ("     %s",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); 
-printf("---g2_term.dat N  %d  \n",N);
-
-fgets(b,255,f1);
-
-mem4.N[N_g]=N;
-
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_2[i],y_2[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_2[j][k]=0;
-for(j=i;j<50;j++)y_2[j][0]=y_2[j-1][0]+1;*/
-for(j=i;j<50;j++){y_2[j][0]=y_2[j-1][0]+1; y_2[j][1]=y_2[j-1][1];}
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem4.y_2[j][k]=y_2[j][k];
-
-j=1;
-printf("---g2_term.dat N y_01 y_02 %d %g %g \n",N,y_2[j-1][0],y_2[j-1][1]);
-j=N-1;
-printf("---g2_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_2[j-1][0],y_2[j-1][1]);
-printf("---g2_term.dat j y_01 y_02 %d %g %g \n",j,y_2[j][0],y_2[j][1]);
-
-printf("---g2_term-- end.dat \n");
-
-
-k2=1;}}
-
-if(N_g==3){
-if(k3==0){
-
-	printf("---g3_term.dat \n");
-
-//f=fopen("g3_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); 
-
-printf("---g3_term.dat N  %d  \n",N);
-
-fgets(b,255,f1);
-
-mem4.N[N_g]=N;
-
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_3[i],y_3[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_3[j][k]=0;
-for(j=i;j<50;j++)y_3[j][0]=y_3[j-1][0]+1;*/
-for(j=i;j<50;j++){y_3[j][0]=y_3[j-1][0]+1; y_3[j][1]=y_3[j-1][1];}
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem4.y_3[j][k]=y_3[j][k];
-j=1;
-printf("---g3_term.dat N y_01 y_02 %d %g %g \n",N,y_3[j-1][0],y_3[j-1][1]);
-j=N-1;
-printf("---g3_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_3[j-1][0],y_3[j-1][1]);
-printf("---g3_term.dat j y_01 y_02 %d %g %g \n",j,y_3[j][0],y_3[j][1]);
-
-printf("---g3_term-- end.dat \n");
-k3=1;}}
-
-if(N_g==4){
-if(k4==0){
-
-	printf("---g4_term.dat \n");
-
-//f=fopen("g4_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-
-
-
-fscanf(f1,"%d \n",&N); 
-printf("---g4_term.dat N  %d  \n",N);
-
-fgets(b,255,f1);
-
-mem4.N[N_g]=N;
-
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_4[i],y_4[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_4[j][k]=0;
-for(j=i;j<50;j++)y_4[j][0]=y_4[j-1][0]+1;*/
-for(j=i;j<50;j++){y_4[j][0]=y_4[j-1][0]+1; y_4[j][1]=y_4[j-1][1];}
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem4.y_4[j][k]=y_4[j][k];
-j=1;
-printf("---g4_term.dat N y_01 y_02 %d %g %g \n",N,y_4[j-1][0],y_4[j-1][1]);
-j=N-1;
-printf("---g4_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_4[j-1][0],y_4[j-1][1]);
-printf("---g4_term.dat j y_01 y_02 %d %g %g \n",j,y_4[j][0],y_4[j][1]);
-
-printf("---g4_term-- end.dat \n");
-k4=1;}}
-
-if(N_g==5){
-if(k5==0){
-
-	printf("---g5_term.dat \n");
-
-//f=fopen("g5_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); 
-printf("---g5_term.dat N  %d  \n",N);
-
-fgets(b,255,f1);
-
-mem4.N[N_g]=N;
-
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_5[i],y_5[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_5[j][k]=0;
-for(j=i;j<50;j++)y_5[j][0]=y_5[j-1][0]+1;*/
-for(j=i;j<50;j++){y_5[j][0]=y_5[j-1][0]+1; y_5[j][1]=y_5[j-1][1];}
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem4.y_5[j][k]=y_5[j][k];
-j=1;
-printf("---g5_term.dat N y_01 y_02 %d %g %g \n",N,y_5[j-1][0],y_5[j-1][1]);
-j=N-1;
-printf("---g5_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_5[j-1][0],y_5[j-1][1]);
-printf("---g5_term.dat j y_01 y_02 %d %g %g \n",j,y_5[j][0],y_5[j][1]);
-
-printf("---g5_term-- end.dat \n");
-k5=1;}}
-
-if(N_g==6){
-if(k6==0){
-
-	printf("---g6_term.dat \n");
-
-//f=fopen("g6_term.dat","r");
-//fscanf(f1," %s ",b);
-fgets(b,255,f1);
-fscanf(f1,"%d \n",&N); 
-
-printf("---g5_term.dat N  %d  \n",N);
-
-fgets(b,255,f1);
-
-mem4.N[N_g]=N;
-
-
-for(i=0;i<N;i++) fscanf(f1,"%lf %lf \n",y_6[i],y_6[i]+1);
-//fclose(f);
-/*for(k=0;k<N;k++)for(j=i;j<50;j++)y_6[j][k]=0;
-for(j=i;j<50;j++)y_6[j][0]=y_6[j-1][0]+1;*/
-for(j=i;j<50;j++){y_6[j][0]=y_6[j-1][0]+1; y_6[j][1]=y_6[j-1][1];}
-for(k=0;k<2;k++)for(j=0;j<50;j++)mem4.y_6[j][k]=y_6[j][k];
-j=1;
-printf("---g6_term.dat N y_01 y_02 %d %g %g \n",N,y_6[j-1][0],y_6[j-1][1]);
-j=N-1;
-printf("---g6_term.dat j-1 y_01 y_02 %d %g %g \n",j-1,y_6[j-1][0],y_6[j-1][1]);
-printf("---g6_term.dat j y_01 y_02 %d %g %g \n",j,y_6[j][0],y_6[j][1]);
-
-printf("---g6_term-- end.dat \n");
-k6=1;}}
-/* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */
-}
-
-
-void read_control_data(void)
-{
-
-int i,k,kk; static int kl;
-double y[26],dd;
-char b[256];
-
-
-kk=5;
-
-printf("---control_data.dat \n");
-//f=fopen("control_data.dat","r");
-fgets(b,255,f);
-printf (" 1) %s",b);
-for(i=0; i<=14; i++) fscanf(f,"%lf",&y[i]);
-
-fscanf(f, "\n");
-
-fgets(b,255,f);
-printf (" 2) %s",b);
-//fscanf(f,"%s",&b);
-//mexPrintf("%s\n",b);
-for(i=14; i<=25; i++) fscanf(f,"%lf",&y[i]);
-
-fscanf(f, "\n");
-
-for(i=0;i<=25;i++) {
-	kk=kk+1;
-//	y0[kk]=y[i];
-	mem5.y[i]=y[i];
-}
-kk=kk+1;
-
-printf("---control_data-- end.dat \n");
-
-}
-
-/* Subroutine */ read_ntur_data(void)
-{
-    int i, j, ii, nmax1;
-    char s_ncam[50];
-
-	double ss;
-
-	static int kmax;
-	double ntur[kf];
-	int i_en, npf;
-	char b[1256];
-
-	i_en=0;
-	
-	npf=11;
-
-	mexPrintf(" i_en  %d  \n ",i_en);
-		
-	printf("---control_data.dat ntur \n");
- 
-	fgets(b,1255,f);
-
-	printf("%s  ",b);
-
-	for (j = 0; j < npf; ++j) {
-	fscanf(f, "%lf",&ss);
-	ntur[j]=ss;
-		mexPrintf("%g ",ntur[j]);
-     }
-
-    	for (j = 0; j < npf; ++j) {
-		mem8.ntur[j]=ntur[j];}
-	
-
-	mem8.npf=npf;
-
-} /* scen_read */
-
-/* Subroutine */ read_general_data(void)
-{
-    int i, j, ii, nmax1;
-    char s_ncam[50];
-
-	float ss;
-
-	static int kmax;
-	static double pf[nmax][kf];
-	static double t[nmax],tpl[nmax];
-	int res;
-	int i_en, npf;
-	char b[1256];
-
-	i_en=0;
-	
-	npf=11;
-
-	if(i_en > 1){goto l2;}
-
-	mexPrintf(" i_en  %d  \n ",i_en);
-	
-	prob=fopen("general_data.dat","r");
-	f2=prob;
-
-	printf("---general_data.dat \n");
-
-//	fscanf(prob, "%s ", &s_ncam);
- 
-	fgets(b,1255,prob);
-
-	printf("%s  ",b);
-
-    fscanf(prob, "%d ",&nmax1);
-
-	fgets(b,1255,prob);
-	printf("%s  ",b);
-
-	printf(" nmax1===  %d \n ",nmax1);
-
-	for (i = 1; i <= nmax1; ++i) {
-
-	res=fscanf(prob, " \n %f",&ss);
-
-	kmax=i;
-
-	t[i]=ss;
-
-	mexPrintf(" i res t %d %d %f \n",i,res,t[i]);
-
-    //printf(" i %d \n ",i);
-    //printf(" rc %g  ",rc[i]);
-	fscanf(prob, "%f",&ss);
-	tpl[i]=ss;
-	mexPrintf(" i t tpl  %d %f %f \n ",i,t[i],tpl[i]);
-    //printf(" zc %g  ",zc[i]);
-	for (j = 1; j <= npf; ++j) {
-	fscanf(prob, "%f",&ss);
-	pf[i][j]=ss;
-		mexPrintf("%f ",pf[i][j]);
-     }
-    	
-	    fscanf(prob, "\n");
-
-		mexPrintf(" \n   ");
-
-						 
-								 }
-
-l1:
-
-/* close (41) */
-
-	mexPrintf(" l1 final  i res %d %d \n   ",i,res);
-
-//	fclose(f);
-
-//	return 0;
-
-
-	kmax=kmax+1;
-	i=kmax;
-	t[i]=10000.;
-	tpl[i]=tpl[i-1];
-	for (j = 1; j <= npf; ++j) {
-	pf[i][j]=pf[i-1][j];}
-
-//	goto l2;
-
-
-	i=0;
-	t[i]=-1.e-5;
-	tpl[i]=tpl[i+1];
-	for (j = 1; j <= npf; ++j) {
-	pf[i][j]=pf[i+1][j];}
-
-l2:
-
-
-	for (i = 0; i <= kmax; ++i) {
-		mem6.t[i]=t[i];
-		mem6.tpl[i]=tpl[i];
-    	for (j = 1; j <= npf; ++j) {
-		mem6.pf[i][j]=pf[i][j];}
-	}
-
-	mem6.kmax=kmax;
-
-} /* scen_read */
-void read_tt_kavin2_data(void)
-{
-/* %%%-SFUNWIZ_wrapper_Outputs_Changes_BEGIN --- EDIT HERE TO _END */
-/* This sample sets the output equal to the input
-      y0[0] = u0[0]; 
- For complex signals use: y0[0].re = u0[0].re; 
-      y0[0].im = u0[0].im;
-      y1[0].re = u1[0].re;
-      y1[0].im = u1[0].im;
-*/
-int i,k,kk; static int kl;
-double y[26],y0[26],dd;
-char b[256];
-
-kk=0;
-	printf("---tt_kavin2.dat \n");
-//f=fopen("tt_kavin2.dat","r");
-fgets(b,255,f2);
-printf (" 1) %s",b);
-
-fscanf(f2,"%lf \n ",&y[0]);
-y[0]=y[0]*1e-3; 
-
-printf("---y[0]  %g \n",y[0]);
-
-fgets(b,255,f2);
-printf (" 2) %s",b);
-
-for(i=1;i<4;i++) fscanf(f2,"%lf %lf %lf \n",&y[i],&y[i]+1,&y[i]+2);
-y0[0]=y[0];y0[1]=y[2];y0[2]=y[3];y0[3]=y[1]; 
-
-printf("---y[1] y[2] y[3]  %g %g %g \n",y[1],y[2],y[3]);
-
-fgets(b,255,f2);
-printf (" 3)%s",b);
-
-fscanf(f2,"%lf %lf  \n",&y[4],&y[5]);
-y0[4]=y[4];y0[5]=y[5];
-
-printf("---y4 y5  %g %g  \n",y[4],y[5]);
-
-fclose(f2);
-
-for(i=0;i<6;i++){
-	mem7.y[i]=y[i];}
-
-printf("---tt_kavin2-- end.dat \n");
-}
-

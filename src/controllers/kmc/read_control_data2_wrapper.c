@@ -30,7 +30,7 @@
  * Output functions
  *
  */
-void read_tt_kavin2_Outputs_wrapper(real_T *y0)
+void read_control_data2_Outputs_wrapper(real_T *y0)
 {
 /* %%%-SFUNWIZ_wrapper_Outputs_Changes_BEGIN --- EDIT HERE TO _END */
 /* This sample sets the output equal to the input
@@ -41,50 +41,40 @@ void read_tt_kavin2_Outputs_wrapper(real_T *y0)
       y1[0].im = u1[0].im;
 */
 int i; static int kl;
-double y[43];
+double y[17];
 FILE*f;char b[256];
+
+
+	mexPrintf("---control_data2.dat \n");
 
 if(kl==0){
 
-mexPrintf("+++tt_kavin2.dat \n");
-
-f=fopen("tt_kavin2.dat","r");
+f=fopen("control_data2.dat","r");
 fgets(b,255,f);
-fscanf(f,"%lf ",&y[0]); y[0]=y[0]*1e-3;
+for(i=0;i<=8;i++) fscanf(f,"%lf",&y[i]);
 
 fscanf(f,"\n");
 fgets(b,255,f);
-/*for(i=1;i<4;i++) fscanf(f,"%lf %lf %lf",&y[i],&y[i]+1,&y[i]+2);*/
-for(i=1;i<=3;i++) fscanf(f,"%lf",&y[i]);
+for(i=9;i<=15;i++) fscanf(f,"%lf",&y[i]);
+fclose(f);
+mexPrintf("+++control_data2.dat \n");
 
-fscanf(f,"\n");
+mexPrintf("---tt_kavin.dat \n");
+
+f=fopen("tt_kavin.dat","r");
 fgets(b,255,f);
-for(i=4;i<6;i++) fscanf(f,"%lf",&y[i]);
-y0[0]=y[0];y0[1]=y[2];y0[2]=y[3];y0[3]=y[1];
-y0[4]=y[4];y0[5]=y[5];
+
+mexPrintf("1 ---tt_kavin.dat \n");
+
+fscanf(f,"%lf",&y[16]);
+
+mexPrintf("2 +++tt_kavin.dat \n");
+
 fclose(f);
 
+for(i=0;i<=15;i++) y0[i]=y[i]; y0[16]=y[16]*1e-3;
 
-mexPrintf("+++control_data.dat \n");
-
-f=fopen("control_data.dat","r");
-fgets(b,255,f);
-for(i=0; i<=13; i++) fscanf(f,"%lf",&y[i]);
-
-fscanf(f,"\n");
-fgets(b,255,f);
-/*fscanf(f,"%s",&b);*/
-/*mexPrintf("%s\n",b);*/
-for(i=14; i<=25; i++) fscanf(f,"%lf",&y[i]);
-fclose(f);
-for(i=6;i<=31;i++) y0[i]=y[i-6];
-
-mexPrintf("+++turn.dat \n");
-
-f=fopen("turn.dat","r");fgets(b,255,f);
-for(i=26; i<=37; i++) fscanf(f,"%lf",&y[i]);
-fclose(f);
-for(i=32;i<=43;i++) y0[i]=y[i-6];
+mexPrintf("3 +++tt_kavin.dat \n");
 
 kl=1;}
 /* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */
