@@ -310,9 +310,9 @@ c=================================================
            pd0_xx(i)=pd0(i)*1.d19
            pt0_xx(i)=pt0(i)*1.d19
            
-           !sigma_xx(i)=sigma_dina(i)
-!!!           sigma_xx(i)=1480.d0*sigk(i)*te0(i)**1.5d0
-           sigma_xx(i)=sigk(i)
+
+           sigma_xx(i)=1480.d0*sigk(i)*te0(i)**1.5d0
+           !sigma_xx(i)=sigk(i)
            
            qe0_xx(i)=qe0(i)
            qq0_xx(i)=qq0(i)

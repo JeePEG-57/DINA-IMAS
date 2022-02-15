@@ -86,7 +86,7 @@
      	call prof_astra_sigma(tt_prof,n,sigk,ai,num,kpr)
      	
       do i=1,n
-      !!!sigk(i)=sigk(i)/(1480.d0*te0(i)**1.5d0)
+        sigk(i)=sigk(i)/(1480.d0*te0(i)**1.5d0)
       end do
 
       apr='&&sigk-' 
