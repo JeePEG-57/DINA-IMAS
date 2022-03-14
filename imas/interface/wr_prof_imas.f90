@@ -424,6 +424,9 @@
 		
 !	    kpr=1
 
+
+	if(kpr.eq.1)print *,' TE pulse, run==',pulse, run
+
 	
 ! 	call imas_open('ids', pulse, run, idx)
 	call imas_open_env('ids', pulse, run, idx,user,'test','3') 
@@ -452,6 +455,9 @@
 	
 	call ids_deallocate(cp)
 	 
+       apr='++t_tb-' 
+       if(kpr.eq.1)print 71,apr,(t_tb(it),it=1,nt) 
+
         apr='++poa-' 
        if(kpr.eq.1)print 71,apr,(poa_b(i),i=1,nr) 
 
@@ -872,6 +878,7 @@
         integer   ::  ih_imas
         common /c_imas_is/ih_imas
         common /c_jetto_ids/pulse_c,run_c
+        common /c_tran_times/tt_dina_c
 
 !        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
 
@@ -884,17 +891,18 @@
 
 !        close(2)
 
+        write(*,*) 'equil_data= tt_dina_c ',tt_dina_c
         write(*,*) 'jetto_ids: pulse, run =',pulse,run
         write(*,*) 'jetto_ids: k_jetto =',ih_imas
 
 
     if(ih_imas.eq.0)return
     	coeff = 1.d0 !
-	    call equil_data_c(pulse, run, coeff) 
+	    call equil_data_c(pulse, run, coeff, tt_dina_c) 
 	return
     end
 
-	subroutine equil_data_c(pulse, run, coeff)
+	subroutine equil_data_c(pulse, run, coeff, tt_dina)
 
 
 	use ids_schemas
@@ -907,32 +915,122 @@
       
 	character *20 apr,filename
 
+    type (ids_em_coupling)  :: em_coupling0
     type (ids_equilibrium) :: equilibrium0, equilibrium
     type (ids_pf_active)   :: pf_active0, pf_active
     type (ids_pf_passive)   :: pf_passive0, pf_passive
+    type (ids_core_profiles)   :: core_profiles0,core_profiles
 
     integer :: pulse, run, idx0
 	integer :: it, ir, nt, nr ,kpr
 	real(ids_real) ::time_get
-	
+
+    real(ids_real) :: pstab(npo), pptab(npo),fptab(npo)
+    real(ids_real),parameter :: pi = 3.14159265358979323846
+    real(ids_real) :: coef_ppx,coef_pffx,pmu0,tokc
+    real(ids_real) :: tpl,rs0,tt,rmag,zmag
+	integer :: n,npf0,ncam0
+    integer,parameter :: npf = 15, ncam = 100
+	integer,parameter :: npfa = 12, npfx = npf-npfa
+    real(ids_real) :: vchopper(npf),pf(npf),tcam(ncam),dmn(npo)
+
       common/ge5/kpr
       
       character (len=255) :: user
       call getenv("USER", user)
 		
+		
+!	return
+		
+		
 	call imas_open_env('ids', pulse, run, idx0,user,'test','3') 
 
+
+
+
 interpol = 1
-time_get=20.
+
+time_get=tt_dina*1.e-3
 
 write(*,*) 'get slice time_get =', time_get
 flush(6)
 
+call ids_get_slice(idx0,"em_coupling",em_coupling0, time_get, interpol)
 call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interpol)
 call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interpol)
 call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interpol)
+call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
 
 write(*,*) 'Finished reading the prescribed IDS'
+
+
+
+     its = 1
+     
+	tt = equilibrium0%time_slice(its)%time
+	tpl = equilibrium0%time_slice(its)%global_quantities%ip
+	n = size(equilibrium0%time_slice(its)%profiles_1d%rho_tor_norm)
+	pstab(1:n) = equilibrium0%time_slice(its)%profiles_1d%rho_tor_norm(1:n)
+	
+	dmn(1:n)=core_profiles0%profiles_1d(its)%grid%psi(1:n)
+	
+	rs0=equilibrium0%vacuum_toroidal_field%r0
+	rmag=equilibrium0%time_slice(its)%global_quantities%magnetic_axis%r ![m]
+    zmag=equilibrium0%time_slice(its)%global_quantities%magnetic_axis%z ![m]
+
+		 print *,' ++tt tpl==',tt,tpl
+
+	
+	
+	pmu0=4.d0*pi*1.d-7
+    coef_ppx=1./(2*pi)/(rs0)*10./pmu0
+    coef_pffx=1./(2*pi)*0.5d0*(rs0)*10.
+    
+    print *,' coef_ppx coef_pffx rs0 pmu0=',coef_ppx,coef_pffx,rs0,pmu0
+    
+!    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = coef_ppx*pptab(1:n)
+!    equilibrium%time_slice(CurTimeStep)%profiles_1d %f_df_dpsi(1:n) = coef_pffx*fptab(1:n)
+
+	pptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%dpressure_dpsi(1:n)/coef_ppx
+	
+	fptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%f_df_dpsi(1:n)/coef_pffx
+	
+	npf0 = size(pf_active0%coil, 1)
+	do i=1,npf0
+	  pf(i) =  pf_active0%coil(i)%current%data(1)
+	  
+	 print *,' i pf==',i,pf(i)
+	 
+	enddo
+	
+ 	ncam0 = size(pf_passive0%loop, 1)
+ 	!first 3 passive --> last 3 active
+	do i=1,npfx
+	  pf(npf0+i) = pf_passive0%loop(i)%current(1)
+!	 print *,' i pf==',npf0+i,pf(npf0+i)
+	enddo
+	tokc=0.
+	do i=1,ncam0-npfx
+	  tcam(i) = pf_passive0%loop(npfx+i)%current(1)
+	  tokc=tokc+tcam(i)
+	enddo	
+ 
+ 	 print *,' ++ tokc==',tokc
+ 	 print *,' ++ rmag zmag==',rmag,zmag
+
+ 
+nact=size(em_coupling0%mutual_grid_active,2)
+print *,'size em_coupling0%mutual_grid_active',nact
+npass=size(em_coupling0%mutual_grid_passive,2)
+print *,'size em_coupling0%mutual_grid_passive',npass
+
+
+
+     call dina_input2(tt,tpl, n,pstab, pptab,fptab &
+     & , ncam,tcam, npf,pf,rmag,zmag,dmn)
+
+
+
 
 call imas_close(idx0)
 
@@ -943,6 +1041,8 @@ call imas_close(idx0)
 5001    format(4i4)
 5000    format (6(1pe14.6e3))
 
+
+!    stop
 
 	return
 	end

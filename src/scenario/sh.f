@@ -1389,6 +1389,10 @@ c
 
 	character *12 apr
 
+      call equil_data()
+
+      return
+
 	i_sh=i_sh+1
 
 	if(i_sh.eq.1)then
@@ -1566,8 +1570,6 @@ c
 
 	if(kpr.eq.1)print *,' from shape_equil tt tpl t_coef',tt,tpl,t_coef
 	if(kpr.eq.1)print *,' from shape_equil rmag zmag',rmag,zmag
-	apr='dmn'
-!      if(kpr.eq.1)print 71,apr,(dmn(i),i=1,n) 
 	apr='ppx_t'
  !     if(kpr.eq.1)print 71,apr,(ppx_t(i,1),i=1,nprof) 
 	apr='ppx'
@@ -1576,6 +1578,8 @@ c
 !      if(kpr.eq.1)print 71,apr,(pffx_t(i,1),i=1,nprof) 
 	apr='pffx'
       if(kpr.eq.1)print 71,apr,(pffx(i),i=1,nprof) 
+	apr='dmn'
+      if(kpr.eq.1)print 71,apr,(dmn(i),i=1,n) 
 	apr='pf'
       if(kpr.eq.1)print 71,apr,(pf(i),i=1,npf) 
 	apr='tcam'

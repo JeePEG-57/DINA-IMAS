@@ -136,7 +136,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
     real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
-    real(ids_real) :: a(npo),ai(npo),psi_1D(npo),phi_1D(npo),tok1(npo),q(npo)
+    real(ids_real) :: a(npo),ai(npo),psi_tr(npo),psi_eq(npo),phi_1D(npo),tok1(npo),q(npo)
 
     real(ids_real) :: pd0(npo),pt0(npo),pne(npo),te0(npo),tq0(npo),press(npo),qe0(npo),qq0(npo)
     real(ids_real) :: sigma(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo)
@@ -222,14 +222,10 @@ call system(" pwd")
 
 !call fp_test()
 
- print *,' dina_data_read'
  call dina_data_read()
- print *,' general_data_read'
  call general_data_read()
- print *,' congig_calc'
- call congig_calc()
 
- print *,' read_green_params'
+ call congig_calc()
 
        call  read_green_params(&
 &      npass,nact,kloop,kprobe,ke,ngrid2)
@@ -479,18 +475,13 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 !          read (49,*)time_eq
           time_eq=time_eq_c
 !         close (41)
-
-!         tpl=-equilibrium0%time_slice(1)%global_quantities%ip
-
-!        print *,' +++Ip==',tpl
-
+         
         print *,'from time_eq.dat  time_eq =',time_eq
 
 !    ih_imas=1
 !    if (ih_imas.eq.1) then
 	call ids_prof_jetto()
-	
-	call equil_data()
+!	call equil_data()
 !   end if
 !stop
 
@@ -597,14 +588,6 @@ input_2(i)=arr_in1(n_input1+i)
 end do
 
 
-!tpl=-equilibrium0%time_slice(1)%global_quantities%ip
-
-!print *,' +++Ip==',tpl
-
-
-
-
-
 write(*,*) '!!!dina0 enter'
 	call dina_0(time_8,tt_8,tay_8,key,vec, &
      &	input_1,input_2,input_3, &
@@ -617,7 +600,7 @@ write(*,*) '!!!dina_outp enter'
      & a, ai,&
      & rs0,bt0,&
      & x,y,psi,curr_d,&
-     & psi_1D,phi_1D,&
+     & psi_tr,psi_eq,phi_1D,&
      & fpol,pptab,fptab,&
      & tok1,q,&
      & vchopper,pf,tcam,&
@@ -664,7 +647,8 @@ write(*,*) '!!!solpsza enter'
     psi_sep = psi_sep*cocos_psi
     psi_sep2 = psi_sep2*cocos_psi
     psi = psi*cocos_psi
-    psi_1D = psi_1D*cocos_psi
+    psi_eq = psi_eq*cocos_psi
+    psi_tr = psi_tr*cocos_psi
     psloop = psloop*cocos_psi
     pptab = pptab*cocos_psi
     fptab = fptab*cocos_psi
@@ -1161,7 +1145,7 @@ AllocIfNull1(summary%heating_current_drive%power_additional%value, wr_imas(66))
       equilibrium%time_slice(CurTimeStep)%profiles_1d%f(1:n) = fpol(1:n)
     
     equilibrium%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n) = ai(1:n)
-    equilibrium%time_slice(CurTimeStep)%profiles_1d%psi(1:n) = psi_1D(1:n)
+    equilibrium%time_slice(CurTimeStep)%profiles_1d%psi(1:n) = psi_eq(1:n)
 
     equilibrium%time_slice(CurTimeStep)%profiles_1d%pressure(1:n) = press(1:n) ![Pa]
 
@@ -1295,7 +1279,7 @@ write(*,*) 'Allocate core_profiles... '
 ! Filling 1D
 
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%rho_tor_norm, ai, n)
-    AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%psi, psi_1D, n)
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%psi, psi_tr, n)
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%volume, volume_1d, n)
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%area, area_1d, n)
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%grid%surface, surface_1d, n)
@@ -1709,8 +1693,6 @@ flush(6)
       print 71,apr,(pd0(i),i=1,n) 
       apr='++pt0-' 
       print 71,apr,(pt0(i),i=1,n) 
-      apr='++jbut-' 
-      print 71,apr,(jbut(i),i=1,n) 
        apr='++zeff-' 
 !      print 71,apr,(zeff(i),i=1,n1) 
        apr='++sigma-' 

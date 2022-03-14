@@ -196,7 +196,7 @@ c ============ outputs ==============================================
      * a_xx, ai_xx,
      * rs0_xx,bt0_xx,
      * x_xx,y_xx,psi_xx,curr_d_xx,
-     * psi_1D_xx,phi_xx,
+     * psi_tr_xx,psi_eq_xx,phi_xx,
      * fpol_xx,pptab_xx,fptab_xx,
      * tok1_xx,q_xx,
      * vchopper_xx,pf_xx,tcam_xx,
@@ -227,11 +227,13 @@ c ============ outputs ==============================================
 !     *  /cont20/x_gaps(kf_c),y_gaps(kf_c),gaps(kf_c),n_gaps
      
 
-	dimension a_xx(*),ai_xx(*),psi_1D_xx(*),te0_xx(*),tq0_xx(*),pne_xx(*),tok1_xx(*),
+	dimension a_xx(*),ai_xx(*),psi_tr_xx(*),psi_eq_xx(*),te0_xx(*),
+     *  tq0_xx(*),pne_xx(*),tok1_xx(*),
      *  q_xx(*),x_xx(*),y_xx(*)
 	dimension pd0_xx(*),pt0_xx(*),sigma_xx(*),ajb_xx(*),ajae_xx(*),
      *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
-        dimension xbound_xx(*),ybound_xx(*),x_sep_xx(*),y_sep_xx(*),x_sep2_xx(*),y_sep2_xx(*) 
+        dimension xbound_xx(*),ybound_xx(*),x_sep_xx(*),y_sep_xx(*),
+     *  x_sep2_xx(*),y_sep2_xx(*) 
      
 	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
         dimension gaps_xx(*)
@@ -251,6 +253,7 @@ c ============ outputs ==============================================
 	
 !	print *,' n_xx tpl_xx=',n_xx,tpl_xx
 
+!	tt_xx=tt/1000.d0
 	tt_xx=(tt-tay)/1000.d0
 
         rs0_xx = rs0/100.d0
@@ -259,7 +262,7 @@ c ============ outputs ==============================================
         betap_xx = betj
         betat_xx = bett
 
-	tene_xx = tene*1.d-3
+	  tene_xx = tene*1.d-3
         teit_98_xx = teit_98*1.d-3
         key_lh_xx = key_lh
       
@@ -310,10 +313,11 @@ c=================================================
            pd0_xx(i)=pd0(i)*1.d19
            pt0_xx(i)=pt0(i)*1.d19
            
-
+           !sigma_xx(i)=sigma_dina(i)
            sigma_xx(i)=1480.d0*sigk(i)*te0(i)**1.5d0
-           !sigma_xx(i)=sigk(i)
            
+           psi_tr_xx(i) = tpl_dir*dm0(i)*1.d-5
+          
            qe0_xx(i)=qe0(i)
            qq0_xx(i)=qq0(i)
 	   
@@ -323,7 +327,7 @@ c=================================================
 !	   pptab_xx(i)=pptab(i)
 !	   fptab_xx(i)=fptab(i)
 
-           psi_1D_xx(i) = tpl_dir*psval(i)*1.d-5*2.*pi
+           psi_eq_xx(i) = tpl_dir*psval(i)*1.d-5*2.*pi
            phi_xx(i) = bt0_dir*dfmax(i)*1.d-5
 
 
@@ -2015,3 +2019,84 @@ c----------------------------
 
         return
         end
+       subroutine dina_input2(tt_xx,tpl_xx, n_xx,pstab_xx, 
+     * pptab_xx,fptab_xx, 
+     *  ncam_xx,tcam_xx, npf_xx,pf_xx,
+     *  rmag_xx,zmag_xx,dmn_xx)
+     
+      include 'double.inc'
+      include 'new_com.inc'
+      
+                  
+      dimension pstab_xx(*),pptab_xx(*),fptab_xx(*),tcam_xx(*),
+     *  pf_xx(*),dmn_xx(*)
+      
+      character *8 apr      
+      
+      call vic_turn()
+
+      
+      tpldir=-1.
+      kpr=1
+      
+      n = n_xx
+      nutab = n_xx
+      ncam = ncam_xx
+      npf = npf_xx
+      tt = tt_xx*1.d3
+      tpl = tpl_xx*1.d-3*tpldir
+      rmag = rmag_xx*1.d2
+      zmag = zmag_xx*1.d2
+      
+      do i=1,nutab
+        pstab(i) = pstab_xx(i)
+        pptab(i) = pptab_xx(i)*tpldir 
+        fptab(i) = fptab_xx(i)*tpldir 
+        dmn(i) = dmn_xx(i)*1.e5 
+      end do      
+
+      print *,' nutab',nutab
+      print *,' rmag zmag',rmag,zmag
+
+ 	apr='pstab'
+	if(kpr.eq.1)print 71,apr,(pstab(j),j=1,nutab)
+ 	apr='pptab'
+	if(kpr.eq.1)print 71,apr,(pptab(j),j=1,nutab)
+ 	apr='fptab'
+	if(kpr.eq.1)print 71,apr,(fptab(j),j=1,nutab)
+ 	apr='dmn'
+	if(kpr.eq.1)print 71,apr,(dmn(j),j=1,nutab)
+
+ 71	format(20x,a6/,(6(1x,1pe10.3)))
+    
+      tokc=0.
+      do i=1,ncam
+        tcam(i) = tcam_xx(i)*1.d-3*tpldir   
+        tokc=tokc+tcam(i)
+      enddo
+      
+      if(kpr.eq.1)print *,' -- tokc tt==',tokc,tt
+      
+      do i=1,npf
+         pf(i) = pf_xx(i)*tpldir*1.d-3*pf_turns(i)
+      enddo
+      
+ 	apr='pf'
+	if(kpr.eq.1)print 71,apr,(pf(j),j=1,npf)
+      
+      
+
+      do i=1,n
+        ppx(i)=pptab(i)
+        pffx(i)=fptab(i)
+      end do      
+      
+      do i=1,nutab
+!        a(i) = pstab(i)
+      end do
+      
+      return
+      end
+
+
+
