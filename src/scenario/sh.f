@@ -1389,6 +1389,8 @@ c
 
 	character *12 apr
 
+      return
+      
       call equil_data()
 
       return

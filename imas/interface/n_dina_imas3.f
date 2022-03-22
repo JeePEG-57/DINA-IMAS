@@ -262,7 +262,7 @@ c ============ outputs ==============================================
         betap_xx = betj
         betat_xx = bett
 
-	  tene_xx = tene*1.d-3
+	tene_xx = tene*1.d-3
         teit_98_xx = teit_98*1.d-3
         key_lh_xx = key_lh
       
@@ -2022,7 +2022,7 @@ c----------------------------
        subroutine dina_input2(tt_xx,tpl_xx, n_xx,pstab_xx, 
      * pptab_xx,fptab_xx, 
      *  ncam_xx,tcam_xx, npf_xx,pf_xx,
-     *  rmag_xx,zmag_xx,dmn_xx)
+     *  rmag_xx,zmag_xx,dmn_xx, rs0_xx,bt0_xx)
      
       include 'double.inc'
       include 'new_com.inc'
@@ -2033,10 +2033,15 @@ c----------------------------
       
       character *8 apr      
       
+      include 'imas_interface.inc'
+      
       call vic_turn()
 
       
-      tpldir=-1.
+      rs0 = rs0_xx*100.d0
+      bt0 = bt0_dir*bt0_xx*10.d0
+        
+        
       kpr=1
       
       n = n_xx
@@ -2044,15 +2049,25 @@ c----------------------------
       ncam = ncam_xx
       npf = npf_xx
       tt = tt_xx*1.d3
-      tpl = tpl_xx*1.d-3*tpldir
+      tpl = tpl_xx*1.d-3*tpl_dir
       rmag = rmag_xx*1.d2
       zmag = zmag_xx*1.d2
       
+      
+      
+      
+      coef_ppx = 1.d10/(rs0*8.d0*pi**2)
+      coef_pffx = rs0/(40.d0*pi)
+      
       do i=1,nutab
         pstab(i) = pstab_xx(i)
-        pptab(i) = pptab_xx(i)*tpldir 
-        fptab(i) = fptab_xx(i)*tpldir 
-        dmn(i) = dmn_xx(i)*1.e5 
+!        pptab(i) = pptab_xx(i)*tpl_dir 
+!        fptab(i) = fptab_xx(i)*tpl_dir 
+        
+        pptab(i) = -tpl_dir*pptab_xx(i) / coef_ppx
+        fptab(i) = -tpl_dir*fptab_xx(i) / coef_pffx
+        
+        dmn(i) = tpl_dir*dmn_xx(i)*1.d5 
       end do      
 
       print *,' nutab',nutab
@@ -2071,25 +2086,26 @@ c----------------------------
     
       tokc=0.
       do i=1,ncam
-        tcam(i) = tcam_xx(i)*1.d-3*tpldir   
+        tcam(i) = tcam_xx(i)*1.d-3*tpl_dir   
         tokc=tokc+tcam(i)
       enddo
       
       if(kpr.eq.1)print *,' -- tokc tt==',tokc,tt
       
       do i=1,npf
-         pf(i) = pf_xx(i)*tpldir*1.d-3*pf_turns(i)
+         pf(i) = pf_xx(i)*tpl_dir*1.d-3*pf_turns(i)
       enddo
       
  	apr='pf'
 	if(kpr.eq.1)print 71,apr,(pf(j),j=1,npf)
       
       
-
+      
       do i=1,n
         ppx(i)=pptab(i)
         pffx(i)=fptab(i)
       end do      
+      
       
       do i=1,nutab
 !        a(i) = pstab(i)

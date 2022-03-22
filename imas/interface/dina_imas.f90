@@ -133,6 +133,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: betap, betat
     real(ids_real) :: tene,teit_98
     real(ids_real) :: pec
+    real(ids_real) :: rmag, zmag
 
     real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
@@ -426,12 +427,6 @@ write(*,100) shape(pf_active%coil%resistance),shape(pf_passive%loop%resistance)
 
 
 
- write(*,*) 'DINAIMAS - CoreProfiles Elements: '
-    allocate(core_profiles0%profiles_1d(1))
-    allocate(core_profiles0%time(1))
-    core_profiles0%ids_properties%homogeneous_time = 1
-    core_profiles0%time(1) = 0.d0
-
 write(*,*) "End of static data extraction"
 
 call write_cputime(0.d0, 0.d0, 1)
@@ -484,6 +479,67 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 !	call equil_data()
 !   end if
 !stop
+  
+  
+  
+  
+  
+     CurTimeStep = 1
+     
+	tt = equilibrium0%time_slice(CurTimeStep)%time
+	tpl = equilibrium0%time_slice(CurTimeStep)%global_quantities%ip
+	n = size(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)
+	a(1:n) = equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n)
+	
+        write(*,*) 'DINA_IMAS - core_profiles poloidal flux: '
+	psi_tr(1:n) = cocos_psi * core_profiles0%profiles_1d(CurTimeStep)%grid%psi(1:n)
+	
+        bt0 = core_profiles0%vacuum_toroidal_field%b0(1)
+	rs0 = core_profiles0%vacuum_toroidal_field%r0
+	rmag=equilibrium0%time_slice(CurTimeStep)%global_quantities%magnetic_axis%r ![m]
+        zmag=equilibrium0%time_slice(CurTimeStep)%global_quantities%magnetic_axis%z ![m]
+
+		 print *,' ++tt tpl==',tt,tpl
+
+	
+	
+    !pmu0=4.d0*pi*1.d-7
+    !coef_ppx=1./(2*pi)/(rs0)*10./pmu0
+    !coef_pffx=1./(2*pi)*0.5d0*(rs0)*10.
+    
+    !print *,' coef_ppx coef_pffx rs0 pmu0=',coef_ppx,coef_pffx,rs0,pmu0
+    
+!    equilibrium%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n) = coef_ppx*pptab(1:n)
+!    equilibrium%time_slice(CurTimeStep)%profiles_1d %f_df_dpsi(1:n) = coef_pffx*fptab(1:n)
+
+	!pptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%dpressure_dpsi(1:n)/coef_ppx
+	!fptab(1:n) = equilibrium0%time_slice(its)%profiles_1d%f_df_dpsi(1:n)/coef_pffx
+	
+	pptab(1:n) = cocos_psi * equilibrium0%time_slice(CurTimeStep)%profiles_1d%dpressure_dpsi(1:n)
+	fptab(1:n) = cocos_psi * equilibrium0%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n)
+  
+	do i=1,npfa
+	  pf(i) =  pf_active0%coil(i)%current%data(CurTimeStep)
+	  
+	 print *,' i pf==',i,pf(i)
+	 
+	enddo
+	
+ 	!first 3 passive --> last 3 active
+	do i=1,npfx
+	  pf(npfa+i) = pf_passive0%loop(i)%current(CurTimeStep)
+!	 print *,' i pf==',npf+i,pf(npf+i)
+	enddo
+	!tokc=0.
+	do i=1,ncam-npfx
+	  tcam(i) = pf_passive0%loop(npfx+i)%current(CurTimeStep)
+	  !tokc=tokc+tcam(i)
+	enddo	
+  
+  
+  
+       call dina_input2(tt,tpl, n,a, pptab,fptab &
+     & , ncam,tcam, npf,pf,rmag,zmag,psi_tr, rs0,bt0)
 
 else
 

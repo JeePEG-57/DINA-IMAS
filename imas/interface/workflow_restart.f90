@@ -76,10 +76,10 @@ integer :: pulse=170, run=402
 ! Workflow parameters
 real (ids_real) :: time_start=20.0, time_stop=10000.0
 integer :: idec, imax
-
+integer :: ext_transp
 
 ! Local variables
-integer :: ext_transp, i, iloop
+integer :: i, iloop
 integer :: idx, idx0, err
 !integer :: nact,npass,ngrid
 integer :: interpol = 0
@@ -145,8 +145,8 @@ call imas_close(idx0)
 
 write(*,*) 'Start from plasma current, A = ', core_profiles0%global_quantities%ip
 
-print *,'Press any key to begin simulation...'
-read (*,*)
+!print *,'Press any key to begin simulation...'
+!read (*,*)
 
 
 !write(*,*) ' time_get =', time_get
@@ -172,23 +172,6 @@ do iloop=1,imax
 
 write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
-
-if (iloop.eq.1) then
-  time_get = time_start
-else
-  time_get = summary%time(1)
-endif
-interpol = 1
-
-call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
-
-call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interpol)
-call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interpol)
-call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interpol)
-call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
-call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interpol)
-
-call imas_close(idx0)
 
 
 call dina_imas( &
@@ -289,11 +272,29 @@ flush(6)
 call ids_copy(pf_passive, pf_passive0)
 write(*,*) 'Copy core_profiles'
 flush(6)
-call ids_copy(core_profiles, core_profiles0)
-write(*,*) 'Copy core_sources'
-flush(6)
-call ids_copy(core_sources, core_sources0)
 
+if (ext_transp.eq.1) then
+write(*,*) 'Using prescribed transport'
+
+  time_get = summary%time(1)
+  interpol = 1
+  
+  call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
+  
+  call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
+  call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interpol)
+  
+  call imas_close(idx0)
+  
+else
+write(*,*) 'Using DINA transport'
+
+  call ids_copy(core_profiles, core_profiles0)
+  write(*,*) 'Copy core_sources'
+  flush(6)
+  call ids_copy(core_sources, core_sources0)
+
+endif
 
 
 
