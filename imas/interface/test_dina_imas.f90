@@ -67,25 +67,23 @@ type (ids_wall) :: wall
 
 real (ids_real) :: arr_in1(501), arr_out1(501)
 
-! define the pulse and run numbers for testing, will be done later outside
+! IDS location data
+character (len=255) :: user, database
+character (len=255) :: user_prs, database_prs
+integer :: pulse_prs=170, run_prs=399
+integer :: pulse=170, run=402
 
-!integer :: pulse=170, run=399, prescribedpulse=170, prescribedrun=1
-integer :: pulse=170, run=402, prescribedpulse=170, prescribedrun=1
-!integer :: pulse=170, run=403, prescribedpulse=170, prescribedrun=402
+! Workflow parameters
+real (ids_real) :: time_start=20.0, time_stop=10000.0
+integer :: idec, imax
+integer :: ext_transp
 
-! define local variables
-integer :: time_loop, key(25), indpf(12), ext_transp, i, iloop, idec, imax
-real (ids_real) :: tmax, tpfa
-real (ids_real) :: uff1(14) = (/1,2,3,2,1,2,3,2,1,2,3,2,1,2/),temp(50)
+! Local variables
+integer :: i, iloop
 integer :: idx, idx0, err
-integer :: nact,npass,ngrid,nbpol,nflux,nrad,npolar,ncronos,nr,nz
-
-
+!integer :: nact,npass,ngrid
 integer :: interpol = 0
-!real (ids_real) ::time_get
-
-character (len=255) :: user
-
+real (ids_real) ::time_get, current_pf_stop
 
 
 ! for timing tests
@@ -93,44 +91,43 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 
 call getenv("USER", user)
-print *,'User name is ', user
 
 
-!print *,'Enter pulse number...'
-!read (*,*) pulse
-!prescribedpulse = pulse
+    open(unit=41,file='fortranworkflow.dat',form='formatted')
+	print *,' Opened file fortranworkflow.dat'
+	read(41,*)
+	read(41,*) user_prs, database_prs, pulse_prs, run_prs
+	read(41,*)
+	read(41,*) database, pulse, run
+	read(41,*)
+	read(41,*) time_start, time_stop
+        read(41,*)
+	read(41,*) idec, imax
+    close (41)
 
 
-!print *,'Enter run number...'
-!read (*,*) run
-!prescribedrun = 1
+!user_prs = user
 
 
-!print *,' Enter maximum steps number'
-!read (*,*)imax
-imax=1000000
-
-
-!print *,' Enter maximum time'
-!read (*,*)imax
-tmax=10000.d0
-
-
-!print *,'Enter decimation for filling the database...'
-!read (*,*)idec
-!idec=100
-
-
-
+print *,' Input user =', trim(user_prs)
+print *,' Input database =', trim(database_prs)
+print *,' Input pulse, run =', pulse_prs, run_prs
+print *,' Start time, s =', time_start
+print *,' Output user =', trim(user)
+print *,' Output database =', trim(database)
+print *,' Output pulse, run =', pulse, run
+print *,' Maximum time steps amount =', imax
+print *,' Maximum simulation time, s =', time_stop
+print *,' Database put decimation =', idec
 
 
 print *,'Press any key to begin simulation...'
 !read (*,*)
 
 
+
 write(*,*) 'Reading the prescribed IDS'
-! call imas_open('ids',prescribedpulse,prescribedrun,idx0) 
-call imas_open_env('ids',prescribedpulse,prescribedrun,idx0,user,'test','3') 
+call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
 
 call ids_get(idx0,"em_coupling",em_coupling0)
 call ids_get(idx0,"magnetics",magnetics0)
@@ -146,25 +143,6 @@ call ids_get(idx0,"wall",wall)
 
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
-
-
-    open(unit=41,file='shot.dat',form='formatted')
-	print *,' opened file shot.dat'
-	read(41,*)
-	read(41,*)run,prescribedrun,idec,imax
-!	read(41,*)
-!	read(41,*)time_get
-    close (41)
-
-print *,' Input pulse,run =', prescribedpulse, prescribedrun
-print *,' Output pulse, run =', pulse, run
-print *,' Maximum time steps amount =', imax
-print *,' Maximum simulation time =', tmax, ' seconds'
-print *,' Database put decimation =', idec
-
-!write(*,*) ' time_get =', time_get
-
-
 
 arr_in1(1:31)=1
 arr_out1(1:31)=0
@@ -289,15 +267,15 @@ call ids_copy(core_sources, core_sources0)
 
 
 
-write(*,*) '****** Pulsetime =',summary%time(1),'/',tmax
+write(*,*) '****** Pulsetime =',summary%time(1),'/',time_stop
 flush(6)
 
-tpfa = 0.d0
+  current_pf_stop = 0.d0
 do i=1,11
-  tpfa = tpfa + dabs(pf_active%coil(i)%current%data(1))
+  current_pf_stop = current_pf_stop + dabs(pf_active%coil(i)%current%data(1))
 enddo
 
-if (summary%time(1).gt.tmax .or. (dabs(summary%global_quantities%ip%value(1)).lt.1.d3 .and. tpfa.lt.1.d3)) exit
+if (summary%time(1).gt.time_stop .or. (dabs(summary%global_quantities%ip%value(1)).lt.1.d3 .and. current_pf_stop.lt.1.d3)) exit
 
 
 write(*,*) 'Deallocate IDS '

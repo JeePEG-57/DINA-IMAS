@@ -158,7 +158,7 @@ arr_out1(1:31)=0
 
 
 
-  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
+  call imas_create_env('ids',pulse,run,1,1,idx,user,database,'3')
   write(*,*) 'Pulse file is created'
 
   call ids_put(idx,"dataset_description",data_description)
@@ -301,7 +301,7 @@ endif
 write(*,*) '****** Pulsetime =',summary%time(1),'/',time_stop
 flush(6)
 
-current_pf_stop = 0.d0
+  current_pf_stop = 0.d0
 do i=1,11
   current_pf_stop = current_pf_stop + dabs(pf_active%coil(i)%current%data(1))
 enddo
