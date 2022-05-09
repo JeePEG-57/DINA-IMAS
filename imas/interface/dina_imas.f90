@@ -475,7 +475,7 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 
 !    ih_imas=1
 !    if (ih_imas.eq.1) then
-	call ids_prof_jetto()
+!	call ids_prof_jetto()
 !	call equil_data()
 !   end if
 !stop
@@ -541,7 +541,8 @@ first_call = first_call+1 ! cancel the initialisation for the next call
        call dina_input2(tt,tpl, n,a, pptab,fptab &
      & , ncam,tcam, npf,pf,rmag,zmag,psi_tr, rs0,bt0)
 
-else
+!else
+end if ! end of first_call
 
 write(*,*) 'dina_input prepare...'
 
@@ -620,7 +621,7 @@ end if
      & pd0,pt0,sigma,jbut,aj0,qe0,qq0)
 
 
-end if ! end of first_call
+!end if ! end of first_call
 
 
 
@@ -2145,3 +2146,8 @@ call system("rm for002_tmp")
 
 return
 end
+
+
+
+
+

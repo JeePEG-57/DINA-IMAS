@@ -528,7 +528,7 @@ c=================================================
       
       print *,' CALL dina_input tt_1 tay t_ret=',tt_1,tay,t_ret
       
-      if(tt_1.le.t_ret)return
+!      if(tt_1.le.t_ret)return
 
 	do i=1,n
 	   te0(i)=te0_xx(i)

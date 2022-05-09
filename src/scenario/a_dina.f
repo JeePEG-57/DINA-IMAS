@@ -74,8 +74,19 @@
            tt_kavin=3500.d0
            tt_dw=1.d+10
 
-        if(kpr.eq.1)print *,'tt_kavin,tt_dw =',
-     *  tt_kavin,tt_dw
+        if(kpr.eq.1)print *,'tt_kavin,tt =',
+     *  tt_kavin,tt
+
+
+      if(tt.gt.tt_kavin)then
+      ih_imas=3
+      else
+      ih_imas=0
+      do i=1,ncam
+      tcam(i)=0.
+      end do
+      end if
+      
 
 !     		 open (unit=40,file='k_jetto.dat',form='formatted') 
 !          read (40,*) 
@@ -90,11 +101,17 @@
      *  k_jetto,ih_imas
 
        	if(ih_imas.eq.3.and.i_en.eq.1)then
-       	k_ener=0
+            k_ener_h=k_ener
+!       	k_ener=0
  		ARG=1.
 	  pi=4.*atan(ARG)
 	  coef=10./(4.*pi)
-	  
+
+	  rmag_h=rmag
+	  zmag_h=zmag
+	  tpl_h=tpl
+        tt_h=tt
+        	  
         end if
       
         if(kpr.eq.1)print *,'k_jetto i_en=',
@@ -108,6 +125,12 @@
         tt=tt_dina
 !        call shape_equil()
         call shape_equil2()
+        
+     	  rmag=rmag_h
+	  zmag=zmag_h
+	  tpl=tpl_h
+        tt=tt_h
+
         end if
        
       	
@@ -144,8 +167,8 @@
        end if
 
        if(ih_imas.eq.3)then 
-        k_jetto=1
-        call prof_astra()
+!        k_jetto=1
+!        call prof_astra()
         ih_imas=4
        end if
 
@@ -203,6 +226,7 @@
        
       if(kpr.eq.1)print *,' tt== tt_dina==',tt,tt_dina
 
+      call prof_dina_input()
 
 
       if(tt.gt.tt_dina.and.k_jetto.eq.0)then
@@ -382,9 +406,11 @@
  	call equil()
  	else
       if(ih_imas.eq.4.and.i_en.eq.1)then
-      k_ener=0
+      k_ener_h=k_ener
+!      k_ener=0
  	omega=0.5d0
  	call equil3()
+      k_ener=k_ener_h
  	end if
  	if(k_jetto.eq.1)k_ener=0
  	omega=0.33d0
@@ -1315,3 +1341,70 @@ C
       
 	return
       end
+
+	subroutine prof_dina_input()
+      include 'double.inc'
+	include 'new_com.inc'
+
+	call prof_dina_input_c(te0,tq0,
+     *  pne,pd0,pt0,sigk,
+     *  ajb,aj0,qe0,qq0)
+
+	return
+      end
+
+
+	subroutine prof_dina_input_c(te0_xx,tq0_xx,
+     *  pne_xx,pd0_xx,pt0_xx,sigk_xx,
+     *  ajb_xx,aj0_xx,qe0_xx,qq0_xx)
+
+      include 'double.inc'
+
+      dimension te0_xx(*),tq0_xx(*)
+      dimension pne_xx(*),pd0_xx(*),pt0_xx(*),sigk_xx(*),
+     *  ajb_xx(*),aj0_xx(*),qe0_xx(*),qq0_xx(*)
+
+	include 'parf0'
+      common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
+
+      common /ge5/kpr
+	common
+     *	/n_m/n,m,mp
+
+	character *20 apr,filename
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+!------------------------------------inputs
+         
+      DO I=1,n
+    	te0_xx(I)=te0(i)
+    	tq0_xx(I)=tq0(i)
+
+    	pne_xx(I)=pne(i)
+    	pd0_xx(I)=pd0(i)
+    	pt0_xx(I)=pt0(i)
+    	sigk_xx(I)=sigk(i)
+    	ajb_xx(I)=ajb(i)
+    	aj0_xx(I)=aj0(i)
+    	qe0_xx(I)=qe0(i)
+    	qq0_xx(I)=qq0(i)
+
+	end do
+
+5000  format (50(1pe14.5))
+
+      apr='---te0-' 
+      if(kpr.eq.1)print 71,apr,(te0(i),i=1,n) 
+      apr='---tq0-' 
+      if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n) 
+      apr='---sigk-' 
+      if(kpr.eq.1)print 71,apr,(sigk(i),i=1,n) 
+
+
+      return
+      end
+
+

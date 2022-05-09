@@ -83,7 +83,7 @@ integer :: i, iloop
 integer :: idx, idx0, err
 !integer :: nact,npass,ngrid
 integer :: interpol = 0
-real (ids_real) ::time_get, current_pf_stop
+real (ids_real) ::time_get,time_ext, current_pf_stop
 
 ! For timing tests
 INTEGER :: clock_start,clock_end,clock_rate
@@ -99,11 +99,12 @@ call getenv("USER", user)
 	read(41,*)
 	read(41,*) database, pulse, run
 	read(41,*)
-	read(41,*) time_start, time_stop
+	read(41,*) time_start,time_ext, time_stop
         read(41,*)
 	read(41,*) idec, imax
     close (41)
 
+    ext_transp=0
 
 !user_prs = user
 
@@ -272,6 +273,15 @@ flush(6)
 call ids_copy(pf_passive, pf_passive0)
 write(*,*) 'Copy core_profiles'
 flush(6)
+
+time_get = summary%time(1)
+
+write(*,*) 'time_get time_ext==',time_get,time_ext
+
+if(time_get.ge.time_ext)then
+write(*,*) 'Using prescribed transport'
+ext_transp=1
+end if
 
 if (ext_transp.eq.1) then
 write(*,*) 'Using prescribed transport'

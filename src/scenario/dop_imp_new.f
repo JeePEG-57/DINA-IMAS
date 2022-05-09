@@ -866,7 +866,7 @@ c	include 'dop_ramp.inc'
 
       YPsol=p_sep_a
 
-      if(i_en.gt.1)then
+      if(i_en.ge.1)then
 	if(kpr.eq.1)print *,' i_en   dop_vs_pfw_1.inc ',i_en
 	
 	include 'dop_vs_pfw_1.inc'
