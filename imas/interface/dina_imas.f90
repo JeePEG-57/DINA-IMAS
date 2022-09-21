@@ -105,7 +105,7 @@ real(ids_real) ::time_eq_c
     integer,parameter :: npo = 310, ntet = 134 ! parf0
     integer,parameter :: mu1 = 1500 ! parf2
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
-    integer,parameter :: npf = 15, ncam = 100 ! parf1 - kf, mu
+    integer,parameter :: npf = 12, ncam = 103 ! parf1 - kf, mu
     integer,parameter :: npfa = 12, npfx = npf-npfa, npfp = npfx+ncam
     integer,parameter :: nflux=41, nbpol=60 ! parf4
     integer,parameter :: n_ions=7
@@ -353,7 +353,7 @@ print *,' pfs resistances...'
 flush(6)
 
 pf_active%coil(1:npfa)%resistance = pfres(1:npfa)
-pf_passive%loop(1:npfx)%resistance = pfres(npfa+1:nact)
+!pf_passive%loop(1:npfx)%resistance = pfres(npfa+1:nact)
 pf_passive%loop(npfx+1:npfp)%resistance = rcam(1:npass)  
 
 print *,' pfs filled'
@@ -486,6 +486,12 @@ first_call = first_call+1 ! cancel the initialisation for the next call
   
      CurTimeStep = 1
      
+  if(associated(pf_passive%time)) then
+    !allocate(pf_passive%time(1))
+  endif
+  
+  if (associated(equilibrium0%time_slice)) then
+  
 	tt = equilibrium0%time_slice(CurTimeStep)%time
 	tpl = equilibrium0%time_slice(CurTimeStep)%global_quantities%ip
 	n = size(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)
@@ -541,8 +547,14 @@ first_call = first_call+1 ! cancel the initialisation for the next call
        call dina_input2(tt,tpl, n,a, pptab,fptab &
      & , ncam,tcam, npf,pf,rmag,zmag,psi_tr, rs0,bt0)
 
-!else
-end if ! end of first_call
+    else
+    
+    call ids_prof_jetto()
+    
+    endif
+    
+else
+!end if ! end of first_call
 
 write(*,*) 'dina_input prepare...'
 
@@ -621,7 +633,7 @@ end if
      & pd0,pt0,sigma,jbut,aj0,qe0,qq0)
 
 
-!end if ! end of first_call
+end if ! end of first_call
 
 
 
@@ -865,11 +877,10 @@ pf_active%ids_properties%homogeneous_time = 1
   
   
 !pf_active%global_quantities%psi_coils_list(:)
-if(.NOT.associated(pf_active%global_quantities%psi_coils_average)) allocate(pf_active%global_quantities%psi_coils_average(1))
-if(.NOT.associated(pf_active%global_quantities%time)) allocate(pf_active%global_quantities%time(1))
-
-pf_active%global_quantities%psi_coils_average(1) = wr_imas(33)
-pf_active%global_quantities%time(1) = dina_time
+!if(.NOT.associated(pf_active%global_quantities%psi_coils_average)) allocate(pf_active%global_quantities%psi_coils_average(1))
+!if(.NOT.associated(pf_active%global_quantities%time)) allocate(pf_active%global_quantities%time(1))
+!pf_active%global_quantities%psi_coils_average(1) = wr_imas(33)
+!pf_active%global_quantities%time(1) = dina_time
   
   
   
