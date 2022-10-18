@@ -170,18 +170,41 @@ class IMASDB_Entry:
     
 class DINA_Workflow:
   def __init__(self, IMAS_Input, IMAS_Output):
+    
+    # IMASDB_Entry structure with IMAS coordinates to get input data
     self.IMAS_Input = IMAS_Input
+    # IMASDB_Entry structure with IMAS coordinates to put output data
     self.IMAS_Output = IMAS_Output
+    
+    # Magnetic controller used in the simulation
+    # One of directory names in src/controllers/
     self.MagneticController = "kmc"
+    
+    # Decimation used to put IDS's in the database
+    # Each Decimation-th step will be stored
     self.Decimation = 50
     
-    # Set to True for ASTRA density transport
+    # Key for using prescribed transport profiles
+    # True: The transport profiles are read from the IMAS_Input
+    # False: The transport is simulated in the workflow
+    self.PRESCRIBED_TRANSPORT = False
+    
+    # Key for using ASTRA density transport model
+    # True: ASTRA density transport actor with internal density control
+    # False: Transport module extracted from DINA with explicit puffing and pellet control
     self.USE_ASTRA = False
+    
+    # Time (s) after which DINA actor receives transport profiles instead of calculating internally
     self.Time_ExternalTranspStarts = 4.0e3
+    
+    # Starting time of the scenario
+    # Initialisation of the state uses data from IMAS_Input
     self.Time_Start = 0.0
+    
+    # Maximum time of the scenario
     self.Time_Stop = 1000.0
     
-    #self.idslist = {}
+    self.idslist = {}
 
 
   def Run(self):
@@ -261,6 +284,8 @@ class DINA_Workflow:
     timearr = []
     while True:
       
+      self.idslist = idslist
+      
       # DINA 
       arr_curr = DINA(idslist, arr_volt)
       
@@ -270,35 +295,48 @@ class DINA_Workflow:
       timearr.append(time)
       print('DINA loop = ' + str(iloop))
       
-    
-      # External transport
-      if (time >= self.Time_ExternalTranspStarts):
+      if (self.PRESCRIBED_TRANSPORT == True):
+        interp = 1
+        TimeGet = time
         
-        HEATSRC(idslist)
-        ENERGY(idslist)
-        
-        if self.USE_ASTRA:
-          ASTRA_DENSITY(idslist)
-        else:
-          # Density control and sources distribution    
-          cmd_pellet = density_control_pellet.density_control_pellet_actor(idslist['summary'])
-          cmd_valve = density_control_valve.density_control_valve_actor(idslist['summary'])
-              
-          # Density sources distribution
-          densitysrc_pellet = ASTRASRC_PELLET(idslist, cmd_pellet)
-          densitysrc_valve = ASTRASRC_VALVE(idslist, cmd_valve)
+        user_in = self.IMAS_Input.username
+        db_in = self.IMAS_Input.database
+        shot_in = self.IMAS_Input.shot
+        run_in = self.IMAS_Input.run
+        imas_entry_init = imas.DBEntry(imasdef.MDSPLUS_BACKEND, db_in, shot_in, run_in, user_in, data_version = '3')
+        imas_entry_init.open()
+        idslist['core_profiles'] = imas_entry_init.get_slice('core_profiles', TimeGet, interp)
+        idslist['core_sources'] = imas_entry_init.get_slice('core_sources', TimeGet, interp)
+        imas_entry_init.close()
+      else:
+        # External transport
+        if (time >= self.Time_ExternalTranspStarts):
           
-          densitysrc = densitysrc_pellet + densitysrc_valve
-              
-          DENSITY(idslist, densitysrc)
-        
-    
-        
-        BOOTCOND(idslist)
-        CURDRIVE(idslist)
+          HEATSRC(idslist)
+          ENERGY(idslist)
+          
+          if self.USE_ASTRA:
+            ASTRA_DENSITY(idslist)
+          else:
+            # Density control and sources distribution    
+            cmd_pellet = density_control_pellet.density_control_pellet_actor(idslist['summary'])
+            cmd_valve = density_control_valve.density_control_valve_actor(idslist['summary'])
+                
+            # Density sources distribution
+            densitysrc_pellet = ASTRASRC_PELLET(idslist, cmd_pellet)
+            densitysrc_valve = ASTRASRC_VALVE(idslist, cmd_valve)
+            
+            densitysrc = densitysrc_pellet + densitysrc_valve
+                
+            DENSITY(idslist, densitysrc)
+          
       
-      # Boundary conditions
-      SOLPS(idslist)
+          
+          BOOTCOND(idslist)
+          CURDRIVE(idslist)
+        
+        # Boundary conditions
+        SOLPS(idslist)
     
       # Magnetic controller
       arr_volt = dinacontr(arr_curr)
@@ -335,7 +373,7 @@ class DINA_Workflow:
       for coil in idslist['pf_active'].coil:
         tpfa = tpfa + abs(coil.current.data[0])
   
-      if ((tpfa < 1.e3 and abs(ip) < 1.e3) or time > self.Time_Stop or True):
+      if ((tpfa < 1.e3 and abs(ip) < 1.e3) or time > self.Time_Stop):
         print('Workflow stop condition is met', flush=True)
         break
     
@@ -360,7 +398,7 @@ def main(argv):
 
   Workflow = DINA_Workflow(IMAS_Input, IMAS_Output)
   Workflow.Time_Start = 100.0
-  
+  Workflow.PRESCRIBED_TRANSPORT = True
   Workflow.Run()
 
 if __name__ == '__main__':  # If direct run, not import

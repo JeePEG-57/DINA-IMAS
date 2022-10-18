@@ -526,7 +526,7 @@ c=================================================
       
       t_ret=1.e5
       
-      print *,' CALL dina_input tt_1 tay t_ret=',tt_1,tay,t_ret
+      print *,' CALL dina_input tt tt_1 tay t_ret=',tt,tt_1,tay,t_ret
       
 !      if(tt_1.le.t_ret)return
 
