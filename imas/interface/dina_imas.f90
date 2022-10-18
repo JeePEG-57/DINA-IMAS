@@ -105,7 +105,7 @@ real(ids_real) ::time_eq_c
     integer,parameter :: npo = 310, ntet = 134 ! parf0
     integer,parameter :: mu1 = 1500 ! parf2
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
-    integer,parameter :: npf = 12, ncam = 103 ! parf1 - kf, mu
+    integer,parameter :: npf = 12, ncam = 102 ! parf1 - kf, mu
     integer,parameter :: npfa = 12, npfx = npf-npfa, npfp = npfx+ncam
     integer,parameter :: nflux=41, nbpol=60 ! parf4
     integer,parameter :: n_ions=7
@@ -549,12 +549,15 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 
     else
     
-    call ids_prof_jetto()
+    !call ids_prof_jetto()
     
     endif
     
-else
-!end if ! end of first_call
+!else
+end if ! end of first_call
+
+
+if (associated(core_profiles0%profiles_1d)) then
 
 write(*,*) 'dina_input prepare...'
 
@@ -633,7 +636,7 @@ end if
      & pd0,pt0,sigma,jbut,aj0,qe0,qq0)
 
 
-end if ! end of first_call
+end if
 
 
 
