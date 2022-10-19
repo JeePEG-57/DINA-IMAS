@@ -74,19 +74,18 @@ integer :: pulse_prs=170, run_prs=399
 integer :: pulse=170, run=402
 
 ! Workflow parameters
-real (ids_real) :: time_start=20.0, time_stop=10000.0
+real (ids_real) :: time_start=0.0, time_stop=10000.0
 integer :: idec, imax
-integer :: ext_transp
+integer :: ext_transp, restart=0
 
 ! Local variables
 integer :: i, iloop
 integer :: idx, idx0, err
 !integer :: nact,npass,ngrid
 integer :: interpol = 0
-real (ids_real) ::time_get, current_pf_stop
+real (ids_real) ::time_get,time_ext, current_pf_stop
 
-
-! for timing tests
+! For timing tests
 INTEGER :: clock_start,clock_end,clock_rate
 
 
@@ -100,11 +99,12 @@ call getenv("USER", user)
 	read(41,*)
 	read(41,*) database, pulse, run
 	read(41,*)
-	read(41,*) time_start, time_stop
+	read(41,*) time_start, time_ext, time_stop
         read(41,*)
 	read(41,*) idec, imax
     close (41)
 
+    ext_transp=0
 
 !user_prs = user
 
@@ -120,46 +120,80 @@ print *,' Maximum time steps amount =', imax
 print *,' Maximum simulation time, s =', time_stop
 print *,' Database put decimation =', idec
 
-
-print *,'Press any key to begin simulation...'
-!read (*,*)
-
-
+if (time_start.gt.0.d0) then
+  restart = 1
+endif
 
 write(*,*) 'Reading the prescribed IDS'
 call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
 
-call ids_get(idx0,"em_coupling",em_coupling0)
-call ids_get(idx0,"magnetics",magnetics0)
-call ids_get(idx0,"equilibrium",equilibrium0)
-call ids_get(idx0,"pf_active",pf_active0)
-call ids_get(idx0,"pf_passive",pf_passive0)
-call ids_get(idx0,"core_profiles",core_profiles0)
-call ids_get(idx0,"core_sources",core_sources0)
-call ids_get(idx0,"transport_solver_numerics",bndcond)
-call ids_get(idx0,"pulse_schedule",pulse_schedule)
-call ids_get(idx0,"dataset_description",data_description)
-call ids_get(idx0,"wall",wall)
+if (restart.eq.1) then
 
+  write(*,*) 'Restart from t=', time_start
+  time_get = time_start
+  interpol = 1
+  call ids_get_slice(idx0,"em_coupling",em_coupling0, time_get, interpol)
+  call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interpol)
+  call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interpol)
+  call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interpol)
+  call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interpol)
+  call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
+  call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interpol)
+  call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interpol)
+
+else
+
+  write(*,*) 'Start from t=0'
+  call ids_get(idx0,"em_coupling",em_coupling0)
+  call ids_get(idx0,"magnetics",magnetics0)
+  call ids_get(idx0,"equilibrium",equilibrium0)
+  call ids_get(idx0,"pf_active",pf_active0)
+  call ids_get(idx0,"pf_passive",pf_passive0)
+  call ids_get(idx0,"core_profiles",core_profiles0)
+  call ids_get(idx0,"core_sources",core_sources0)
+  call ids_get(idx0,"transport_solver_numerics",bndcond)
+  
+endif
+
+call ids_get(idx0,"wall",wall)
+call ids_get(idx0,"dataset_description",data_description)
+call ids_get(idx0,"pulse_schedule",pulse_schedule)
+  
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
+
+
+
+write(*,*) 'Start from plasma current, A = ', core_profiles0%global_quantities%ip
+
+!print *,'Press any key to begin simulation...'
+!read (*,*)
+
+
+!write(*,*) ' time_get =', time_get
+
+
 
 arr_in1(1:31)=1
 arr_out1(1:31)=0
 
 
 
-  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
+  call imas_create_env('ids',pulse,run,1,1,idx,user,database,'3')
   write(*,*) 'Pulse file is created'
 
   call ids_put(idx,"dataset_description",data_description)
   call ids_put(idx,"pulse_schedule",pulse_schedule)
 
 
+
+
+
 do iloop=1,imax
 
 write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
+
 
 call dina_imas( &
  &   em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
@@ -259,11 +293,38 @@ flush(6)
 call ids_copy(pf_passive, pf_passive0)
 write(*,*) 'Copy core_profiles'
 flush(6)
-call ids_copy(core_profiles, core_profiles0)
-write(*,*) 'Copy core_sources'
-flush(6)
-call ids_copy(core_sources, core_sources0)
 
+time_get = summary%time(1)
+
+write(*,*) 'time_get time_ext==',time_get,time_ext
+
+if(time_get.ge.time_ext)then
+write(*,*) 'Using prescribed transport'
+ext_transp=1
+end if
+
+if (ext_transp.eq.1) then
+write(*,*) 'Using prescribed transport'
+
+  time_get = summary%time(1)
+  interpol = 1
+  
+  call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
+  
+  call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
+  call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interpol)
+  
+  call imas_close(idx0)
+  
+else
+write(*,*) 'Using DINA transport'
+
+  call ids_copy(core_profiles, core_profiles0)
+  write(*,*) 'Copy core_sources'
+  flush(6)
+  call ids_copy(core_sources, core_sources0)
+
+endif
 
 
 

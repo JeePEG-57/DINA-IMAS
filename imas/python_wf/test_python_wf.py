@@ -398,6 +398,7 @@ def main(argv):
 
   Workflow = DINA_Workflow(IMAS_Input, IMAS_Output)
   Workflow.Time_Start = 100.0
+  Workflow.Time_ExternalTranspStarts = 20.0
   Workflow.PRESCRIBED_TRANSPORT = True
   Workflow.Run()
 

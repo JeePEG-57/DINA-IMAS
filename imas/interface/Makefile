@@ -11,7 +11,7 @@ f2c= gfortran -w -I$(DINADIR) -ffixed-line-length-none -fd-lines-as-comments -fn
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 
-FORTRANWF = test_dina_to_imas test_dina_restart test_dina test_dina_pfpo1a test_dina_pfpo1b test_dina_2madiv
+FORTRANWF = test_dina_to_imas test_dina test_dina_pfpo1a test_dina_pfpo1b test_dina_2madiv
 TARGETS += $(FORTRANWF) dina_imas.a dina_sdn.a dina_put_slice.a kmc.a kmc_pfpo1_1a.a kmc_pfpo1_1b.a kmc_2madiv.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_density_test0.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a solps_imas.a
 
 
@@ -25,10 +25,6 @@ all: $(TARGETS)
 
 #--------------------- gfortran ------------------------
 test_dina: test_dina_imas.o dina_put_slice.a dina_imas.a kmc.a solps_imas.a
-	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
-
-test_dina_restart: workflow_restart.o dina_put_slice.a dina_imas.a kmc.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
