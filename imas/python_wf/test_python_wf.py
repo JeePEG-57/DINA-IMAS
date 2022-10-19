@@ -182,7 +182,7 @@ class DINA_Workflow:
     
     # Decimation used to put IDS's in the database
     # Each Decimation-th step will be stored
-    self.Decimation = 50
+    self.Decimation = 10
     
     # Key for using prescribed transport profiles
     # True: The transport profiles are read from the IMAS_Input
@@ -194,8 +194,8 @@ class DINA_Workflow:
     # False: Transport module extracted from DINA with explicit puffing and pellet control
     self.USE_ASTRA = False
     
-    # Time (s) after which DINA actor receives transport profiles instead of calculating internally
-    self.Time_ExternalTranspStarts = 4.0e3
+    # Time (s) after which DINA actor receives transport profiles (Prescribed, ASTRA, etc.) instead of calculating internally
+    self.Time_ExternalTranspStarts = 4.0e4
     
     # Starting time of the scenario
     # Initialisation of the state uses data from IMAS_Input
@@ -393,13 +393,14 @@ def main(argv):
     
   user_name = os.getenv('USER')
 
-  IMAS_Input = IMASDB_Entry(170, 4, "test", user_name) 
+  IMAS_Input = IMASDB_Entry(170, 1, "test", user_name) 
   IMAS_Output = IMASDB_Entry(170, 45, "test", user_name) 
 
   Workflow = DINA_Workflow(IMAS_Input, IMAS_Output)
-  Workflow.Time_Start = 100.0
-  Workflow.Time_ExternalTranspStarts = 20.0
+  Workflow.Time_Start = 30.0
+  Workflow.Time_ExternalTranspStarts = 10.0
   Workflow.PRESCRIBED_TRANSPORT = True
+  
   Workflow.Run()
 
 if __name__ == '__main__':  # If direct run, not import

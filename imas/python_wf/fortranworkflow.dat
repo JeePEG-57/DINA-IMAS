@@ -1,8 +1,8 @@
 user_pr database_pr pulse_pr run_pr
-dubrovm    test       170    4
+dubrovm    test       170    1
 database pulse run
-  test   170   8
+  test   170   4
 time_start  time_ext  time_stop
-   50.0     10000      1000
+   0.0     10000.0      1000.0
 idec imax
- 1  1000000
+ 50  1000000
