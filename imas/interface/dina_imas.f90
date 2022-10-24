@@ -310,11 +310,13 @@ flush(6)
 
 if(.NOT.associated(pf_active%time)) then
     allocate(pf_active%time(1))
+    print*, 'allocation of pf_active/time[]'
 endif
 pf_active%ids_properties%homogeneous_time = 1
 
 if(.NOT.associated(pf_active%coil)) then
     allocate(pf_active%coil(npfa))
+    print*, 'allocation of pf_active/coil[], npfa =', npfa
     do i=1,npfa
 
         allocate(pf_active%coil(i)%current%data(1))
@@ -323,23 +325,29 @@ if(.NOT.associated(pf_active%coil)) then
         allocate(pf_active%coil(i)%voltage%data(1))
 !         allocate(pf_active%coil(i)%voltage%time(1))
     enddo
+else
+    print*, 'pf_active/coil[] has allocated elements', size(pf_active%coil)
 endif
 
 
 
 if(.NOT.associated(pf_passive%time)) then
     allocate(pf_passive%time(1))
+    print*, 'allocation of pf_passive/time[]'
 endif
 pf_passive%ids_properties%homogeneous_time = 1
 
 
 if(.NOT.associated(pf_passive%loop)) then
     allocate(pf_passive%loop(npfp))
+    print*, 'allocation of pf_passive/loop[], npfp =', npfp
     do i=1,npfp
 
 	allocate(pf_passive%loop(i)%current(1))
 
     enddo
+else
+    print*, 'pf_passive/loop[] has allocated elements', size(pf_passive%loop)
 endif
 
 

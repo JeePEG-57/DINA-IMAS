@@ -131,7 +131,7 @@ if (restart.eq.1) then
 
   write(*,*) 'Restart from t=', time_start
   time_get = time_start
-  interpol = 1
+  interpol = 1 ! CLOSEST_INTERP
   call ids_get_slice(idx0,"em_coupling",em_coupling0, time_get, interpol)
   call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interpol)
   call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interpol)
@@ -140,6 +140,8 @@ if (restart.eq.1) then
   call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interpol)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interpol)
+
+  write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
 
 else
 
@@ -164,13 +166,8 @@ call imas_close(idx0)
 
 
 
-write(*,*) 'Start from plasma current, A = ', core_profiles0%global_quantities%ip
-
 !print *,'Press any key to begin simulation...'
 !read (*,*)
-
-
-!write(*,*) ' time_get =', time_get
 
 
 
@@ -307,7 +304,7 @@ if (ext_transp.eq.1) then
 write(*,*) 'Using prescribed transport'
 
   time_get = summary%time(1)
-  interpol = 1
+  interpol = 3 ! LINEAR_INTERP
   
   call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
   

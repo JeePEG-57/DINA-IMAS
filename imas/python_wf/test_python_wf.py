@@ -228,7 +228,7 @@ class DINA_Workflow:
     
     
     if (Restart == True):
-      interp = 1
+      interp = imasdef.CLOSEST_INTERP
       TimeGet = self.Time_Start
       print('Restart at t = ' + str(TimeGet))
       idslist['equilibrium'] = imas_entry_init.get_slice('equilibrium', TimeGet, interp)
@@ -258,7 +258,7 @@ class DINA_Workflow:
     
     imas_entry_init.close()
     
-    print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
+    #print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
     
     # Preparing of an IMAS entry for the simulation output
     user_out = self.IMAS_Output.username
@@ -295,30 +295,33 @@ class DINA_Workflow:
       timearr.append(time)
       print('DINA loop = ' + str(iloop))
       
-      if (self.PRESCRIBED_TRANSPORT == True):
-        interp = 1
-        TimeGet = time
+      # External transport
+      if (time >= self.Time_ExternalTranspStarts):
         
-        user_in = self.IMAS_Input.username
-        db_in = self.IMAS_Input.database
-        shot_in = self.IMAS_Input.shot
-        run_in = self.IMAS_Input.run
-        imas_entry_init = imas.DBEntry(imasdef.MDSPLUS_BACKEND, db_in, shot_in, run_in, user_in, data_version = '3')
-        imas_entry_init.open()
-        idslist['core_profiles'] = imas_entry_init.get_slice('core_profiles', TimeGet, interp)
-        idslist['core_sources'] = imas_entry_init.get_slice('core_sources', TimeGet, interp)
-        imas_entry_init.close()
-      else:
-        # External transport
-        if (time >= self.Time_ExternalTranspStarts):
+        if (self.PRESCRIBED_TRANSPORT == True):
           
+          interp = imasdef.LINEAR_INTERP
+          TimeGet = time
+          
+          user_in = self.IMAS_Input.username
+          db_in = self.IMAS_Input.database
+          shot_in = self.IMAS_Input.shot
+          run_in = self.IMAS_Input.run
+          imas_entry_init = imas.DBEntry(imasdef.MDSPLUS_BACKEND, db_in, shot_in, run_in, user_in, data_version = '3')
+          imas_entry_init.open()
+          idslist['core_profiles'] = imas_entry_init.get_slice('core_profiles', TimeGet, interp)
+          idslist['core_sources'] = imas_entry_init.get_slice('core_sources', TimeGet, interp)
+          imas_entry_init.close()
+          
+        else:
+        
           HEATSRC(idslist)
           ENERGY(idslist)
           
           if self.USE_ASTRA:
             ASTRA_DENSITY(idslist)
           else:
-            # Density control and sources distribution    
+            # Density controllers
             cmd_pellet = density_control_pellet.density_control_pellet_actor(idslist['summary'])
             cmd_valve = density_control_valve.density_control_valve_actor(idslist['summary'])
                 
@@ -335,8 +338,8 @@ class DINA_Workflow:
           BOOTCOND(idslist)
           CURDRIVE(idslist)
         
-        # Boundary conditions
-        SOLPS(idslist)
+          # Boundary conditions
+          SOLPS(idslist)
     
       # Magnetic controller
       arr_volt = dinacontr(arr_curr)
@@ -397,8 +400,8 @@ def main(argv):
   IMAS_Output = IMASDB_Entry(170, 45, "test", user_name) 
 
   Workflow = DINA_Workflow(IMAS_Input, IMAS_Output)
-  Workflow.Time_Start = 30.0
-  Workflow.Time_ExternalTranspStarts = 10.0
+  Workflow.Time_Start = 0.0
+  Workflow.Time_ExternalTranspStarts = 40000.0
   Workflow.PRESCRIBED_TRANSPORT = True
   
   Workflow.Run()
