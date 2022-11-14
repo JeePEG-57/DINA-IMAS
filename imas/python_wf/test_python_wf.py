@@ -293,14 +293,15 @@ class DINA_Workflow:
       ip = idslist['summary'].global_quantities.ip.value[0]
       time = idslist['summary'].time[0]
       timearr.append(time)
-      print('DINA loop = ' + str(iloop))
+      print('DINA loop = ' + str(iloop), flush=True)
       
       # External transport
       if (time >= self.Time_ExternalTranspStarts):
         
         if (self.PRESCRIBED_TRANSPORT == True):
           
-          interp = imasdef.LINEAR_INTERP
+          #interp = imasdef.LINEAR_INTERP # causes a crash! 
+          interp = imasdef.CLOSEST_INTERP
           TimeGet = time
           
           user_in = self.IMAS_Input.username

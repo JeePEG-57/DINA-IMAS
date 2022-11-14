@@ -113,6 +113,7 @@ print *,' Input user =', trim(user_prs)
 print *,' Input database =', trim(database_prs)
 print *,' Input pulse, run =', pulse_prs, run_prs
 print *,' Start time, s =', time_start
+print *,' External transport time, s =', time_ext
 print *,' Output user =', trim(user)
 print *,' Output database =', trim(database)
 print *,' Output pulse, run =', pulse, run
