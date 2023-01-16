@@ -105,7 +105,7 @@ real(ids_real) ::time_eq_c
     integer,parameter :: npo = 310, ntet = 134 ! parf0
     integer,parameter :: mu1 = 1500 ! parf2
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
-    integer,parameter :: npf = 12, ncam = 102 ! parf1 - kf, mu
+    integer,parameter :: npf = 15, ncam = 100 ! parf1 - kf, mu
     integer,parameter :: npfa = 12, npfx = npf-npfa, npfp = npfx+ncam
     integer,parameter :: nflux=41, nbpol=60 ! parf4
     integer,parameter :: n_ions=7
@@ -361,7 +361,7 @@ print *,' pfs resistances...'
 flush(6)
 
 pf_active%coil(1:npfa)%resistance = pfres(1:npfa)
-!pf_passive%loop(1:npfx)%resistance = pfres(npfa+1:nact)
+pf_passive%loop(1:npfx)%resistance = pfres(npfa+1:nact)
 pf_passive%loop(npfx+1:npfp)%resistance = rcam(1:npass)  
 
 print *,' pfs filled'
