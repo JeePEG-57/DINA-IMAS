@@ -182,7 +182,7 @@ class DINA_Workflow:
     
     # Decimation used to put IDS's in the database
     # Each Decimation-th step will be stored
-    self.Decimation = 10
+    self.Decimation = 1
     
     # Key for using prescribed transport profiles
     # True: The transport profiles are read from the IMAS_Input
