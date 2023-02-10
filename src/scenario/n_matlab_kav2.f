@@ -2122,7 +2122,7 @@ c	if(q(2).le.0.8)call zyb(n,ires)
 c**********************************************
 ccc	q_test=0.90
 c	q_test=0.96
-	q_test=-0.97
+	q_test=0.97
 cccccccc	q_test=0.8
 c	q_test=0.7
 c	q_test=0.98
