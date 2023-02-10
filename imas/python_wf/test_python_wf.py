@@ -1,15 +1,13 @@
 
-import os
-import sys
-
+import sys,os
 import imas
 from imas import imasdef
 import numpy as np
-import inspect
-
 import matplotlib as mpl 
 import matplotlib.pyplot as plt
 
+import argparse
+import xml.etree.ElementTree as ET
 
 # importing the actors we want to run
 import dinaimas21.wrapper as dinaimas21
@@ -68,7 +66,7 @@ def DINA(idslist, arr_volt):
   
 
 
-def SOLPS(idslist):
+def SOLPSZ(idslist):
 
   output = solps_imas.solps_imas_actor(idslist['equilibrium'],
                              idslist['core_transport'])
@@ -160,45 +158,53 @@ def ASTRA_DENSITY(idslist):
   idslist['core_profiles'] = output
 
 
-class IMASDB_Entry:
-  def __init__(self, shot, run, database, username):
-    self.shot = shot
-    self.run = run
-    self.database = database
-    self.username = username
-    
-    
+
 class DINA_Workflow:
-  def __init__(self, IMAS_Input, IMAS_Output):
+  def __init__(self, IMAS_InputStart, IMAS_Output):
     
-    # IMASDB_Entry structure with IMAS coordinates to get input data
-    self.IMAS_Input = IMAS_Input
-    # IMASDB_Entry structure with IMAS coordinates to put output data
+    # imas.DBEntry object containing input data to initialize the workflow
+    self.IMAS_InputStart = IMAS_InputStart
+    
+    # imas.DBEntry object to put output data in
     self.IMAS_Output = IMAS_Output
+    
+    # imas.DBEntry object containing prescribed transport profiles
+    # Applied only when Time > self.Time_ExternalTranspStarts
+    # If a valid object: the transport profiles are read from the object
+    # If None: the transport is simulated in the workflow
+    self.IMAS_Transp = None
+    
+    # Mode of interpolation for initialization data reading
+    # imasdef.CLOSEST_INTERP == 1
+    # imasdef.LINEAR_INTERP == 3
+    #self.InterpMode = imasdef.LINEAR_INTERP # may cause a crash!
+    self.InterpStart = imasdef.CLOSEST_INTERP
+    
+    # Mode of interpolation for prescribed transport reading
+    #self.InterpMode = imasdef.LINEAR_INTERP # may cause a crash!
+    self.InterpTransp = imasdef.CLOSEST_INTERP
     
     # Magnetic controller used in the simulation
     # One of directory names in src/controllers/
     self.MagneticController = "kmc"
     
     # Decimation used to put IDS's in the database
-    # Each Decimation-th step will be stored
+    # A full set of IDS's is saved only at each Decimation-th step
+    # Other steps only pf_active and summary are saved
     self.Decimation = 1
     
-    # Key for using prescribed transport profiles
-    # True: The transport profiles are read from the IMAS_Input
-    # False: The transport is simulated in the workflow
-    self.PRESCRIBED_TRANSPORT = False
-    
     # Key for using ASTRA density transport model
+    # Applied only when Time > self.Time_ExternalTranspStarts and self.IMAS_Transp is None
     # True: ASTRA density transport actor with internal density control
     # False: Transport module extracted from DINA with explicit puffing and pellet control
     self.USE_ASTRA = False
     
     # Time (s) after which DINA actor receives transport profiles (Prescribed, ASTRA, etc.) instead of calculating internally
+    # Should correspond to tt_dina setting in the DINA actor
     self.Time_ExternalTranspStarts = 4.0e4
     
     # Starting time of the scenario
-    # Initialisation of the state uses data from IMAS_Input
+    # Initialization of the state uses data from IMAS_Input
     self.Time_Start = 0.0
     
     # Maximum time of the scenario
@@ -216,63 +222,51 @@ class DINA_Workflow:
     idslist = {}
     
     # Reading initial IDS's
-    user_in = self.IMAS_Input.username
-    db_in = self.IMAS_Input.database
-    shot_in = self.IMAS_Input.shot
-    run_in = self.IMAS_Input.run
-    imas_entry_init = imas.DBEntry(imasdef.MDSPLUS_BACKEND, db_in, shot_in, run_in, user_in, data_version = '3')
-    imas_entry_init.open()
-    
+    self.IMAS_InputStart.open()
     
     Restart = self.Time_Start > 0.0
     
     
     if (Restart == True):
-      interp = imasdef.CLOSEST_INTERP
+      interp = self.InterpStart
       TimeGet = self.Time_Start
       print('Restart at t = ' + str(TimeGet))
-      idslist['equilibrium'] = imas_entry_init.get_slice('equilibrium', TimeGet, interp)
-      idslist['em_coupling'] = imas_entry_init.get_slice('em_coupling', TimeGet, interp)
-      idslist['magnetics'] = imas_entry_init.get_slice('magnetics', TimeGet, interp)
-      idslist['pf_active'] = imas_entry_init.get_slice('pf_active', TimeGet, interp)
-      idslist['pf_passive'] = imas_entry_init.get_slice('pf_passive', TimeGet, interp)
-      idslist['core_profiles'] = imas_entry_init.get_slice('core_profiles', TimeGet, interp)
-      idslist['core_sources'] = imas_entry_init.get_slice('core_sources', TimeGet, interp)
-      idslist['transport_solver_numerics'] = imas_entry_init.get_slice('transport_solver_numerics', TimeGet, interp)
+      idslist['equilibrium'] = self.IMAS_InputStart.get_slice('equilibrium', TimeGet, interp)
+      idslist['em_coupling'] = self.IMAS_InputStart.get_slice('em_coupling', TimeGet, interp)
+      idslist['magnetics'] = self.IMAS_InputStart.get_slice('magnetics', TimeGet, interp)
+      idslist['pf_active'] = self.IMAS_InputStart.get_slice('pf_active', TimeGet, interp)
+      idslist['pf_passive'] = self.IMAS_InputStart.get_slice('pf_passive', TimeGet, interp)
+      idslist['core_profiles'] = self.IMAS_InputStart.get_slice('core_profiles', TimeGet, interp)
+      idslist['core_sources'] = self.IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
+      idslist['transport_solver_numerics'] = self.IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
     else:
       print('Start from t = 0')
-      idslist['equilibrium'] = imas_entry_init.get('equilibrium', occurrence = 0)
-      idslist['em_coupling'] = imas_entry_init.get('em_coupling')
-      idslist['magnetics'] = imas_entry_init.get('magnetics')
-      idslist['pf_active'] = imas_entry_init.get('pf_active')
-      idslist['pf_passive'] = imas_entry_init.get('pf_passive')
-      idslist['core_profiles'] = imas_entry_init.get('core_profiles')
-      idslist['core_sources'] = imas_entry_init.get('core_sources')
-      idslist['transport_solver_numerics'] = imas_entry_init.get('transport_solver_numerics')
+      idslist['equilibrium'] = self.IMAS_InputStart.get('equilibrium', occurrence = 0)
+      idslist['em_coupling'] = self.IMAS_InputStart.get('em_coupling')
+      idslist['magnetics'] = self.IMAS_InputStart.get('magnetics')
+      idslist['pf_active'] = self.IMAS_InputStart.get('pf_active')
+      idslist['pf_passive'] = self.IMAS_InputStart.get('pf_passive')
+      idslist['core_profiles'] = self.IMAS_InputStart.get('core_profiles')
+      idslist['core_sources'] = self.IMAS_InputStart.get('core_sources')
+      idslist['transport_solver_numerics'] = self.IMAS_InputStart.get('transport_solver_numerics')
       
     
-    idslist['wall'] = imas_entry_init.get('wall')
-    idslist['dataset_description'] = imas_entry_init.get('dataset_description')
-    idslist['pulse_schedule'] = imas_entry_init.get('pulse_schedule')
+    idslist['wall'] = self.IMAS_InputStart.get('wall')
+    idslist['dataset_description'] = self.IMAS_InputStart.get('dataset_description')
+    idslist['pulse_schedule'] = self.IMAS_InputStart.get('pulse_schedule')
     #idslist['summary'] = imas_entry_init.get('summary')
     
-    imas_entry_init.close()
+    self.IMAS_InputStart.close()
     
     #print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
     
     # Preparing of an IMAS entry for the simulation output
-    user_out = self.IMAS_Output.username
-    db_out = self.IMAS_Output.database
-    shot_out = self.IMAS_Output.shot
-    run_out = self.IMAS_Output.run
-    
-    imas_entry_result = imas.DBEntry(imasdef.MDSPLUS_BACKEND, db_out, shot_out, run_out, user_out, data_version = '3')
-    imas_entry_result.create()
+    self.IMAS_Output.create()
     
     
-    imas_entry_result.put(idslist["dataset_description"])
-    imas_entry_result.put(idslist["pulse_schedule"])
-    
+    self.IMAS_Output.put(idslist["dataset_description"])
+    self.IMAS_Output.put(idslist["pulse_schedule"])
+    self.IMAS_Output.put(idslist['wall'])
     
     # Allocation for initial voltages of the magnetic control
     arr_volt = np.float64(range(501))
@@ -298,21 +292,14 @@ class DINA_Workflow:
       # External transport
       if (time >= self.Time_ExternalTranspStarts):
         
-        if (self.PRESCRIBED_TRANSPORT == True):
+        if (self.IMAS_Transp != None):
           
-          #interp = imasdef.LINEAR_INTERP # causes a crash! 
-          interp = imasdef.CLOSEST_INTERP
           TimeGet = time
           
-          user_in = self.IMAS_Input.username
-          db_in = self.IMAS_Input.database
-          shot_in = self.IMAS_Input.shot
-          run_in = self.IMAS_Input.run
-          imas_entry_init = imas.DBEntry(imasdef.MDSPLUS_BACKEND, db_in, shot_in, run_in, user_in, data_version = '3')
-          imas_entry_init.open()
-          idslist['core_profiles'] = imas_entry_init.get_slice('core_profiles', TimeGet, interp)
-          idslist['core_sources'] = imas_entry_init.get_slice('core_sources', TimeGet, interp)
-          imas_entry_init.close()
+          self.IMAS_Transp.open()
+          idslist['core_profiles'] = self.IMAS_Transp.get_slice('core_profiles', TimeGet, self.InterpTransp)
+          idslist['core_sources'] = self.IMAS_Transp.get_slice('core_sources', TimeGet, self.InterpTransp)
+          self.IMAS_Transp.close()
           
         else:
         
@@ -340,7 +327,7 @@ class DINA_Workflow:
           CURDRIVE(idslist)
         
           # Boundary conditions
-          SOLPS(idslist)
+          SOLPSZ(idslist)
     
       # Magnetic controller
       arr_volt = dinacontr(arr_curr)
@@ -355,18 +342,18 @@ class DINA_Workflow:
       
       # Put this slice to the database 
       if (iloop%self.Decimation == 0 or iloop == iloop_start):
-        #for key in idslist:
-        #  imas_entry_result.put_slice(idslist[key])
-        imas_entry_result.put_slice(idslist['em_coupling'])
-        imas_entry_result.put_slice(idslist['equilibrium'])
-        imas_entry_result.put_slice(idslist['magnetics'])
-        imas_entry_result.put_slice(idslist['pf_active'])
-        imas_entry_result.put_slice(idslist['pf_passive'])
-        imas_entry_result.put_slice(idslist['core_profiles'])
-        imas_entry_result.put_slice(idslist['core_sources'])
-        imas_entry_result.put_slice(idslist['core_transport'])
-        imas_entry_result.put_slice(idslist['summary'])
-        imas_entry_result.put_slice(idslist['wall'])
+        self.IMAS_Output.put_slice(idslist['em_coupling'])
+        self.IMAS_Output.put_slice(idslist['equilibrium'])
+        self.IMAS_Output.put_slice(idslist['magnetics'])
+        self.IMAS_Output.put_slice(idslist['pf_active'])
+        self.IMAS_Output.put_slice(idslist['pf_passive'])
+        self.IMAS_Output.put_slice(idslist['core_profiles'])
+        self.IMAS_Output.put_slice(idslist['core_sources'])
+        self.IMAS_Output.put_slice(idslist['core_transport'])
+        self.IMAS_Output.put_slice(idslist['summary'])
+      else:
+        self.IMAS_Output.put_slice(idslist['pf_active'])
+        self.IMAS_Output.put_slice(idslist['summary'])
       
       
       
@@ -384,7 +371,7 @@ class DINA_Workflow:
       iloop = iloop + 1
     
     
-    imas_entry_result.close()
+    self.IMAS_Output.close()
     
     print('Finished successfully after ' + str(iloop) + ' steps')
     #print(timearr)
@@ -392,21 +379,80 @@ class DINA_Workflow:
     #print(dir(pf_active))
 
 
-
-def main(argv):
+def start(config):
+  
+  if (type(config) == str):
+    tree = ET.parse(config)
+  root = tree.getroot()
+  
+  user_default = os.getenv('USER')
+  
+  
+  input_start = root.find('input_start')
+  usernode = input_start.find('user')
+  if (usernode != None):
+    username = usernode.text
+  else:
+    username = None
+  if (username == None or username == ""):
+    username = user_default
+  database = input_start.find('database').text
+  pulse = int(input_start.find('pulse').text)
+  run = int(input_start.find('run').text)
+  IMAS_InputStart = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
+  
+  
+  output = root.find('output')
+  database = output.find('database').text
+  pulse = int(output.find('pulse').text)
+  run = int(output.find('run').text)
+  IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, user_default, data_version = '3')
+  
+  
+  Workflow = DINA_Workflow(IMAS_InputStart, IMAS_Output)
+  Workflow.InterpStart = int(input_start.find('interp_mode').text)
+  Workflow.Time_Start = float(input_start.find('time_start').text)
+  Workflow.Time_Stop = float(root.find('time_stop').text)
+  Workflow.Time_ExternalTranspStarts = float(root.find('time_ext').text)
+  Workflow.MagneticController = root.find('controller').text
+  Workflow.Decimation = int(output.find('decimation').text)
+  Workflow.USE_ASTRA = bool(root.find('use_astra').text)
+  
+  
+  input_transp = root.find('input_transp')
+  if (input_transp != None):
+    usernode = input_transp.find('user')
+    if (usernode != None):
+      username = usernode.text
+    else:
+      username = None
+    if (username == None or username == ""):
+      username = user_default
+    database = input_transp.find('database').text
+    pulse = int(input_transp.find('pulse').text)
+    run = int(input_transp.find('run').text)
     
-  user_name = os.getenv('USER')
-
-  IMAS_Input = IMASDB_Entry(170, 1, "test", user_name) 
-  IMAS_Output = IMASDB_Entry(170, 45, "test", user_name) 
-
-  Workflow = DINA_Workflow(IMAS_Input, IMAS_Output)
-  Workflow.Time_Start = 0.0
-  Workflow.Time_ExternalTranspStarts = 40000.0
-  Workflow.PRESCRIBED_TRANSPORT = True
+    if (database != None):
+      Workflow.IMAS_Transp = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
+      Workflow.InterpTransp = int(input_transp.find('interp_mode').text)
+  
   
   Workflow.Run()
 
+
+def main():
+  
+  parser = argparse.ArgumentParser(description='----DINA Workflow')
+  parser.add_argument('-c','--config',help='Path to a configuration XML', required=False, type=str)
+  args = vars(parser.parse_args())
+  
+  if args['config'] != None:
+      config = args['config']
+  else:
+      config = 'wfconfig.xml'
+  
+  start(config)
+
+
 if __name__ == '__main__':  # If direct run, not import
-  main(sys.argv[1:]) 
-    
+  main()
