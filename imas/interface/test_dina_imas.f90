@@ -181,10 +181,6 @@ if (time_start.gt.0.d0) then
 endif
 
 
-
-stop
-
-
 write(*,*) 'Reading the prescribed IDS'
 call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
 
