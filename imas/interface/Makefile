@@ -2,12 +2,14 @@ DINADIR := ../../src/scenario
 CONTROLDIR := ../../src/controllers
 ASTRADIR := ../astra_transp
 
-F90_gfortran=gfortran -w
-COPTS_gfortran = -O0 -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
-#LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
-LIBS_gfortran=`pkg-config imas-gfortran --libs`
+COMPILER = ifort
 
-f2c= gfortran -w -I$(DINADIR) -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
+F90_gfortran=$(COMPILER) -w
+COPTS_gfortran = -O0 -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-$(COMPILER) libxml-2.0 xmllib --cflags` -g
+#LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
+LIBS_gfortran=`pkg-config imas-$(COMPILER) libxml-2.0 xmllib --libs`
+
+f2c= $(COMPILER) -w -I$(DINADIR) -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 

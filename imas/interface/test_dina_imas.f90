@@ -2,8 +2,14 @@
 ! test the DINA_IMAS
 ! Jo Lister, August 2013
 
+program DINA_Workflow
+
 use ids_schemas
 use ids_routines
+
+use f90_file_reader, only: file2buffer
+use xml2eg_mdl, only: xml2eg_parse_memory, xml2eg_get, type_xml2eg_document, xml2eg_free_doc
+
 implicit none
 
 interface 
@@ -42,7 +48,7 @@ type (ids_summary) :: summary
 end interface
 
 interface 
-! Declaration of the dina_imas subroutine
+! Declaration of the dina_contr subroutine
     subroutine dina_contr (arr_in1,arr_out1)
      use ids_schemas
     real (ids_real) :: arr_in1(501), arr_out1(501)
@@ -68,10 +74,13 @@ type (ids_wall) :: wall
 real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! IDS location data
-character (len=255) :: user, database
+character (len=255) :: user_default
+character (len=255) :: user_out, database_out
 character (len=255) :: user_prs, database_prs
-integer :: pulse_prs=170, run_prs=399
-integer :: pulse=170, run=402
+character (len=255) :: user_transp='', database_transp=''
+integer :: pulse_prs=-1, run_prs=-1
+integer :: pulse_out=-1, run_out=-1
+integer :: pulse_transp=-1, run_transp=-1
 
 ! Workflow parameters
 real (ids_real) :: time_start=0.0, time_stop=10000.0
@@ -82,48 +91,99 @@ integer :: ext_transp, restart=0
 integer :: i, iloop
 integer :: idx, idx0, err
 !integer :: nact,npass,ngrid
-integer :: interpol = 0
+integer :: interp_start = 1, interp_transp = 1
 real (ids_real) ::time_get,time_ext, current_pf_stop
+
+character(len=12) :: ConfigXML
+type(type_xml2eg_document) :: doc
+character(len=132), pointer :: buffer(:) => NULL()
+integer :: io_unit = 1
+logical :: errorflag
 
 ! For timing tests
 INTEGER :: clock_start,clock_end,clock_rate
 
 
-call getenv("USER", user)
+call getenv("USER", user_default)
 
 
-    open(unit=41,file='fortranworkflow.dat',form='formatted')
-	print *,' Opened file fortranworkflow.dat'
-	read(41,*)
-	read(41,*) user_prs, database_prs, pulse_prs, run_prs
-	read(41,*)
-	read(41,*) database, pulse, run
-	read(41,*)
-	read(41,*) time_start, time_ext, time_stop
-        read(41,*)
-	read(41,*) idec, imax
-    close (41)
+ext_transp=0
 
-    ext_transp=0
+if (command_argument_count().eq.0) then
+  print *,'Not enough arguments. First argument must be the name of a workflow config XML file!'
+  stop
+endif
 
-!user_prs = user
+do i = 1, command_argument_count()
+  call get_command_argument(i, ConfigXML)
+end do
+
+print *,' Using workflow config XML file: ', ConfigXML
+
+call file2buffer(ConfigXML, io_unit, buffer)
+call xml2eg_parse_memory(buffer, doc)
+
+  call xml2eg_get(doc, 'input_start/user', user_prs)
+  call xml2eg_get(doc, 'input_start/database', database_prs)
+  call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
+  call xml2eg_get(doc, 'input_start/run', run_prs)
+  call xml2eg_get(doc, 'input_start/time_start', time_start)
+  call xml2eg_get(doc, 'input_start/interp_mode', interp_start)
+
+  call xml2eg_get(doc, 'output/database', database_out)
+  call xml2eg_get(doc, 'output/pulse', pulse_out)
+  call xml2eg_get(doc, 'output/run', run_out)
+  call xml2eg_get(doc, 'output/decimation', idec)
+
+  call xml2eg_get(doc, 'input_transp/user', user_transp)
+  call xml2eg_get(doc, 'input_transp/database', database_transp)
+  call xml2eg_get(doc, 'input_transp/pulse', pulse_transp)
+  call xml2eg_get(doc, 'input_transp/run', run_transp)
+  call xml2eg_get(doc, 'input_transp/interp_mode', interp_transp)
+
+  call xml2eg_get(doc, 'time_stop', time_stop)
+  call xml2eg_get(doc, 'time_ext', time_ext)
+  call xml2eg_get(doc, 'step_max', imax)
 
 
-print *,' Input user =', trim(user_prs)
-print *,' Input database =', trim(database_prs)
-print *,' Input pulse, run =', pulse_prs, run_prs
+call xml2eg_free_doc(doc)
+deallocate(buffer)
+
+
+if (trim(user_prs).eq.'') user_prs = user_default
+if (trim(user_transp).eq.'') user_transp = user_default
+user_out = user_default
+
+
+print *,' Start user =', trim(user_prs)
+print *,' Start database =', trim(database_prs)
+print *,' Start pulse, run =', pulse_prs, run_prs
 print *,' Start time, s =', time_start
+print *,' Start interpolation =', interp_start
+
+print *,' Transp user =', trim(user_transp)
+print *,' Transp database =', trim(database_transp)
+print *,' Transp pulse, run =', pulse_transp, run_transp
+print *,' Transp interpolation =', interp_transp
+
+print *,' Output user =', trim(user_out)
+print *,' Output database =', trim(database_out)
+print *,' Output pulse, run =', pulse_out, run_out
+print *,' Output put decimation =', idec
+
 print *,' External transport time, s =', time_ext
-print *,' Output user =', trim(user)
-print *,' Output database =', trim(database)
-print *,' Output pulse, run =', pulse, run
 print *,' Maximum time steps amount =', imax
 print *,' Maximum simulation time, s =', time_stop
-print *,' Database put decimation =', idec
+
 
 if (time_start.gt.0.d0) then
   restart = 1
 endif
+
+
+
+stop
+
 
 write(*,*) 'Reading the prescribed IDS'
 call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
@@ -132,15 +192,15 @@ if (restart.eq.1) then
 
   write(*,*) 'Restart from t=', time_start
   time_get = time_start
-  interpol = 1 ! CLOSEST_INTERP
-  call ids_get_slice(idx0,"em_coupling",em_coupling0, time_get, interpol)
-  call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interpol)
-  call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interpol)
-  call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interpol)
-  call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interpol)
-  call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
-  call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interpol)
-  call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interpol)
+  
+  call ids_get_slice(idx0,"em_coupling",em_coupling0, time_get, interp_start)
+  call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interp_start)
+  call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interp_start)
+  call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interp_start)
+  call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interp_start)
+  call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interp_start)
+  call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
+  call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
 
   write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
 
@@ -177,7 +237,7 @@ arr_out1(1:31)=0
 
 
 
-  call imas_create_env('ids',pulse,run,1,1,idx,user,database,'3')
+  call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
   write(*,*) 'Pulse file is created'
 
   call ids_put(idx,"dataset_description",data_description)
@@ -274,7 +334,7 @@ flush(6)
 
 call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
  & core_sources, core_transport, bndcond, summary, wall, em_coupling, magnetics, &
-& pulse, run, idx, iloop, err)
+& pulse_out, run_out, idx, iloop, err)
 
 
 endif
@@ -305,12 +365,11 @@ if (ext_transp.eq.1) then
 write(*,*) 'Using prescribed transport'
 
   time_get = summary%time(1)
-  interpol = 3 ! LINEAR_INTERP
   
-  call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
+  call imas_open_env('ids',pulse_transp,run_transp,idx0,user_transp,database_transp,'3')
   
-  call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interpol)
-  call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interpol)
+  call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interp_transp)
+  call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_transp)
   
   call imas_close(idx0)
   
@@ -391,4 +450,4 @@ write(*,*) 'DINA_IMAS loop finished, clean up'
 
 write(*,*) 'DINA_IMAS Exiting cleanly'
 
-end 
+end program DINA_Workflow

@@ -4,8 +4,9 @@
 !> As a result of call dina_0 and then call dina2 the DINA modeling in one time step is being produced
 !> After call dina_outp the output data are being recorded to IDS and dat files
 
-#ifdef __GFORTRAN__
-
+! If needed to get the compiler:
+!#ifdef __GFORTRAN__
+!#ifdef __INTEL_COMPILER
 
 #define AllocIfNull(array, size)  if (.NOT.associated(array)) allocate(array(size))
 
@@ -15,20 +16,6 @@
 #define AllocArr(array, value, size)  if (.NOT.associated(array)) allocate(array(size)) ; \
                                     array(1:size) = value(1:size)
                                     
-                                    
-#else
-
-
-#define AllocIfNull(array, size)  if (.NOT.associated(#array)) allocate(#array(#size))
-
-#define AllocIfNull1(array, value)  if (.NOT.associated(#array)) allocate(#array(1)) ; \
-                                    #array(1) = #value
-
-#define AllocArr(array, value, size)  if (.NOT.associated(#array)) allocate(#array(#size)) ; \
-                                    #array(1:#size) = #value(1:#size)
-                                    
-                                    
-#endif
 
 
 

@@ -2,7 +2,7 @@
 
 AR = ar
 ARFLAGS = -ru
-FC = gfortran
+FC = ifort
 
 f2c= cc -fpic
 
