@@ -5,8 +5,8 @@ ASTRADIR := ../astra_transp
 
 PACKAGES =
 PACKAGES += imas-$(FCOMPILER)
-#PACKAGES += libxml-2.0
-#PACKAGES += xmllib
+PACKAGES += libxml-2.0
+PACKAGES += xmllib
 
 F90_gfortran=$(FCOMPILER) -w
 COPTS_gfortran = -O0 -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config $(PACKAGES) --cflags` -g

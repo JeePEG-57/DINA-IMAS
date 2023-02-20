@@ -104,7 +104,7 @@ else
 # GFORTRAN
   echo '$FCOMPILER set to gfortran'
   #module load mpich2/3.1.3-gnu
-  module load XMLlib/3.3.1-GCC-12.2.0
+  module load XMLlib/3.3.1-GCC-10.2.0
 fi
 
 

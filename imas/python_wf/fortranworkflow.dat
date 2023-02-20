@@ -1,8 +1,0 @@
-user_start database_start pulse_start run_start time_start interp
- dubrovm        test          170         1         0.0       1
-database_out   pulse_out   run_out   idec
-  test          170          10       1
-user_transp   database_transp   pulse_transp   run_transp   interp
-  dubrovm           test            170            2          1
-time_ext   time_stop      imax
- 4000.0     1000.0      1000000
