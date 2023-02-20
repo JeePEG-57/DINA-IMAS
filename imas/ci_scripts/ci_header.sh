@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # SET UP ENVIRONMENT FOR COMPILATION
-. /usr/share/Modules/init/sh
+#. /usr/share/Modules/init/sh
 # module use /work/imas/etc/attic
-module use /work/imas/etc/modulefiles
-module use /work/imas/etc/modules/all
+#module use /work/imas/etc/modulefiles
+#module use /work/imas/etc/modules/all
 
 
 
@@ -79,7 +79,8 @@ export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
 # # FOR PYUAL (PYTHON WORKFLOWS)
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
-# 
+
+export FCOMPILER=gfortran
 # # CHOOSE THE COMPILER 0=GFORTRAN (DEFAULT IF VARIABLE IS NOT SET), 1=INTEL
 # if [ -z "$FCOMPILER" ]; then
 #     echo 'FCOMPILER not set'
@@ -92,19 +93,19 @@ export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 #       echo '$FCOMPILER set to gfortran'
 #     fi
 # fi
-# 
-# # INTEL
-# if [ "$FCOMPILER" == "ifort" ]; then
-#   module load intel/12.0.2
-#   module load mpich2/3.1.3-intel
-#   module load xmllib/2.0.0-imas-3.7.4-intel-12.0.2
-#   OBJ=obj_ifort
-# else
-# # GFORTRAN
-#   module load mpich2/3.1.3-gnu
-#   module load xmllib/2.0.0-imas-3.7.4-GCC-4.8.3
-#   OBJ=obj_gfortran
-# fi
+
+if [ "$FCOMPILER" == "ifort" ]; then
+# INTEL
+  echo '$FCOMPILER set to intel'
+  #module load intel/12.0.2
+  #module load mpich2/3.1.3-intel
+  module load XMLlib/3.3.1-intel-2020b
+else
+# GFORTRAN
+  echo '$FCOMPILER set to gfortran'
+  #module load mpich2/3.1.3-gnu
+  module load XMLlib/3.3.1-GCC-12.2.0
+fi
 
 
 module list -t

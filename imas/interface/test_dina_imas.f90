@@ -7,8 +7,8 @@ program DINA_Workflow
 use ids_schemas
 use ids_routines
 
-use f90_file_reader, only: file2buffer
-use xml2eg_mdl, only: xml2eg_parse_memory, xml2eg_get, type_xml2eg_document, xml2eg_free_doc
+!use f90_file_reader, only: file2buffer
+!use xml2eg_mdl, only: xml2eg_parse_memory, xml2eg_get, type_xml2eg_document, xml2eg_free_doc
 
 implicit none
 
@@ -94,11 +94,11 @@ integer :: idx, idx0, err
 integer :: interp_start = 1, interp_transp = 1
 real (ids_real) ::time_get,time_ext, current_pf_stop
 
-character(len=12) :: ConfigXML
-type(type_xml2eg_document) :: doc
-character(len=132), pointer :: buffer(:) => NULL()
-integer :: io_unit = 1
-logical :: errorflag
+character(len=30) :: ConfigFile
+!type(type_xml2eg_document) :: doc
+!character(len=132), pointer :: buffer(:) => NULL()
+!integer :: io_unit = 1
+!logical :: errorflag
 
 ! For timing tests
 INTEGER :: clock_start,clock_end,clock_rate
@@ -115,39 +115,55 @@ if (command_argument_count().eq.0) then
 endif
 
 do i = 1, command_argument_count()
-  call get_command_argument(i, ConfigXML)
+  call get_command_argument(i, ConfigFile)
 end do
 
-print *,' Using workflow config XML file: ', ConfigXML
 
-call file2buffer(ConfigXML, io_unit, buffer)
-call xml2eg_parse_memory(buffer, doc)
-
-  call xml2eg_get(doc, 'input_start/user', user_prs)
-  call xml2eg_get(doc, 'input_start/database', database_prs)
-  call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
-  call xml2eg_get(doc, 'input_start/run', run_prs)
-  call xml2eg_get(doc, 'input_start/time_start', time_start)
-  call xml2eg_get(doc, 'input_start/interp_mode', interp_start)
-
-  call xml2eg_get(doc, 'output/database', database_out)
-  call xml2eg_get(doc, 'output/pulse', pulse_out)
-  call xml2eg_get(doc, 'output/run', run_out)
-  call xml2eg_get(doc, 'output/decimation', idec)
-
-  call xml2eg_get(doc, 'input_transp/user', user_transp)
-  call xml2eg_get(doc, 'input_transp/database', database_transp)
-  call xml2eg_get(doc, 'input_transp/pulse', pulse_transp)
-  call xml2eg_get(doc, 'input_transp/run', run_transp)
-  call xml2eg_get(doc, 'input_transp/interp_mode', interp_transp)
-
-  call xml2eg_get(doc, 'time_stop', time_stop)
-  call xml2eg_get(doc, 'time_ext', time_ext)
-  call xml2eg_get(doc, 'step_max', imax)
+print *,' Using workflow config XML file: ', ConfigFile
 
 
-call xml2eg_free_doc(doc)
-deallocate(buffer)
+open(unit=41,file=trim(ConfigFile),form='formatted')
+    print *,' Opened file ', ConfigFile
+    read(41,*)
+    read(41,*) user_prs, database_prs, pulse_prs, run_prs, time_start, interp_start
+    read(41,*)
+    read(41,*) database_out, pulse_out, run_out, idec
+    read(41,*)
+    read(41,*) user_transp, database_transp, pulse_transp, run_transp, interp_transp
+    read(41,*)
+    read(41,*) time_ext, time_stop, imax
+close(41)
+
+
+
+! call file2buffer(ConfigXML, io_unit, buffer)
+! call xml2eg_parse_memory(buffer, doc)
+! 
+!   call xml2eg_get(doc, 'input_start/user', user_prs)
+!   call xml2eg_get(doc, 'input_start/database', database_prs)
+!   call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
+!   call xml2eg_get(doc, 'input_start/run', run_prs)
+!   call xml2eg_get(doc, 'input_start/time_start', time_start)
+!   call xml2eg_get(doc, 'input_start/interp_mode', interp_start)
+! 
+!   call xml2eg_get(doc, 'output/database', database_out)
+!   call xml2eg_get(doc, 'output/pulse', pulse_out)
+!   call xml2eg_get(doc, 'output/run', run_out)
+!   call xml2eg_get(doc, 'output/decimation', idec)
+! 
+!   call xml2eg_get(doc, 'input_transp/user', user_transp)
+!   call xml2eg_get(doc, 'input_transp/database', database_transp)
+!   call xml2eg_get(doc, 'input_transp/pulse', pulse_transp)
+!   call xml2eg_get(doc, 'input_transp/run', run_transp)
+!   call xml2eg_get(doc, 'input_transp/interp_mode', interp_transp)
+! 
+!   call xml2eg_get(doc, 'time_stop', time_stop)
+!   call xml2eg_get(doc, 'time_ext', time_ext)
+!   call xml2eg_get(doc, 'step_max', imax)
+! 
+! 
+! call xml2eg_free_doc(doc)
+! deallocate(buffer)
 
 
 if (trim(user_prs).eq.'') user_prs = user_default
@@ -174,6 +190,7 @@ print *,' Output put decimation =', idec
 print *,' External transport time, s =', time_ext
 print *,' Maximum time steps amount =', imax
 print *,' Maximum simulation time, s =', time_stop
+
 
 
 if (time_start.gt.0.d0) then
