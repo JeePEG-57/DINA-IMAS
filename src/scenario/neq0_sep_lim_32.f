@@ -2313,6 +2313,9 @@ c$
      *  /ves1/psp(mu),psp0(mu),tcam(mu),tcam0(mu)
      *  /ves2/ncam,rc(mu),zc(mu)
 
+        
+        return
+        
 
 c        open (unit=41,file='kpl.dat',access='append',form='formatted')
         open (unit=41,file='kpl.dat',form='formatted')
@@ -4952,6 +4955,9 @@ c
      	dimension xcur(2*npo),torcur(2*npo)
 
 	character *20 apr
+
+
+      return
 
 	ml=mp/2+1
 	i=0

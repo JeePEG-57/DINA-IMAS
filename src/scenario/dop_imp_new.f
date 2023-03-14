@@ -737,7 +737,7 @@ c###        zhib=zhib*tene_e/tepr
         if(kpr.eq.1)print *,' p_dop p_oh ==',ptot-wdh,wdh
 
 
-
+         if(i_98_dat.eq.1)then
 
          if(i_en.eq.1)then
          open (unit=1,file='tau98.dat',form='formatted')
@@ -754,7 +754,8 @@ c###        zhib=zhib*tene_e/tepr
    
 
 
-
+      end if
+      
 
 
 

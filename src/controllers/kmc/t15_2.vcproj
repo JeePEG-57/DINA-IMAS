@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="t15_2"
 	ProjectGUID="{4FB923C2-FAE5-4DD8-A773-F6E36C7A3579}"
 	RootNamespace="t15_2"
@@ -204,6 +204,38 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
+			<File
+				RelativePath=".\contr_curr.c"
+				>
+			</File>
+			<File
+				RelativePath=".\contr_curr_wrapper.c"
+				>
+			</File>
+			<File
+				RelativePath=".\contr_div.c"
+				>
+			</File>
+			<File
+				RelativePath=".\contr_div_wrapper.c"
+				>
+			</File>
+			<File
+				RelativePath=".\contr_lim.c"
+				>
+			</File>
+			<File
+				RelativePath=".\contr_lim_wrapper.c"
+				>
+			</File>
+			<File
+				RelativePath=".\contr_vert_vs3.c"
+				>
+			</File>
+			<File
+				RelativePath=".\contr_vert_vs3_wrapper.c"
+				>
+			</File>
 			<File
 				RelativePath=".\pf_lookup3.c"
 				>

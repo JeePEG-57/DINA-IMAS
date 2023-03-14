@@ -127,7 +127,7 @@ c ============ outputs ==============================================
 5     continue
 
 
-      n_output1=15
+      n_output1=12
       do i=1,n_output1
 		output_1(i)=c_output1(i)
         end do
@@ -141,9 +141,9 @@ c ============ outputs ==============================================
 	num=10
 !	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
 
-      npf=15
+      npf=12
       n_gaps=6
-      ncam=100
+      ncam=102
       
       n_output2=n_gaps+npf+ncam
       
@@ -243,9 +243,13 @@ c ============ outputs ==============================================
         dimension bprobe_xx(*),psloop_xx(*)
         dimension surface_1d_xx(*),volume_1d_xx(*),area_1d_xx(*)
         
-        include 'imas_interface.inc'
+        dimension f_temp(npo)
         
-           
+        include 'imas_interface.inc'
+
+       	character *20 apr
+        
+        print *,' Output kpr n==',kpr,n   
         
         n_xx=n
 	
@@ -262,7 +266,7 @@ c ============ outputs ==============================================
         betap_xx = betj
         betat_xx = bett
 
-	tene_xx = tene*1.d-3
+	  tene_xx = tene*1.d-3
         teit_98_xx = teit_98*1.d-3
         key_lh_xx = key_lh
       
@@ -301,6 +305,65 @@ c ============ outputs ==============================================
         bprobe_xx(1:kprobe) = tpl_dir*bprobe(1:kprobe) ! *1.d-1
         psloop_xx(1:kloop) = tpl_dir*psloop(1:kloop)*2.*pi ! *1.d-5
 c=================================================
+!              call feeti(n,dm_help,dmn(i),dfmax0,df_temp)
+!              call linear(n,dm_help,dmn(i),dfmax0,df_temp)
+
+
+        ai(n+1)=1.d0
+        teta_xx=1.d0
+
+        call inter_h0(sigk,ai,n,teta_xx,val)
+        sigk(n+1)=val
+        sigk(1)=sigk(2)
+        do i=2,n-1             
+           call linear(n,sigk,f_temp(i),ai,a(i))
+        enddo
+        f_temp(1) = sigk(1)
+        f_temp(n) = sigk(n+1)
+
+      apr='--f_sigk-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+      
+      do i=1,n
+      sigk(i)=f_temp(i)
+      end do
+      
+        call inter_h0(qe0,ai,n,teta_xx,val)
+        qe0(n+1)=val
+        qe0(1)=qe0(2)
+        do i=2,n-1             
+           call linear(n,qe0,f_temp(i),ai,a(i))
+        enddo
+        f_temp(1) = qe0(1)
+        f_temp(n) = qe0(n+1)
+
+      apr='--f_qe0-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+
+      do i=1,n
+      qe0(i)=f_temp(i)
+      end do
+
+
+        call inter_h0(qq0,ai,n,teta_xx,val)
+        qq0(n+1)=val
+        qq0(1)=qq0(2)
+        do i=2,n-1             
+           call linear(n,qq0,f_temp(i),ai,a(i))
+        enddo
+        f_temp(1) = qq0(1)
+        f_temp(n) = qq0(n+1)
+
+      apr='--f_qq0-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+
+      do i=1,n
+      qq0(i)=f_temp(i)
+      end do
+
+
+   71 FORMAT(20X,A20/,(6(1pE10.3)))
+
 
 	do i=1,n
 	   a_xx(i)=a(i)
@@ -309,7 +372,7 @@ c=================================================
 	   te0_xx(i)=te0(i)
 	   tq0_xx(i)=tq0(i)
 	   
-	   pne_xx(i)=pne(i)*1.d19   
+	     pne_xx(i)=pne(i)*1.d19   
            pd0_xx(i)=pd0(i)*1.d19
            pt0_xx(i)=pt0(i)*1.d19
            
@@ -335,6 +398,74 @@ c=================================================
 
 	end do
 	
+        ai(n+1)=1.d0
+        teta_xx=1.d0
+        
+        call inter_h0(tok1,ai,n,teta_xx,val)
+        tok1(n+1)=val
+        tok1(1)=tok1(2)
+        do i=2,n-1             
+           call linear(n,tok1,f_temp(i),ai,a(i))
+        enddo
+        f_temp(1) = tok1(1)
+        f_temp(n) = tok1(n+1)
+
+      apr='--f_tok1-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+
+      do i=1,n
+      tok1(i)=f_temp(i)
+      end do
+
+        call inter_h0(ajb,ai,n,teta_xx,val)
+        ajb(n+1)=val
+        ajb(1)=ajb(2)
+        do i=2,n-1             
+           call linear(n,ajb,f_temp(i),ai,a(i))
+        enddo
+        f_temp(1) = ajb(1)
+        f_temp(n) = ajb(n+1)
+
+      apr='--f_ajb-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+
+      do i=1,n
+      ajb(i)=f_temp(i)
+      end do
+
+        call inter_h0(aj0,ai,n,teta_xx,val)
+        aj0(n+1)=val
+        aj0(1)=aj0(2)
+        do i=2,n-1             
+           call linear(n,aj0,f_temp(i),ai,a(i))
+        enddo
+        f_temp(1) = aj0(1)
+        f_temp(n) = aj0(n+1)
+
+      apr='--f_aj0-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+
+      do i=1,n
+      aj0(i)=f_temp(i)
+      end do
+
+        call inter_h0(ajae,ai,n,teta_xx,val)
+        ajae(n+1)=val
+        ajae(1)=ajae(2)
+        do i=2,n-1             
+           call linear(n,ajae,f_temp(i),ai,a(i))
+        enddo
+        f_temp(1) = ajae(1)
+        f_temp(n) = ajae(n+1)
+
+      apr='--f_ajae-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+
+      do i=1,n
+      ajae(i)=f_temp(i)
+      end do
+
+	
 	do i=1,n
 
 	   tok1_xx(i) = tpl_dir*tok1(i)*1.d7 ! Toroidal current density
@@ -343,7 +474,8 @@ c=================================================
 	   ajae_xx(i) = tpl_dir*ajae(i)*1.d7 ! Current density by ECRH CD
 
 	end do
-	
+
+
 	
 	do i=1,n
 	
@@ -351,12 +483,12 @@ c=================================================
 	   !psix_xx=sqrt(psix_xx)
 	   psix_xx=sqrt(ai(i))
 	
-	   !call feeti(n,ppx,pptab_xx(i),a,psix_xx)
-           !call feeti(n,pffx,fptab_xx(i),a,psix_xx)          
-           !call feeti(n,p,press_xx(i),a,psix_xx)
+	   !call linear(n,ppx,pptab_xx(i),a,psix_xx)
+           !call linear(n,pffx,fptab_xx(i),a,psix_xx)          
+           !call linear(n,p,press_xx(i),a,psix_xx)
            
-           !call feeti(n,f,fpol_xx(i),ai,psix_xx)
-           !call feeti(n,q,q_xx(i),ai,psix_xx)
+           !call linear(n,f,fpol_xx(i),ai,psix_xx)
+           !call linear(n,q,q_xx(i),ai,psix_xx)
           
           
            ! Defined on a-grid?
@@ -383,9 +515,14 @@ c=================================================
         q_xx(1) = q(1)
         q_xx(n) = q(n)
         do i=2,n-1             
-           call feeti(n+1,f,fpol_xx(i),ai,a(i))
-           call feeti(n+1,q,q_xx(i),ai,a(i))          
+           call linear(n,f,fpol_xx(i),ai,a(i))
+           call linear(n,q,q_xx(i),ai,a(i))          
         enddo
+
+      apr='--f_pol-' 
+      if(kpr.eq.1)print 71,apr,(fpol_xx(i),i=1,n) 
+      apr='--q-' 
+      if(kpr.eq.1)print 71,apr,(q_xx(i),i=1,n) 
         
         
         do i=1,n  
@@ -512,7 +649,12 @@ c=================================================
 	common
      *	/n_m/n,m,mp
      */ge2/NTAY,TAY,TT
+      COMMON                                                            
+     *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)                     
 
+
+      dimension f_temp(npo)
+      
         include 'imas_interface.inc'
      
      
@@ -549,6 +691,9 @@ c=================================================
 
    71 FORMAT(20X,A20/,(6(1pE10.3)))
 	
+
+	
+	
 	do i=1,n
            if (te0_xx(i).gt.0.d0) then
              sigk(i)=sigma_xx(i)/(1480.d0*te0_xx(i)**1.5d0)
@@ -566,9 +711,323 @@ c=================================================
       if(kpr.eq.1)print 71,apr,(qe0(i),i=1,n) 
       apr='--ajb-' 
       if(kpr.eq.1)print 71,apr,(ajb(i),i=1,n) 
+      apr='--aj0-' 
+      if(kpr.eq.1)print 71,apr,(aj0(i),i=1,n) 
+
+        do i=2,n             
+           call linear(n,sigk,f_temp(i),a,ai(i))
+        enddo
+        f_temp(1) = sigk(1)
+
+      apr='--f_sigk-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+      
+      do i=1,n
+      sigk(i)=f_temp(i)
+      end do
+      
+
+        do i=2,n             
+           call linear(n,ajb,f_temp(i),a,ai(i))
+        enddo
+        f_temp(1) = ajb(1)
+
+      apr='--f_ajb-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+      
+      do i=1,n
+      ajb(i)=f_temp(i)
+      end do
+      
+        do i=2,n             
+           call linear(n,aj0,f_temp(i),a,ai(i))
+        enddo
+        f_temp(1) = aj0(1)
+
+      apr='--f_aj0-' 
+      if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+      
+      do i=1,n
+      aj0(i)=f_temp(i)
+      end do
+
+
+
 
       return
       end
+    	
+	subroutine dina_input2_remap(n_xx,pptab_xx,fptab_xx,a_xx)
+
+	include 'double.inc'
+	include 'parf0'
+
+	dimension pptab_xx(*),fptab_xx(*),a_xx(*)
+     
+        dimension pptab(npo),fptab(npo)
+
+	common
+     *	/n_m/n,m,mp
+     *  /ge5/kpr
+      COMMON                                                            
+     *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)                     
+
+     
+	character *20 apr
+
+      if(kpr.eq.1)print *,' dina_input2_remap  n n_xx=',n,n_xx
+      
+      if(n_xx.eq.-1000)return
+      
+c=================================================
+
+      apr='--a_xx-' 
+      if(kpr.eq.1)print 71,apr,(a_xx(i),i=1,n_xx) 
+
+       do i=2,n-1
+       psix=a(i) 
+       call linear(n_xx,pptab_xx,pptab(i),a_xx,psix)
+       call linear(n_xx,fptab_xx,fptab(i),a_xx,psix)
+
+       end do
+      
+	do i=2,n-1
+	   pptab_xx(i)=pptab(i)
+	   fptab_xx(i)=fptab(i)
+	end do
+
+      apr='--pptab-' 
+      if(kpr.eq.1)print 71,apr,(pptab_xx(i),i=1,n) 
+      apr='--fptab-' 
+      if(kpr.eq.1)print 71,apr,(fptab_xx(i),i=1,n) 
+
+      n_xx=n
+
+   71 FORMAT(20X,A20/,(6(1pE10.3)))
+	
+
+      return
+      end
+
+
+	subroutine dina_remap(n_xx,te0_xx,tq0_xx,pne_xx,
+     * pd0_xx,pt0_xx,sigma_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,a_xx,ai_xx)
+
+	include 'double.inc'
+	include 'parf0'
+
+	dimension te0_xx(*),tq0_xx(*),pne_xx(*)
+	dimension pd0_xx(*),pt0_xx(*),sigma_xx(*),ajb_xx(*),
+     *  aj0_xx(*),qe0_xx(*),qq0_xx(*),a_xx(*),ai_xx(*)
+     
+        common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
+
+	common
+     *	/n_m/n,m,mp
+     *  /ge5/kpr
+      COMMON                                                            
+     *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)                     
+
+     
+	character *20 apr
+
+      if(kpr.eq.1)print *,' dina_remap  n n_xx=',n,n_xx
+      
+      if(n_xx.eq.-1000)return
+      
+c=================================================
+
+      apr='--a_xx-' 
+      if(kpr.eq.1)print 71,apr,(a_xx(i),i=1,n_xx) 
+      apr='--ai_xx-' 
+      if(kpr.eq.1)print 71,apr,(ai_xx(i),i=1,n_xx) 
+
+
+
+       do i=2,n-1
+       psix=a(i) 
+       call linear(n_xx,te0_xx,te0(i),a_xx,psix)
+       call linear(n_xx,tq0_xx,tq0(i),a_xx,psix)
+
+       call linear(n_xx,pne_xx,pne(i),a_xx,psix)
+       call linear(n_xx,pd0_xx,pd0(i),a_xx,psix)
+       call linear(n_xx,pt0_xx,pt0(i),a_xx,psix)
+
+       psix=ai(i) 
+
+       call linear(n_xx,sigma_xx,sigk(i),ai_xx,psix)
+       call linear(n_xx,ajb_xx,ajb(i),ai_xx,psix)
+       call linear(n_xx,aj0_xx,aj0(i),ai_xx,psix)
+
+       call linear(n_xx,qe0_xx,qe0(i),ai_xx,psix)
+       call linear(n_xx,qq0_xx,qq0(i),ai_xx,psix)
+
+
+       end do
+      
+!      te0(1)=te0_xx(1)
+!      tq0(1)=tq0_xx(1)
+
+!      te0(n)=te0_xx(n_xx)
+!      tq0(n)=tq0_xx(n_xx)
+      
+	do i=2,n-1
+	   te0_xx(i)=te0(i)
+	   tq0_xx(i)=tq0(i)
+
+	   pne_xx(i)=pne(i)
+	   pd0_xx(i)=pd0(i)
+	   pt0_xx(i)=pt0(i)
+	   
+	   qe0_xx(i)=qe0(i)
+	   qq0_xx(i)=qq0(i)
+
+         sigma_xx(i)=sigk(i)
+           
+	   ajb_xx(i)=ajb(i)
+	   aj0_xx(i)=aj0(i)
+
+	end do
+
+      apr='--te0-' 
+      if(kpr.eq.1)print 71,apr,(te0_xx(i),i=1,n) 
+      apr='--tq0-' 
+      if(kpr.eq.1)print 71,apr,(tq0_xx(i),i=1,n) 
+      apr='--sigma-' 
+      if(kpr.eq.1)print 71,apr,(sigma_xx(i),i=1,n) 
+      apr='--pne-' 
+      if(kpr.eq.1)print 71,apr,(pne_xx(i),i=1,n) 
+      apr='--aj0-' 
+      if(kpr.eq.1)print 71,apr,(aj0_xx(i),i=1,n) 
+
+   71 FORMAT(20X,A20/,(6(1pE10.3)))
+	
+	do i=1,n
+	end do
+
+      apr='--pd0-' 
+ !     if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n) 
+      apr='--qe0-' 
+ !     if(kpr.eq.1)print 71,apr,(qe0(i),i=1,n) 
+      apr='--ajb-' 
+ !     if(kpr.eq.1)print 71,apr,(ajb(i),i=1,n) 
+
+      return
+      end
+
+	subroutine dina_map(n_xx,te0_xx,tq0_xx,pne_xx,
+     * pd0_xx,pt0_xx,sigma_xx,ajb_xx,aj0_xx,qe0_xx,qq0_xx,a_xx,ai_xx)
+
+	include 'double.inc'
+	include 'parf0'
+
+	dimension te0_xx(*),tq0_xx(*),pne_xx(*)
+	dimension pd0_xx(*),pt0_xx(*),sigma_xx(*),ajb_xx(*),
+     *  aj0_xx(*),qe0_xx(*),qq0_xx(*),a_xx(*),ai_xx(*)
+     
+        common /c_input1/te0(npo),tq0(npo),pne(npo),
+     *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
+     *  aj0(npo),qe0(npo),qq0(npo)
+
+	common
+     *	/n_m/n,m,mp
+     *  /ge5/kpr
+      COMMON                                                            
+     *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)                     
+
+     
+	character *20 apr
+
+      if(kpr.eq.1)print *,' dina_map  n n_xx=',n,n_xx
+      if(n_xx.eq.-1000)then
+      n_xx=n
+      do i=1,n_xx
+      a_xx(i)=a(i)
+      ai_xx(i)=ai(i)
+      end do
+      if(kpr.eq.1)print *,' dina_map  n n_xx=',n,n_xx
+      end if
+      
+
+      
+c=================================================
+      
+      apr='--a_xx-' 
+      if(kpr.eq.1)print 71,apr,(a_xx(i),i=1,n_xx) 
+      apr='--ai_xx-' 
+      if(kpr.eq.1)print 71,apr,(ai_xx(i),i=1,n_xx) 
+
+       do i=2,n_xx-1
+
+       psix=a_xx(i) 
+
+       call linear(n,te0_xx,te0(i),a,psix)
+       call linear(n,tq0_xx,tq0(i),a,psix)
+
+       call linear(n,pne_xx,pne(i),a,psix)
+       call linear(n,pd0_xx,pd0(i),a,psix)
+       call linear(n,pt0_xx,pt0(i),a,psix)
+
+       psix=ai_xx(i) 
+
+       call linear(n,sigma_xx,sigk(i),ai,psix)
+       call linear(n,ajb_xx,ajb(i),ai,psix)
+       call linear(n,aj0_xx,aj0(i),ai,psix)
+
+       call linear(n_xx,qe0_xx,qe0(i),ai,psix)
+       call linear(n_xx,qq0_xx,qq0(i),ai,psix)
+
+
+       end do
+      
+!      te0(1)=te0_xx(1)
+!      tq0(1)=tq0_xx(1)
+
+!      te0(n)=te0_xx(n_xx)
+!      tq0(n)=tq0_xx(n_xx)
+      
+	do i=2,n_xx-1
+	   te0_xx(i)=te0(i)
+	   tq0_xx(i)=tq0(i)
+
+	   pne_xx(i)=pne(i)
+	   pd0_xx(i)=pd0(i)
+	   pt0_xx(i)=pt0(i)
+	   
+	   qe0_xx(i)=qe0(i)
+	   qq0_xx(i)=qq0(i)
+
+         sigma_xx(i)=sigk(i)
+           
+	   ajb_xx(i)=ajb(i)
+	   aj0_xx(i)=aj0(i)
+	   
+	end do
+
+      apr='--te0-' 
+      if(kpr.eq.1)print 71,apr,(te0_xx(i),i=1,n_xx) 
+      apr='--tq0-' 
+      if(kpr.eq.1)print 71,apr,(tq0_xx(i),i=1,n_xx) 
+      apr='--sigma-' 
+      if(kpr.eq.1)print 71,apr,(sigma_xx(i),i=1,n_xx) 
+
+   71 FORMAT(20X,A20/,(6(1pE10.3)))
+	
+	do i=1,n
+	end do
+
+      apr='--pd0-' 
+ !     if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n) 
+      apr='--qe0-' 
+ !     if(kpr.eq.1)print 71,apr,(qe0(i),i=1,n) 
+      apr='--ajb-' 
+ !     if(kpr.eq.1)print 71,apr,(ajb(i),i=1,n) 
+
+      return
+      end
+
 
 
 !> dina_v96_in is the subroutine to write Green Functions from IDSs to DINA in DINA units
@@ -765,11 +1224,9 @@ c----
 
                                                                         
 
-!        write(41,*)' nre nze ',nre,nze                                  
-
-                                                                        
-
-!        write (41,*)' dx dy ',dx,dy                                     
+        write(6,*)' nre nze ',nre,nze                                  
+        write(6,*)' nr nz ',nr,nz                                  
+        write (6,*)' dx dy ',dx,dy                                     
 
                                                                         
 
@@ -779,7 +1236,7 @@ c----
 
 	x(i)=re(i)                                                             
 
-!        write(41,*)' i x ',i,x(i)                                       
+!        write(6,*)' i x ',i,x(i)                                       
 
 	end do                                                                 
 
@@ -788,8 +1245,7 @@ c----
 	do i=1,nz                                                              
 
 	   y(i)=ze(i)                                                          
-
-!        write(41,*)' i y ',i,y(i)                                       
+!        write(6,*)' i y ',i,y(i)                                       
 
 	end do                                                                 
 
@@ -1375,6 +1831,8 @@ c	implicit real*8 (a-h,o-z)
  	include 'parf_mike' 
         common
      *  /ge5/kpr
+	common                                                                 
+     *	/n_m/n,m,mp                                                      
 
       common /c_tokamak_config1/
      * npf_c,
@@ -1407,6 +1865,7 @@ c	implicit real*8 (a-h,o-z)
       common /c_kpr/kpr_c
 
       common /c_for002_kav/tay_c,rs0_c,bt0_c,key_t11_c
+      common /c_for002_kav2/n_c
 
       common /c_gaps_data_ramp/x_gaps_c(mu),y_gaps_c(mu),n_ga_c
 
@@ -1453,7 +1912,23 @@ c	implicit real*8 (a-h,o-z)
 
 
       
-      kpr=1
+!      kpr=1
+
+      if(i_data2.eq.1)then
+     	open(unit=49,file='dina_data2.dat',
+     *  form='formatted')
+          read (49,*) 
+          read (49,*)n_c
+      close (49)      
+      end if
+      
+!      n=n_c
+      n_c=50
+      n=n_c
+      
+      if(kpr.eq.1)print *,'n n_c ',n,n_c
+      
+      call one2d()
       
      	open(unit=49,file='dina_data.dat',
 !!!     	open(unit=41,file='tokamak_config.dat',
@@ -1707,6 +2182,7 @@ c
 
           read (49,*) 
           read (49,*)k_ener_ext_c16, k_dens_ext_c16,k_ajb_ext_c16
+          
 
 	close(49)
 
@@ -1747,7 +2223,7 @@ cc
       
 	if(kpr.eq.1)PRINT*,'Open scr_data from TOK'
 !      open (unit=39,file='scr_data.dat',form='formatted')
-      open (unit=39,file='general_data.dat',form='formatted')
+      open (unit=39,file='general_data_1.dat',form='formatted')
 
       read (39,*)
       read (39,*)nn
@@ -2044,7 +2520,17 @@ c----------------------------
         
       kpr=1
       
-      n = n_xx
+      if(n.ne.n_xx)then
+      print *,' n n_xx',n,n_xx
+      print *,' n .ne.n_xx   STOP'
+      stop
+      end if
+      
+      
+!      n = n_xx
+      
+      
+      
       nutab = n_xx
       ncam = ncam_xx
       npf = npf_xx
@@ -2058,7 +2544,11 @@ c----------------------------
       
       coef_ppx = 1.d10/(rs0*8.d0*pi**2)
       coef_pffx = rs0/(40.d0*pi)
-      
+
+      if(kpr.eq.1)print *,' - rs0 pi==',rs0,pi
+
+      if(kpr.eq.1)print *,' - coef_ppx coef_pffx==',coef_ppx,coef_pffx
+ 
       do i=1,nutab
         pstab(i) = pstab_xx(i)
 !        pptab(i) = pptab_xx(i)*tpl_dir 

@@ -2045,6 +2045,9 @@ c	pause 'from shape_emo'
 
 	character *12 apr
 
+
+      return
+      
 	i_sh=i_sh+1
 	if(i_sh.eq.1)then
        open (unit=41,file='fc.txt',form='formatted') 
@@ -2094,6 +2097,9 @@ c	pause 'from shape_emo'
 	character *30 apr1
 	dimension a_print(200)
 
+
+      tt1=tt
+      
 	i_sh=i_sh+1
 
 	if(i_sh.eq.1)then
@@ -2115,6 +2121,17 @@ c-------
               t_t(i)=t_t(i)*1000. 
            end do 
 
+            tt1=0.
+            do i=2,n_t
+            if(kpr.eq.1)print *,' i tt t_t(i)===',i,tt,t_t(i) 
+            if(t_t(i).ge.tt)then
+            tt1=t_t(i-1)
+            go to 2           
+            end if
+            end do
+ 
+ 2    continue            
+
       do i=1,npf
 	a_print(i)=pfres(i)
 	end do
@@ -2135,11 +2152,12 @@ c-------
 
            
            apr='-t_t-' 
-c           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
+           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
 !           close (unit=41) 
         end if
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
+!      stop
 
       k_inv=0
       
@@ -2158,7 +2176,7 @@ c           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t)
 	 num=20
 !	 if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr1)
 
-      if( (tt-t1)*(tt-t2).le.0.)then
+      if( (tt1-t1)*(tt1-t2).le.0.)then
 	 
 	 	 do k=1,npf
 	    pfres(k)=pf_t(k,i)
@@ -2196,7 +2214,7 @@ c           if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t)
 
 	 end if
 	 
-	 if(kpr.eq.1)print *,' from SHAPE pfres'
+	 if(kpr.eq.1)print *,' from SHAPE pfres tt1 k_inv',tt1,k_inv
 
        return 
        end 

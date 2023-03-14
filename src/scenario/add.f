@@ -251,6 +251,8 @@ c	print *,' num n ',num,n
 
 	dimension dens_imp(npo),q(*),sel(*)
 
+      return
+
 	call imp_outp(dens_imp)
 
 	i_en=i_en+1

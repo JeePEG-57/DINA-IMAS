@@ -548,6 +548,8 @@ c
 
 	character *12 apr
 
+      return
+
 	i_sh=i_sh+1
 	if(i_sh.eq.1)then
        open (unit=41,file='fc.txt',form='formatted') 
@@ -978,6 +980,9 @@ c	 implicit real *8 (a-h,o-z)
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 
+
+      return
+      
       open (unit=43,file='equil.txt',form='formatted')
 
 5000    format (6(1pe14.6))
@@ -1357,6 +1362,8 @@ c
 	include 'double.inc'
 	include 'new_com.inc'
 
+      return
+
 	call shape_equil2_c(
      *  tt,n,ppx,pffx,
      *  npf,pf,
@@ -1389,12 +1396,6 @@ c
 
 	character *12 apr
 
-      return
-      
-      call equil_data()
-
-      return
-
 	i_sh=i_sh+1
 
 	if(i_sh.eq.1)then
@@ -1408,20 +1409,27 @@ c-------
 	i=k
       read (41,*,err=2000,end=2000)t_t(i),tpl_t(i)
       read (41,*,err=2000,end=2000)n
-
+      
+!      print *,' i n t tpl ',i,n,t_t(i),tpl_t(i)
 
              nprof=n
 
 
       read (41,*,err=2000,end=2000)(dmn_t(iprof,i),iprof=1,n)
+!      print *,'dmn_t '
       read (41,*,err=2000,end=2000)(ppx_t(iprof,i),iprof=1,n)
+!      print *,'ppx_t '
       read (41,*,err=2000,end=2000)(pffx_t(iprof,i),iprof=1,n)
+!      print *,'pffx_t '
       
       read (41,*,err=2000,end=2000)ncam
+ !     print *,' ncam ',ncam
       read (41,*,err=2000,end=2000)(tcam_t(kk,i),kk=1,ncam)
       read (41,*,err=2000,end=2000)npf
+ !     print *,' npf ',npf
       read (41,*,err=2000,end=2000)(pf_t(kk,i),kk=1,npf)
       read (41,*,err=2000,end=2000)rmag_t(i),zmag_t(i)
+ !     print *,' rmag_t(i),zmag_t(i) ',rmag_t(i),zmag_t(i)
 
 	n_t=k
 
@@ -1571,9 +1579,12 @@ c
 	 end do
 
 	if(kpr.eq.1)print *,' from shape_equil tt tpl t_coef',tt,tpl,t_coef
-	if(kpr.eq.1)print *,' from shape_equil rmag zmag',rmag,zmag
+	if(kpr.eq.1)print *,' from shape_equil rmag zmag i_coef',
+     *  rmag,zmag,i_coef
 	apr='ppx_t'
- !     if(kpr.eq.1)print 71,apr,(ppx_t(i,1),i=1,nprof) 
+      if(kpr.eq.1)print 71,apr,(ppx_t(i,1),i=1,nprof) 
+	apr='ppx_t'
+      if(kpr.eq.1)print 71,apr,(ppx_t(i,2),i=1,nprof) 
 	apr='ppx'
       if(kpr.eq.1)print 71,apr,(ppx(i),i=1,nprof) 
 	apr='pffx_t'
@@ -1590,3 +1601,247 @@ c
 
 	return
 	end
+
+
+	subroutine prof_out_test2()
+	include 'double.inc'
+      include 'new_com.inc'
+
+!	call prof_out_test2_c(tt,tpl,n,
+!     *  te0,tq0,pne,sigk)
+
+	return
+	end
+
+	subroutine prof_out_test2_c(tt,n,
+     *  te0,tq0,pne,
+     *  pd0,pt0,sigma,ajbut,aj0,qe0,qq0)
+
+	include 'double.inc'
+
+	dimension te0(*),tq0(*),pne(*),
+     * pd0(*),pt0(*),sigma(*),ajbut(*),
+     * aj0(*),qe0(*),qq0(*)
+
+      character * 20 apr
+
+	i_dop=i_dop+1
+      if(i_dop.eq.1)then
+	open (unit=41,file='prof_test2.txt',
+     *	form='formatted')
+       else
+	open (unit=41,file='prof_test2.txt',
+     *	form='formatted',access='append')
+      end if
+
+      
+	write (41,5002)n,tt
+c
+	write (41,5000) (te0(i),i=1,n)
+	write (41,5000) (tq0(i),i=1,n)
+	write (41,5000) (pne(i),i=1,n)
+	write (41,5000) (pd0(i),i=1,n)
+	write (41,5000) (pt0(i),i=1,n)
+	write (41,5000) (sigma(i),i=1,n)
+	write (41,5000) (ajbut(i),i=1,n)
+	write (41,5000) (aj0(i),i=1,n)
+	write (41,5000) (qe0(i),i=1,n)
+	write (41,5000) (qq0(i),i=1,n)
+
+	close (unit=41)
+
+      apr='pne---'
+      print 71,apr,(pne(i),i=1,n)
+      apr='sigma---'
+      print 71,apr,(sigma(i),i=1,n)
+
+   71 FORMAT(5X,A40/,(6(1pE11.3)))
+
+      print *,'tt ---',tt
+
+
+5001    format(4i4)
+5000    format (6(1x,1pe14.6e3))
+5002    format (i4,6(1x,1pe14.6e3))
+
+
+	return
+	end
+	subroutine prof_in_test2()
+	include 'double.inc'
+      include 'new_com.inc'
+
+!	call prof_in_test2_c(tt,n,
+!     *  te0,tq0,pne,
+!     *  pd0,pt0,sigma,ajbut,aj0,qe0,qq0)
+
+	return
+	end
+
+	subroutine prof_in_test2_c(tt,n,
+     *  te0,tq0,pne,
+     *  pd0,pt0,sigma,ajbut,aj0,qe0,qq0,kpr)
+
+	include 'double.inc'
+
+	dimension te0(*),tq0(*),pne(*),
+     * pd0(*),pt0(*),sigma(*),ajbut(*),
+     * aj0(*),qe0(*),qq0(*)
+
+
+ 	include 'parf0' 
+! 	include 'parf_mike' 
+	parameter ( ntime=5)
+
+	dimension t_t(ntime),
+     *  te0_t(npo,ntime),tq0_t(npo,ntime),pne_t(npo,ntime),
+     *  pd0_t(npo,ntime),pt0_t(npo,ntime),
+     *  sigma_t(npo,ntime),ajbut_t(npo,ntime),
+     *  aj0_t(npo,ntime),qe0_t(npo,ntime),qq0_t(npo,ntime)
+
+	character *12 apr
+
+      n_x=n
+      
+	i_sh=i_sh+1
+
+	if(i_sh.ge.1)then
+
+	n_t=9999
+c-------
+           open (unit=41,file='prof_test2.dat',form='formatted')
+
+!           read (41,*)n_t
+	      k=0
+           do ii=1,n_t 
+	      k=k+1
+         	i=k
+
+	        read (41,*,err=2000,end=2000)n,t_t(i)
+     
+              read (41,*)(te0_t(iprof,i),iprof=1,n)
+              read (41,*)(tq0_t(iprof,i),iprof=1,n)
+              read (41,*)(pne_t(iprof,i),iprof=1,n)
+              read (41,*)(pd0_t(iprof,i),iprof=1,n)
+              read (41,*)(pt0_t(iprof,i),iprof=1,n)
+              read (41,*)(sigma_t(iprof,i),iprof=1,n)
+              read (41,*)(ajbut_t(iprof,i),iprof=1,n)
+              read (41,*)(aj0_t(iprof,i),iprof=1,n)
+              read (41,*)(qe0_t(iprof,i),iprof=1,n)
+              read (41,*)(qq0_t(iprof,i),iprof=1,n)
+
+ 
+      if(kpr.eq.-1)print *,' i k tt t==',i,k,tt,t_t(i)
+      
+      if(t_t(i).gt.tt)goto 2000
+ 
+      	do iprof=1,nprof
+
+	 te0_t(iprof,i-1)=te0_t(iprof,i)
+	 tq0_t(iprof,i-1)=tq0_t(iprof,i)
+	 pne_t(iprof,i-1)=pne_t(iprof,i)
+	 pd0_t(iprof,i-1)=pd0_t(iprof,i)
+	 pt0_t(iprof,i-1)=pt0_t(iprof,i)
+	 sigma_t(iprof,i-1)=sigma_t(iprof,i)
+	 ajbut_t(iprof,i-1)=ajbut_t(iprof,i)
+	 aj0_t(iprof,i-1)=aj0_t(iprof,i)
+	 qe0_t(iprof,i-1)=qe0_t(iprof,i)
+	 qq0_t(iprof,i-1)=qq0_t(iprof,i)
+	end do
+
+      k=1
+
+
+      if(n.ne.n_x)then
+      print *,' n n_x=',n,n_x
+      stop     
+!      go to 2000 
+      end if
+c	read (*,*)
+           end do 
+           
+2000	continue
+
+      if(kpr.eq.1)print *,' i k tt t==',i,k,tt,t_t(i)
+	
+	n_t=k
+
+	if(n_t.ge.ntime)then
+	print *,'n_t gt ntime',n_t,ntime
+
+	stop
+	end if
+
+	if(n_t.lt.1)then
+	print *,'n_t lt 1 k=',n_t,k
+
+	stop
+	end if
+           apr='-t_t-' 
+c           print 71,apr,(t_t(i),i=1,n_t) 
+
+	nprof=n
+
+
+           close (unit=41) 
+        end if
+
+71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+
+	do i=1,n_t
+           apr='-te0_t-' 
+           print 71,apr,(te0_t(iprof,i),iprof=1,nprof) 
+	end do
+
+      do i=2,n_t
+      if( (tt-t_t(i-1))*(tt-t_t(i)).le.0.)then
+c==================
+	 t_coef=(tt-t_t(i-1))/( t_t(i)-t_t(i-1) )
+
+	do iprof=1,nprof
+	te0(iprof)=te0_t(iprof,i-1)+t_coef*(te0_t(iprof,i)-
+     *  te0_t(iprof,i-1))
+
+	 tq0(iprof)=tq0_t(iprof,i-1)+t_coef*(tq0_t(iprof,i)-
+     *  tq0_t(iprof,i-1))
+
+	 pne(iprof)=pne_t(iprof,i-1)+t_coef*(pne_t(iprof,i)-
+     *  pne_t(iprof,i-1))
+
+	 pd0(iprof)=pd0_t(iprof,i-1)+t_coef*(pd0_t(iprof,i)-
+     *  pd0_t(iprof,i-1))
+
+	 pt0(iprof)=pt0_t(iprof,i-1)+t_coef*(pt0_t(iprof,i)-
+     *  pt0_t(iprof,i-1))
+
+	 sigma(iprof)=sigma_t(iprof,i-1)+t_coef*(sigma_t(iprof,i)-
+     *  sigma_t(iprof,i-1))
+
+	 ajbut(iprof)=ajbut_t(iprof,i-1)+t_coef*(ajbut_t(iprof,i)-
+     *  ajbut_t(iprof,i-1))
+
+
+	end do
+
+c
+	 end if
+
+	 end do
+
+        apr='-te0_t-' 
+        print 71,apr,(te0_t(i,2),i=1,n) 
+        apr='-te0-' 
+        print 71,apr,(te0(i),i=1,n) 
+        apr='-sigma-' 
+        print 71,apr,(sigma(i),i=1,n) 
+        apr='-pne-' 
+        print 71,apr,(pne(i),i=1,n) 
+
+c	read (*,*)
+
+5001    format(4i4)
+5000    format (6(1pe14.6e3))
+
+	return
+	end
+

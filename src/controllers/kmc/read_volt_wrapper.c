@@ -35,6 +35,7 @@
 /* %%%-SFUNWIZ_wrapper_includes_Changes_END --- EDIT HERE TO _BEGIN */
 #define u_width 
 #define y_width 500
+#define mexPrintf printf
 /*
  * Create external references here.  
  *
@@ -42,7 +43,7 @@
 /* %%%-SFUNWIZ_wrapper_externs_Changes_BEGIN --- EDIT HERE TO _END */
 /* extern double func(double a); */
 /* %%%-SFUNWIZ_wrapper_externs_Changes_END --- EDIT HERE TO _BEGIN */
-
+extern FILE*f;
 /*
  * Output functions
  *
@@ -58,14 +59,49 @@ void read_volt_Outputs_wrapper(real_T *y0,
       y1[0].re = u1[0].re;
       y1[0].im = u1[0].im;
 */
-int i,j,k,N; static int kl; static double y[500][20]; FILE*f;char b[1024];
+int i,j,k,N,kk,jj; static int kl; static double y[500][20]; 
+char b[1024];char str[1024];
 
 if(kl==0){
+
+printf("---volt.dat \n");	
+
+for(j=0;j<500;j++)y[j][0]=-1001;
+	
 N=*n_mc; /*mexPrintf(" N %d\n",N);*/
-f=fopen("volt.dat","r");fgets(b,1023,f);i=0;
+//f=fopen("volt.dat","r");
+fgets(b,255,f);
+//fgets(b,255,f);
+//sscanf(b,"%c %c %c %c",&str[0],&str[1],&str[2],&str[3]);
+printf("--- %s \n",b);
+i=0;
 while(N==fscanf(f,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
 y[i],y[i]+1,y[i]+2,y[i]+3,y[i]+4,y[i]+5,y[i]+6,y[i]+7,y[i]+8,y[i]+9,y[i]+10,y[i]+11))i++;
-fclose(f);
+//fclose(f);
+
+kk=0;
+for(j=0;j<500;j++){
+	if(y[j][0]>-1000)kk=kk+1;
+}
+
+mexPrintf(" kk= %d\n",kk);
+
+for(k=0;k<kk;k++) {
+	
+	
+		mexPrintf(" k  t  %d %f \n ",k,y[k][0]);
+		for(jj=1;jj<4;jj++){
+		mexPrintf(" %f  ",y[k][jj]);
+		}
+		mexPrintf("  \n ");
+		
+}
+
+
+printf(" N i %d %d \n",N,i);
+
+//getchar();
+
 /*mexPrintf(" i %d\n",i);*/
 for(k=0;k<N;k++)for(j=i;j<500;j++)y[j][k]=0;
 for(j=i;j<500;j++)y[j][0]=y[j-1][0]+1;

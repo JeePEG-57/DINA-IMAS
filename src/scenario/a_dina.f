@@ -431,8 +431,9 @@ c  i_fil=0  old case without reconstruction....
       end if
  
  
- 
- 
+      
+      if(i_gaps.eq.1)then
+      
          if(i_en3.eq.1)then
          open (unit=1,file='gaps.dat',form='formatted')
           apr2='tt[s]	gap1[m]	gap2[m]	gap3[m]	gap4[m]	gap5[m]	gap6[m]'
@@ -445,6 +446,8 @@ c  i_fil=0  old case without reconstruction....
          
       write (1,*)tt*1.e-3,(gaps(i)*1.e-2,i=1,n_ga)
       close(1)
+      
+      end if
       
       
     	ntay=ntay+1
@@ -892,6 +895,8 @@ c------------
 71	format(20x,a6/,(6(1pe10.3)))
 
 
+      return
+      
       filename='metric.dat'
 
       nn2=n
@@ -1291,6 +1296,8 @@ C
       print *,'  ipl updwn m1', ipl,updwn,m1
       end if
   
+      return
+      
 	  open(1,file='equil_in_dina.dat')
       	  
 	  	write(1,*)

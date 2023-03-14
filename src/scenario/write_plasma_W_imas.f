@@ -192,6 +192,9 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
         
         dimension dNB_xx(24)
 
+
+        return
+        
 c******* Begin of Sign changing ******
         tpl_imas=tpl*(-1)
 
@@ -254,6 +257,8 @@ c--------------------
         if(kpr.eq.1)print*,'tpl_but tpl_beam tpl_ecd tpl_ohm ',
      *  tpl_but,tpl_beam,tpl_ecd,tpl_ohm
         
+        if(i_plasma1.eq.1)then
+        
         if(i_en.eq.1)then
            open (unit=41,file='plasma1.dat',form='formatted')
            write(41,*)'tt,tpl,tpl_ohm,tpl_but,tpl_ecd,tpl_beam'
@@ -265,7 +270,8 @@ c--------------------
      *   tpl_ecd,tpl_beam
            close (41)
 
-
+        end if
+        
 c-----------------
 
 
@@ -354,6 +360,8 @@ c	close (41)
 
 
 	call bp_gribov(bz_left,bz_right)
+
+        if(kpr.eq.1)print*,' bz_left,bz_right=',bz_left,bz_right
 
         if(i_en.gt.1)then
 	   open (unit=65,file='plasma.dat',

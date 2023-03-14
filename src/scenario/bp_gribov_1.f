@@ -6,12 +6,14 @@ c
 
 !      print *,' xleft xright zmag=',xleft,xright,zmag
       
-      call bp_gribov_c(xleft,xright,zmag,bz_left_xx,bz_right_xx)
+      call bp_gribov_c(xleft,xright,zmag,bz_left_xx,bz_right_xx,
+     *  kpr)
       
       return
       end
 
-      subroutine bp_gribov_c(xleft,xright,zmag,bz_left,bz_right)
+      subroutine bp_gribov_c(xleft,xright,zmag,bz_left,bz_right,
+     *  kpr)
 
 	include 'double.inc'
 
@@ -24,7 +26,7 @@ c
            else
               urr=xright
            end if
-c           if(kpr.eq.1)print*,'!!! urr vrr',urr vrr
+           if(kpr.eq.1)print*,'!!! urr vrr',urr vrr
 	   call boxd(urr,vrr,pdd,ier)          
 c---------------
 	   psi_r=pdd(2)

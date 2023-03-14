@@ -4,24 +4,24 @@
     <user></user>
     <database>test</database>
     <pulse>170</pulse>
-    <run>1</run>
-    <time_start>0.0</time_start>
+    <run>61</run>
+    <time_start>25.</time_start>
     <interp_mode>1</interp_mode>
   </input_start>
   <output>
     <database>test</database>
     <pulse>170</pulse> 
-    <run>10</run>
-    <decimation>1</decimation>
+    <run>610</run>
+    <decimation>1000</decimation>
   </output>
   <input_transp>
-    <database></database>
+    <database>test</database>
     <pulse>170</pulse>
-    <run>2</run>
+    <run>61</run>
     <interp_mode>1</interp_mode>
   </input_transp>
-  <time_stop>1000.0</time_stop>
-  <time_ext>4000.0</time_ext>
+  <time_stop>80.0</time_stop>
+  <time_ext>10.0</time_ext>
   <controller>kmc</controller>
   <step_max>1000000</step_max>
   <use_astra>0</use_astra>

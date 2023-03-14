@@ -3,6 +3,9 @@
 #define kf 15
 #define mexPrintf printf
 
+extern FILE *f2;
+//	FILE *f2;
+
 
 /* Subroutine */ int scen_read(int i_en, int npf, int indx, int  *n, 
 		double *t_val, double *tpl_val, double *pf_val)
@@ -16,43 +19,61 @@
 	static double pf[nmax][kf];
 	static double t[nmax],tpl[nmax];
 	int res;
+	char b[1024];
 
-	FILE *prob;
 
 
 
 	if(i_en > 1){goto l2;}
 
-	mexPrintf(" i_en npf %d %d \n ",i_en,npf);
+//	mexPrintf(" i_en npf %d %d \n ",i_en,npf);
 
 //	return;
 
-//	if ((prob=fopen("scr_data_test","r"))==NULL){
-	if ((prob=fopen("scr_data.dat","r"))==NULL){
-	mexPrintf(" scr_data_test %d \n ",i_en);
-	return -1;
-	}
-/* read (41,*) */
+//	f2=fopen("scr_data.dat","r");
+
+	printf("---scr_data.dat \n");
+
+	/* read (41,*) */
 /* read (41,*)ncam */
+	fgets(b,1024,f2);
+	sscanf(b, "%s ", &s_ncam);
+	printf(" sss== %s \n  ",s_ncam);
 
-	fscanf(prob, "%s ", &s_ncam);
+	fgets(b,1024,f2);
+	sscanf(b, "%s ", &s_ncam);
+	printf(" sss== %s \n  ",s_ncam);
 
-	mexPrintf(" sss %s  ",s_ncam);
+	fgets(b,1024,f2);
+	sscanf(b, "%s ", &s_ncam);
+	printf(" sss== %s \n  ",s_ncam);
+
+
+	sscanf(b, "%s ", &s_ncam);
+
+	printf(" sss== %s \n  ",s_ncam);
+
+//	mexPrintf(" sss %s  ",s_ncam);
 
 //	nmax1=21;
 	nmax1=nmax;
 
 	for (i = 1; i <= nmax1; ++i) {
 	
-		ii=feof(prob);
+		ii=feof(f2);
 
-//	mexPrintf(" i ii %d %d \n   ",i,ii);
+
+	//mexPrintf(" i ii %d %d \n   ",i,ii);
 
 	if(ii != 0){goto l1;}
 
 			
+	res=fscanf(f2, "%f",&ss);
 
-	res=fscanf(prob, "\n %f",&ss);
+//	fgets(b,1024,f2);
+//	res=sscanf(b, " %f",&ss);
+
+//	printf(" i ii res ss %d %d %d %g\n   ",i,ii,res,ss);
 
 	if(res != 1){goto l1;}
 
@@ -60,20 +81,21 @@
 
 	t[i]=ss;
 
-	mexPrintf(" i res t %d %d %f ",i,res,t[i]);
+//	mexPrintf(" i res t %d %d %f ",i,res,t[i]);
 
-    //printf(" i %d \n ",i);
-    //printf(" rc %g  ",rc[i]);
-	fscanf(prob, "%f",&ss);
+	fscanf(f2, "%f",&ss);
+//	res=sscanf(b, " %f",&ss);
 	tpl[i]=ss;
-	mexPrintf(" i t tpl  %d %f %f \n ",i,t[i],tpl[i]);
+	printf(" i t tpl  %d %f %f \n ",i,t[i],tpl[i]);
+//	mexPrintf(" i t tpl  %d %f %f \n ",i,t[i],tpl[i]);
     //printf(" zc %g  ",zc[i]);
 	for (j = 1; j <= npf; ++j) {
-	fscanf(prob, "%f",&ss);
+	fscanf(f2, "%f",&ss);
+//	res=sscanf(b, " %f",&ss);
 	pf[i][j]=ss;
-		mexPrintf("%f ",pf[i][j]);
+//		mexPrintf("%f ",pf[i][j]);
      }
-		mexPrintf(" \n   ");
+//		mexPrintf(" \n   ");
 
 						 
 								 }
@@ -82,9 +104,15 @@ l1:
 
 /* close (41) */
 
-	mexPrintf("  i res %d %d \n   ",i,res);
+//	mexPrintf("  i res %d %d \n   ",i,res);
 
-	fclose(prob);
+	//fclose(f2);
+
+
+		printf("---scr_data.dat finished \n");
+
+
+	//	getchar();
 
 //	return 0;
 

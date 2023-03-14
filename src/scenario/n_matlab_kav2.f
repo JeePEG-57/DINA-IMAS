@@ -2041,7 +2041,7 @@ ccc      call ppx_pffx_save(2)
 !      call wr_rpp()
 !      call wr_zpp()
 
-      call wr_equil()
+!      call wr_equil()
 
 	zvel=zvel_tran
 

@@ -1776,6 +1776,8 @@ c	shape_out(32)=vs_ext
 	if(kpr.eq.1)print *,' tene,wdh====',tene,wdh
 	if(kpr.eq.1)print *,' ++p_loss====',p_loss
 
+      if(i_pvs3.eq.1)then
+      
 	open (unit=41,file='te_ti.dat',
      *	form='formatted')
 	write(41,*)'te_a   ti_a  zeff_a '
@@ -1792,6 +1794,8 @@ c	shape_out(32)=vs_ext
 	write (41,*)Pvs3,P_rg
 	close (41)
 
+      end if
+      
 	tene=tene*1.d3
 
 	psi_pf=vs_pf

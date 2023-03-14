@@ -364,6 +364,7 @@ c     *  tok1,aj0,ajb,p,q,pne,tq0,te0)
 
 	character *20 apr
 
+        return
         
         do i=1,n
 c

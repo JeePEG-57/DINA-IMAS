@@ -2148,7 +2148,7 @@ c	a_print(i)=ajb(i)
 	apr='-3-ajb '
 c	call out42(n_pr,a_print,num,apr)
 
-      call wr_equil()
+!      call wr_equil()
       
         call kpl_out()
 
@@ -2159,10 +2159,12 @@ c	call out42(n_pr,a_print,num,apr)
 	   tcam_help(i)=tcam(i)*1.d-3
 	end do
 	
+	 if(i_v3a.eq.1)then
        open (unit=40,file='I_v3a.txt',form='formatted') 
        write (40,*)(tcam_help(i),i=1,ncam)
        close (40)
-
+       end if
+      
 
 	call time_gen() 
 	                                                      
@@ -2413,13 +2415,18 @@ c	if(dabs(delzmag).ge.3.)then
      *  /ef_0/key_ef
      
       common /c_for002_kav/tay_c,rs0_c,bt0_c,key_t11_c
+      common /c_for002_kav2/n_c
        
 
 !     	open(unit=2,file='for002_kav',form='formatted')
         if(kpr.eq.1)print *,' begin for002_kav reading'
 
 !	read (49,*)
-	n=50
+!	n=50
+	n=n_c
+      
+      if(kpr.eq.1)print *,' n n_c',n,n_c
+      
 	m=90
 	next=1
 	
@@ -2642,6 +2649,8 @@ c	if(dabs(delzmag).ge.3.)then
 	key_t11=key_t11_c
 	bt0=bt0_c
 
+      if(kpr.eq.1)print *,' n==',n
+      
       if(kpr.eq.1)print *,' n_polar==',n_polar
 
 

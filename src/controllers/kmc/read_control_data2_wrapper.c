@@ -17,7 +17,6 @@
 /* %%%-SFUNWIZ_wrapper_includes_Changes_END --- EDIT HERE TO _BEGIN */
 #define u_width 
 #define y_width 1
-#define mexPrintf printf
 /*
  * Create external references here.  
  *
@@ -25,6 +24,8 @@
 /* %%%-SFUNWIZ_wrapper_externs_Changes_BEGIN --- EDIT HERE TO _END */
 /* extern double func(double a); */
 /* %%%-SFUNWIZ_wrapper_externs_Changes_END --- EDIT HERE TO _BEGIN */
+
+extern FILE*f;
 
 /*
  * Output functions
@@ -42,39 +43,49 @@ void read_control_data2_Outputs_wrapper(real_T *y0)
 */
 int i; static int kl;
 double y[17];
-FILE*f;char b[256];
+char b[256];
 
 
-	mexPrintf("---control_data2.dat \n");
+	//printf("---control_data2.dat \n");
 
 if(kl==0){
 
-f=fopen("control_data2.dat","r");
+	printf("+++control_data2.dat \n");
+
+//f=fopen("control_data2.dat","r");
+
 fgets(b,255,f);
 for(i=0;i<=8;i++) fscanf(f,"%lf",&y[i]);
+
+printf(" y[0] y[8] %g  %g  \n",y[0],y[8]);
+
 
 fscanf(f,"\n");
 fgets(b,255,f);
 for(i=9;i<=15;i++) fscanf(f,"%lf",&y[i]);
-fclose(f);
-mexPrintf("+++control_data2.dat \n");
+//fclose(f);
+printf(" y[9] y[15] %g  %g  \n",y[9],y[15]);
 
-mexPrintf("---tt_kavin.dat \n");
+printf("---tt_kavin.dat \n");
 
-f=fopen("tt_kavin.dat","r");
+//f=fopen("tt_kavin.dat","r");
+fscanf(f,"\n");
 fgets(b,255,f);
 
-mexPrintf("1 ---tt_kavin.dat \n");
+printf("1 ---tt_kavin.dat \n");
 
 fscanf(f,"%lf",&y[16]);
+fscanf(f,"\n");
 
-mexPrintf("2 +++tt_kavin.dat \n");
+printf(" y[16] %g  \n",y[16]);
 
-fclose(f);
+printf("2 +++tt_kavin.dat \n");
+
+//fclose(f);
 
 for(i=0;i<=15;i++) y0[i]=y[i]; y0[16]=y[16]*1e-3;
 
-mexPrintf("3 +++tt_kavin.dat \n");
+printf("3 +++tt_kavin.dat \n");
 
 kl=1;}
 /* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */

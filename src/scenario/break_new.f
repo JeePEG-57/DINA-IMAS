@@ -2492,7 +2492,7 @@ c      read(*,*)
 
 	tmp='na_br'
 
-	if(i_en.eq.1)then
+	if(i_en.eq.-1)then
 	open (unit=41, file=tmp,form='formatted')
 	write (41,*)ng
 	do i=1,ng

@@ -1578,6 +1578,9 @@ c
 
 	i_dop=i_dop+1
 
+
+!      return
+
 	if(i_dop.eq.1)open (unit=42,file='for042',
      *	form='formatted')
 	if(i_dop.gt.1)open (unit=42,file='for042',access='append',
@@ -1632,6 +1635,9 @@ c
         common
      *  /ge5/kpr
 	character *12 apr
+
+      return
+      
 
 	i_dop=i_dop+1
 
@@ -4646,6 +4652,9 @@ c	 implicit real *8 (a-h,o-z)
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 
+
+      return
+      
       open (unit=41,file='tabppf.txt',form='formatted')
       write (41,*)nutab
 

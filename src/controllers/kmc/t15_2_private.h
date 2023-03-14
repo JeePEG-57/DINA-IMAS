@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 't15_2'.
  *
- * Model version                  : 1.1161
+ * Model version                  : 1.1164
  * Simulink Coder version         : 8.5 (R2013b) 08-Aug-2013
- * C/C++ source code generated on : Fri Jan 14 08:20:53 2022
+ * C/C++ source code generated on : Sun Feb 05 15:16:22 2023
  *
  * Target selection: ert_shrlib.tlc
  * Embedded hardware selection: 32-bit Generic
@@ -45,12 +45,16 @@ void BINARYSEARCH_real_T(uint32_T *piLeft, uint32_T *piRght, real_T u, const
   real_T *pData, uint32_T iHi);
 void LookUp_real_T_real_T(real_T *pY, const real_T *pYData, real_T u, const
   real_T *pUData, uint32_T iHi);
-extern void pf_lookup3(SimStruct *rts);
-extern void read_volt(SimStruct *rts);
 extern void read_control_data2(SimStruct *rts);
-extern void read_gaps(SimStruct *rts);
-extern void read_gaps_term(SimStruct *rts);
 extern void read_tt_kavin2(SimStruct *rts);
+extern void read_gaps(SimStruct *rts);
+extern void read_volt(SimStruct *rts);
+extern void read_gaps_term(SimStruct *rts);
+extern void pf_lookup3(SimStruct *rts);
+extern void contr_lim(SimStruct *rts);
+extern void contr_curr(SimStruct *rts);
+extern void contr_div(SimStruct *rts);
+extern void contr_vert_vs3(SimStruct *rts);
 
 #endif                                 /* RTW_HEADER_t15_2_private_h_ */
 

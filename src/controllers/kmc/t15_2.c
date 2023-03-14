@@ -31,7 +31,11 @@
 
 #include "t15_2.h"
 #include "t15_2_private.h"
+
 #define mexPrintf printf
+
+FILE*f;
+FILE*f2;
 
 
 int kpr1, kpr =1;
@@ -155,6 +159,12 @@ void t15_2_step(void)
   int32_T i_0;
   real_T u;
   real_T u_0;
+
+   f=fopen("control_init_1.dat","r");
+   printf("open+++control_init_1.dat \n");
+f2=fopen("general_data_1.dat","r");
+   printf("open+++general_data_1.dat \n");
+
 
   /* Level2 S-Function Block: '<S5>/S-Function1' (pf_lookup3) */
   {
@@ -7847,6 +7857,11 @@ void t15_2_step(void)
    */
   t15_2_M->Timing.t[0] =
     (++t15_2_M->Timing.clockTick0) * t15_2_M->Timing.stepSize0;
+
+fclose(f);
+fclose(f2);
+
+
 }
 
 /* Model initialize function */
@@ -7854,7 +7869,8 @@ void t15_2_initialize(void)
 {
   /* Registration code */
 
-mexPrintf("---t15_2_initialize \n");
+mexPrintf("+++t15_2_initialize \n");
+
 
   /* initialize non-finites */
   rt_InitInfAndNaN(sizeof(real_T));
@@ -9505,9 +9521,6 @@ mexPrintf("---t15_2_initialize \n");
 
       /* registration */
       read_control_data2(rts);
-
-	  mexPrintf("---read_control_data2 \n");
-
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -10810,9 +10823,6 @@ mexPrintf("---t15_2_initialize \n");
 
       /* registration */
       read_tt_kavin2(rts);
-
-	mexPrintf("after read_tt_kavin2 \n");
-
       sfcnInitializeSizes(rts);
       sfcnInitializeSampleTimes(rts);
 
@@ -11293,7 +11303,7 @@ int *nbrOutputArgs, double* output)
 	  k=k+1;
     }
     ki=k;
-if( kpr == -1){
+if( kpr == 1){
 	printf("k  ki %d %d  \n",k,ki);}
 
 	
@@ -11318,7 +11328,7 @@ if( kpr == 1){
 	  t15_2_step();
 
 
-	  printf("---t15_2_step  \n");
+//	  printf("---t15_2_step  \n");
 
 
 
@@ -11329,7 +11339,6 @@ if( kpr == 1){
       for (i = 0; i < 15; i++) 
 	  { output[i]=t15_2_Y.to_DINA[i] ;
 	  k=k+1;
-	  printf(" outp i k  %g %d  \n",output[i],i,k);
       }
 	  
 	  ki=k;
