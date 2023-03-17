@@ -13,7 +13,7 @@ $ cd tools/GUI
 $ python main.py
    - Press button “Load setups” to setup the DINA start up parameters, 
 select folder example/15MA_40ka in machines/iter directory. 
-   - Press button “Save to work directory”, save the files to imas/python_wf. On this stage together with saving the files an IDS shot/run = 170/1 is written and contains static data related to the tokamak and scenario. These data are not used in simulation; simulation will add time-dependent data to existing in initial IDS and store it as an output. 
+   - Press button “Save to work directory”, save the files to imas/python_wf. On this stage together with saving the files an IDS shot/run = 170/1 is written in 'test' local database and contains static data related to the tokamak and scenario. These data are not used in simulation; simulation will add time-dependent data to existing in initial IDS and store it as an output. 
    - Close the GUI main window.
 
 ## 4. Set scenario to simulate.
@@ -22,7 +22,7 @@ select folder example/15MA_40ka in machines/iter directory.
 ## 5. Running the Python workflow (maximum about 3000 time steps or 60 seconds simulated).
    Move to directory imas/python_wf and use command
 $ cd imas/python_wf
-$ run_test_python.sh 
+$ ./run_test_python.sh 
 to start DINA-IMAS under python workflow. The workflow will read created before initial IDS shot/run = 170/1 and produce shot/run = 170/45.
 One can modify these shot and run numbers inside the script imas/python_wf/test_python_wf.py.
 
