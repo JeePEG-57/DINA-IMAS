@@ -4,7 +4,7 @@
     <user></user>
     <database>test</database>
     <pulse>170</pulse>
-    <run>61</run>
+    <run>1</run>
     <time_start>25.</time_start>
     <interp_mode>1</interp_mode>
   </input_start>
