@@ -141,9 +141,9 @@ c ============ outputs ==============================================
 	num=10
 !	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
 
-      npf=12
+      npf=15
       n_gaps=6
-      ncam=102
+      ncam=100
       
       n_output2=n_gaps+npf+ncam
       

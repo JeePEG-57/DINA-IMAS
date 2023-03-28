@@ -4,8 +4,9 @@
 !> As a result of call dina_0 and then call dina2 the DINA modeling in one time step is being produced
 !> After call dina_outp the output data are being recorded to IDS and dat files
 
-#ifdef __GFORTRAN__
-
+! If needed to get the compiler:
+!#ifdef __GFORTRAN__
+!#ifdef __INTEL_COMPILER
 
 #define AllocIfNull(array, size)  if (.NOT.associated(array)) allocate(array(size))
 
@@ -15,20 +16,6 @@
 #define AllocArr(array, value, size)  if (.NOT.associated(array)) allocate(array(size)) ; \
                                     array(1:size) = value(1:size)
                                     
-                                    
-#else
-
-
-#define AllocIfNull(array, size)  if (.NOT.associated(#array)) allocate(#array(#size))
-
-#define AllocIfNull1(array, value)  if (.NOT.associated(#array)) allocate(#array(1)) ; \
-                                    #array(1) = #value
-
-#define AllocArr(array, value, size)  if (.NOT.associated(#array)) allocate(#array(#size)) ; \
-                                    #array(1:#size) = #value(1:#size)
-                                    
-                                    
-#endif
 
 
 
@@ -105,7 +92,7 @@ real(ids_real) ::time_eq_c
     integer,parameter :: npo = 310, ntet = 134 ! parf0
     integer,parameter :: mu1 = 1500 ! parf2
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
-    integer,parameter :: npf = 12, ncam = 102 ! parf1 - kf, mu
+    integer,parameter :: npf = 15, ncam = 100 ! parf1 - kf, mu
     integer,parameter :: npfa = 12, npfx = npf-npfa, npfp = npfx+ncam
     integer,parameter :: nflux=41, nbpol=60 ! parf4
     integer,parameter :: n_ions=7
@@ -364,7 +351,7 @@ print *,' pfs resistances...'
 flush(6)
 
 pf_active%coil(1:npfa)%resistance = pfres(1:npfa)
-!pf_passive%loop(1:npfx)%resistance = pfres(npfa+1:nact)
+pf_passive%loop(1:npfx)%resistance = pfres(npfa+1:nact)
 pf_passive%loop(npfx+1:npfp)%resistance = rcam(1:npass)  
 
 print *,' pfs filled'
