@@ -8,7 +8,7 @@
         parameter ( npo = 310, ntet = 134) ! parf0)
         parameter ( mu1 = 1500) ! parf2)
         parameter ( nr = 65, nz = 129, ngrid = nr*nz) ! parf2)
-        parameter ( npf = 12, ncam = 102) ! parf1 - kf, mu)
+        parameter ( npf = 15, ncam = 100) ! parf1 - kf, mu)
         parameter ( npfa = 12, npfx = npf-npfa, npfp = npfx+ncam)
         parameter ( nflux=41, nbpol=60) ! parf4)
 !        parameter ( n_ions=7, nloop=60, nprobe=60, ne=100)
@@ -47,7 +47,8 @@
 
       dimension pd0(npo),pt0(npo),pne(npo),te0(npo),tq0(npo),
      * press(npo),qe0(npo),qq0(npo)
-      dimension sigma(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo)
+      dimension sigma(npo),aj0(npo),ajae(npo),zeff(npo)
+      real *8 jbut(npo)
     
       dimension xbound(ntet),ybound(ntet),x_sep(mu1),
      * y_sep(mu1),x_sep2(mu1),y_sep2(mu1)
@@ -263,10 +264,15 @@
       
       if(k.gt.1)then          
 
+        if(i_restart.eq.1)then
+
+
 	    call prof_in_test2_c(tt,n,
      &  te0,tq0,pne,
      &  pd0,pt0,sigma,jbut,aj0,qe0,qq0,kpr)
 
+      end if
+      
       apr='--te0-' 
       print 71,apr,(te0(i),i=1,n1) 
       apr='--tq0-' 

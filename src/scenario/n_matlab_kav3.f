@@ -1,5 +1,4 @@
-!> equil2 is a subroutine to produce the DINA modeling in one time step
-!> with energy and particle 0D transport modules if time < tt_kavin2
+!> equil3 is a subroutine to produce the plasma equilibria for restart
 
 	subroutine equil3()
 

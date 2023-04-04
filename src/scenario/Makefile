@@ -26,7 +26,7 @@ DINASRC = \
 		sh_br.f sh_d3d.f solver.f spline.f svd.f svd0m.f svd2.f uuu.f\
 		victor_imp_new1_H.f write_eqdsk_scen_tok.f write_jetto.f\
 		write_plasma_W_imas.f zca_tsp.f zcam_d3d.f zcamit.f\
-		zu0_w.f zyb0_0.f
+		zu0_w.f zyb0_0.f n_dina_imas33.f
 
 
 DINAOBJ = $(DINASRC:.f=.o)

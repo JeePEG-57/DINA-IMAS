@@ -29,14 +29,7 @@ c	include 'fgraph.fi'
        if(tt.gt.t_vde)then
        stop
        end if
-       
  
-	  call kav_contr(
-!-----------------------------------  inputs---
-     *  c_output1,c_output2,
-!------------------------------------outputs
-     *  c_input1,c_input2)
-
 
       end do
 

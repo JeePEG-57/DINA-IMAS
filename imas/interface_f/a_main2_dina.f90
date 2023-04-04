@@ -39,7 +39,7 @@ real *8 ::time_eq_c
     integer,parameter :: npo = 310, ntet = 134 ! parf0
     integer,parameter :: mu1 = 1500 ! parf2
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
-    integer,parameter :: npf = 22, ncam = 202 ! parf1 - kf, mu
+    integer,parameter :: npf = 15, ncam = 100 ! parf1 - kf, mu
     integer,parameter :: npfa = 12, npfx = npf-npfa, npfp = npfx+ncam
     integer,parameter :: nflux=41, nbpol=60 ! parf4
     integer,parameter :: n_ions=7
@@ -421,17 +421,6 @@ write(*,*) '!!!dina_outp enter'
         if(tt.gt.t_vde)then
        stop
        end if
-
- 
-
-	  call kav_contr(&
-!-----------------------------------  inputs---
-     &  c_output1,c_output2,&
-!------------------------------------outputs
-     &  c_input1,c_input2)
-      
-      write(*,*) "Controller finished"
-      flush(6)
 
 
       end do

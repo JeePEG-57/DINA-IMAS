@@ -23,7 +23,7 @@ FORTRANWF = test_dina_to_imas test_dina test_dina_pfpo1a test_dina_pfpo1b test_d
 TARGETS += $(FORTRANWF) dina_imas.a dina_sdn.a dina_put_slice.a kmc.a kmc_pfpo1_1a.a kmc_pfpo1_1b.a kmc_2madiv.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_density_test0.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a solps_imas.a
 
 
-LIB_SOURCEDINA := dina_imas.o wr_prof_imas.o n_dina_imas3.o out42_for.o green_imas.o pers2.o
+LIB_SOURCEDINA := dina_imas.o wr_prof_imas.o out42_for.o green_imas.o pers2.o
 
 LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o
 
