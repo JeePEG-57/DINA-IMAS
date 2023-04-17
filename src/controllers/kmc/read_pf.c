@@ -3,8 +3,8 @@
 #define kf 15
 #define mexPrintf printf
 
-extern FILE *f2;
-//	FILE *f2;
+//extern FILE *f2;
+	FILE *f2;
 
 
 /* Subroutine */ int scen_read(int i_en, int npf, int indx, int  *n, 
@@ -30,7 +30,7 @@ extern FILE *f2;
 
 //	return;
 
-//	f2=fopen("scr_data.dat","r");
+	f2=fopen("scr_data.dat","r");
 
 	printf("---scr_data.dat \n");
 
@@ -106,7 +106,7 @@ l1:
 
 //	mexPrintf("  i res %d %d \n   ",i,res);
 
-	//fclose(f2);
+	fclose(f2);
 
 
 		printf("---scr_data.dat finished \n");

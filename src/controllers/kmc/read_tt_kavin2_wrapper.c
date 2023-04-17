@@ -26,7 +26,7 @@
 /* %%%-SFUNWIZ_wrapper_externs_Changes_END --- EDIT HERE TO _BEGIN */
 
 extern FILE*f;
-extern FILE*f2;
+//extern FILE*f2;
 
 /*
  * Output functions
@@ -51,18 +51,18 @@ if(kl==0){
 	printf("---tt_kavin2.dat \n");
 
 //f2=fopen("tt_kavin2.dat","r");
-fgets(b,255,f2);
-fscanf(f2,"%lf ",&y[0]); y[0]=y[0]*1e-3;
+fgets(b,255,f);
+fscanf(f,"%lf ",&y[0]); y[0]=y[0]*1e-3;
 
-fscanf(f2,"\n");
-fgets(b,255,f2);
+fscanf(f,"\n");
+fgets(b,255,f);
 /*for(i=1;i<4;i++) fscanf(f,"%lf %lf %lf",&y[i],&y[i]+1,&y[i]+2);*/
-for(i=1;i<=3;i++) fscanf(f2,"%lf",&y[i]);
+for(i=1;i<=3;i++) fscanf(f,"%lf",&y[i]);
 
-fscanf(f2,"\n");
-fgets(b,255,f2);
+fscanf(f,"\n");
+fgets(b,255,f);
 
-fgets(b,255,f2);
+fgets(b,255,f);
 
 for(i=4;i<5;i++) {
 sscanf(b,"%lf" "%lf",&y[i],&y[i+1]);

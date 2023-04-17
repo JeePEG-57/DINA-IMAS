@@ -1910,6 +1910,8 @@ c	implicit real*8 (a-h,o-z)
       common /c_pcchp_end_c15/pcchp_end_c15
       common /c_ext_c16/k_ener_ext_c16,k_dens_ext_c16,k_ajb_ext_c16
 
+      common /c_tt_kavin2_c1/tt_rampup_c1,dt_end_sim_c1,
+     * dtpl_term_l_c1,cIp_end_c1,CS1_eob_c1,rms_noise_c1
 
       
 !      kpr=1
@@ -2182,6 +2184,26 @@ c
 
           read (49,*) 
           read (49,*)k_ener_ext_c16, k_dens_ext_c16,k_ajb_ext_c16
+
+!          open (unit=40,file='tt_kavin2.dat',form='formatted') 
+          read (49,*) 
+          read (49,*)tt_rampup
+          read (49,*) 
+          read (49,*)dt_end_sim,dtpl_term_l,cIp_end
+          
+          tt_rampup_c1=tt_rampup
+          dt_end_sim_c1=dt_end_sim
+          dtpl_term_l_c1=dtpl_term_l
+          cIp_end_c1=cIp_end
+
+          dtpl_term_h=0
+          
+          read (49,*) 
+          read (49,*)CS1_eob,rms_noise
+
+
+          CS1_eob_c1=CS1_eob
+          rms_noise_c1=rms_noise
           
 
 	close(49)
@@ -2222,11 +2244,11 @@ cc
       npf_2=13
       
 	if(kpr.eq.1)PRINT*,'Open scr_data from TOK'
-!      open (unit=39,file='scr_data.dat',form='formatted')
-      open (unit=39,file='general_data_1.dat',form='formatted')
+      open (unit=39,file='scr_data.dat',form='formatted')
+!      open (unit=39,file='general_data_1.dat',form='formatted')
 
-      read (39,*)
-      read (39,*)nn
+!      read (39,*)
+!      read (39,*)nn
       read (39,*)
       read (39,*)(a(i),i=1,npf_2)
 c
@@ -2245,9 +2267,13 @@ c
 	if(kpr.eq.1)PRINT 7,(Pf(i),i=1,11)
 	if(kpr.eq.1)PRINT 7,(Pf_c1(i),i=1,11)
 7 	format (20(1p,E14.6))
-!	close(40)
+
 
       kpr=kpr_help
+	 close(39)
+
+         return
+
 
 	if(kpr.eq.1)PRINT*,'a'
 	if(kpr.eq.1)PRINT 7,(a(i),i=1,npf_2)
@@ -2259,8 +2285,13 @@ c
 
 5000    format (8(1pe14.6))
       
+	 close(39)
+
 c 
 
+         return
+
+!  before we read from general_data_1.dat
 
 !          open (unit=40,file='tt_kavin2.dat',form='formatted') 
           read (39,*) 

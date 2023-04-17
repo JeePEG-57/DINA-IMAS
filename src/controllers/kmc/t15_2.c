@@ -35,7 +35,7 @@
 #define mexPrintf printf
 
 FILE*f;
-FILE*f2;
+//FILE*f2;
 
 
 int kpr1, kpr =1;
@@ -162,8 +162,8 @@ void t15_2_step(void)
 
    f=fopen("control_init_1.dat","r");
    printf("open+++control_init_1.dat \n");
-f2=fopen("general_data_1.dat","r");
-   printf("open+++general_data_1.dat \n");
+//f2=fopen("general_data_1.dat","r");
+//   printf("open+++general_data_1.dat \n");
 
 
   /* Level2 S-Function Block: '<S5>/S-Function1' (pf_lookup3) */
@@ -7859,7 +7859,7 @@ f2=fopen("general_data_1.dat","r");
     (++t15_2_M->Timing.clockTick0) * t15_2_M->Timing.stepSize0;
 
 fclose(f);
-fclose(f2);
+//fclose(f2);
 
 
 }
