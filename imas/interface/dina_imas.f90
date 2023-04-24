@@ -221,8 +221,6 @@ i_restart=0
 print *,'n1 i_restart ==',n1,i_restart
 
  call tokamakdata_read()
- call dina_data_read()
- call general_data_read()
 
  call congig_calc()
 
@@ -450,6 +448,10 @@ call write_cputime(0.d0, 0.d0, 1)
 &   vesprobe,ngrid)
 
 
+ call dina_data_read()
+ call general_data_read()
+  
+  
 
 first_call = first_call+1 ! cancel the initialisation for the next call
 

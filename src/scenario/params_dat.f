@@ -33,85 +33,8 @@ c	implicit real*8 (a-h,o-z)
      * xu_c(mu),yu_c(mu),
      * r00_c,rk_c,
      * z00_c,zk_c
-
-
-
-
-
-      common /c_k_jetto/ih_imas_c
-      common /c_time_eq/time_eq_c
-
-      common /c_jetto_ids/pulse_c,run_c
       
-      common /c_kpr/kpr_c
-
-      common /c_for002_kav/tay_c,rs0_c,bt0_c,key_t11_c
-      common /c_for002_kav2/n_c
-
-      common /c_gaps_data_ramp/x_gaps_c(mu),y_gaps_c(mu),n_ga_c
-
-      common /c_tran_times/tt_dina_c
-
-      common /c_pfres/t_t_c1(ntime),pf_t_c1(kf,ntime),n_t_c1,npf_c1
-
-
-      common /c_ech_c2/t_t_c2(ntime),udd_sol_t_c2(ntime),n_t_c2
-
-      common /c_nd_c3/t_t_c3(ntime),pn_d_t_c3(ntime),n_t_c3
-
-
-      common /c_gamma_z_c4/t_t_c4(ntime),pn_d_t_c4(ntime),
-     *  n_t_c4,nz_imp_c4
-
-      common /c_gamma_z2_c5/t_t_c5(ntime),pn_d_t_c5(ntime),
-     *  n_t_c5,nz_imp2_c5
-
-      common /c_init_c6/p_c6,T_e_c6,T_i_c6,gam_c6,g_gain_c6
-
-
-      common /c_emo_c7/t_t_c7(ntime),emoe_t_c7(ntime),emoq_t_c7(ntime),
-     *  n_t_c7
-
-      common /c_dens_c8/t_t_c8(ntime),den_t_c8(ntime),n_t_c8
-
-      common /c_gamma_z1_c9/t_t_c9(ntime),pn_d_t_c9(ntime),
-     *  n_t_c9,nz_imp1_c9
-
-      common /c_gamma_z3_c10/t_t_c10(ntime),pn_d_t_c10(ntime),
-     *  n_t_c10,nz_imp3_c10
-
-      common /c_gamma_z4_c11/t_t_c11(ntime),pn_d_t_c11(ntime),
-     *  n_t_c11,nz_imp4_c11
-
-
-
-      common /c_bohm_gbohm_c12/k_Bohm_c12
-      common /c_tay_simul_c13/tay_simul_c13
-      common /c_dw_c14/tay_dw_c14
-      common /c_pcchp_end_c15/pcchp_end_c15
-      common /c_ext_c16/k_ener_ext_c16,k_dens_ext_c16,k_ajb_ext_c16
-
-      common /c_tt_kavin2_c1/tt_rampup_c1,dt_end_sim_c1,
-     * dtpl_term_l_c1,cIp_end_c1,CS1_eob_c1,rms_noise_c1
       
-!      kpr=1
-
-      if(i_data2.eq.1)then
-     	open(unit=49,file='dina_data2.dat',
-     *  form='formatted')
-          read (49,*) 
-          read (49,*)n_c
-      close (49)      
-      end if
-      
-!      n=n_c
-      n_c=50
-      n=n_c
-      
-      if(kpr.eq.1)print *,'n n_c ',n,n_c
-      
-      ! Initializing 1D grid
-      call one2d()
       
      	open(unit=49,file='tokamak_config.dat',
      *  form='formatted')
@@ -215,35 +138,13 @@ c-----------------------------------------
 c	implicit real*8 (a-h,o-z)
 	include 'parf1'
  	include 'parf_mike' 
+        
+        COMMON
+     *  /pf1/npf,pf(kf),pf0(kf)
         common
      *  /ge5/kpr
 	common                                                                 
      *	/n_m/n,m,mp                                                      
-
-
-
-
-      common /c_tokamak_config1/
-     * npf_c,
-     * npf_res_c,
-     * ncam_c,
-     * kloop_c,
-     * kprobe_c,kpb_c,
-     * ke_c
-
-      common /c_tokamak_config2/
-     * nr_c(mu),nz_c(mu),nt_c(mu),n_pf_num_c(mu),
-     * R_c_c(mu),Z_c_c(mu),dr_c(mu),dz_c(mu),alpha_c(mu),beta_c(mu),
-     * pfres_c(mu),
-     * ndl_ves_c(mu),ndh_ves_c(mu),nt_ves_c(mu),n_ves_num_c(mu),
-     * Rc_c(mu),Zc_c(mu),dl_c(mu),hl_c(mu),alpha_ves_c(mu),
-     * beta_ves_c(mu),
-     * rcam_c(mu),
-     * Rl_c(mu),Zl_c(mu),
-     * R_prob_c(mu),Z_prob_c(mu),anglep_c(mu),smp_c(mu),
-     * xu_c(mu),yu_c(mu),
-     * r00_c,rk_c,
-     * z00_c,zk_c
 
 
 
@@ -304,6 +205,23 @@ c	implicit real*8 (a-h,o-z)
      * dtpl_term_l_c1,cIp_end_c1,CS1_eob_c1,rms_noise_c1
      
      
+      if(i_data2.eq.1)then
+     	open(unit=49,file='dina_data2.dat',
+     *  form='formatted')
+          read (49,*) 
+          read (49,*)n_c
+      close (49)      
+      end if
+      
+!      n=n_c
+      n_c=50
+      n=n_c
+      
+      if(kpr.eq.1)print *,'n n_c ',n,n_c
+      
+      ! Initializing 1D grid
+      call one2d()
+     
      
         open(unit=49,file='dina_data.dat',
      *  form='formatted')
@@ -351,7 +269,7 @@ c	implicit real*8 (a-h,o-z)
 
            read (49,*) 
 
-          npf_c1=npf_res_c
+          npf_c1=npf
            do i=1,n_t_c1 
               read (49,*)t_t_c1(i),(pf_t_c1(k,i),k=1,npf_c1)
            end do 
