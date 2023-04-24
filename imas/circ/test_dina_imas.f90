@@ -109,6 +109,13 @@ call imas_close(idx0)
 arr_in1(1:31)=1
 arr_out1(1:31)=0
 
+
+  call imas_create_env('ids',pulse,run,1,1,idx,user,'test','3')
+  write(*,*) 'Pulse file is created'
+
+  write(*,*)  'Put em_coupling'
+  call ids_put_slice(idx,"em_coupling",em_coupling0)
+
 do iloop=1,1000000
 
 write(*,*) 'call DINA_IMAS i =',iloop
@@ -167,9 +174,32 @@ call dina_contr(arr_out1,arr_in1)
 ! endif
 
 
-call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
- & core_sources, core_transport, bndcond, summary, &
-& pulse, run, iloop, err)
+  call ids_put_slice(idx,"pf_active",pf_active)
+  call ids_put_slice(idx,"summary",summary)
+  
+  write(*,*) 'Put ids slice to database, iloop = ', iloop
+  flush(6)
+  
+  write(*,*)  'Put magnetics'
+  call ids_put_slice(idx,"magnetics",magnetics)
+  
+  write(*,*)  'Put pf_passive'
+  call ids_put_slice(idx,"pf_passive",pf_passive)
+
+  write(*,*)  'Put equilibrium'
+  call ids_put_slice(idx,"equilibrium",equilibrium)
+
+  write(*,*)  'Put core_profiles'
+  call ids_put_slice(idx,"core_profiles",core_profiles)
+
+  write(*,*)  'Put core_sources'
+  call ids_put_slice(idx,"core_sources",core_sources)
+
+  write(*,*)  'Put core_transport'
+  call ids_put_slice(idx,"core_transport",core_transport)
+
+  write(*,*)  'Put transport_solver_numerics'
+  call ids_put_slice(idx,"transport_solver_numerics",bndcond)
 
 
 call ids_deallocate(pf_active0)
@@ -190,7 +220,7 @@ if (summary%time(1).gt.StopTime) exit
 
 end do
 
-!call imas_close(idx)
+call imas_close(idx)
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 write(*,*) 'DINA_IMAS loop finished, clean up'

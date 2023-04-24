@@ -19,11 +19,11 @@ LIB_SOURCE1 += dina_circ.a dina_imas_circ.o n_dina_imas3.o test_dina_imas.o
 all: $(TARGETS)
 
 #--------------------- gfortran ------------------------
-test_dina: test_dina_imas.o dina_imas_circ.a dina_contr.a dina_put_slice.a
+test_dina: test_dina_imas.o dina_imas_circ.a dina_contr.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_circ: test_dina_circ.o dina_imas_circ.a dina_put_slice.a
+test_circ: test_dina_circ.o dina_imas_circ.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 

@@ -220,7 +220,7 @@ n1=-1000
 i_restart=0
 print *,'n1 i_restart ==',n1,i_restart
 
-
+ call tokamakdata_read()
  call dina_data_read()
  call general_data_read()
 
@@ -503,7 +503,7 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 	rmag=equilibrium0%time_slice(CurTimeStep)%global_quantities%magnetic_axis%r ![m]
         zmag=equilibrium0%time_slice(CurTimeStep)%global_quantities%magnetic_axis%z ![m]
 
-		 print *,' ++tt tpl==',tt,tpl
+	print *,' ++tt tpl==',tt,tpl
 
 	
 	
@@ -523,7 +523,7 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 	fptab(1:n) = cocos_psi * equilibrium0%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n)
   
 	do i=1,npfa
-	  pf(i) =  pf_active0%coil(i)%current%data(CurTimeStep)
+	  pf(i) = pf_active0%coil(i)%current%data(CurTimeStep)
 	  
 	 print *,' i pf==',i,pf(i)
 	 
@@ -541,7 +541,7 @@ first_call = first_call+1 ! cancel the initialisation for the next call
 	enddo	
   
   
-     i_restart=1
+        i_restart=1
     
     	call dina_input2_remap(n,pptab,fptab,a)
 
@@ -568,9 +568,9 @@ n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
 
 
 if(i_restart.eq.1)then
-i_grid=1
+  i_grid=1
 else
-i_grid=0
+  i_grid=0
 end if
 
 print *,'n1 i_restart i_grid ==',n1,i_restart,i_grid
@@ -578,16 +578,16 @@ print *,'n1 i_restart i_grid ==',n1,i_restart,i_grid
 !!! n=n1
 
 if(i_grid.eq.1)then
-! Grid
-a_xx(1:n1) =core_profiles0%profiles_1d(1)%grid%rho_tor_norm(1:n1)
+  ! Grid
+  a_xx(1:n1) =core_profiles0%profiles_1d(1)%grid%rho_tor_norm(1:n1)
 
       apr='--a_xx-' 
       print 71,apr,(a_xx(i),i=1,n1) 
 
-ai_xx(1)=0.d0
-do i=2,n1
-ai_xx(i)=0.5d0*(a_xx(i)+a_xx(i-1))
-end do
+  ai_xx(1)=0.d0
+  do i=2,n1
+    ai_xx(i)=0.5d0*(a_xx(i)+a_xx(i-1))
+  end do
 
       apr='--ai_xx-' 
       print 71,apr,(ai_xx(i),i=1,n1) 
