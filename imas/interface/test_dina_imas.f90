@@ -308,49 +308,39 @@ call solps_imas(equilibrium, core_transport, bndcond)
 write(*,*) "SOLPS finished"
 flush(6)
 
-! if (iloop == 1) then
-! write(*,*)  'Put non-timed'
-! 
-!   call ids_put(idx,"pf_active",pf_active)
-!   call ids_put(idx,"pf_passive",pf_passive)
-! 
-!   call ids_put(idx,"equilibrium",equilibrium)
-!   call ids_put(idx,"core_profiles",core_profiles)
-! 
-! else
-! 
-! write(*,*)  'Put slices'
-! 
-! !magnetics%time(1) = 123
-! !call ids_put_slice(idx,"magnetics",magnetics)
-! 
-! write(*,*)  'Put pf_active'
-! call ids_put_slice(idx,"pf_active",pf_active)
-! 
-! write(*,*)  'Put pf_passive'
-! call ids_put_slice(idx,"pf_passive",pf_passive)
-! 
-! write(*,*)  'Put equilibrium'
-! call ids_put_slice(idx,"equilibrium",equilibrium)
-! 
-! write(*,*)  'Put core_profiles'
-! call ids_put_slice(idx,"core_profiles",core_profiles)
-! 
-! write(*,*)  'Slices put'
-! 
-! endif
+  call ids_put_slice(idx,"pf_active",pf_active)
+  call ids_put_slice(idx,"summary",summary)
 
-if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
-
-write(*,*) 'Put ids to database, iloop = ', iloop
-flush(6)
-
-call dina_put_slice(pf_active, pf_passive, equilibrium, core_profiles, &
- & core_sources, core_transport, bndcond, summary, wall, em_coupling, magnetics, &
-& pulse_out, run_out, idx, iloop, err)
-
-
-endif
+  if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
+  
+    write(*,*) 'Put ids slice to database, iloop = ', iloop
+    flush(6)
+  
+    write(*,*)  'Put em_coupling'
+    call ids_put_slice(idx,"em_coupling",em_coupling)
+    
+    write(*,*)  'Put magnetics'
+    call ids_put_slice(idx,"magnetics",magnetics)
+    
+    write(*,*)  'Put pf_passive'
+    call ids_put_slice(idx,"pf_passive",pf_passive)
+  
+    write(*,*)  'Put equilibrium'
+    call ids_put_slice(idx,"equilibrium",equilibrium)
+  
+    write(*,*)  'Put core_profiles'
+    call ids_put_slice(idx,"core_profiles",core_profiles)
+  
+    write(*,*)  'Put core_sources'
+    call ids_put_slice(idx,"core_sources",core_sources)
+  
+    write(*,*)  'Put core_transport'
+    call ids_put_slice(idx,"core_transport",core_transport)
+  
+    write(*,*)  'Put transport_solver_numerics'
+    call ids_put_slice(idx,"transport_solver_numerics",bndcond)
+  
+  endif
 
 
 write(*,*) 'Copy magnetics'
@@ -362,11 +352,11 @@ call ids_copy(pf_active, pf_active0)
 write(*,*) 'Copy pf_passive'
 flush(6)
 call ids_copy(pf_passive, pf_passive0)
-write(*,*) 'Copy core_profiles'
-flush(6)
+
 
 time_get = summary%time(1)
 
+flush(6)
 write(*,*) 'time_get time_ext==',time_get,time_ext
 
 if(time_get.ge.time_ext)then

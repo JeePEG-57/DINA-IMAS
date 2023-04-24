@@ -4,7 +4,7 @@ pyworkspace = ../python_wf/actors
 #kepler = true
 
 
-dina_actors = dinaimas21.xml dinaputslice21.xml dinatransp_energy.xml dinatransp_density.xml dinatransp_bootcond.xml dinatransp_curdrive.xml dinatransp_heatsrc.xml
+dina_actors = dinaimas21.xml dinatransp_energy.xml dinatransp_density.xml dinatransp_bootcond.xml dinatransp_curdrive.xml dinatransp_heatsrc.xml
 contr_actors = kmc.xml kmc_2madiv.xml kmc_pfpo1_1a.xml kmc_pfpo1_1b.xml
 dina_regtest = dinaimas_circ.xml dina_equil.xml
 astra_actors = solps_imas.xml density_control_pellet.xml density_control_valve.xml astra_sources_pellet.xml astra_sources_valve.xml
@@ -30,7 +30,6 @@ ifdef pyworkspace
 	mkdir -p $(pyworkspace)
 endif
 	$$FC2K/bin/fc2k -nocompile dinaimas21.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinaputslice21.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile dinatransp_energy.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile dinatransp_density.xml $(usekep) $(usepy)
 	$$FC2K/bin/fc2k -nocompile dinatransp_density_test.xml $(usekep) $(usepy)

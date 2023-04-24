@@ -1596,8 +1596,6 @@ c
  	dimension a_print(200)
 	character *30 apr
 
-      
- 
       do i=1,nre
       x_mat(i)=re(i)*1.d-2
       end do
@@ -1605,8 +1603,6 @@ c
       do i=1,nze
       y_mat(i)=ze(i)*1.d-2
       end do
-
-      if(kpr.eq.1)print *,'nre nze ',nre,nze
 
 	r_l0=re(1)
 	r_r0=re(nre)

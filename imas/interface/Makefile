@@ -20,10 +20,10 @@ f2c= $(FCOMPILER) -w -I$(DINADIR) -ffixed-line-length-none -fd-lines-as-comments
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 
 FORTRANWF = test_dina_to_imas test_dina test_dina_pfpo1a test_dina_pfpo1b test_dina_2madiv
-TARGETS += $(FORTRANWF) dina_imas.a dina_sdn.a dina_put_slice.a kmc.a kmc_pfpo1_1a.a kmc_pfpo1_1b.a kmc_2madiv.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_density_test0.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a solps_imas.a
+TARGETS += $(FORTRANWF) dina_imas.a dina_sdn.a kmc.a kmc_pfpo1_1a.a kmc_pfpo1_1b.a kmc_2madiv.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_density_test0.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a solps_imas.a
 
 
-LIB_SOURCEDINA := dina_imas.o wr_prof_imas.o out42_for.o green_imas.o pers2.o
+LIB_SOURCEDINA := dina_imas.o
 
 LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o
 
@@ -32,27 +32,27 @@ LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o
 all: $(TARGETS)
 
 #--------------------- gfortran ------------------------
-test_dina: test_dina_imas.o dina_put_slice.a dina_imas.a kmc.a solps_imas.a
+test_dina: test_dina_imas.o dina_imas.a kmc.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_pfpo1a: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
+test_dina_pfpo1a: test_dina_imas.o dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_pfpo1b: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_pfpo1_1b.a solps_imas.a
+test_dina_pfpo1b: test_dina_imas.o dina_imas.a kmc_pfpo1_1b.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_pfpo1c: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
+test_dina_pfpo1c: test_dina_imas.o dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_2madiv: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_2madiv.a solps_imas.a
+test_dina_2madiv: test_dina_imas.o dina_imas.a kmc_2madiv.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_astra: test_dina_imas_astra.o dina_put_slice.a dina_imas.a kmc.a solps_imas.a astra_transp_density.a
+test_dina_astra: test_dina_imas_astra.o dina_imas.a kmc.a solps_imas.a astra_transp_density.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
@@ -84,10 +84,6 @@ dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"
 	@cp $< $@
 	ar -rcs $@ $(LIB_SOURCEDINA)
-
-dina_put_slice.a: dina_put_slice.o
-	@echo "   * $^ -> $@"
-	ar -rcs $@ $^
 
 kmc.a: $(CONTROLDIR)/kmc/kmc.a $(LIB_SOURCECTRL)
 	@echo "   * $^ -> $@"
