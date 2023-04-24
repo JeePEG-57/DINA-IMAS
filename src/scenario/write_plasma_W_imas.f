@@ -193,7 +193,6 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
         dimension dNB_xx(24)
 
 
-        return
         
 c******* Begin of Sign changing ******
         tpl_imas=tpl*(-1)

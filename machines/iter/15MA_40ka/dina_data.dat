@@ -628,7 +628,7 @@ r   coordinates
 z   coordinates   
 -379.2   -440.4   46.65   299.71   458.04   77.77   
 tt_dina   !tran_times.dat
-11520.e0   
+11520000.e0   
 n_t   !pfres.dat
 8
 time CS3Ures CS2Ures CS1res CS2Lres CS3Lres PF1res PF2res PF3res PF4res PF5res PF6res VS3res TRI_SUPPres COPP_CLADres INB_RAILres 

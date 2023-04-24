@@ -12,7 +12,7 @@
     <database>test</database>
     <pulse>170</pulse> 
     <run>41</run>
-    <decimation>1</decimation>
+    <decimation>10</decimation>
   </output>
   <input_transp>
     <database>test</database>
@@ -20,7 +20,7 @@
     <run>55</run>
     <interp_mode>1</interp_mode>
   </input_transp>
-  <time_stop>100.0</time_stop>
+  <time_stop>1000.0</time_stop>
   <time_ext>14.e5</time_ext>
   <controller>kmc</controller>
   <step_max>1000000</step_max>
