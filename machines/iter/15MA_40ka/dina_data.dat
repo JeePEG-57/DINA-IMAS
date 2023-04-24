@@ -1,11 +1,5 @@
-k_jetto   !k_jetto.dat
-0   
 time_eq   !time_eq.dat
-80037.595   
-shot   !jetto_ids.dat
-170   
-run-20   
-5   
+80037.595
 kpr   !kpr.dat
 1   
 tay   rs0   key_t11   bt0   !for002_kav

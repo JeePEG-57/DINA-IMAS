@@ -147,11 +147,7 @@ c	implicit real*8 (a-h,o-z)
      *	/n_m/n,m,mp                                                      
 
 
-
-      common /c_k_jetto/ih_imas_c
       common /c_time_eq/time_eq_c
-
-      common /c_jetto_ids/pulse_c,run_c
       
       common /c_kpr/kpr_c
 
@@ -225,22 +221,13 @@ c	implicit real*8 (a-h,o-z)
      
         open(unit=49,file='dina_data.dat',
      *  form='formatted')
-
-
-! 		 open (unit=41,file='k_jetto.dat',form='formatted') 
-       read (49,*) 
-       read (49,*)ih_imas_c
-          
-! 		 open (unit=40,file='time_eq.dat',form='formatted') 
+     
+     
+         
+! 	open (unit=40,file='time_eq.dat',form='formatted') 
         read (49,*) 
         read (49,*)time_eq_c
           
-!        open(unit=2,file='jetto_ids.dat',form='formatted',action='read')
-        read(49,*)
-        read(49,*) pulse_c
-        read(49,*)
-        read(49,*) run_c
-
 !        open (unit=1,file='kpr.dat',form='formatted')
 
         read (49,*)
