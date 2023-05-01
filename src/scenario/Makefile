@@ -31,7 +31,11 @@ DINASRC = \
 
 DINAOBJ = $(DINASRC:.f=.o)
 
-all: dina_99.a
+all: test.exe dina_99.a
+
+test.exe: test.o dina_99.a
+	@echo "   * $^ -> $@"
+	$(FC) -o $@ $^
 
 dina_99.a: $(DINAOBJ)
 	$(RM) -r dina_99.a
@@ -43,7 +47,7 @@ dina_99.a: $(DINAOBJ)
 %.o: %.c
 	$(f2c)  -c $<
 
-
 clean:
 	-rm -f *.o 
 	-rm -f *.a
+	-rm -f *.exe

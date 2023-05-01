@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 
 # importing the actors we want to run
 import dinaimas21.wrapper as dinaimas21
+import dina_green.wrapper as dina_green
 
 import dinatransp_bootcond.wrapper as dinatransp_bootcond
 import dinatransp_curdrive.wrapper as dinatransp_curdrive
@@ -43,6 +44,7 @@ def DINA(idslist, arr_volt):
                                        idslist['magnetics'],
                                        idslist['pf_active'],
                                        idslist['pf_passive'],
+                                       idslist['wall'],
                                        idslist['core_profiles'],
                                        idslist['core_sources'],
                                        idslist['transport_solver_numerics'],
@@ -50,20 +52,27 @@ def DINA(idslist, arr_volt):
                                        arr_volt)
   # output of the actor is a tuple in Python
   
-  idslist['em_coupling'] = output[0]
-  idslist['equilibrium'] = output[1]
-  idslist['magnetics'] = output[2]
-  idslist['pf_active'] = output[3]
-  idslist['pf_passive'] = output[4]
-  idslist['core_profiles'] = output[5]
-  idslist['core_sources'] = output[6]
-  idslist['core_transport'] = output[7]
-  idslist['summary'] = output[8]
+  idslist['equilibrium'] = output[0]
+  idslist['magnetics'] = output[1]
+  idslist['pf_active'] = output[2]
+  idslist['pf_passive'] = output[3]
+  idslist['core_profiles'] = output[4]
+  idslist['core_sources'] = output[5]
+  idslist['core_transport'] = output[6]
+  idslist['summary'] = output[7]
   
-  arr_curr = output[9]
+  arr_curr = output[8]
   
   return arr_curr
   
+def GREEN(idslist):
+  output = dina_green.dina_green_actor(idslist['pf_active'],
+                                       idslist['pf_passive'],
+                                       idslist['magnetics'])
+  
+  idslist['em_coupling'] = output[0]
+  idslist['equilibrium'] = output[1]
+
 
 
 def SOLPSZ(idslist):
@@ -227,6 +236,7 @@ class DINA_Workflow:
     Restart = self.Time_Start > 0.0
     
     
+    
     if (Restart == True):
       interp = self.InterpStart
       TimeGet = self.Time_Start
@@ -242,7 +252,6 @@ class DINA_Workflow:
     else:
       print('Start from t = 0')
       idslist['equilibrium'] = self.IMAS_InputStart.get('equilibrium', occurrence = 0)
-      idslist['em_coupling'] = self.IMAS_InputStart.get('em_coupling')
       idslist['magnetics'] = self.IMAS_InputStart.get('magnetics')
       idslist['pf_active'] = self.IMAS_InputStart.get('pf_active')
       idslist['pf_passive'] = self.IMAS_InputStart.get('pf_passive')
@@ -250,11 +259,12 @@ class DINA_Workflow:
       idslist['core_sources'] = self.IMAS_InputStart.get('core_sources')
       idslist['transport_solver_numerics'] = self.IMAS_InputStart.get('transport_solver_numerics')
       
+      GREEN(idslist)
+    
     
     idslist['wall'] = self.IMAS_InputStart.get('wall')
     idslist['dataset_description'] = self.IMAS_InputStart.get('dataset_description')
     idslist['pulse_schedule'] = self.IMAS_InputStart.get('pulse_schedule')
-    #idslist['summary'] = imas_entry_init.get('summary')
     
     self.IMAS_InputStart.close()
     
@@ -266,6 +276,7 @@ class DINA_Workflow:
     
     self.IMAS_Output.put(idslist["dataset_description"])
     self.IMAS_Output.put(idslist["pulse_schedule"])
+    self.IMAS_Output.put(idslist['em_coupling'])
     self.IMAS_Output.put(idslist['wall'])
     
     # Allocation for initial voltages of the magnetic control
@@ -342,7 +353,6 @@ class DINA_Workflow:
       
       # Put this slice to the database 
       if (iloop%self.Decimation == 0 or iloop == iloop_start):
-        self.IMAS_Output.put_slice(idslist['em_coupling'])
         self.IMAS_Output.put_slice(idslist['equilibrium'])
         self.IMAS_Output.put_slice(idslist['magnetics'])
         self.IMAS_Output.put_slice(idslist['pf_active'])

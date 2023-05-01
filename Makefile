@@ -4,6 +4,7 @@ all: dina controllers interface fc2k
 
 dina:
 	make -C src/scenario
+	make -C src/green
 
 controllers:
 	make -C src/controllers/kmc
@@ -22,6 +23,7 @@ fc2k: interface
 
 clean:
 	make -C src/scenario clean
+	make -C src/green clean
 	make -C src/controllers/kmc clean
 	make -C src/controllers/kmc_2madiv clean
 	make -C src/controllers/kmc_pfpo1_1a clean

@@ -15,10 +15,10 @@ implicit none
 interface 
 ! Declaration of the dina_imas subroutine
 subroutine dina_imas(&
-  &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+  &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0 &
   & ,bndcond_in &
   & ,pulse_schedule &
-  & ,em_coupling,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+  & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
   & ,summary &
   & ,arr_in1, arr_out1 )
   
@@ -35,6 +35,7 @@ type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics)   :: magnetics0, magnetics
 type (ids_pf_active)   :: pf_active0, pf_active
 type (ids_pf_passive)   :: pf_passive0, pf_passive
+type (ids_wall) :: wall0
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_transport)   :: core_transport
 type (ids_core_sources)   :: core_sources0, core_sources
@@ -57,7 +58,7 @@ interface
 end interface
 
 
-type (ids_em_coupling) :: em_coupling, em_coupling0
+type (ids_em_coupling) :: em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics, magnetics0
 type (ids_pf_active) :: pf_active, pf_active0
@@ -206,7 +207,7 @@ if (restart.eq.1) then
   write(*,*) 'Restart from t=', time_start
   time_get = time_start
   
-  call ids_get_slice(idx0,"em_coupling",em_coupling0, time_get, interp_start)
+  call ids_get_slice(idx0,"em_coupling",em_coupling, time_get, interp_start)
   call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interp_start)
   call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interp_start)
   call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interp_start)
@@ -220,14 +221,16 @@ if (restart.eq.1) then
 else
 
   write(*,*) 'Start from t=0'
-  call ids_get(idx0,"em_coupling",em_coupling0)
+  !call ids_get(idx0,"em_coupling",em_coupling)
   call ids_get(idx0,"magnetics",magnetics0)
-  call ids_get(idx0,"equilibrium",equilibrium0)
+  !call ids_get(idx0,"equilibrium",equilibrium0)
   call ids_get(idx0,"pf_active",pf_active0)
   call ids_get(idx0,"pf_passive",pf_passive0)
   call ids_get(idx0,"core_profiles",core_profiles0)
   call ids_get(idx0,"core_sources",core_sources0)
   call ids_get(idx0,"transport_solver_numerics",bndcond)
+  
+  call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
   
 endif
 
@@ -253,9 +256,10 @@ arr_out1(1:31)=0
   call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
   write(*,*) 'Pulse file is created'
 
+  call ids_put(idx,"wall",wall)
+  call ids_put(idx,"em_coupling",em_coupling)
   call ids_put(idx,"dataset_description",data_description)
   call ids_put(idx,"pulse_schedule",pulse_schedule)
-
 
 
 
@@ -267,11 +271,10 @@ flush(6)
 
 
 call dina_imas( &
- &   em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, core_profiles0, core_sources0 &
+ &   em_coupling, equilibrium0, magnetics0, pf_active0, pf_passive0, wall, core_profiles0, core_sources0 &
  & , bndcond &
  & , pulse_schedule &
- & , em_coupling, equilibrium, &
- & magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+ & , equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
  & , summary &
  & , arr_in1,arr_out1)
 
@@ -282,7 +285,6 @@ flush(6)
 
 call ids_deallocate(pf_active0)
 call ids_deallocate(pf_passive0)
-call ids_deallocate(em_coupling0)
 call ids_deallocate(equilibrium0)
 call ids_deallocate(magnetics0)
 call ids_deallocate(core_profiles0)
@@ -315,9 +317,6 @@ flush(6)
   
     write(*,*) 'Put ids slice to database, iloop = ', iloop
     flush(6)
-  
-    write(*,*)  'Put em_coupling'
-    call ids_put_slice(idx,"em_coupling",em_coupling)
     
     write(*,*)  'Put magnetics'
     call ids_put_slice(idx,"magnetics",magnetics)
@@ -403,7 +402,6 @@ write(*,*) 'Deallocate IDS '
 flush(6)
 call ids_deallocate(pf_active)
 call ids_deallocate(pf_passive)
-call ids_deallocate(em_coupling)
 call ids_deallocate(equilibrium)
 call ids_deallocate(magnetics)
 call ids_deallocate(core_profiles)
@@ -421,34 +419,12 @@ call imas_close(idx)
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 write(*,*) 'DINA_IMAS loop finished, clean up'
 
-!write(*,*) 'Deallocate static IDS'
-!call ids_deallocate(em_coupling0)
-!call ids_deallocate(equilibrium0)
-!call ids_deallocate(pf_active0)
-!call ids_deallocate(pf_passive0)
-!call ids_deallocate(pulse_schedule)
-!call ids_deallocate(core_profiles0)
-!call ids_deallocate(core_sources0)
+write(*,*) 'Deallocate static IDS'
 
-!call ids_deallocate(pf_active)
-!call ids_deallocate(pf_passive)
-!call ids_deallocate(equilibrium)
-!call ids_deallocate(magnetics)
-!call ids_deallocate(core_profiles)
-
-! write(*,*) 'Read back full dynamic IDS as a test'
-! 
-! call imas_open('ids',pulse,run,idx)
-! !call ids_get(idx,"magnetics",magnetics)
-! call ids_get(idx,"pf_active",pf_active)
-! call ids_get(idx,"pf_passive",pf_passive)
-! 
-! call imas_close(idx)
-! 
-! write(*,*) "coil 1 current = ",pf_active%coil(1)%current%data
-! !write(*,*) "outline = ", pf_active%coil(5)%element(1)%geometry%outline%r
-! !write(*,*) "shape1",dina%output_group_7%shape%data(1,:)
-! write(*,*) "loop 1 current = ",pf_passive%loop(1)%current
+call ids_deallocate(em_coupling)
+call ids_deallocate(wall)
+call ids_deallocate(pulse_schedule)
+call ids_deallocate(data_description)
 
 
 write(*,*) 'DINA_IMAS Exiting cleanly'

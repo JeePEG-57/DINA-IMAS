@@ -1,4 +1,5 @@
 DINADIR := ../../src/scenario
+GREENDIR := ../../src/green
 CONTROLDIR := ../../src/controllers
 ASTRADIR := ../astra_transp
 
@@ -31,28 +32,27 @@ LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o
 
 all: $(TARGETS)
 
-#--------------------- gfortran ------------------------
-test_dina: test_dina_imas.o dina_imas.a kmc.a solps_imas.a
+test_dina: test_dina_imas.o dina_green.a dina_imas.a kmc.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_pfpo1a: test_dina_imas.o dina_imas.a kmc_pfpo1_1a.a solps_imas.a
+test_dina_pfpo1a: test_dina_imas.o dina_green.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_pfpo1b: test_dina_imas.o dina_imas.a kmc_pfpo1_1b.a solps_imas.a
+test_dina_pfpo1b: test_dina_imas.o dina_green.a dina_imas.a kmc_pfpo1_1b.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_pfpo1c: test_dina_imas.o dina_imas.a kmc_pfpo1_1a.a solps_imas.a
+test_dina_pfpo1c: test_dina_imas.o dina_green.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_2madiv: test_dina_imas.o dina_imas.a kmc_2madiv.a solps_imas.a
+test_dina_2madiv: test_dina_imas.o dina_green.a dina_imas.a kmc_2madiv.a solps_imas.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
-test_dina_astra: test_dina_imas_astra.o dina_imas.a kmc.a solps_imas.a astra_transp_density.a
+test_dina_astra: test_dina_imas_astra.o dina_green.a dina_imas.a kmc.a solps_imas.a astra_transp_density.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
@@ -79,6 +79,11 @@ wr_prof_imas.o: wr_prof_imas.f90
 %.o: %.f
 	@echo "   * $^ -> $@"
 	$(f2c) -c $<
+
+dina_green.a: $(GREENDIR)/green.a dina_green.o
+	@echo "   * $^ -> $@"
+	@cp $< $@
+	ar -rcs $@ dina_green.o
 
 dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"
@@ -148,4 +153,5 @@ external_transp.a: external_transp.o
 clean:
 	rm -f *.o
 	rm -f *.a
+	rm -f *.exe
 	rm -f $(TARGETS)
