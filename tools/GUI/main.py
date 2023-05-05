@@ -23,9 +23,10 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
- 
-import imas # UAL library
 
+import imas
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 
 from plequi import Second_window
@@ -60,6 +61,36 @@ from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
 
 
 #--------------------------END NEW IMPORT
+
+
+class CodeParameter():
+  def __init__(self, name, value, mytype=float, unit="", widget=None):
+    self.name = name
+    self.unit = unit
+    self.value = value
+    self.mytype = mytype
+    self.widget = widget
+    
+  def SetValue(self, value):
+    self.widget.setText(str(value))
+    
+  def GetValue(self, value):
+    if mytype == int:
+      return int(self.widget.text())
+    if mytype == float:
+      return float(self.widget.text())
+
+
+class Waveform():
+  def __init__(self, data, unit):
+    self.data = data
+    self.unit = unit
+    self.name = name
+    
+class TimeSerie():
+  def __init__(self, time=[]):
+    self.time = time
+    self.data = []
 
 
 class Graph():
@@ -144,6 +175,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.controlData = []
         self.generalData = []
         self.DINAData = []
+        self.TokamakData = []
         
         
         self.tabExternalDataChild = QtWidgets.QTabWidget(self.tabExternalData)
@@ -449,7 +481,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x))
       
       
-      # Table for circuit resistivities  
+      # Table for circuit resistances
       table = QtWidgets.QTableWidget(tab)
       table.setDragEnabled(False)
       table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
@@ -459,7 +491,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       m = 1
       table.setRowCount(n)
       table.setColumnCount(m)
-      table.setHorizontalHeaderLabels(["Circuit Resistivity"])      
+      table.setHorizontalHeaderLabels(["Circuit Resistance"])      
       #table.setVerticalHeaderLabels(headerNames)
       for i in range(n):
         table.setItem(i, 0, record["resist"]["items"][i])
@@ -506,7 +538,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       table.itemSelectionChanged.connect(lambda x=table:self.tableCoilsEdited(x))
       
       
-      # Table for circuit resistivities  
+      # Table for circuit resistances
       table = QtWidgets.QTableWidget(tab)
       table.setDragEnabled(False)
       table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
@@ -516,7 +548,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       m = 1
       table.setRowCount(n)
       table.setColumnCount(m)
-      table.setHorizontalHeaderLabels(["Circuit Resistivity"])      
+      table.setHorizontalHeaderLabels(["Circuit Resistance"])      
       #table.setVerticalHeaderLabels(headerNames)
       for i in range(n):
         table.setItem(i, 0, record["resist"]["items"][i])
@@ -718,7 +750,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         grid.addWidget(table, i, 0)
         
         datarow = setOfParams[i]
-        if datarow["type"] == "timed":                     
+        if datarow["type"] == "timed":
           n = len(datarow["items"])
           m = len(datarow["items"][0])
           if len(datarow["names2"]) == m:
@@ -753,10 +785,18 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         self.tabInputs = []
         
+        self.TokamakData = []
+        self.DINAData = []
+        self.generalData = []
+        self.controlData = []
+        self.externalData = []
+        
+        
         self.LoadExternalData()
         self.LoadControlData()
         self.LoadGeneralData()
         self.LoadDINAData()
+        self.LoadTokamakData()
        
         
         
@@ -765,7 +805,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
-        self.externalData = []
+        
         parentObject = self.tabExternalDataChild
         parentObject.clear()
         
@@ -803,98 +843,97 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
  
  
     def LoadControlData(self):
-      filename = self.directoryLoad + '/control_init.dat'
+      filename = self.directoryLoad + '/control_init_1.dat'
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
-        self.controlData = []
         parentObject = self.tabControlDataChild
         parentObject.clear()
 
-
-        params = self.ReadParametersSet(f, 2)
+        #control_data2.dat
+        params = self.ReadParametersSet(f, 3)
         self.controlData.append(params)
         self.CreateInputTab(parentObject, params["data"], params["title"])
         
-        
-        timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
-
-
         #elong.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
-
-
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
+        
+        
         #g1.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
-
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
+        
         #g1_term.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])        
         
         
         #g2.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
         
         #g2_term.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])        
         
         
         #g3.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
         
         #g3_term.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])       
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])       
         
         
         #g4.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
         
         #g4_term.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])        
         
         
         #g5.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
         
         #g5_term.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])        
         
                 
         #g6.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
         
         #g6_term.dat
         timedData = self.ReadTimeTable(f)
-        self.controlData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])        
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
         
         
+        #tt_kavin2.dat
+        params = self.ReadParametersSet(f, 3)
+        self.controlData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
         
+        
+        #control_data.dat
         params = self.ReadParametersSet(f, 2)
         self.controlData.append(params)
         self.CreateInputTab(parentObject, params["data"], params["title"])
@@ -906,73 +945,100 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.CreateInputTab(parentObject, [params], params["title"]) 
         
         
-        
-        #consist = setOfParams["data"] + [timedData]
-        #self.CreateInputTab(parentObject, consist, "together")
-        
-                               
-        
         f.close()
         
-        #print('Control data:')
-        #for x in self.controlData:
-        #  print(x)
-        #print(self.controlData) 
- 
+
 
     def LoadGeneralData(self):
-      filename = self.directoryLoad + '/general_data.dat'
+      
+      parentObject = self.tabGeneralDataChild
+      parentObject.clear()
+        
+      filename = self.directoryLoad + '/scr_data.dat'
+      if os.path.isfile(filename):
+        ntur=[554.,554.,554.,554.,554.,  248.6, 115.2, 185.9, 169.9, 216.8, 459.4]
+        
+        f = open(filename, 'rt')
+        
+        # scr_data.dat
+        timedData = self.ReadScrData(f)
+        f.close()
+        
+        timedData["title"] = "scr_data.dat"
+        
+        for row in timedData["items"]:
+          
+          # Ip
+          wItem = row[1]
+          wItem.setText(str(float(wItem.text())*(-1.e6)))
+          
+          # CS&PF currents
+          for j in range(len(row)-2):
+            wItem = row[j+2]
+            wItem.setText(str(float(wItem.text())*(-1.e6)/ntur[j]))
+            
+        self.generalData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+        
+      
+      filename = self.directoryLoad + '/volt.dat'
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
-        self.generalData = []
-        parentObject = self.tabGeneralDataChild
+        # volt.dat
+        timedData = self.ReadScrData(f)
+        f.close()
+        
+        timedData["title"] = "volt.dat"
+        # ms -> s
+        for row in timedData["items"]:
+          wItem = row[0]
+          wItem.setText(str(float(wItem.text())*1.e-3))
+          
+          # CS&PF voltages
+          for j in range(len(row)-1):
+            wItem = row[j+1]
+            wItem.setText(str(float(wItem.text())*(-ntur[j])))
+            
+        self.generalData.append(timedData)
+        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        
+      
+      
+      
+    def LoadTokamakData(self):
+      filename = self.directoryLoad + '/tokamak_config.dat'
+      if os.path.isfile(filename):
+        f = open(filename, 'rt')
+        
+        parentObject = self.tabTokamakDataChild
         parentObject.clear()
         
-
-        #scr_data.dat
-        timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
- 
- 
-        params = self.ReadParametersSet(f, 3)
-        self.generalData.append(params)
-        self.CreateInputTab(parentObject, params["data"], params["title"])
-        
+        # tokamak_config.dat
+        params = self.ReadTokamakConfig(f)
+        params["title"] = "Machine Description"
+        self.TokamakData.append(params)
+        self.CreateInputTab(parentObject, [params], params["title"])
         
         f.close()
         
-        
-        
+    
+    
     def LoadDINAData(self):
       filename = self.directoryLoad + '/dina_data.dat'
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
-        self.DINAData = []       
+        
         parentObject = self.tabDINADataChild
         parentObject.clear()
         
         
-        # tokamakdata.dat
-        params = self.ReadTokamakConfig(f)
-        self.DINAData.append(params)
-        
-        # k_jetto.dat
-        params = self.ReadParameters(f)
-        self.DINAData.append(params)
-        self.CreateInputTab(parentObject, [params], params["title"])
-               
         # time_eq.dat
         params = self.ReadParameters(f)
         self.DINAData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])
-        
-        # jetto_ids.dat
-        params = self.ReadParametersSet(f, 2)
-        self.DINAData.append(params)
-        self.CreateInputTab(parentObject, params["data"], params["title"])        
         
         # kpr.dat
         params = self.ReadParameters(f)
@@ -986,9 +1052,15 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         # gaps_data_ramp
         params = self.ReadParametersSet(f, 3)
+        ng = int(params["data"][0]["items"][0].text())
+        params["data"][1]["names"] = []
+        params["data"][2]["names"] = []
+        for ig in range(ng):
+          params["data"][1]["names"].append('g'+str(ig+1)+'_R')
+          params["data"][2]["names"].append('g'+str(ig+1)+'_Z')
         self.DINAData.append(params)
         self.CreateInputTab(parentObject, params["data"], params["title"])        
-                
+        
         # tran_times.dat
         params = self.ReadParameters(f)
         self.DINAData.append(params)
@@ -996,28 +1068,28 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         #pfres.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"]) 
  
         #ech.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"]) 
  
         #n_d.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])  
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])  
  
         #gamma_z.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"]) 
  
         #gamma_z2.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"]) 
 
         # init.dat
         params = self.ReadParametersRow(f, 5)
@@ -1026,28 +1098,28 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         #emo.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
         
         #dens.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"]) 
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"]) 
  
         #gamma_z1.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
  
         #gamma_z3.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
 
         #gamma_z4.dat
         timedData = self.ReadTimeTable(f)
-        self.DINAData.append(timedData)
-        self.CreateInputTab(parentObject, [timedData], timedData["title"])
+        self.generalData.append(timedData)
+        self.CreateInputTab(self.tabGeneralDataChild, [timedData], timedData["title"])
 
         # bohm_gbohm.dat
         params = self.ReadParameters(f)
@@ -1074,9 +1146,13 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.DINAData.append(params)
         self.CreateInputTab(parentObject, [params], params["title"])        
         
+        #tt_kavin2.dat
+        params = self.ReadParametersSet(f, 3)
+        self.DINAData.append(params)
+        self.CreateInputTab(parentObject, params["data"], params["title"])
+        
         f.close()
         
-   
     
     def ReadCoilData(self, f):
       output = {}      
@@ -1097,7 +1173,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
 
 
 
-    def ReadResistivityData(self, f, n):
+    def ReadResistanceData(self, f, n):
       output = {}
       output["type"] = "resist-list"
       data = []
@@ -1129,13 +1205,13 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         data.append(self.ReadCoilData(f))
       record["geometry"] = data
       
-      # Coil resistivities
+      # Coil resistances
       data = []
       NPF = self.ReadParameters(f)
       record["common_res"] = NPF     
       npf = NPF["data"][0]
       print("npf res = " + str(npf))               
-      record["resist"] = self.ReadResistivityData(f, npf) 
+      record["resist"] = self.ReadResistanceData(f, npf) 
       
       output["coils"] = record
       
@@ -1151,12 +1227,12 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         data.append(self.ReadCoilData(f))
       record["geometry"] = data 
        
-      # Vessel resistivities
+      # Vessel resistances
       NCAM = self.ReadParameters(f)
       record["common_res"] = NCAM     
       ncam = NCAM["data"][0]
       print("ncam res = " + str(ncam))      
-      record["resist"] = self.ReadResistivityData(f, ncam)     
+      record["resist"] = self.ReadResistanceData(f, ncam)     
       
       output["vessel"] = record
       
@@ -1394,18 +1470,48 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       elif isinstance(record, list):
         for item in record:
           self.SaveFilePart(f,item)
-            
-      
     
-
+    
+    
     def SaveDataToFile(self, data, filename):
       f = open(filename, 'wt')
-      
       for record in data:
         self.SaveFilePart(f, record)
-          
       f.close()
-
+      
+      
+      
+    def SaveRecordToXML(self, record, sfile):
+      for name, item in zip(record["names"], record["items"]):
+        print(name + '=' + item.text())
+        name_r = name.replace('[', '_')
+        name_r = name_r.replace(']', '_')
+        name_r = name_r.replace('(', '_')
+        name_r = name_r.replace(')', '_')
+        name_r = name_r.replace('/', '_')
+        name_r = name_r.replace('=', '_')
+        name_r = name_r.replace('*', '_')
+        element = ET.SubElement(sfile, name_r)
+        element.text = str(item.text())
+      
+    
+    
+    def GetXMLString(self, data):
+      root = ET.Element("parameters")
+      for record in data:
+        sfile = ET.SubElement(root, record["title"])
+        if record["type"] == "set":
+          for entry in record["data"]:
+            self.SaveRecordToXML(entry, sfile)
+            
+        if record["type"] == "params":
+          self.SaveRecordToXML(record, sfile)
+          
+        if record["type"] == "paramsrow":
+          self.SaveRecordToXML(record, sfile)
+      #tree = ET.ElementTree(root)
+      xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
+      return xmlstr
  
  
     def GetStuctWithFieldValue(self, record, field, value):
@@ -1413,7 +1519,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         if field in item:
           if item[field] == value:
             return item
-      print("item does not found")    
+      print("item is not found")    
       return []  
    
    
@@ -1529,6 +1635,43 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       return output
     
     
+    
+    def ReadScrData(self, f):
+      
+      output = {}
+      
+      line = f.readline().rstrip()
+      if not line:
+        print('Unexpected end of file')
+        return
+      
+      names2 = line.split()
+      output["names2"] = names2
+      
+      items = []
+      while True:
+        line = f.readline()
+        if not line:
+          break
+        dataStr = line.rstrip().split()
+        data = []
+        for i in range(len(dataStr)):
+          data.append(float(dataStr[i]))
+        
+        if (len(data) > 0):
+          items.append([QtWidgets.QTableWidgetItem(str(x)) for x in data])
+          #items.append([x for x in data])
+        
+        #lineFl = [float(dataStr[i]) for i in range(len(dataStr))]
+        #data.append(lineFl)
+      
+      output["type"] = "timed"
+      output["items"] = items
+      
+      return output
+    
+    
+    
     def ReadHeap(self, f, nrows):
       record = {}
       data = []
@@ -1567,32 +1710,18 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       return data
  
  
-    def FillPulseScheduleItem(self, PSitem, record, mult = 1.e0):
-      if not isinstance(PSitem, list):
-        PSitem = [PSitem]
+    def FillPulseScheduleItem(self, PSitem, record, col=1, mult=1.):
+      nt = len(record["items"])
+      
+      PSitem.time.resize(nt)
+      PSitem.data.resize(nt)
+      
+      for i in range(nt):
+        ins = record["items"][i]
+        PSitem.time[i] = float(ins[0].text())
+        PSitem.data[i] = float(ins[col].text())*mult
         
-      if record["type"] == "timed":
-        nt = len(record["items"])
-        nv = len(record["items"][0])-1
         
-        if nv != len(PSitem):
-          print("FillPulseScheduleItem(): inconsistent PS array sizes: " + str(nv) + ",  " + str(len(PSitem)))
-          return
-        
-        for psi in PSitem:
-          psi.time.resize(nt)
-          psi.data.resize(nt)
-
-        for i in range(nt):
-          ins = record["items"][i]
-          for j in range(nv):
-            PSitem[j].time[i] = float(ins[0].text())
-            PSitem[j].data[i] = float(ins[1+j].text())*mult
-             
-        
-        #print("pulse_schedule field saved: " + record["title"] + "; nt,nv=" + str(nt) + ", " + str(nv))
-     
-
     def FillCoilGeometry(self, geometry, record):
                  
       rc = float(record[0].text())
@@ -1662,12 +1791,9 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       user = os.getenv('USER')
       tokamakname = self.lineInputTokamak.text()
       
-      for rec in self.DINAData:
+      for rec in self.TokamakData:
         if rec["type"] == "tokamakdata":
           tokamakdata = rec
-      
-      #if tokamakdata:
-      #  print("pfa get()")  
       
       
       imas_obj1 = imas.ids(pulse, run)
@@ -1842,7 +1968,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         probe = tokamakdata["probes"]["items"][iprobe]
         magnetics.b_field_pol_probe[iprobe].type.index = 1
         magnetics.b_field_pol_probe[iprobe].position.r = float(probe["r"].text())
-        magnetics.b_field_pol_probe[iprobe].position.z = float(probe["z"].text())      
+        magnetics.b_field_pol_probe[iprobe].position.z = float(probe["z"].text())
         magnetics.b_field_pol_probe[iprobe].position.phi = 0.0
         
         a = -float(probe["a"].text())
@@ -1856,95 +1982,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
       magnetics.put()
       
-      
-      
-      # Pulse schedule
-      psch = imas_obj1.pulse_schedule     
-      psch.get()      
-      psch.ids_properties.homogeneous_time = 0
-      psch.time.resize(1)
-
-      
-      # Densities
-      psch.density_control.valve.resize(8)
-      # Tritium density
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "dens.dat")     
-      self.FillPulseScheduleItem(psch.density_control.valve[0].flow_rate.reference, record, 1.e19)
-      
-      # Be content (0D transport)
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z.dat")     
-      self.FillPulseScheduleItem(psch.density_control.valve[1].flow_rate.reference, record)
-      
-      # Be content (1D transport)
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z1.dat")     
-      self.FillPulseScheduleItem(psch.density_control.valve[2].flow_rate.reference, record)      
-      
-      # W content
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z2.dat")      
-      self.FillPulseScheduleItem(psch.density_control.valve[3].flow_rate.reference, record)
-       
-      # Ar content
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z3.dat")      
-      self.FillPulseScheduleItem(psch.density_control.valve[4].flow_rate.reference, record) 
- 
-      # Ne content
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "gamma_z4.dat")      
-      self.FillPulseScheduleItem(psch.density_control.valve[5].flow_rate.reference, record)
- 
-      # Deuterium density
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "n_d.dat")      
-      self.FillPulseScheduleItem(psch.density_control.valve[6].flow_rate.reference, record, 1.e19) 
- 
-      # DT density for density control
-      record = self.GetStuctWithFieldValue(self.externalData, "title", "dens.dat")      
-      self.FillPulseScheduleItem(psch.density_control.valve[7].flow_rate.reference, record, 1.e19) 
-
-      # Aux heating
-      psch.ec.launcher.resize(3)
-      # EC heating (Ip < 1.5 MA)
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "ech.dat")      
-      self.FillPulseScheduleItem(psch.ec.launcher[0].power.reference, record, 1.e6)  
- 
-      # EC+EQ heating (Ip > 1.5 MA)
-      record = self.GetStuctWithFieldValue(self.DINAData, "title", "emo.dat")      
-      self.FillPulseScheduleItem([psch.ec.launcher[1].power.reference, psch.ec.launcher[2].power.reference], record, 1.e6)   
- 
- 
-      # Magnetic control
-      psch.position_control.gap.resize(12)
-      # Elongation
-      record = self.GetStuctWithFieldValue(self.controlData, "title", "elong_ref.dat") 
-      self.FillPulseScheduleItem(psch.position_control.elongation.reference, record) 
-      psch.position_control.elongation.reference_name = "elong"
-
-      # Gaps on ramp-up and flat-top
-      for j in range(6):
-        gapname = "g" + str(j+1)
-        refname = gapname
-        record = self.GetStuctWithFieldValue(self.controlData, "title", refname + ".dat")      
-        self.FillPulseScheduleItem(psch.position_control.gap[j].value.reference, record, 1.e-2) 
-        psch.position_control.gap[j].name = gapname
-        psch.position_control.gap[j].value.reference_name = refname
-      
-      # Gaps on current ramp-down
-      for j in range(6):
-        gapname = "g" + str(j+1)
-        refname = gapname + "_term"
-        record = self.GetStuctWithFieldValue(self.controlData, "title", refname + ".dat")      
-        self.FillPulseScheduleItem(psch.position_control.gap[6+j].value.reference, record, 1.e-2) 
-        psch.position_control.gap[j].name = gapname
-        psch.position_control.gap[j].value.reference_name = refname
-
-
-      psch.put()
-                 
-      dat1 = imas_obj1.dataset_description
-      dat1.ids_properties.homogeneous_time = 1
-      dat1.time.resize(1)
-      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
-      dat1.simulation.workflow = nameSaveSetups
-      dat1.put()
-      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
       
       
@@ -1971,6 +2008,206 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       wall.put()
       
       
+      
+      # Pulse schedule
+      psch = imas_obj1.pulse_schedule
+      psch.get()
+      psch.ids_properties.homogeneous_time = 0
+      psch.time.resize(1)
+      
+      
+      # Densities
+      psch.density_control.ion.resize(7)
+      
+      # Deuterium density
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "n_d.dat")
+      ion = 0
+      psch.density_control.ion[ion].label = 'D'
+      psch.density_control.ion[ion].z_ion = 1.
+      psch.density_control.ion[ion].element.resize(1)
+      psch.density_control.ion[ion].element[0].a = 2.
+      psch.density_control.ion[ion].element[0].z_n = 1.
+      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record, mult=1.e19)
+      
+      # Tritium density
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "dens.dat")
+      ion = 1
+      psch.density_control.ion[ion].label = 'T'
+      psch.density_control.ion[ion].z_ion = 1.
+      psch.density_control.ion[ion].element.resize(1)
+      psch.density_control.ion[ion].element[0].a = 3.
+      psch.density_control.ion[ion].element[0].z_n = 1.
+      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record, mult=1.e19)
+      
+      # Be content (0D transport)
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z.dat")
+      ion = 2
+      psch.density_control.ion[ion].label = 'Be'
+      psch.density_control.ion[ion].z_ion = 4.
+      psch.density_control.ion[ion].element.resize(1)
+      psch.density_control.ion[ion].element[0].a = 9.
+      psch.density_control.ion[ion].element[0].z_n = 4.
+      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
+      
+      # Be content (1D transport)
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z1.dat")
+      print(record)
+      ion = 3
+      psch.density_control.ion[ion].label = 'Be'
+      psch.density_control.ion[ion].z_ion = 4.
+      psch.density_control.ion[ion].element.resize(1)
+      psch.density_control.ion[ion].element[0].a = 9.
+      psch.density_control.ion[ion].element[0].z_n = 4.
+      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
+      
+      # W content
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z2.dat")
+      ion = 4
+      psch.density_control.ion[ion].label = 'W'
+      psch.density_control.ion[ion].z_ion = 74.
+      psch.density_control.ion[ion].element.resize(1)
+      psch.density_control.ion[ion].element[0].a = 183.84
+      psch.density_control.ion[ion].element[0].z_n = 74.
+      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
+       
+      # Ar content
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z3.dat")
+      ion = 5
+      psch.density_control.ion[ion].label = 'Ar'
+      psch.density_control.ion[ion].z_ion = 18.
+      psch.density_control.ion[ion].element.resize(1)
+      psch.density_control.ion[ion].element[0].a = 40.
+      psch.density_control.ion[ion].element[0].z_n = 18.
+      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
+      
+      # Ne content
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z4.dat")
+      ion = 6
+      psch.density_control.ion[ion].label = 'Ne'
+      psch.density_control.ion[ion].z_ion = 10.
+      psch.density_control.ion[ion].element.resize(1)
+      psch.density_control.ion[ion].element[0].a = 20.
+      psch.density_control.ion[ion].element[0].z_n = 10.
+      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
+ 
+ 
+      # Aux heating
+      psch.ec.launcher.resize(1)
+      # EC heating (Ip < 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "ech.dat")
+      self.FillPulseScheduleItem(psch.ec.launcher[0].power.reference, record, mult=1.e6)
+ 
+      # EC+EQ heating (Ip > 1.5 MA)
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "emo.dat")
+      self.FillPulseScheduleItem(psch.ec.power.reference, record, col=1, mult=1.e6)
+      #self.FillPulseScheduleItem(psch.ic.power.reference, record, col=2, mult=1.e6)
+ 
+ 
+      ## Magnetic control
+      # Elongation
+      record = self.GetStuctWithFieldValue(self.generalData, "title", "elong_ref.dat")
+      print(record)
+      self.FillPulseScheduleItem(psch.position_control.elongation.reference, record)
+      psch.position_control.elongation.reference_name = "Elongation"
+
+
+      psch.position_control.gap.resize(12)
+      ng = 6
+      GapName = ['Gap_1', 'Gap_2', 'R_LFS', 'Gap_4', 'Gap_5', 'R_HFS']
+      #Rg = [422.30, 556.50, 828.06, 750.95, 533.15, 405.99]
+      Rg = [422.30, 556.50, 0.0, 750.95, 533.15, 0.0]
+      Zg = [-379.20, -440.40, 46.65, 299.71, 458.04, 77.77]
+      #Ag = [-65.0, -150.0, 0.0, -135.0, -90.0, 0.0]
+      
+      # Gaps on ramp-up and flat-top
+      for j in range(ng):
+        gapname = GapName[j]
+        refname = gapname
+        record = self.GetStuctWithFieldValue(self.generalData, "title", 'g' + str(j+1) + '.dat')
+        self.FillPulseScheduleItem(psch.position_control.gap[j].value.reference, record, mult=1.e-2)
+        psch.position_control.gap[j].r = Rg[j]*1.e-2
+        psch.position_control.gap[j].z = Zg[j]*1.e-2
+        #psch.position_control.gap[j].angle = Ag[j]*numpy.pi/180.
+        psch.position_control.gap[j].name = gapname
+        psch.position_control.gap[j].identifier = 'g' + str(j+1)
+        psch.position_control.gap[j].value.reference_name = refname
+      
+      # Gaps on current ramp-down
+      for j in range(ng):
+        gapname = GapName[j]
+        refname = gapname + "_Rampdown"
+        record = self.GetStuctWithFieldValue(self.generalData, "title", 'g' + str(j+1) + '_term.dat')
+        self.FillPulseScheduleItem(psch.position_control.gap[6+j].value.reference, record, mult=1.e-2)
+        psch.position_control.gap[ng+j].r = Rg[j]*1.e-2
+        psch.position_control.gap[ng+j].z = Zg[j]*1.e-2
+        #psch.position_control.gap[ng+j].z = Ag[j]*numpy.pi/180.
+        psch.position_control.gap[ng+j].name = gapname
+        psch.position_control.gap[ng+j].identifier = 'g' + str(j+1)
+        psch.position_control.gap[ng+j].value.reference_name = refname
+      
+      
+      # scr_data.dat
+      CircuitName = ["CS3U", "CS2U", "CS1", "CS2L", "CS3L", "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "VS3", "TRI_SUPP",  "COPP_CLAD", "INB_RAIL"]
+      ncirc = 11
+      ntur=[554.,554.,554.,554.,554.,  248.6, 115.2, 185.9, 169.9, 216.8, 459.4]
+      record = self.GetStuctWithFieldValue(self.generalData, "title", 'scr_data.dat')
+      
+      # Plasma current
+      self.FillPulseScheduleItem(psch.flux_control.i_plasma.reference, record, col=1, mult=1.0)
+      
+      # CSPF currents
+      psch.pf_active.coil.resize(15)
+      for j in range(ncirc):
+        circname = CircuitName[j]
+        refname = circname
+        self.FillPulseScheduleItem(psch.pf_active.coil[j].current.reference, record, col=j+2, mult=1.0)
+        psch.pf_active.coil[j].name = circname
+        psch.pf_active.coil[j].identifier = circname
+        psch.pf_active.coil[j].current.reference_name = refname
+      
+      
+      # CSPF voltages
+      record = self.GetStuctWithFieldValue(self.generalData, "title", 'volt.dat')
+      psch.pf_active.supply.resize(ncirc)
+      for j in range(ncirc):
+        circname = CircuitName[j]
+        refname = circname
+        self.FillPulseScheduleItem(psch.pf_active.supply[j].voltage.reference, record, col=j+1, mult=1.0) 
+        psch.pf_active.supply[j].name = circname
+        psch.pf_active.supply[j].identifier = circname
+        psch.pf_active.supply[j].voltage.reference_name = refname
+      
+      
+      # CSPF resistances
+      record = self.GetStuctWithFieldValue(self.generalData, "title", 'pfres.dat')
+      ncirc = 15
+      for j in range(ncirc):
+        circname = CircuitName[j]
+        refname = circname + 'res'
+        self.FillPulseScheduleItem(psch.pf_active.coil[j].resistance_additional.reference, record, col=j+1, mult = 1.0)
+        psch.pf_active.coil[j].resistance_additional.reference_name = refname
+      
+      
+      psch.put()
+                 
+      dat1 = imas_obj1.dataset_description
+      dat1.ids_properties.homogeneous_time = 1
+      dat1.time.resize(1)
+      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
+      dat1.simulation.workflow = nameSaveSetups
+      dat1.put()
+      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
+      
+      
+      
+      
       imas_obj1.close()
 
 
@@ -1993,19 +2230,29 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         shutil.copytree(self.directoryLoad, self.directorySave, dirs_exist_ok=True)
         
         
-        self.SaveDataToFile(self.externalData, self.directorySave + '/external_data.dat')
-        self.SaveDataToFile(self.controlData, self.directorySave + '/control_init.dat')
-        self.SaveDataToFile(self.generalData, self.directorySave + '/general_data.dat')
+        #self.SaveDataToFile(self.externalData, self.directorySave + '/external_data.dat')
+        #self.SaveDataToFile(self.controlData, self.directorySave + '/control_init.dat')
         self.SaveDataToFile(self.DINAData, self.directorySave + '/dina_data.dat')
         
+        fname = self.directorySave + '/DINA_Parameters.xml'
+        f = open(fname, 'w')
+        f.write(self.GetXMLString(self.DINAData))
+        f.close()
+        
+        fname = self.directorySave + '/KMC_Parameters.xml'
+        f = open(fname, 'w')
+        f.write(self.GetXMLString(self.controlData))
+        f.close()
         
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
         tar = tarfile.open(tarname, "w:gz")
-        tar.add(self.directorySave + '/external_data.dat')
-        tar.add(self.directorySave + '/control_init.dat')
-        tar.add(self.directorySave + '/general_data.dat')
+        #tar.add(self.directorySave + '/external_data.dat')
+        tar.add(self.directorySave + '/control_init_1.dat')
         tar.add(self.directorySave + '/dina_data.dat')
+        tar.add(self.directorySave + '/tokamak_config.dat')
+        tar.add(self.directorySave + '/scr_data.dat')
+        tar.add(self.directorySave + '/volt.dat')
         tar.add(new_imp)
         tar.close()
         print(tarname+' saved')

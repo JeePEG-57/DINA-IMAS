@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabInput">
        <attribute name="title">
@@ -68,59 +68,53 @@
           <x>0</x>
           <y>0</y>
           <width>591</width>
-          <height>351</height>
+          <height>291</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="layoutInputSetup" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
-         <item row="10" column="0">
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="labelInputPulse">
-             <property name="text">
-              <string>Pulse</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="lineInputRun"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="lineInputPulse"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="labelInputRun">
-             <property name="text">
-              <string>Run</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="labelInputTokamak">
-             <property name="text">
-              <string>Tokamak</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLineEdit" name="lineInputTokamak"/>
-           </item>
-          </layout>
+         <item row="7" column="1">
+          <widget class="QLabel" name="labelDirSave">
+           <property name="text">
+            <string>Select DINA work directory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QPushButton" name="btnSave2">
+           <property name="text">
+            <string>Save *.dat files</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="labelDirLoad">
+           <property name="text">
+            <string>Select setups source folder</string>
+           </property>
+          </widget>
          </item>
          <item row="8" column="0">
+          <widget class="QPushButton" name="btnLoad2">
+           <property name="text">
+            <string>Load from work directory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
           <widget class="QPushButton" name="btnSave">
            <property name="text">
             <string>Save to work directory</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="0">
+         <item row="9" column="1">
           <widget class="QLabel" name="label_2">
            <property name="text">
             <string/>
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="5" column="1">
           <widget class="QLabel" name="label">
            <property name="text">
             <string/>
@@ -130,23 +124,43 @@
          <item row="4" column="0">
           <widget class="QPushButton" name="btnLoad">
            <property name="text">
-            <string>Load setups</string>
+            <string>Load *.dat files</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="labelDirSave">
-           <property name="text">
-            <string>Select DINA work directory</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="labelDirLoad">
-           <property name="text">
-            <string>Select setups source folder</string>
-           </property>
-          </widget>
+         <item row="10" column="1">
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="2" column="2">
+            <widget class="QLineEdit" name="lineInputRun"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLineEdit" name="lineInputPulse"/>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="lineInputTokamak"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelInputRun">
+             <property name="text">
+              <string>Run</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelInputTokamak">
+             <property name="text">
+              <string>Database</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelInputPulse">
+             <property name="text">
+              <string>Pulse</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -324,7 +338,7 @@
      <x>0</x>
      <y>0</y>
      <width>1598</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
