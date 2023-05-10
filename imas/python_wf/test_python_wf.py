@@ -413,10 +413,17 @@ def start(config):
   
   
   output = root.find('output')
+  usernode = output.find('user')
+  if (usernode != None):
+    username = usernode.text
+  else:
+    username = None
+  if (username == None or username == ""):
+    username = user_default
   database = output.find('database').text
   pulse = int(output.find('pulse').text)
   run = int(output.find('run').text)
-  IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, user_default, data_version = '3')
+  IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
   
   
   Workflow = DINA_Workflow(IMAS_InputStart, IMAS_Output)
