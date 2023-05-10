@@ -775,14 +775,14 @@ c=================================================
      
 	character *20 apr
 
-      if(kpr.eq.1)print *,' dina_input2_remap  n n_xx=',n,n_xx
+      print *,' dina_input2_remap  n n_xx=',n,n_xx
       
       if(n_xx.eq.-1000)return
       
 c=================================================
 
       apr='--a_xx-' 
-      if(kpr.eq.1)print 71,apr,(a_xx(i),i=1,n_xx) 
+      print 71,apr,(a_xx(i),i=1,n_xx) 
 
        do i=2,n-1
        psix=a(i) 
@@ -797,9 +797,9 @@ c=================================================
 	end do
 
       apr='--pptab-' 
-      if(kpr.eq.1)print 71,apr,(pptab_xx(i),i=1,n) 
+      print 71,apr,(pptab_xx(i),i=1,n) 
       apr='--fptab-' 
-      if(kpr.eq.1)print 71,apr,(fptab_xx(i),i=1,n) 
+      print 71,apr,(fptab_xx(i),i=1,n) 
 
       n_xx=n
 
@@ -2050,7 +2050,8 @@ c----------------------------
       character *8 apr      
       
       include 'imas_interface.inc'
-      
+        arg=1.d0
+        pi=4.d0*atan(ARG)      
       call vic_turn()
 
       
