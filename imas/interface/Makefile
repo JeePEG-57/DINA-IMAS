@@ -9,7 +9,7 @@ PACKAGES += imas-$(FCOMPILER)
 PACKAGES += libxml-2.0
 PACKAGES += xmllib
 
-F90_gfortran=$(FCOMPILER) -w
+F90_gfortran=$(FCOMPILER) -w -I$(DINADIR)
 COPTS_gfortran = -O0 -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config $(PACKAGES) --cflags` -g
 #COPTS_gfortran += -traceback -check-all -fp-stack-check
 LIBS_gfortran=`pkg-config $(PACKAGES) --libs`
@@ -24,7 +24,7 @@ FORTRANWF = test_dina_to_imas test_dina test_dina_pfpo1a test_dina_pfpo1b test_d
 TARGETS += $(FORTRANWF) dina_imas.a dina_sdn.a kmc.a kmc_pfpo1_1a.a kmc_pfpo1_1b.a kmc_2madiv.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_density_test0.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a solps_imas.a
 
 
-LIB_SOURCEDINA := dina_imas.o
+LIB_SOURCEDINA := dina_imas.o params_imas.o
 
 LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o
 

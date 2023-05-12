@@ -407,9 +407,10 @@ call write_cputime(0.d0, 0.d0, 1)
   write(*,*) "DINA green initialized"
   flush(6)
   
-
- call dina_data_read()
- call general_data_read()
+ call vic_turn()
+ !call dina_data_read()
+ call dina_data_read_imas(pulse_schedule)
+ !call general_data_read()
   
   
 !    kpr=1
