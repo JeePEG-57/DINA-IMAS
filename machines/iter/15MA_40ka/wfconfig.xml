@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <parameters>
   <input_start>
-    <user></user>
+    <user>khayrur</user>
     <database>test</database>
     <pulse>170</pulse>
     <run>1</run>
