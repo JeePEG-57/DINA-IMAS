@@ -92,11 +92,18 @@ class Waveform():
     self.data = data
     self.unit = unit
     self.name = name
-    
+
+
 class TimeSerie():
   def __init__(self, time=[]):
     self.time = time
     self.data = []
+
+
+class ControlPoint():
+  def __init__(self, r=0., z=0.):
+    self.widget_r = QtWidgets.QTableWidgetItem(str(r))
+    self.widget_z = QtWidgets.QTableWidgetItem(str(z))
 
 
 class Graph():
@@ -713,6 +720,34 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         table.resizeColumnsToContents()
          
       
+    def CreateInputTabGaps(self, parentObject, setOfGaps, title):
+      tab = QtWidgets.QWidget()         
+      tab.setObjectName("tab" + title)     
+      grid = QtWidgets.QGridLayout()      
+      tab.setLayout(grid)
+      
+      parentObject.addTab(tab, title)
+      self.tabInputs.append(tab)
+      
+      
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0)
+      
+      ng = len(setOfGaps)
+      table.setColumnCount(2)
+      table.setRowCount(ng)
+
+      for j in range(ng):
+        table.setItem(j, 0, setOfGaps[j].widget_r)
+        table.setItem(j, 1, setOfGaps[j].widget_z)
+        
+      table.setHorizontalHeaderLabels(['R, m', 'Z, m'])
+      #table.setVerticalHeaderLabels(labels)
+      table.resizeColumnsToContents()
+      
+      
     def LoadSetups(self):
       dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder load from...", self.directoryLoad)
       #dirTmp = os.path.normpath(os.getcwd() + '/../../machines/iter/15MA_40ka')
@@ -797,6 +832,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         self.LoadGeneralData()
         #self.LoadExternalData()
+       
        
        
         for record in self.generalData:
@@ -1058,21 +1094,17 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         parentObject = self.tabDINADataChild
         
-        
         # time_eq.dat
         names = ['time_eq']
         self.ReadParameters(f, [self.DINAData['time_eq']])
-        #self.CreateInputTab(parentObject, [params], params["title"])
         
         # kpr.dat
         names = ['kpr']
         self.ReadParameters(f, [self.DINAData['kpr']])
-        #self.CreateInputTab(parentObject, [params], params["title"])
         
         # for002_kav.dat
         names = ['tau', 'rs0', 'key_t11', 'bt0']
         self.ReadParameters(f, [self.DINAData['tau'], self.DINAData['rs0'], self.DINAData['key_t11'], self.DINAData['bt0']])
-        #self.CreateInputTab(parentObject, [params], params["title"])
         
         # gaps_data_ramp
         #names = []
@@ -1087,18 +1119,22 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         #self.CreateInputTab(parentObject, params["data"], params["title"])
         
         
-        line = f.readline().rstrip()
-        line = f.readline().rstrip()
-        line = f.readline().rstrip()
-        line = f.readline().rstrip()
-        line = f.readline().rstrip()
-        line = f.readline().rstrip()
+        f.readline()
+        line = self.ReadRow(f)
+        ng = line[0]
+        print('n_gaps = ' + str(ng))
+        f.readline()
+        gaps_r = self.ReadRow(f)
+        f.readline()
+        gaps_z = self.ReadRow(f)
         
-        
+        self.gapsData = []
+        for i in range(ng):
+          self.gapsData.append(ControlPoint(r=gaps_r[i], z=gaps_z[i]))
+          
         # tran_times.dat
         names = ['tt_dina']
         self.ReadParameters(f, [self.DINAData['tt_dina']])
-        #self.CreateInputTab(parentObject, [params], params["title"])
         
         #pfres.dat
         timedData = self.ReadTimeTable(f)
@@ -1147,22 +1183,18 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         # bohm_gbohm.dat
         self.ReadParameters(f, [self.DINAData['bohm_gbohm']])
         #self.DINAData.append(params)
-        #self.CreateInputTab(parentObject, [params], params["title"])
 
         # tay_simul.dat
         self.ReadParameters(f, [self.DINAData['tau_sim']])
         #self.DINAData.append(params)
-        #self.CreateInputTab(parentObject, [params], params["title"])
 
         # dw.dat
         self.ReadParameters(f, [self.DINAData['tau_dw']])
         #self.DINAData.append(params)
-        #self.CreateInputTab(parentObject, [params], params["title"])
         
         # pcchp_end.dat
         self.ReadParameters(f, [self.DINAData['pcchp_end']])
         #self.DINAData.append(params)
-        #self.CreateInputTab(parentObject, [params], params["title"])
         
         # transp_ext.dat
         names = ('ener_ext', 'dens_ext', 'ajb_ext')
@@ -1198,7 +1230,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         self.CreateInputTab(parentObject, params, 'Parameters2')
         
-        
+        self.CreateInputTabGaps(parentObject, self.gapsData, 'Gaps')
         
     
     def ReadCoilData(self, f):
@@ -1539,17 +1571,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
     
     
-    def GetXMLString(self, data):
-      root = ET.Element("parameters")
-      for key in data:
-        element = ET.SubElement(root, key)
-        element.text = str(data[key].widget.text())
-        
-      #tree = ET.ElementTree(root)
-      xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
-      return xmlstr
- 
- 
     def GetStuctWithFieldValue(self, record, field, value):
       for item in record:
         if field in item:
@@ -2322,19 +2343,48 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         #self.SaveDataToFile(self.controlData, self.directorySave + '/control_init.dat')
         #self.SaveDataToFile(self.DINAData, self.directorySave + '/dina_data.dat')
         
+        
         fname = self.directorySave + '/DINA_Parameters.xml'
-        f = open(fname, 'w')
+        
         params = self.DINAData.copy()
         keys = ["tt_rampup", "dt_end_sim", "dtpl_term_l", "cIp_end","Ics1_eob", "rms_noise"]
         for key in keys:
           params[key] = self.controlData[key]
-        f.write(self.GetXMLString(params))
+        
+        root = ET.Element("parameters")
+        for key in params:
+          element = ET.SubElement(root, key)
+          element.text = params[key].widget.text()
+        
+        ngaps = len(self.gapsData)
+        gaps = ET.SubElement(root, 'gaps')
+        element = ET.SubElement(gaps, 'ngaps')
+        element.text = str(ngaps)
+        
+        element_r = ET.SubElement(gaps, 'gaps_r')
+        element_z = ET.SubElement(gaps, 'gaps_z')
+        element_r.text = ''
+        element_z.text = ''
+        for gap in self.gapsData:
+          element_r.text = element_r.text + ' ' + gap.widget_r.text() + ' '
+          element_z.text = element_z.text + ' ' + gap.widget_z.text() + ' '
+        
+        xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
+        f = open(fname, 'w')
+        f.write(xmlstr)
         f.close()
         
+        
         fname = self.directorySave + '/KMC_Parameters.xml'
+        root = ET.Element("parameters")
+        for key in self.controlData:
+          element = ET.SubElement(root, key)
+          element.text = self.controlData[key].widget.text()
+        xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
         f = open(fname, 'w')
-        f.write(self.GetXMLString(self.controlData))
+        f.write(xmlstr)
         f.close()
+        
         
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'

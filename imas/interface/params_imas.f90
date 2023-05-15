@@ -79,7 +79,7 @@ type(type_xml2eg_document) :: doc
 character(len=132), pointer :: buffer(:) => NULL()
 integer :: io_unit = 1
 logical :: errorflag
-
+character(len=200):: gaps_r_str, gaps_z_str
 
 
 !      n=n_c
@@ -123,14 +123,24 @@ call xml2eg_get(doc, 'bt0', bt0_c)
 
 
 
-	open(unit=49,status='old',file='gaps_data_ramp',form='formatted')
-	read (49,*)
-	read (49,*)n_ga_c
-	read (49,*)
-	read (49,*)(x_gaps_c(i),i=1,n_ga_c)
-	read (49,*)
-	read (49,*)(y_gaps_c(i),i=1,n_ga_c)
-        close(49)
+
+	!open(unit=49,status='old',file='gaps_data_ramp',form='formatted')
+	!read (49,*)
+	!read (49,*)n_ga_c
+	!read (49,*)
+	!read (49,*)(x_gaps_c(i),i=1,n_ga_c)
+	!read (49,*)
+	!read (49,*)(y_gaps_c(i),i=1,n_ga_c)
+        !close(49)
+
+call xml2eg_get(doc, 'gaps/ngaps', n_ga_c)
+call xml2eg_get(doc, 'gaps/gaps_r', gaps_r_str)
+call xml2eg_get(doc, 'gaps/gaps_z', gaps_z_str)
+    read(gaps_r_str,*)(x_gaps_c(i),i=1,n_ga_c)
+    read(gaps_z_str,*)(y_gaps_c(i),i=1,n_ga_c)
+
+  print*, 'x gaps =', x_gaps_c
+  print*, 'y gaps =', y_gaps_c
 
 !        open (unit=1,file='tran_times.dat',form='formatted')
         !read (49,*)
@@ -149,9 +159,10 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
            !end do 
 
           !npf_c1 = size(ps%pf_active%coil)
+          !print*,'ncoil =', size(psch%pf_active%coil)
           n_t_c1 = size(psch%pf_active%coil(1)%resistance_additional%reference%time)
           t_t_c1(1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%time(1:n_t_c1)
-        
+
 !           pf_t_c1(1,1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%data(1:n_t_c1)
 !           pf_t_c1(2,1:n_t_c1) = psch%pf_active%coil(2)%resistance_additional%reference%data(1:n_t_c1)
 !           pf_t_c1(3,1:n_t_c1) = psch%pf_active%coil(3)%resistance_additional%reference%data(1:n_t_c1) + &
