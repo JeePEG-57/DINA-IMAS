@@ -227,7 +227,9 @@
   <pythonActorDir>../python_wf/PYTHON_DINA_ACTORS</pythonActorDir>
   <compiler>gfortran</compiler>
   <libraries/>
-  <systemLibraries/>
+  <systemLibraries>
+    <string>xmllib</string>
+  </systemLibraries>
   <lang>fortran</lang>
   <HasCodeParam>false</HasCodeParam>
   <MPI>false</MPI>
