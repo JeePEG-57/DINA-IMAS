@@ -165,7 +165,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         self.setWindowTitle('DINA GUI')
         self.setObjectName("DINA-VIZ GUI")
-                
+        
         
         self.directoryLoad = os.path.normpath(os.getcwd() + '/../../machines/iter/')
         self.directorySave = os.path.normpath(os.getcwd() + '/../../imas/python_wf/')
@@ -186,19 +186,11 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         
         
-        
-        self.tabExternalDataChild = QtWidgets.QTabWidget(self.tabExternalData)
-        self.tabExternalDataChild.setObjectName("tabExternalDataChild") 
-        verticalLayout = QtWidgets.QVBoxLayout(self.tabExternalData)
-        verticalLayout.setObjectName("tabExternalDataLayout")       
-        verticalLayout.addWidget(self.tabExternalDataChild)
-        
-        
-        self.tabControlDataChild = QtWidgets.QTabWidget(self.tabControlData)
-        self.tabControlDataChild.setObjectName("tabControlDataChild")      
-        verticalLayout = QtWidgets.QVBoxLayout(self.tabControlData)
-        verticalLayout.setObjectName("tabControlDataLayout")       
-        verticalLayout.addWidget(self.tabControlDataChild)
+        self.tabTokamakDataChild = QtWidgets.QTabWidget(self.tabTokamakData)
+        self.tabTokamakDataChild.setObjectName("tabTokamakDataChild")
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabTokamakData)
+        verticalLayout.setObjectName("tabTokamakDataLayout")       
+        verticalLayout.addWidget(self.tabTokamakDataChild) 
         
         
         self.tabGeneralDataChild = QtWidgets.QTabWidget(self.tabGeneralData)
@@ -209,125 +201,36 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         
         self.tabDINADataChild = QtWidgets.QTabWidget(self.tabDINAData)
-        self.tabDINADataChild.setObjectName("tabDINADataChild") 
+        self.tabDINADataChild.setObjectName("tabDINADataChild")
         verticalLayout = QtWidgets.QVBoxLayout(self.tabDINAData)
         verticalLayout.setObjectName("tabDINADataLayout")       
         verticalLayout.addWidget(self.tabDINADataChild)        
         
-    
-        self.tabTokamakDataChild = QtWidgets.QTabWidget(self.tabTokamakData)
-        self.tabTokamakDataChild.setObjectName("tabTokamakDataChild") 
-        verticalLayout = QtWidgets.QVBoxLayout(self.tabTokamakData)
-        verticalLayout.setObjectName("tabTokamakDataLayout")       
-        verticalLayout.addWidget(self.tabTokamakDataChild) 
-
-
+        
+        self.tabControlDataChild = QtWidgets.QTabWidget(self.tabControlData)
+        self.tabControlDataChild.setObjectName("tabControlDataChild")      
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabControlData)
+        verticalLayout.setObjectName("tabControlDataLayout")       
+        verticalLayout.addWidget(self.tabControlDataChild)
+        
+        
+        self.tabExternalDataChild = QtWidgets.QTabWidget(self.tabExternalData)
+        self.tabExternalDataChild.setObjectName("tabExternalDataChild") 
+        verticalLayout = QtWidgets.QVBoxLayout(self.tabExternalData)
+        verticalLayout.setObjectName("tabExternalDataLayout")       
+        verticalLayout.addWidget(self.tabExternalDataChild)
+        
+        
         self.CSHeaders = ['CSU3','CSU2','CS1','CSL2','CSL3']
         self.PFHeaders = ['PF1','PF2','PF3','PF4','PF5','PF6']
         self.coilNames = self.CSHeaders + self.PFHeaders
-         
-      
-        #user = os.environ['USER']
+        
+        
         user = os.getenv('USER')
-        #workdir = os.environ['KEPLER_DIR']
-        print('user is ', user)
-        #print('workdir is ', workdir)
-         
+        
         self.lineInputPulse.setText('170')
         self.lineInputRun.setText('1')
-        self.lineInputTokamak.setText('test')         
-      
-        #self.tableCurrents.itemClicked.connect(self.TableClicked)
-        #self.tableCurrents.itemSelectionChanged.connect(self.tableCurrentsSelectionChanged)                
-        #self.dataCurrentsHeaders = ['Time, s', 'Iplasma, MA']
-        #for i in range(len(self.coilNames)):
-          #self.dataCurrentsHeaders = self.dataCurrentsHeaders + [self.coilNames[i] + ', MA*t']
-        ##print(self.dataCurrentsHeaders)  
-        #self.tableCurrents.setHorizontalHeaderLabels(self.dataCurrentsHeaders)         
-        
-        
-        #self.tableVoltages.itemSelectionChanged.connect(self.tableVoltagesSelectionChanged)                       
-        #self.dataVoltagesHeaders = ['Time, s']
-        #for i in range(len(self.coilNames)):
-          #self.dataVoltagesHeaders = self.dataVoltagesHeaders + [self.coilNames[i] + ', V']
-        #self.tableVoltages.setHorizontalHeaderLabels(self.dataVoltagesHeaders)
-        
-        
-        #gridGaps = QtWidgets.QGridLayout()
-        
-        #self.tableGap1.setHorizontalHeaderLabels(['Time, s', 'g1']) 
-        #gridGaps.addWidget(self.tableGap1, 0, 0)
-        #self.tableGap1.itemSelectionChanged.connect(self.tableGap1SelectionChanged) 
-
-        #self.tableGap2.setHorizontalHeaderLabels(['Time, s', 'g2']) 
-        #gridGaps.addWidget(self.tableGap2, 0, 1)
-        #self.tableGap2.itemSelectionChanged.connect(self.tableGap2SelectionChanged)
-
-        #self.tableGap3.setHorizontalHeaderLabels(['Time, s', 'g3']) 
-        #gridGaps.addWidget(self.tableGap3, 0, 2)
-        #self.tableGap3.itemSelectionChanged.connect(self.tableGap3SelectionChanged)        
-        
-        #self.tableGap4.setHorizontalHeaderLabels(['Time, s', 'g4']) 
-        #gridGaps.addWidget(self.tableGap4, 0, 3)
-        #self.tableGap4.itemSelectionChanged.connect(self.tableGap4SelectionChanged) 
-
-        #self.tableGap5.setHorizontalHeaderLabels(['Time, s', 'g5']) 
-        #gridGaps.addWidget(self.tableGap5, 0, 4)
-        #self.tableGap5.itemSelectionChanged.connect(self.tableGap5SelectionChanged)
-
-        #self.tableGap6.setHorizontalHeaderLabels(['Time, s', 'g6'])  
-        #gridGaps.addWidget(self.tableGap6, 0, 5)
-        #self.tableGap6.itemSelectionChanged.connect(self.tableGap6SelectionChanged)        
-        
-        #self.tableGap1_term.setHorizontalHeaderLabels(['Time, s', 'g1_term'])  
-        #gridGaps.addWidget(self.tableGap1_term, 1, 0)
-        #self.tableGap1_term.itemSelectionChanged.connect(self.tableGap1_termSelectionChanged) 
-
-        #self.tableGap2_term.setHorizontalHeaderLabels(['Time, s', 'g2_term']) 
-        #gridGaps.addWidget(self.tableGap2_term, 1, 1)
-        #self.tableGap2_term.itemSelectionChanged.connect(self.tableGap2_termSelectionChanged)
-
-        #self.tableGap3_term.setHorizontalHeaderLabels(['Time, s', 'g3_term'])  
-        #gridGaps.addWidget(self.tableGap3_term, 1, 2)
-        #self.tableGap3_term.itemSelectionChanged.connect(self.tableGap3_termSelectionChanged)        
-        
-        #self.tableGap4_term.setHorizontalHeaderLabels(['Time, s', 'g4_term']) 
-        #gridGaps.addWidget(self.tableGap4_term, 1, 3)
-        #self.tableGap4_term.itemSelectionChanged.connect(self.tableGap4_termSelectionChanged) 
-
-        #self.tableGap5_term.setHorizontalHeaderLabels(['Time, s', 'g5_term']) 
-        #gridGaps.addWidget(self.tableGap5_term, 1, 4)
-        #self.tableGap5_term.itemSelectionChanged.connect(self.tableGap5_termSelectionChanged)
-
-        #self.tableGap6_term.setHorizontalHeaderLabels(['Time, s', 'g6_term']) 
-        #gridGaps.addWidget(self.tableGap6_term, 1, 5)
-        #self.tableGap6_term.itemSelectionChanged.connect(self.tableGap6_termSelectionChanged)        
-        
-        #self.tableElong.setHorizontalHeaderLabels(['Time, s', 'Elongation'])  
-        #gridGaps.addWidget(self.tableElong, 0, 6)
-        #self.tableElong.itemSelectionChanged.connect(self.tableElongSelectionChanged)        
-        
-        #self.tabGaps.setLayout(gridGaps)
-        
-        
-        #layoutContr = QtWidgets.QHBoxLayout()
-        
-        
-        #self.tableControlMarg.setHorizontalHeaderLabels(['Max Voltage, V', 'Max current, kA']) 
-        #self.tableControlMarg.setVerticalHeaderLabels(['VVS1', 'VVS3'] + self.coilNames) 
-        #layoutContr.addWidget(self.tableControlMarg)
-                
-        #self.initTableOfParameters(self.tableControl1, ['Time_cont2', 'Ip_div', 'Time_ref_ramp', 'Ip_rd', 'Time_rd_ref', 'Time_V'])
-        #layoutContr.addWidget(self.tableControl1)
-                            
-        #self.initTableOfParameters(self.tableControl2, ['c_a_tpl1', 'c_a_tpl1_EOB', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0'])       
-        #layoutContr.addWidget(self.tableControl2)
-        
-        #self.tabControlData.setLayout(layoutContr)
-        
-        
-        
-        
+        self.lineInputTokamak.setText('test')
         
         
         
@@ -339,9 +242,8 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.textRun.setPlainText('6')
         self.textUser.setPlainText(user)
         self.textBase.setPlainText('test')
-
-             
-       
+        
+        
         self.outpGraph = []
         
         grid = QtWidgets.QGridLayout()
@@ -476,7 +378,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       m2 = 6
       table.setRowCount(n)
       table.setColumnCount(m1 + m2)
-      table.setHorizontalHeaderLabels(headerMeta + headerGeometry)      
+      table.setHorizontalHeaderLabels(headerMeta + headerGeometry)
       table.setVerticalHeaderLabels(headerNames)
       for i in range(n):
         for j in range(m1):
@@ -676,7 +578,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
       
       record = recordset["limiter"]
-      # Table for coils data  
+      # Table for coils data
       table = QtWidgets.QTableWidget(tab)
       table.setDragEnabled(False)
       table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
@@ -685,7 +587,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       n = len(record["items_r"])
       
       headerNames = [str(i+1) for i in range(n)]
-      headerParameters = ["R", "Z"]      
+      headerParameters = ["R", "Z"]
       
       m = 2
       
@@ -844,11 +746,16 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         
         
-        self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = '')
-        self.controlData["Ip_div"] = CodeParameter(mytype=int, value=0., comment = '')
-        self.controlData["ref_ramp"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["Ip_rd"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["trd_ref"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='tcont2')
+        self.controlData["dtcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='dtcont2')
+        self.controlData["Ip_div"] = CodeParameter(mytype=int, value=0., comment = '', name='Ip_div')
+        self.controlData["ref_ramp"] = CodeParameter(mytype=float, value=0., comment = '', name='ref_ramp')
+        self.controlData["Ip_rd"] = CodeParameter(mytype=float, value=0., comment = '', name='Ip_rd')
+        self.controlData["trd_ref"] = CodeParameter(mytype=float, value=0., comment = '', name='trd_ref')
+        self.controlData["max_VS_lim"] = CodeParameter(mytype=float, value=0., comment = '', name='max_VS_lim')
+        self.controlData["k_g4"] = CodeParameter(mytype=int, value=0., comment = '', name='key_g4')
+        self.controlData["time_stop"] = CodeParameter(mytype=float, value=0., comment = '', name='time_stop', unit='s')
+        
         self.controlData["c_a_tpl1"] = CodeParameter(mytype=float, value=0., comment = '')
         self.controlData["c_a_tpl1_eob"] = CodeParameter(mytype=float, value=0., comment = '')
         self.controlData["c_a_tpl2"] = CodeParameter(mytype=int, value=0., comment = '')
@@ -945,7 +852,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         parentObject = self.tabControlDataChild
 
         #control_data2.dat
-        names = ('tcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref')
+        names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop')
         self.ReadParameters(f, [self.controlData[k] for k in names])
         names = ('c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0')
         self.ReadParameters(f, [self.controlData[k] for k in names])
@@ -1040,7 +947,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         params = []
         
-        names = ('tcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref')
+        names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop')
         params.append([self.controlData[k] for k in names])
         
         names = ('c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0')
@@ -1428,10 +1335,10 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         probe["a"] = QtWidgets.QTableWidgetItem(str(line[2]))
         probe["l"] = QtWidgets.QTableWidgetItem(str(line[3]))
         probes.append(probe)       
-      #record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probR] 
-      #record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probZ] 
-      #record["items_a"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probA] 
-      #record["items_l"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probL]      
+      #record["items_r"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probR]
+      #record["items_z"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probZ]
+      #record["items_a"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probA]
+      #record["items_l"] = [QtWidgets.QTableWidgetItem(str(x)) for x in probL]
       record["items"] = probes
       output["probes"] = record
       
@@ -1472,27 +1379,32 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
     
     def SaveTokamakConfig(self, f, record):
       
-      # Coils 
+      # Coils
       recsave = record["coils"]
-      self.SaveFilePart(f, recsave["common_geom"])
-      for coil in recsave["geometry"]:       
-        self.SaveFilePart(f, coil)     
-      self.SaveFilePart(f, recsave["common_res"])
+      f.write("COILS   number:   npf   !tokamak_config.dat  \n") # comment
+      f.write(recsave["common_geom"][0].text() + "\n") # npf
+      for coil in recsave["geometry"]:
+        self.SaveFilePart(f, coil)
+      f.write("res_PF:   npf  \n") # comment
+      f.write(str(recsave["common_res"][0]) + "\n") # npf
       self.SaveFilePart(f, recsave["resist"])
-         
-         
+      
+      
       # Vessel
       recsave = record["vessel"]
-      self.SaveFilePart(f, recsave["common_geom"])
+      f.write("Vessel   number:   ncam  \n") # comment
+      f.write(str(recsave["common_geom"][0]) + "\n") # ncam
       for coil in recsave["geometry"]:       
         self.SaveFilePart(f, coil)     
-      self.SaveFilePart(f, recsave["common_res"])
-      self.SaveFilePart(f, recsave["resist"])  
-
-
+      f.write("res_ves:   ncam  \n") # comment
+      f.write(str(recsave["common_res"][0]) + "\n") # ncam
+      self.SaveFilePart(f, recsave["resist"])
+      
+      
       # Loops
       recsave = record["loops"]
-      self.SaveFilePart(f, recsave["common"])
+      f.write("Loops   number:   kloop  \n") # comment
+      f.write(str(recsave["common"][0]) + "\n") # nloop
       nloop = len(recsave["items"])
       for i in range(nloop):
         s1 = recsave["items"][i]["r"].text()
@@ -1502,7 +1414,9 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
       # Probes
       recsave = record["probes"]
-      self.SaveFilePart(f, recsave["common"])
+      f.write("Probes   number   and   division:   kprobe   kpb \n") # comment
+      f.write(recsave["common"][0].text() + "  " + recsave["common"][1].text() + "\n") # nprobes, subdivisions
+      #self.SaveFilePart(f, recsave["common"])
       nprobes = len(recsave["items"])
       for i in range(nprobes):
         s1 = recsave["items"][i]["r"].text()
@@ -1514,7 +1428,8 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
 
       # Limiter
       recsave = record["limiter"]
-      self.SaveFilePart(f, recsave["common"])
+      f.write("Limiter   number:   n_limiter  \n") # comment
+      f.write(str(recsave["common"][0]) + "\n") # nlim
       nlim = len(recsave["items_r"])
       for i in range(nlim):
         s1 = recsave["items_r"][i].text()
