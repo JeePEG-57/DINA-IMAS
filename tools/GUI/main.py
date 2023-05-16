@@ -1070,7 +1070,22 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
       
     def LoadTokamakData(self):
-      filename = self.directoryLoad + '/tokamak_config.dat'
+      
+      filename = ''
+      
+      config_search = self.directoryLoad
+      while os.path.exists(config_search):
+        config_path = os.path.join(config_search, 'tokamak_config.dat')
+        if (os.path.isfile(config_path)):
+          print('tokamak_config.dat is found: ' + config_path)
+          filename = config_path
+          break
+        config_search_new = os.path.abspath(os.path.join(config_search, os.pardir))
+        if config_search_new == config_search:
+          break
+        config_search = config_search_new
+      
+      
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
@@ -2327,13 +2342,26 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         self.directorySave = dirTmp
         self.labelDirSave.setText(self.directorySave)
         
+        #mydir = os.path.dirname(os.path.realpath(__file__))
+        #print(mydir)
+        
+        imp_search = self.directoryLoad
+        while os.path.exists(imp_search):
+          imp_path = os.path.join(imp_search, 'imp')
+          if (os.path.exists(imp_path)):
+            print('imp is found:' + imp_path)
+            new_imp = os.path.join(self.directorySave, 'imp')
+            if os.path.exists(new_imp):
+              shutil.rmtree(new_imp)
+            shutil.copytree(imp_path, new_imp, dirs_exist_ok=True)
+            break
+          
+          imp_search_new = os.path.abspath(os.path.join(imp_search, os.pardir))
+          if imp_search_new == imp_search:
+            break
+          imp_search = imp_search_new
         
         
-        new_imp = self.directorySave + '/imp'
-        if os.path.exists(new_imp):
-          shutil.rmtree(new_imp)
-        #shutil.copytree(self.directoryLoad + '/imp', new_imp)
-        shutil.copytree(self.directoryLoad, self.directorySave, dirs_exist_ok=True)
         
         fname = self.directorySave + '/tokamak_config.dat'
         f = open(fname, 'w')
