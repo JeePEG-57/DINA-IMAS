@@ -103,9 +103,6 @@
        	if(ih_imas.eq.3.and.i_en.eq.1)then
             k_ener_h=k_ener
 !       	k_ener=0
- 		ARG=1.
-	  pi=4.*atan(ARG)
-	  coef=10./(4.*pi)
 
 	  rmag_h=rmag
 	  zmag_h=zmag
@@ -117,6 +114,10 @@
         if(kpr.eq.1)print *,'k_jetto i_en=',
      *  k_jetto,i_en
 
+     		ARG=1.d0
+	  pi=4.d0*atan(ARG)
+	  coef=10.d0/(4.d0*pi)
+
 	  call read_data() 
        	
        	if(ih_imas.eq.3.and.i_en.eq.1)then
@@ -124,7 +125,7 @@
         tt_dina=tt_dina_c
         tt=tt_dina
 !        call shape_equil()
-        call shape_equil2()
+!        call shape_equil2()
         
      	  rmag=rmag_h
 	  zmag=zmag_h
@@ -138,7 +139,7 @@
 
 
 	  call angl_p()                                                          
-	  call ONE2()  
+	  call ONE2d()  
 
 
 
