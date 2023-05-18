@@ -49,6 +49,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetI
                             QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
 
 
+from PyQt5.uic import loadUiType
+
+
 import viz_plug
 
 
@@ -76,6 +79,7 @@ class CodeParameter():
       self.widget = QtWidgets.QTableWidgetItem(str(value))
     else:
       self.widget = widget
+    self.widget.setToolTip(self.comment)
     
   def SetValue(self, value):
     self.widget.setText(str(value))
@@ -137,9 +141,13 @@ class QVizMDI(QMdiArea):
         self.setWindowTitle("MDI")
         self.setObjectName("MDI")
 
-class ExampleApp(QMainWindow, design.Ui_MainWindow):
+
+uiclass, baseclass = loadUiType('design.ui')
+class ExampleApp(uiclass, baseclass):
+#class ExampleApp(QMainWindow, design.Ui_MainWindow):
     def __init__(self):
-        super(ExampleApp, self).__init__()
+        super().__init__()
+        #super(ExampleApp, self).__init__()
         #self.MDI = QVizMDI(self)
         #self.GUIVIZ = GUIFrame(self)
         self.setObjectName("IMASViz root window")
@@ -297,22 +305,25 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         
         
-        self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, comment = 'Print debug and diagnostic logs')
+        self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, comment = 'Key to print debug and diagnostic logs')
         self.DINAData["tt_kavin"] = CodeParameter(mytype=int, value=3.5, comment = 'Time to switch from 0D transport model to 1D', name='Time 0D->1D', unit='ms')
-        self.DINAData["tau"] = CodeParameter(mytype=float, value=0., comment = 'time-step before 3.5 s plasma operation point', unit='ms')
-        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation before plasma current rampdown', name='dt simulation', unit='ms')
-        self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation during plasma current rampdown', name='dt rampdown', unit='ms')
-        self.DINAData["rs0"] = CodeParameter(mytype=float, value=0., comment = '', unit='cm')
-        self.DINAData["bt0"] = CodeParameter(mytype=float, value=0., comment = '', unit='Gs')
+        self.DINAData["tau"] = CodeParameter(mytype=float, value=0., name='dt start', comment = 'Time step before switching to 1D transport model', unit='ms')
+        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation after switching to 1D transport model and before plasma current rampdown.', name='dt simulation', unit='ms')
+        self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation during plasma current ramp-down', name='dt rampdown', unit='ms')
+        self.DINAData["rs0"] = CodeParameter(mytype=float, value=0., name='R_Btor', comment = 'R coordinate at which the toroidal field is specified', unit='cm')
+        self.DINAData["bt0"] = CodeParameter(mytype=float, value=0., name='Btor', comment = 'The toroidal field at the specified R coordinate', unit='Gs')
         self.DINAData["key_t11"] = CodeParameter(mytype=int, value=0, comment = 'JET Ohmic scaling')
-        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
+        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=0., comment = 'Time after which input 1D transport profiles are used, internal transport model switches off.', unit='ms')
+        
         self.DINAData["p"] = CodeParameter(mytype=float, value=0., comment = '')
         self.DINAData["T_e"] = CodeParameter(mytype=float, value=0., comment = '')
         self.DINAData["T_i"] = CodeParameter(mytype=float, value=0., comment = '')
         self.DINAData["gam"] = CodeParameter(mytype=float, value=0., comment = '')
         self.DINAData["gain_puff"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["bohm_gbohm"] = CodeParameter(mytype=int, value=0, comment = 'key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling')
-        self.DINAData["pcchp_end"] = CodeParameter(mytype=float, value=0., comment = 'the level to which plasma density decreases during 4 s after start of plasma current ramp-down phase')
+        
+        self.DINAData["bohm_gbohm"] = CodeParameter(mytype=int, value=0, comment = 'Key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling')
+        self.DINAData["pcchp_end"] = CodeParameter(mytype=float, value=0., comment = 'The level to which plasma density decreases during 4 s after start of plasma current ramp-down phase')
+        
         self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
         self.DINAData["dens_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
         self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = '')

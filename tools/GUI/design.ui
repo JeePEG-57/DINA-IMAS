@@ -34,16 +34,11 @@
          </rect>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>2</number>
         </property>
-        <widget class="QWidget" name="tabControlData">
+        <widget class="QWidget" name="tabTokamakData">
          <attribute name="title">
-          <string>Controller Data</string>
-         </attribute>
-        </widget>
-        <widget class="QWidget" name="tabExternalData">
-         <attribute name="title">
-          <string>External Data</string>
+          <string>Tokamak Data</string>
          </attribute>
         </widget>
         <widget class="QWidget" name="tabGeneralData">
@@ -56,9 +51,14 @@
           <string>DINA Data</string>
          </attribute>
         </widget>
-        <widget class="QWidget" name="tabTokamakData">
+        <widget class="QWidget" name="tabControlData">
          <attribute name="title">
-          <string>Tokamak Data</string>
+          <string>Controller Data</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tabExternalData">
+         <attribute name="title">
+          <string>External Data</string>
          </attribute>
         </widget>
        </widget>
@@ -72,59 +72,10 @@
          </rect>
         </property>
         <layout class="QGridLayout" name="layoutInputSetup" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
-         <item row="7" column="1">
-          <widget class="QLabel" name="labelDirSave">
-           <property name="text">
-            <string>Select DINA work directory</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QPushButton" name="btnSave2">
-           <property name="text">
-            <string>Save *.dat files</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="labelDirLoad">
-           <property name="text">
-            <string>Select setups source folder</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QPushButton" name="btnLoad2">
-           <property name="text">
-            <string>Load from work directory</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QPushButton" name="btnSave">
-           <property name="text">
-            <string>Save to work directory</string>
-           </property>
-          </widget>
-         </item>
          <item row="9" column="1">
           <widget class="QLabel" name="label_2">
            <property name="text">
             <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QPushButton" name="btnLoad">
-           <property name="text">
-            <string>Load *.dat files</string>
            </property>
           </widget>
          </item>
@@ -161,6 +112,89 @@
             </widget>
            </item>
           </layout>
+         </item>
+         <item row="8" column="0">
+          <widget class="QPushButton" name="btnLoad2">
+           <property name="text">
+            <string>Load from work directory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QPushButton" name="btnSave2">
+           <property name="text">
+            <string>Save *.dat files</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QPushButton" name="btnSave">
+           <property name="text">
+            <string>Save to work directory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QPushButton" name="btnLoad">
+           <property name="text">
+            <string>Load *.dat files</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QLabel" name="labelDirSave">
+           <property name="text">
+            <string>Select DINA work directory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="2" column="2">
+            <widget class="QLineEdit" name="lineInputRun_2"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLineEdit" name="lineInputPulse_2"/>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="lineInputTokamak_2"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelInputRun_2">
+             <property name="text">
+              <string>Run</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelInputTokamak_2">
+             <property name="text">
+              <string>Database</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelInputPulse_2">
+             <property name="text">
+              <string>Pulse</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="labelDirLoad">
+           <property name="text">
+            <string>Select setups source folder</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
