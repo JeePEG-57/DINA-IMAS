@@ -147,7 +147,7 @@ c	implicit real*8 (a-h,o-z)
      *	/n_m/n,m,mp                                                      
 
 
-      common /c_time_eq/time_eq_c
+      common /c_tt_kavin/tt_kavin_c
       
       common /c_kpr/kpr_c
 
@@ -224,9 +224,9 @@ c	implicit real*8 (a-h,o-z)
      
      
          
-! 	open (unit=40,file='time_eq.dat',form='formatted') 
+! 	open (unit=40,file='tt_kavin.dat',form='formatted') 
         read (49,*) 
-        read (49,*)time_eq_c
+        read (49,*)tt_kavin_c
           
 !        open (unit=1,file='kpr.dat',form='formatted')
 

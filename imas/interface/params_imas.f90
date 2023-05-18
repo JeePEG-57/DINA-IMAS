@@ -22,7 +22,7 @@ type (ids_pulse_schedule)   :: psch
 	common /n_m/n,m,mp
 
 
-      common /c_time_eq/time_eq_c
+      common /c_tt_kavin/tt_kavin_c
       
       common /c_kpr/kpr_c
 
@@ -98,11 +98,11 @@ call file2buffer(ConfigFile, io_unit, buffer)
 call xml2eg_parse_memory(buffer, doc)
 
          
-! 	open (unit=40,file='time_eq.dat',form='formatted') 
+! 	open (unit=40,file='tt_kavin.dat',form='formatted') 
         !read (49,*) 
         !read (49,*)time_eq_c
           
-        call xml2eg_get(doc, 'time_eq', time_eq_c)
+        call xml2eg_get(doc, 'tt_kavin', tt_kavin_c)
           
 !        open (unit=1,file='kpr.dat',form='formatted')
 

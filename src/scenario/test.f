@@ -25,13 +25,6 @@
 ! static and prescribed data expressed in DINA terms
       real *8,save :: dina_time=0
       real *8,save :: time_8,tt_8,tay_8
-
-      real *8 ::time_eq
-
-      common /c_imas_time_eq/time_eq
-      common /c_time_eq/time_eq_c
-      
-      real *8 ::time_eq_c
   
   ! DINA parameters
       integer,parameter :: npo = 310, ntet = 134 ! parf0

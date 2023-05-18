@@ -296,6 +296,63 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         #--------------------------------
         
         
+        
+        self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, comment = 'Print debug and diagnostic logs')
+        self.DINAData["tt_kavin"] = CodeParameter(mytype=int, value=3.5, comment = 'Time to switch from 0D transport model to 1D', name='Time 0D->1D', unit='ms')
+        self.DINAData["tau"] = CodeParameter(mytype=float, value=0., comment = 'time-step before 3.5 s plasma operation point', unit='ms')
+        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation before plasma current rampdown', name='dt simulation', unit='ms')
+        self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation during plasma current rampdown', name='dt rampdown', unit='ms')
+        self.DINAData["rs0"] = CodeParameter(mytype=float, value=0., comment = '', unit='cm')
+        self.DINAData["bt0"] = CodeParameter(mytype=float, value=0., comment = '', unit='Gs')
+        self.DINAData["key_t11"] = CodeParameter(mytype=int, value=0, comment = 'JET Ohmic scaling')
+        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
+        self.DINAData["p"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.DINAData["T_e"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.DINAData["T_i"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.DINAData["gam"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.DINAData["gain_puff"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.DINAData["bohm_gbohm"] = CodeParameter(mytype=int, value=0, comment = 'key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling')
+        self.DINAData["pcchp_end"] = CodeParameter(mytype=float, value=0., comment = 'the level to which plasma density decreases during 4 s after start of plasma current ramp-down phase')
+        self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
+        self.DINAData["dens_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
+        self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
+        
+        
+        
+        self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='tcont2')
+        self.controlData["dtcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='dtcont2')
+        self.controlData["Ip_div"] = CodeParameter(mytype=int, value=0., comment = '', name='Ip_div')
+        self.controlData["ref_ramp"] = CodeParameter(mytype=float, value=0., comment = '', name='ref_ramp')
+        self.controlData["Ip_rd"] = CodeParameter(mytype=float, value=0., comment = '', name='Ip_rd')
+        self.controlData["trd_ref"] = CodeParameter(mytype=float, value=0., comment = '', name='trd_ref')
+        self.controlData["max_VS_lim"] = CodeParameter(mytype=float, value=0., comment = '', name='max_VS_lim')
+        self.controlData["k_g4"] = CodeParameter(mytype=int, value=0., comment = '', name='key_g4')
+        self.controlData["time_stop"] = CodeParameter(mytype=float, value=0., comment = '', name='time_stop', unit='s')
+        
+        self.controlData["c_a_tpl1"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.controlData["c_a_tpl1_eob"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.controlData["c_a_tpl2"] = CodeParameter(mytype=int, value=0., comment = '')
+        self.controlData["c_a_tpl_min"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.controlData["y0"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.controlData["c1_y0"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.controlData["c2_y0"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.controlData["t_tran2D"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
+        self.controlData["Tu"] = CodeParameter(mytype=float, value=0., comment = '', name='Tu')
+        self.controlData["c_cur_max"] = CodeParameter(mytype=int, value=0., comment = '', name='c_cur_max')
+        
+        self.controlData["tt_rampup"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
+        self.controlData["dt_end_sim"] = CodeParameter(mytype=float, value=0., comment = '', unit='s')
+        self.controlData["dtpl_term_l"] = CodeParameter(mytype=float, value=0., comment = '', unit='s')
+        self.controlData["cIp_end"] = CodeParameter(mytype=float, value=0., comment = '', unit='MA')
+        self.controlData["Ics1_eob"] = CodeParameter(mytype=float, value=0., comment = 'Value of the current in CS1 circuit at which the current ramp down starts', name='I_CS1 EOF', unit='kA')
+        self.controlData["rms_noise"] = CodeParameter(mytype=float, value=0., comment = 'RMS of noise in the diagnostic signal of dZ/dt for VS stabilization', name='VS RMS noise', unit='m/s')
+        
+        
+        
+        
+        
+        
+        
     def AddCanvas(self, i, toolbar = 1):
       graph = Graph(self)
       
@@ -366,7 +423,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       record = recordset["coils"]
@@ -422,7 +478,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       record = recordset["vessel"]
@@ -479,7 +534,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       record = recordset["loops"]
@@ -515,7 +569,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       record = recordset["probes"]
@@ -581,7 +634,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       record = recordset["limiter"]
@@ -617,7 +669,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       record = recordset["area"]
@@ -656,7 +707,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       for i in range(len(setOfParams)):
         table = QtWidgets.QTableWidget(tab)
@@ -689,7 +739,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       for i in range(len(setOfParams)):
@@ -727,7 +776,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
-      self.tabInputs.append(tab)
       
       
       table = QtWidgets.QTableWidget(tab)
@@ -750,95 +798,124 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       
     def LoadSetups(self):
       dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder load from...", self.directoryLoad)
-      #dirTmp = os.path.normpath(os.getcwd() + '/../../machines/iter/15MA_40ka')
 
       if dirTmp: 
         self.directoryLoad = dirTmp
         self.labelDirLoad.setText(self.directoryLoad)
         
-        self.tabInputs = []
         
-        
-        self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, comment = '')
-        self.DINAData["time_eq"] = CodeParameter(mytype=int, value=0, comment = '', unit='ms')
-        self.DINAData["tau"] = CodeParameter(mytype=float, value=0., comment = '', unit='s')
-        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
-        self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
-        self.DINAData["rs0"] = CodeParameter(mytype=float, value=0., comment = '', unit='cm')
-        self.DINAData["bt0"] = CodeParameter(mytype=float, value=0., comment = '', unit='Gs')
-        self.DINAData["key_t11"] = CodeParameter(mytype=int, value=0, comment = '')
-        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
-        self.DINAData["p"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["T_e"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["T_i"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["gam"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["gain_puff"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["bohm_gbohm"] = CodeParameter(mytype=int, value=0, comment = '')
-        self.DINAData["pcchp_end"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
-        self.DINAData["dens_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
-        self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
-        
-        
-        
-        self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='tcont2')
-        self.controlData["dtcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='dtcont2')
-        self.controlData["Ip_div"] = CodeParameter(mytype=int, value=0., comment = '', name='Ip_div')
-        self.controlData["ref_ramp"] = CodeParameter(mytype=float, value=0., comment = '', name='ref_ramp')
-        self.controlData["Ip_rd"] = CodeParameter(mytype=float, value=0., comment = '', name='Ip_rd')
-        self.controlData["trd_ref"] = CodeParameter(mytype=float, value=0., comment = '', name='trd_ref')
-        self.controlData["max_VS_lim"] = CodeParameter(mytype=float, value=0., comment = '', name='max_VS_lim')
-        self.controlData["k_g4"] = CodeParameter(mytype=int, value=0., comment = '', name='key_g4')
-        self.controlData["time_stop"] = CodeParameter(mytype=float, value=0., comment = '', name='time_stop', unit='s')
-        
-        self.controlData["c_a_tpl1"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c_a_tpl1_eob"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c_a_tpl2"] = CodeParameter(mytype=int, value=0., comment = '')
-        self.controlData["c_a_tpl_min"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["y0"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c1_y0"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c2_y0"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["t_tran2D"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
-        self.controlData["Tu"] = CodeParameter(mytype=float, value=0., comment = '', name='Tu')
-        self.controlData["c_cur_max"] = CodeParameter(mytype=int, value=0., comment = '', name='c_cur_max')
-        
-        self.controlData["tt_rampup"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
-        self.controlData["dt_end_sim"] = CodeParameter(mytype=float, value=0., comment = '', unit='s')
-        self.controlData["dtpl_term_l"] = CodeParameter(mytype=float, value=0., comment = '', unit='s')
-        self.controlData["cIp_end"] = CodeParameter(mytype=float, value=0., comment = '', unit='MA')
-        self.controlData["Ics1_eob"] = CodeParameter(mytype=float, value=0., comment = 'Value of the current in CS1 circuit at which the current ramp down starts', name='I_CS1 EOF', unit='kA')
-        self.controlData["rms_noise"] = CodeParameter(mytype=float, value=0., comment = 'RMS of noise in the diagnostic signal of dZ/dt for VS stabilization', name='VS RMS noise', unit='m/s')
-        
-        
-        
-        self.gapsData = []
         self.generalData = []
-        self.externalData = []
-        
-        
-        
-        self.tabDINADataChild.clear()
-        self.tabControlDataChild.clear()
-        self.tabGeneralDataChild.clear()
-        self.tabExternalDataChild.clear()
-        
-        
         
         
         self.LoadTokamakData()
         self.LoadControlData()
         self.LoadDINAData()
-        
-        
         self.LoadGeneralData()
         #self.LoadExternalData()
        
+        self.RefreshUI()
        
        
-        for record in self.generalData:
-          self.CreateInputTabTimed(self.tabGeneralDataChild, [record], record["title"])
-        
+    def RefreshUI(self):
+      
+      self.RefreshTokamakData()
+      self.RefreshGeneralData()
+      self.RefreshDINAData()
+      self.RefreshControlData()
+      self.RefreshExternalData()
+      
+      
     
+    def RefreshTokamakData(self):
+      self.tabTokamakDataChild.clear()
+      self.CreateInputTabCoils(self.tabTokamakDataChild, self.TokamakData)
+      
+      
+    def RefreshGeneralData(self):
+      self.tabGeneralDataChild.clear()
+      
+      for record in self.generalData:
+        self.CreateInputTabTimed(self.tabGeneralDataChild, [record], record["title"])
+        
+        
+        
+    def RefreshDINAData(self):
+      self.tabDINADataChild.clear()
+      
+      ## Appearing in the GUI
+      params = []
+      
+      names = ('kpr',)
+      params.append([self.DINAData[k] for k in names])
+      
+      names = ('tt_kavin', 'tt_dina')
+      params.append([self.DINAData[k] for k in names])
+      
+      names = ('tau', 'tau_sim', 'tau_dw')
+      params.append([self.DINAData[k] for k in names])
+      
+      names = ('rs0', 'bt0')
+      params.append([self.DINAData[k] for k in names])
+      
+      names = ('p', 'T_e', 'T_i', 'gam', 'gain_puff')
+      params.append([self.DINAData[k] for k in names])
+      
+      self.CreateInputTab(self.tabDINADataChild, params, 'Parameters1')
+      
+      
+      
+      params = []
+      
+      names = ('bohm_gbohm', 'key_t11', 'pcchp_end')
+      params.append([self.DINAData[k] for k in names])
+      
+      names = ('ener_ext', 'dens_ext', 'ajb_ext')
+      params.append([self.DINAData[k] for k in names])
+      
+      self.CreateInputTab(self.tabDINADataChild, params, 'Parameters2')
+      
+      self.CreateInputTabGaps(self.tabDINADataChild, self.gapsData, 'Gaps')
+      
+      
+      
+    def RefreshControlData(self):
+      self.tabControlDataChild.clear()
+      
+      params = []
+      
+      names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop')
+      params.append([self.controlData[k] for k in names])
+      
+      names = ('c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0')
+      params.append([self.controlData[k] for k in names])
+      
+      names = ('t_tran2D',)
+      params.append([self.controlData[k] for k in names])
+      
+      names = ('Tu', 'c_cur_max')
+      params.append([self.controlData[k] for k in names])
+      
+      self.CreateInputTab(self.tabControlDataChild, params, 'Controller Parameters')
+      
+      
+      
+      params = []
+      
+      names = ('tt_rampup',)
+      params.append([self.controlData[k] for k in names])
+      
+      names = ('dt_end_sim', 'dtpl_term_l', 'cIp_end')
+      params.append([self.controlData[k] for k in names])
+      
+      names = ('Ics1_eob', 'rms_noise')
+      params.append([self.controlData[k] for k in names])
+      
+      self.CreateInputTab(self.tabControlDataChild, params, 'Kavin2')
+    
+    
+    def RefreshExternalData(self):
+      self.tabExternalDataChild.clear()
+      
     
     def LoadExternalData(self):
       filename = self.directoryLoad + '/external_data.dat'
@@ -847,6 +924,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         parentObject = self.tabExternalDataChild
         
+        self.externalData = []
         
 
         params = self.ReadParameters(f)
@@ -885,8 +963,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
-        parentObject = self.tabControlDataChild
-
         #control_data2.dat
         names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop')
         self.ReadParameters(f, [self.controlData[k] for k in names])
@@ -979,38 +1055,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         f.close()
         
         
-        ## Appearing in GUI
-        
-        params = []
-        
-        names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop')
-        params.append([self.controlData[k] for k in names])
-        
-        names = ('c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0')
-        params.append([self.controlData[k] for k in names])
-        
-        names = ('t_tran2D',)
-        params.append([self.controlData[k] for k in names])
-        
-        names = ('Tu', 'c_cur_max')
-        params.append([self.controlData[k] for k in names])
-        
-        self.CreateInputTab(parentObject, params, 'Controller Parameters')
-        
-        
-        
-        params = []
-        
-        names = ('tt_rampup',)
-        params.append([self.controlData[k] for k in names])
-        
-        names = ('dt_end_sim', 'dtpl_term_l', 'cIp_end')
-        params.append([self.controlData[k] for k in names])
-        
-        names = ('Ics1_eob', 'rms_noise')
-        params.append([self.controlData[k] for k in names])
-        
-        self.CreateInputTab(parentObject, params, 'Kavin2')
         
     
     def LoadGeneralData(self):
@@ -1066,9 +1110,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         
         
-      
-      
-      
     def LoadTokamakData(self):
       
       filename = ''
@@ -1089,16 +1130,13 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
-        parentObject = self.tabTokamakDataChild
-        parentObject.clear()
-        
         self.TokamakData = {}
         
         # tokamak_config.dat
         self.TokamakData = self.ReadTokamakConfig(f)
         f.close()
         
-        self.CreateInputTabCoils(parentObject, self.TokamakData)
+        
         
     
     
@@ -1107,19 +1145,15 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
       if os.path.isfile(filename):
         f = open(filename, 'rt')
         
-        parentObject = self.tabDINADataChild
-        
-        # time_eq.dat
-        names = ['time_eq']
-        self.ReadParameters(f, [self.DINAData['time_eq']])
+        # tt_kavin.dat
+        self.ReadParameters(f, [self.DINAData['tt_kavin']])
         
         # kpr.dat
-        names = ['kpr']
         self.ReadParameters(f, [self.DINAData['kpr']])
         
         # for002_kav.dat
         names = ['tau', 'rs0', 'key_t11', 'bt0']
-        self.ReadParameters(f, [self.DINAData['tau'], self.DINAData['rs0'], self.DINAData['key_t11'], self.DINAData['bt0']])
+        self.ReadParameters(f, [self.DINAData[k] for k in names])
         
         # gaps_data_ramp
         #names = []
@@ -1218,34 +1252,6 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         
         f.close()
         
-        
-        ## Appearing in the GUI
-        params = []
-        
-        names = ('time_eq', 'kpr', 'tt_dina')
-        params.append([self.DINAData[k] for k in names])
-        
-        names = ['tau', 'rs0', 'key_t11', 'bt0']
-        params.append([self.DINAData[k] for k in names])
-        
-        names = ('p', 'T_e', 'T_i', 'gam', 'gain_puff')
-        params.append([self.DINAData[k] for k in names])
-        
-        self.CreateInputTab(parentObject, params, 'Parameters1')
-        
-        
-        
-        params = []
-        
-        names = ('bohm_gbohm', 'tau_sim', 'tau_dw', 'pcchp_end')
-        params.append([self.DINAData[k] for k in names])
-        
-        names = ('ener_ext', 'dens_ext', 'ajb_ext')
-        params.append([self.DINAData[k] for k in names])
-        
-        self.CreateInputTab(parentObject, params, 'Parameters2')
-        
-        self.CreateInputTabGaps(parentObject, self.gapsData, 'Gaps')
         
     
     def ReadCoilData(self, f):
@@ -2375,7 +2381,7 @@ class ExampleApp(QMainWindow, design.Ui_MainWindow):
         fname = self.directorySave + '/DINA_Parameters.xml'
         
         params = self.DINAData.copy()
-        keys = ["tt_rampup", "dt_end_sim", "dtpl_term_l", "cIp_end","Ics1_eob", "rms_noise"]
+        keys = ["tt_rampup", "dt_end_sim", "dtpl_term_l", "cIp_end", "Ics1_eob", "rms_noise"]
         for key in keys:
           params[key] = self.controlData[key]
         

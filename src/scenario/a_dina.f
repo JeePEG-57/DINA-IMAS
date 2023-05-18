@@ -37,6 +37,7 @@
             common /c_imas_is/ih_imas
             common /c_kpr/kpr_c
       common /c_tran_times/tt_dina_c
+      common /c_tt_kavin/tt_kavin_c
 
       common /c_ext_c16/k_ener_ext_c16,k_dens_ext_c16,k_ajb_ext_c16
 
@@ -71,7 +72,8 @@
 !           read (41,*)tt_kavin,tt_dw
 !  		   close (41)
 
-           tt_kavin=3500.d0
+           !tt_kavin=3500.d0
+           tt_kavin = tt_kavin_c
            tt_dw=1.d+10
 
         if(kpr.eq.1)print *,'tt_kavin,tt =',
