@@ -90,18 +90,39 @@ class CodeParameter():
     if mytype == float:
       return float(self.widget.text())
 
-
+class Wave():
+  def __init__(self):
+    data = []
+    name = []
+    unit = []
+    
 class Waveform():
-  def __init__(self, data, unit):
-    self.data = data
+  def __init__(self, time=[], data=[], unit='', name=''):
+    nt = len(time)
+    nw = len(data)
+    for iw in range(nw):
+      ntw = len(data[iw])
+      if ntw != nt:
+        print('Waveform initiation error, nt=%d, nw=%d, iw=%d, ntw=%d'%(nt, nw, iw, ntw))
+    self.timeWidgets = []
+    self.waveWidgets = []
+    for it in range(nt):
+      self.timeWidgets.append(QtWidgets.QTableWidgetItem(str(time[it])))
+    
+    for iw in range(nw):
+      wave = []
+      for it in range(nt):
+        wave.append(QtWidgets.QTableWidgetItem(str(data[iw][it])))
+      self.waveWidgets.append(wave)
+      
     self.unit = unit
     self.name = name
 
 
-class TimeSerie():
-  def __init__(self, time=[]):
-    self.time = time
-    self.data = []
+class WaveformImpurity(Waveform):
+  def __init__(self, time=[], data=[], z:int=1):
+    super().__init__(time=time, data=data)
+    self.z = z
 
 
 class ControlPoint():
@@ -195,7 +216,7 @@ class ExampleApp(uiclass, baseclass):
         self.TokamakData = {}
         self.controlData = {}
         self.DINAData = {}
-        self.generalData = []
+        self.generalData = {}
         self.externalData = []
         
         
@@ -305,7 +326,7 @@ class ExampleApp(uiclass, baseclass):
         
         
         
-        self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, comment = 'Key to print debug and diagnostic logs')
+        self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, name='Key print', comment = 'Key to print debug and diagnostic logs')
         self.DINAData["tt_kavin"] = CodeParameter(mytype=int, value=3.5, comment = 'Time to switch from 0D transport model to 1D', name='Time 0D->1D', unit='ms')
         self.DINAData["tau"] = CodeParameter(mytype=float, value=0., name='dt start', comment = 'Time step before switching to 1D transport model', unit='ms')
         self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation after switching to 1D transport model and before plasma current rampdown.', name='dt simulation', unit='ms')
@@ -711,35 +732,37 @@ class ExampleApp(uiclass, baseclass):
     
     
     
-    def CreateInputTabTimed(self, parentObject, setOfParams, title):
-      tab = QtWidgets.QWidget()         
-      tab.setObjectName("tab" + title)     
-      grid = QtWidgets.QGridLayout()      
+    def CreateInputTabTimed(self, parentObject, datarow, title=None):
+      if title == None:
+        title = datarow.name
+      
+      tab = QtWidgets.QWidget()
+      tab.setObjectName("tab" + title)
+      grid = QtWidgets.QGridLayout()
       tab.setLayout(grid)
       
       parentObject.addTab(tab, title)
       
-      for i in range(len(setOfParams)):
-        table = QtWidgets.QTableWidget(tab)
-        table.setDragEnabled(False)
-        table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
-        grid.addWidget(table, i, 0)
-        
-        datarow = setOfParams[i]
-        if datarow["type"] == "timed":
-          n = len(datarow["items"])
-          m = len(datarow["items"][0])
-          if len(datarow["names2"]) == m:
-            header = datarow["names2"]
-          else:
-            header = ["Time"] + [str(j) for j in range(1,m+1)]
-          table.setRowCount(n)
-          table.setColumnCount(m)
-          table.setHorizontalHeaderLabels(header)
-          for i in range(n):
-            for j in range(m):
-              table.setItem(i, j, datarow["items"][i][j])
-          table.itemSelectionChanged.connect(lambda x=table:self.tableSelectionChanged(x))
+      table = QtWidgets.QTableWidget(tab)
+      table.setDragEnabled(False)
+      table.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
+      grid.addWidget(table, 0, 0)
+      
+      nt = len(datarow.timeWidgets)
+      nw = len(datarow.waveWidgets)
+      #if len(datarow["names2"]) == nw:
+      #  header = datarow["names2"]
+      #else:
+      header = ["Time"] + [str(j) for j in range(1,nw+1)]
+      
+      table.setRowCount(nt)
+      table.setColumnCount(nw+1)
+      table.setHorizontalHeaderLabels(header)
+      for it in range(nt):
+        table.setItem(it, 0, datarow.timeWidgets[it])
+        for iw in range(nw):
+          table.setItem(it, iw+1, datarow.waveWidgets[iw][it])
+      table.itemSelectionChanged.connect(lambda x=table:self.tableSelectionChanged(x))
           
           
       
@@ -815,7 +838,7 @@ class ExampleApp(uiclass, baseclass):
         self.labelDirLoad.setText(self.directoryLoad)
         
         
-        self.generalData = []
+        self.generalData = {}
         
         
         self.LoadTokamakData()
@@ -845,11 +868,32 @@ class ExampleApp(uiclass, baseclass):
     def RefreshGeneralData(self):
       self.tabGeneralDataChild.clear()
       
-      for record in self.generalData:
-        self.CreateInputTabTimed(self.tabGeneralDataChild, [record], record["title"])
-        
-        
-        
+      
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['pfres'], "SNU")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['scr_data'], "PF Currents")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['volt'], "PF Voltages")
+      
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['elong'], "Elongation")
+      for ig in range(len(self.generalData['gaps'])):
+        self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['gaps'][ig], "Gap" + str(ig+1))
+      for ig in range(len(self.generalData['gaps_term'])):
+        self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['gaps_term'][ig], "Gap" + str(ig+1) + "_term")
+      
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['ech'], "ECRH 0D")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['emo'], "ECRH and ICRH 1D")
+      
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['n_d'], "Main ion1 density")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['dens'], "Main ion2 density")
+      
+      
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['gamma_z'], "Impurity 0D")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['gamma_z1'], "Impurity1 1D")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['gamma_z2'], "Impurity2 0D and 1D")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['gamma_z3'], "Impurity3 1D")
+      self.CreateInputTabTimed(self.tabGeneralDataChild, self.generalData['gamma_z4'], "Impurity4 1D")
+      
+      
+      
     def RefreshDINAData(self):
       self.tabDINADataChild.clear()
       
@@ -984,55 +1028,58 @@ class ExampleApp(uiclass, baseclass):
         
         #elong.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['elong'] = Waveform(timedData['time'], timedData['waves'])
+        
+        self.generalData['gaps'] = []
+        self.generalData['gaps_term'] = []
         
         #g1.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g1_term.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps_term'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g2.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g2_term.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps_term'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g3.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g3_term.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps_term'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g4.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g4_term.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps_term'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g5.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g5_term.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps_term'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g6.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps'].append(Waveform(timedData['time'], timedData['waves']))
         
         #g6_term.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gaps_term'].append(Waveform(timedData['time'], timedData['waves']))
         
         #tt_kavin2.dat
         names = ['tt_rampup']
@@ -1083,20 +1130,16 @@ class ExampleApp(uiclass, baseclass):
         
         timedData["title"] = "scr_data.dat"
         
-        for row in timedData["items"]:
-          
-          # Ip
-          wItem = row[1]
-          wItem.setText(str(float(wItem.text())*(-1.e6)))
-          
-          # CS&PF currents
-          for j in range(len(row)-2):
-            wItem = row[j+2]
-            wItem.setText(str(float(wItem.text())*(-1.e6)/ntur[j]))
-            
-        self.generalData.append(timedData)
+        # Ip
+        timedData["waves"][0] = [Ip*(-1.e6) for Ip in timedData["waves"][0]]
         
+        # CS&PF currents
+        for j in range(len(timedData["waves"])-1):
+          timedData["waves"][j+1] = [I*(-1.e6/ntur[j]) for I in timedData["waves"][j+1]]
+          
+        self.generalData['scr_data'] = Waveform(timedData['time'], timedData['waves'])
         
+      
       
       filename = self.directoryLoad + '/volt.dat'
       if os.path.isfile(filename):
@@ -1108,16 +1151,13 @@ class ExampleApp(uiclass, baseclass):
         
         timedData["title"] = "volt.dat"
         # ms -> s
-        for row in timedData["items"]:
-          wItem = row[0]
-          wItem.setText(str(float(wItem.text())*1.e-3))
-          
-          # CS&PF voltages
-          for j in range(len(row)-1):
-            wItem = row[j+1]
-            wItem.setText(str(float(wItem.text())*(-ntur[j])))
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         
-        self.generalData.append(timedData)
+        # CS&PF voltages
+        for j in range(len(timedData["waves"])):
+          timedData["waves"][j] = [U*(-ntur[j]) for U in timedData["waves"][j]]
+        
+        self.generalData['volt'] = Waveform(timedData['time'], timedData['waves'])
         
         
         
@@ -1166,18 +1206,6 @@ class ExampleApp(uiclass, baseclass):
         names = ['tau', 'rs0', 'key_t11', 'bt0']
         self.ReadParameters(f, [self.DINAData[k] for k in names])
         
-        # gaps_data_ramp
-        #names = []
-        #params = self.ReadParametersSet(f, 3)
-        #ng = int(params["data"][0]["items"][0].text())
-        #params["data"][1]["names"] = []
-        #params["data"][2]["names"] = []
-        #for ig in range(ng):
-          #names.append('g'+str(ig+1)+'_R')
-          #params["data"][1]["names"].append('g'+str(ig+1)+'_R')
-          #params["data"][2]["names"].append('g'+str(ig+1)+'_Z')
-        #self.CreateInputTab(parentObject, params["data"], params["title"])
-        
         
         f.readline()
         line = self.ReadRow(f)
@@ -1198,23 +1226,23 @@ class ExampleApp(uiclass, baseclass):
         
         #pfres.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['pfres'] = Waveform(timedData['time'], timedData['waves'])
  
         #ech.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['ech'] = Waveform(timedData['time'], timedData['waves'])
  
         #n_d.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['n_d'] = Waveform(timedData['time'], timedData['waves'])
  
-        #gamma_z.dat
+        #gamma_z.dat - 0D transport only
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gamma_z'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
  
-        #gamma_z2.dat
+        #gamma_z2.dat - 0D and 1D transport, shared
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gamma_z2'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         # init.dat
         names = ('p', 'T_e', 'T_i', 'gam', 'gain_puff')
@@ -1222,39 +1250,35 @@ class ExampleApp(uiclass, baseclass):
         
         #emo.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['emo'] = Waveform(timedData['time'], timedData['waves'])
         
         #dens.dat
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['dens'] = Waveform(timedData['time'], timedData['waves'])
  
-        #gamma_z1.dat
+        #gamma_z1.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gamma_z1'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
  
-        #gamma_z3.dat
+        #gamma_z3.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gamma_z3'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
-        #gamma_z4.dat
+        #gamma_z4.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
-        self.generalData.append(timedData)
+        self.generalData['gamma_z4'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         # bohm_gbohm.dat
         self.ReadParameters(f, [self.DINAData['bohm_gbohm']])
-        #self.DINAData.append(params)
 
         # tay_simul.dat
         self.ReadParameters(f, [self.DINAData['tau_sim']])
-        #self.DINAData.append(params)
 
         # dw.dat
         self.ReadParameters(f, [self.DINAData['tau_dw']])
-        #self.DINAData.append(params)
         
         # pcchp_end.dat
         self.ReadParameters(f, [self.DINAData['pcchp_end']])
-        #self.DINAData.append(params)
         
         # transp_ext.dat
         names = ('ener_ext', 'dens_ext', 'ajb_ext')
@@ -1665,28 +1689,12 @@ class ExampleApp(uiclass, baseclass):
         CodeParameters[i].SetValue(data[i])
         if i < len(names):
           CodeParameters[i].rawname = names[i]
-    
-    
-    
-    def ReadParametersSet(self, f, nset):
-      output = {}
-      data = []
       
-      for i in range(nset):
-        data.append(self.ReadParameters(f))
       
-      output["data"] = data
-      if "title" in data[0]:
-        print('Set Name = ' + data[0]["title"])
-        output["title"] = data[0]["title"]
-      else:
-        output["title"] = "none"
-        
-      output["type"] = "set"
-      return output
-        
-        
-        
+    
+    
+    
+    
     def ReadTimeTable(self, f):
       output = {}
       
@@ -1703,7 +1711,7 @@ class ExampleApp(uiclass, baseclass):
       if len(header) > 1:
         output["title"] = header[1].strip()
       
-      datant = self.ReadRow(f)     
+      datant = self.ReadRow(f)
       if len(datant) == 0:
         return []
       nt = datant[0]
@@ -1714,16 +1722,27 @@ class ExampleApp(uiclass, baseclass):
       names2 = f.readline().rstrip().split()
       output["names2"] = names2
       
-      items = []
+      data = []
       for it in range(nt):
         row = self.ReadRow(f)
-        items.append([QtWidgets.QTableWidgetItem(str(x)) for x in row])
-        
-        #lineFl = [float(dataStr[i]) for i in range(len(dataStr))]
-        #data.append(lineFl)
+        #items.append([QtWidgets.QTableWidgetItem(str(x)) for x in row])
+        data.append(row)
       
-      output["type"] = "timed"
-      output["items"] = items  
+      nw = len(data[0])
+      waves = []
+      for iw in range(1,nw):
+        wave = []
+        for it in range(nt):
+          wave.append(data[it][iw])
+        waves.append(wave)
+      
+      time = []
+      for it in range(nt):
+        time.append(data[it][0])
+      
+      output["data"] = data
+      output["waves"] = waves
+      output["time"] = time
 
       return output
     
@@ -1741,25 +1760,42 @@ class ExampleApp(uiclass, baseclass):
       names2 = line.split()
       output["names2"] = names2
       
-      items = []
+      data = []
       while True:
         line = f.readline()
         if not line:
           break
         dataStr = line.rstrip().split()
-        data = []
-        for i in range(len(dataStr)):
-          data.append(float(dataStr[i]))
+        if len(dataStr) > 0:
+          row = []
+          for i in range(len(dataStr)):
+            row.append(float(dataStr[i]))
+          data.append(row)
         
-        if (len(data) > 0):
-          items.append([QtWidgets.QTableWidgetItem(str(x)) for x in data])
+      nt = len(data)
+        #if (len(data) > 0):
+          #items.append([QtWidgets.QTableWidgetItem(str(x)) for x in data])
           #items.append([x for x in data])
         
         #lineFl = [float(dataStr[i]) for i in range(len(dataStr))]
         #data.append(lineFl)
       
-      output["type"] = "timed"
-      output["items"] = items
+      nw = len(data[0])
+      waves = []
+      for iw in range(1,nw):
+        wave = []
+        for it in range(nt):
+          wave.append(data[it][iw])
+        waves.append(wave)
+      
+      time = []
+      for it in range(nt):
+        time.append(data[it][0])
+      
+      output["data"] = data
+      output["waves"] = waves
+      output["time"] = time
+      
       
       return output
     
@@ -1799,20 +1835,74 @@ class ExampleApp(uiclass, baseclass):
           data.append(int(dataStr[i]))
         else:
           data.append(float(dataStr[i])) 
-                 
+      
       return data
  
  
-    def FillPulseScheduleItem(self, PSitem, record, col=1, mult=1.):
-      nt = len(record["items"])
+    def FillIonElement(self, ion:int, z:int, m=None):
+      if z == 1:
+        if m == None:
+          m = 2.
+        if m == 1.:
+          ion.label = 'H'
+        elif m == 2.:
+          ion.label = 'D'
+        elif m == 3.:
+          ion.label = 'T'
+        else:
+          print('Incorrect mass=' + str(m) + ' for z=1')
+      elif z == 2:
+        if m == None:
+          m = 4.
+        ion.label = 'He'
+      elif z == 4:
+        if m == None:
+          m = 9.
+        ion.label = 'Be'
+      elif z == 6:
+        if m == None:
+          m = 12.
+        ion.label = 'C'
+      elif z == 7:
+        if m == None:
+          m = 14.
+        ion.label = 'N'
+      elif z == 8:
+        if m == None:
+          m = 16.
+        ion.label = 'O'
+      elif z == 10:
+        if m == None:
+          m = 20.
+        ion.label = 'Ne'
+      elif z == 18:
+        if m == None:
+          m = 40.
+        ion.label = 'Ar'
+      elif z == 74:
+        if m == None:
+          m = 183.84
+        ion.label = 'W'
+
+      else:
+        print('Unimplemented ion z = ' + str(z))
+      
+      ion.z_ion = float(z)
+      ion.element.resize(1)
+      ion.element[0].a = m
+      ion.element[0].z_n = float(z)
+      ion.element[0].atoms_n = 1
+      
+    
+    def FillPulseScheduleItem(self, PSitem, record, col=0, mult=1.):
+      nt = len(record.timeWidgets)
       
       PSitem.time.resize(nt)
       PSitem.data.resize(nt)
       
-      for i in range(nt):
-        ins = record["items"][i]
-        PSitem.time[i] = float(ins[0].text())
-        PSitem.data[i] = float(ins[col].text())*mult
+      for it in range(nt):
+        PSitem.time[it] = float(record.timeWidgets[it].text())
+        PSitem.data[it] = float(record.waveWidgets[col][it].text())*mult
         
         
     def FillCoilGeometry(self, geometry, record):
@@ -1832,7 +1922,7 @@ class ExampleApp(uiclass, baseclass):
       beta_imas = beta_imas%(2.0*math.pi) 
        
       tol = 1.e-12
-      if (abs(alpha_imas) < tol and abs(beta_imas) < tol):     
+      if (abs(alpha_imas) < tol and abs(beta_imas) < tol):
         geometry.geometry_type = 2
         geometry.rectangle.r = rc
         geometry.rectangle.z = zc
@@ -2052,13 +2142,13 @@ class ExampleApp(uiclass, baseclass):
         pfp1.loop[iloop].element.resize(ne)
         
         ie = -1
-        for cam in tokamakdata["vessel"]["geometry"]:         
+        for cam in tokamakdata["vessel"]["geometry"]:
           if icircuit == int(cam["items_p"][3].text()):
-            ie = ie + 1           
+            ie = ie + 1
             
-            pfp1.loop[iloop].element[ie].name = cam["name"]         
+            pfp1.loop[iloop].element[ie].name = cam["name"]
             
-            self.FillCoilGeometry(pfp1.loop[iloop].element[ie].geometry, cam["items_g"])  
+            self.FillCoilGeometry(pfp1.loop[iloop].element[ie].geometry, cam["items_g"])
             
             pfp1.loop[iloop].element[ie].turns_with_sign = float(cam["items_p"][2].text())
                        
@@ -2066,13 +2156,8 @@ class ExampleApp(uiclass, baseclass):
             
             pfp1.loop[iloop].current.resize(1)
 
-        pfp1.loop[iloop].resistance = float(tokamakdata["vessel"]["resist"]["items"][i].text())            
-        #print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)      
-      
-      
-      
-      
-      
+        pfp1.loop[iloop].resistance = float(tokamakdata["vessel"]["resist"]["items"][i].text())
+        #print("Passive " + str(iloop) + " name = " + pfp1.loop[iloop].name)
       
       
       
@@ -2137,113 +2222,84 @@ class ExampleApp(uiclass, baseclass):
       # Pulse schedule
       psch = imas.pulse_schedule()
       psch.ids_properties.homogeneous_time = 0
-      psch.time.resize(1)
+      
+      psch_dw = imas.pulse_schedule()
+      psch_dw.ids_properties.homogeneous_time = 0
       
       
       # Densities
       psch.density_control.ion.resize(7)
       
       # Deuterium density
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "n_d.dat")
+      record = self.generalData['n_d'] #self.GetStuctWithFieldValue(self.generalData, "title", "n_d.dat")
       ion = 0
-      psch.density_control.ion[ion].label = 'D'
-      psch.density_control.ion[ion].z_ion = 1.
-      psch.density_control.ion[ion].element.resize(1)
-      psch.density_control.ion[ion].element[0].a = 2.
-      psch.density_control.ion[ion].element[0].z_n = 1.
-      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillIonElement(psch.density_control.ion[ion], 1, 2.)
       self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record, mult=1.e19)
       
       # Tritium density
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "dens.dat")
+      record = self.generalData['dens'] #self.GetStuctWithFieldValue(self.generalData, "title", "dens.dat")
       ion = 1
-      psch.density_control.ion[ion].label = 'T'
-      psch.density_control.ion[ion].z_ion = 1.
-      psch.density_control.ion[ion].element.resize(1)
-      psch.density_control.ion[ion].element[0].a = 3.
-      psch.density_control.ion[ion].element[0].z_n = 1.
-      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillIonElement(psch.density_control.ion[ion], 1, 3.)
       self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record, mult=1.e19)
       
       # Be content (0D transport)
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z.dat")
+      record = self.generalData['gamma_z'] #self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z.dat")
       ion = 2
-      psch.density_control.ion[ion].label = 'Be'
-      psch.density_control.ion[ion].z_ion = 4.
-      psch.density_control.ion[ion].element.resize(1)
-      psch.density_control.ion[ion].element[0].a = 9.
-      psch.density_control.ion[ion].element[0].z_n = 4.
-      psch.density_control.ion[ion].element[0].atoms_n = 1
+      #print('Be waveform for 0D, z='+str(z))
+      #print(record)
+      self.FillIonElement(psch.density_control.ion[ion], record.z)
       self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
       
       # Be content (1D transport)
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z1.dat")
-      print(record)
+      record = self.generalData['gamma_z1'] #self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z1.dat")
       ion = 3
-      psch.density_control.ion[ion].label = 'Be'
-      psch.density_control.ion[ion].z_ion = 4.
-      psch.density_control.ion[ion].element.resize(1)
-      psch.density_control.ion[ion].element[0].a = 9.
-      psch.density_control.ion[ion].element[0].z_n = 4.
-      psch.density_control.ion[ion].element[0].atoms_n = 1
+      #print('Be waveform for 1D, z='+str(z))
+      #print(record)
+      self.FillIonElement(psch.density_control.ion[ion], record.z)
       self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
       
       # W content
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z2.dat")
+      record = self.generalData['gamma_z2'] #self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z2.dat")
       ion = 4
-      psch.density_control.ion[ion].label = 'W'
-      psch.density_control.ion[ion].z_ion = 74.
-      psch.density_control.ion[ion].element.resize(1)
-      psch.density_control.ion[ion].element[0].a = 183.84
-      psch.density_control.ion[ion].element[0].z_n = 74.
-      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillIonElement(psch.density_control.ion[ion], record.z)
       self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
        
       # Ar content
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z3.dat")
+      record = self.generalData['gamma_z3'] #self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z3.dat")
       ion = 5
-      psch.density_control.ion[ion].label = 'Ar'
-      psch.density_control.ion[ion].z_ion = 18.
-      psch.density_control.ion[ion].element.resize(1)
-      psch.density_control.ion[ion].element[0].a = 40.
-      psch.density_control.ion[ion].element[0].z_n = 18.
-      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillIonElement(psch.density_control.ion[ion], record.z)
       self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
       
       # Ne content
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z4.dat")
+      record = self.generalData['gamma_z4'] #self.GetStuctWithFieldValue(self.generalData, "title", "gamma_z4.dat")
       ion = 6
-      psch.density_control.ion[ion].label = 'Ne'
-      psch.density_control.ion[ion].z_ion = 10.
-      psch.density_control.ion[ion].element.resize(1)
-      psch.density_control.ion[ion].element[0].a = 20.
-      psch.density_control.ion[ion].element[0].z_n = 10.
-      psch.density_control.ion[ion].element[0].atoms_n = 1
+      self.FillIonElement(psch.density_control.ion[ion], record.z)
       self.FillPulseScheduleItem(psch.density_control.ion[ion].n_i_volume_average.reference, record)
  
  
       # Aux heating
       psch.ec.launcher.resize(1)
       # EC heating (Ip < 1.5 MA)
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "ech.dat")
+      record = self.generalData['ech'] #self.GetStuctWithFieldValue(self.generalData, "title", "ech.dat")
       self.FillPulseScheduleItem(psch.ec.launcher[0].power.reference, record, mult=1.e6)
  
       # EC+EQ heating (Ip > 1.5 MA)
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "emo.dat")
-      self.FillPulseScheduleItem(psch.ec.power.reference, record, col=1, mult=1.e6)
-      #self.FillPulseScheduleItem(psch.ic.power.reference, record, col=2, mult=1.e6)
+      record = self.generalData['emo'] #self.GetStuctWithFieldValue(self.generalData, "title", "emo.dat")
+      self.FillPulseScheduleItem(psch.ec.power.reference, record, col=0, mult=1.e6)
+      #self.FillPulseScheduleItem(psch.ic.power.reference, record, col=1, mult=1.e6)
  
  
       ## Magnetic control
       # Elongation
-      record = self.GetStuctWithFieldValue(self.generalData, "title", "elong_ref.dat")
-      print(record)
+      record = self.generalData['elong'] #self.GetStuctWithFieldValue(self.generalData, "title", "elong_ref.dat")
       self.FillPulseScheduleItem(psch.position_control.elongation.reference, record)
       psch.position_control.elongation.reference_name = "Elongation"
 
 
-      psch.position_control.gap.resize(12)
-      ng = 6
+      ng = len(self.generalData['gaps'])
+      psch.position_control.gap.resize(ng)
+      psch_dw.position_control.gap.resize(ng)
+      
       GapName = ['Gap_1', 'Gap_2', 'R_LFS', 'Gap_4', 'Gap_5', 'R_HFS']
       #Rg = [422.30, 556.50, 828.06, 750.95, 533.15, 405.99]
       Rg = [422.30, 556.50, 0.0, 750.95, 533.15, 0.0]
@@ -2254,7 +2310,7 @@ class ExampleApp(uiclass, baseclass):
       for j in range(ng):
         gapname = GapName[j]
         refname = gapname
-        record = self.GetStuctWithFieldValue(self.generalData, "title", 'g' + str(j+1) + '.dat')
+        record = self.generalData['gaps'][j] #self.GetStuctWithFieldValue(self.generalData, "title", 'g' + str(j+1) + '.dat')
         self.FillPulseScheduleItem(psch.position_control.gap[j].value.reference, record, mult=1.e-2)
         psch.position_control.gap[j].r = Rg[j]*1.e-2
         psch.position_control.gap[j].z = Zg[j]*1.e-2
@@ -2267,55 +2323,55 @@ class ExampleApp(uiclass, baseclass):
       for j in range(ng):
         gapname = GapName[j]
         refname = gapname + "_Rampdown"
-        record = self.GetStuctWithFieldValue(self.generalData, "title", 'g' + str(j+1) + '_term.dat')
-        self.FillPulseScheduleItem(psch.position_control.gap[6+j].value.reference, record, mult=1.e-2)
-        psch.position_control.gap[ng+j].r = Rg[j]*1.e-2
-        psch.position_control.gap[ng+j].z = Zg[j]*1.e-2
-        #psch.position_control.gap[ng+j].z = Ag[j]*numpy.pi/180.
-        psch.position_control.gap[ng+j].name = gapname
-        psch.position_control.gap[ng+j].identifier = 'g' + str(j+1)
-        psch.position_control.gap[ng+j].value.reference_name = refname
+        record = self.generalData['gaps_term'][j] #self.GetStuctWithFieldValue(self.generalData, "title", 'g' + str(j+1) + '_term.dat')
+        self.FillPulseScheduleItem(psch_dw.position_control.gap[j].value.reference, record, mult=1.e-2)
+        psch_dw.position_control.gap[j].r = Rg[j]*1.e-2
+        psch_dw.position_control.gap[j].z = Zg[j]*1.e-2
+        #psch_dw.position_control.gap[j].z = Ag[j]*numpy.pi/180.
+        psch_dw.position_control.gap[j].name = gapname
+        psch_dw.position_control.gap[j].identifier = 'g' + str(j+1)
+        psch_dw.position_control.gap[j].value.reference_name = refname
       
       
       # scr_data.dat
       CircuitName = ["CS3U", "CS2U", "CS1", "CS2L", "CS3L", "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "VS3", "TRI_SUPP",  "COPP_CLAD", "INB_RAIL"]
       ncirc = 11
       ntur=[554.,554.,554.,554.,554.,  248.6, 115.2, 185.9, 169.9, 216.8, 459.4]
-      record = self.GetStuctWithFieldValue(self.generalData, "title", 'scr_data.dat')
+      record = self.generalData['scr_data'] #self.GetStuctWithFieldValue(self.generalData, "title", 'scr_data.dat')
       
       # Plasma current
-      self.FillPulseScheduleItem(psch.flux_control.i_plasma.reference, record, col=1, mult=1.0)
+      self.FillPulseScheduleItem(psch.flux_control.i_plasma.reference, record, col=0, mult=1.0)
       
       # CSPF currents
       psch.pf_active.coil.resize(15)
       for j in range(ncirc):
         circname = CircuitName[j]
         refname = circname
-        self.FillPulseScheduleItem(psch.pf_active.coil[j].current.reference, record, col=j+2, mult=1.0)
+        self.FillPulseScheduleItem(psch.pf_active.coil[j].current.reference, record, col=j+1, mult=1.0)
         psch.pf_active.coil[j].name = circname
         psch.pf_active.coil[j].identifier = circname
         psch.pf_active.coil[j].current.reference_name = refname
       
       
       # CSPF voltages
-      record = self.GetStuctWithFieldValue(self.generalData, "title", 'volt.dat')
+      record = self.generalData['volt'] #self.GetStuctWithFieldValue(self.generalData, "title", 'volt.dat')
       psch.pf_active.supply.resize(ncirc)
       for j in range(ncirc):
         circname = CircuitName[j]
         refname = circname
-        self.FillPulseScheduleItem(psch.pf_active.supply[j].voltage.reference, record, col=j+1, mult=1.0) 
+        self.FillPulseScheduleItem(psch.pf_active.supply[j].voltage.reference, record, col=j, mult=1.0)
         psch.pf_active.supply[j].name = circname
         psch.pf_active.supply[j].identifier = circname
         psch.pf_active.supply[j].voltage.reference_name = refname
       
       
       # CSPF resistances
-      record = self.GetStuctWithFieldValue(self.generalData, "title", 'pfres.dat')
+      record = self.generalData['pfres'] #self.GetStuctWithFieldValue(self.generalData, "title", 'pfres.dat')
       ncirc = 15
       for j in range(ncirc):
         circname = CircuitName[j]
         refname = circname + 'res'
-        self.FillPulseScheduleItem(psch.pf_active.coil[j].resistance_additional.reference, record, col=j+1, mult = 1.0)
+        self.FillPulseScheduleItem(psch.pf_active.coil[j].resistance_additional.reference, record, col=j, mult = 1.0)
         psch.pf_active.coil[j].resistance_additional.reference_name = refname
       
       
@@ -2344,7 +2400,8 @@ class ExampleApp(uiclass, baseclass):
       imas_obj.put(pfp1)
       imas_obj.put(magnetics)
       imas_obj.put(wall)
-      imas_obj.put(psch)
+      imas_obj.put(psch, occurrence = 0)
+      imas_obj.put(psch_dw, occurrence = 1)
       imas_obj.put(dat1)
       imas_obj.close()
 
