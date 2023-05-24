@@ -81,6 +81,8 @@ integer :: io_unit = 1
 logical :: errorflag
 character(len=200):: gaps_r_str, gaps_z_str
 
+integer :: ic(11)
+data ic(1:11) /1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12/
 
 !      n=n_c
       n_c=50
@@ -163,24 +165,29 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
           n_t_c1 = size(psch%pf_active%coil(1)%resistance_additional%reference%time)
           t_t_c1(1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%time(1:n_t_c1)
 
-!           pf_t_c1(1,1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(2,1:n_t_c1) = psch%pf_active%coil(2)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(3,1:n_t_c1) = psch%pf_active%coil(3)%resistance_additional%reference%data(1:n_t_c1) + &
-!          & psch%pf_active%coil(4)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(4,1:n_t_c1) = psch%pf_active%coil(5)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(5,1:n_t_c1) = psch%pf_active%coil(6)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(6,1:n_t_c1) = psch%pf_active%coil(7)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(7,1:n_t_c1) = psch%pf_active%coil(8)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(8,1:n_t_c1) = psch%pf_active%coil(9)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(9,1:n_t_c1) = psch%pf_active%coil(10)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(10,1:n_t_c1) = psch%pf_active%coil(11)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(11,1:n_t_c1) = psch%pf_active%coil(12)%resistance_additional%reference%data(1:n_t_c1)
-!           pf_t_c1(12,1:n_t_c1) = psch%pf_active%coil(13)%resistance_additional%reference%data(1:n_t_c1) + &
-!         & psch%pf_active%coil(14)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(1,1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(2,1:n_t_c1) = psch%pf_active%coil(2)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(3,1:n_t_c1) = psch%pf_active%coil(3)%resistance_additional%reference%data(1:n_t_c1) + &
+         & psch%pf_active%coil(4)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(4,1:n_t_c1) = psch%pf_active%coil(5)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(5,1:n_t_c1) = psch%pf_active%coil(6)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(6,1:n_t_c1) = psch%pf_active%coil(7)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(7,1:n_t_c1) = psch%pf_active%coil(8)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(8,1:n_t_c1) = psch%pf_active%coil(9)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(9,1:n_t_c1) = psch%pf_active%coil(10)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(10,1:n_t_c1) = psch%pf_active%coil(11)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(11,1:n_t_c1) = psch%pf_active%coil(12)%resistance_additional%reference%data(1:n_t_c1)
+          pf_t_c1(12,1:n_t_c1) = psch%pf_active%coil(13)%resistance_additional%reference%data(1:n_t_c1) + &
+        & psch%pf_active%coil(14)%resistance_additional%reference%data(1:n_t_c1)
+          
+          pf_t_c1(13,1:n_t_c1) = 0.000642411d0
+          pf_t_c1(14,1:n_t_c1) = 1000.d0
+          pf_t_c1(15,1:n_t_c1) = 0.000401657d0
         
-          do k=1,npf_c1
-            pf_t_c1(k,1:n_t_c1) = psch%pf_active%coil(k)%resistance_additional%reference%data(1:n_t_c1)
-          enddo
+        
+!           do k=1,npf_c1
+!             pf_t_c1(k,1:n_t_c1) = psch%pf_active%coil(k)%resistance_additional%reference%data(1:n_t_c1)
+!           enddo
 
 
 !           open (unit=41,file='ech.dat',form='formatted')
@@ -400,7 +407,7 @@ deallocate(buffer)
         
 	do i=1,11
           !pf(i)=a(2+i)*1.e3
-          pf(i) = psch%pf_active%coil(i)%current%reference%data(1)*tpl_dir*1.d-3*pf_turns(i)
+          pf(i) = psch%pf_active%coil(ic(i))%current%reference%data(1)*tpl_dir*1.d-3*pf_turns(i)
           
 	  pf0(i)=pf(i)
           pf_c1(i)=pf(i)

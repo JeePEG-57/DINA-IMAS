@@ -2337,24 +2337,26 @@ class ExampleApp(uiclass, baseclass):
       CircuitName = ["CS3U", "CS2U", "CS1", "CS2L", "CS3L", "PF1", "PF2", "PF3", "PF4", "PF5", "PF6", "VS3", "TRI_SUPP",  "COPP_CLAD", "INB_RAIL"]
       ncirc = 11
       ntur=[554.,554.,554.,554.,554.,  248.6, 115.2, 185.9, 169.9, 216.8, 459.4]
-      record = self.generalData['scr_data'] #self.GetStuctWithFieldValue(self.generalData, "title", 'scr_data.dat')
+      cm = [0, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11]
+      vm = [1., 1., 0.5, 0.5, 1., 1., 1., 1., 1., 1., 1., 1., 0.5, 0.5]
+      record = self.generalData['scr_data']
       
       # Plasma current
       self.FillPulseScheduleItem(psch.flux_control.i_plasma.reference, record, col=0, mult=1.0)
       
       # CSPF currents
-      psch.pf_active.coil.resize(15)
-      for j in range(ncirc):
-        circname = CircuitName[j]
+      psch.pf_active.coil.resize(14)
+      for j in range(12):
+        circname = CircuitName[cm[j]]
         refname = circname
-        self.FillPulseScheduleItem(psch.pf_active.coil[j].current.reference, record, col=j+1, mult=1.0)
+        self.FillPulseScheduleItem(psch.pf_active.coil[j].current.reference, record, col=cm[j]+1, mult=1.0)
         psch.pf_active.coil[j].name = circname
         psch.pf_active.coil[j].identifier = circname
         psch.pf_active.coil[j].current.reference_name = refname
       
       
       # CSPF voltages
-      record = self.generalData['volt'] #self.GetStuctWithFieldValue(self.generalData, "title", 'volt.dat')
+      record = self.generalData['volt']
       psch.pf_active.supply.resize(ncirc)
       for j in range(ncirc):
         circname = CircuitName[j]
@@ -2366,12 +2368,12 @@ class ExampleApp(uiclass, baseclass):
       
       
       # CSPF resistances
-      record = self.generalData['pfres'] #self.GetStuctWithFieldValue(self.generalData, "title", 'pfres.dat')
-      ncirc = 15
-      for j in range(ncirc):
+      record = self.generalData['pfres']
+      
+      for j in range(14):
         circname = CircuitName[j]
         refname = circname + 'res'
-        self.FillPulseScheduleItem(psch.pf_active.coil[j].resistance_additional.reference, record, col=j, mult = 1.0)
+        self.FillPulseScheduleItem(psch.pf_active.coil[j].resistance_additional.reference, record, col=cm[j], mult = vm[j])
         psch.pf_active.coil[j].resistance_additional.reference_name = refname
       
       

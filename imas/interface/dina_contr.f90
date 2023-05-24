@@ -1,10 +1,13 @@
-subroutine dina_contr(arr_in1,arr_out1)
+subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1,arr_out1)
 
 use ids_schemas
 use ids_routines
 implicit none
 
-! trees are static or dynamic; if not defined, they are static
+
+type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
+type (ids_pf_active)   :: pf_active0, pf_active
+type (ids_equilibrium) :: equilibrium0
 
 integer,save :: i
 integer,save :: first_call = 1, loop_count = 0, ntime = 0
@@ -42,6 +45,15 @@ real (ids_real),save :: output_2(npo) = (/ (0,i=1,npo) /)
 real (ids_real),save :: output_3(npo) = (/ (0,i=1,npo) /)
 real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
+
+
+call ids_copy(pf_active0, pf_active)
+
+
+if (loop_count.eq.0) then
+  write(*,*) 'Controller parameters initialization...'
+  call contr_data_read_imas(pulse_schedule, pulse_schedule_term)
+endif
 
 loop_count = loop_count + 1 ! number of times the iterative routine was entered
 
