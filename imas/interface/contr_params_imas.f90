@@ -21,7 +21,7 @@ character(len=132), pointer :: buffer(:) => NULL()
 integer :: io_unit = 1
 logical :: errorflag
       
-      real (ids_real) Ip_div, Ip_rd, max_VS_lim
+      real (ids_real) Ip_div, Ip_rd, max_VS_lim, k_g4
       
       real (ids_real) pf_turn
       dimension pf_turn(17)
