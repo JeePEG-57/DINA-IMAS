@@ -36,25 +36,27 @@ type (ids_summary) :: summary
 end interface
 
 interface 
-! Declaration of the dina_imas subroutine
-    subroutine dina_contr (arr_in1,arr_out1)
-     use ids_schemas
-    real (ids_real) :: arr_in1(501), arr_out1(501)
-    end subroutine
-    
+! Declaration of the dina_contr subroutine
+subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1,arr_out1)
+use ids_schemas
+type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
+type (ids_pf_active)   :: pf_active0, pf_active
+type (ids_equilibrium) :: equilibrium0
+real (ids_real):: arr_in1(*), arr_out1(*)
+end subroutine
 end interface
 
 
 type (ids_em_coupling) :: em_coupling0
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics
-type (ids_pf_active) :: pf_active0, pf_active
+type (ids_pf_active) :: pf_active0, pf_active1, pf_active
 type (ids_pf_passive) :: pf_passive0, pf_passive
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_sources)   :: core_sources0, core_sources
 type (ids_core_transport)   :: core_transport
 type (ids_transport_solver_numerics) :: bndcond
-type (ids_pulse_schedule)   :: pulse_schedule
+type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
 type (ids_summary) :: summary
 
 real (ids_real) :: arr_in1(501), arr_out1(501)
@@ -101,6 +103,7 @@ call ids_get(idx0,"core_profiles",core_profiles0)
 call ids_get(idx0,"core_sources",core_sources0)
 call ids_get(idx0,"transport_solver_numerics",bndcond)
 call ids_get(idx0,"pulse_schedule",pulse_schedule)
+call ids_get(idx0,"pulse_schedule/1",pulse_schedule_term)
 
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
@@ -131,7 +134,7 @@ call dina_imas_circ( em_coupling0, equilibrium0 &
 
 write(*,*) "Controller work"
 
-call dina_contr(arr_out1,arr_in1)
+call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active, arr_out1, arr_in1)
 
 !call dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
 !call dina_transp2(equilibrium0, core_profiles0, core_profiles)

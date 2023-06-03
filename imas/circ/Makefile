@@ -1,7 +1,13 @@
+
+PACKAGES =
+PACKAGES += imas-$(FCOMPILER)
+PACKAGES += libxml-2.0
+PACKAGES += xmllib
+
 F90_gfortran=gfortran -w
-COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
+COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config $(PACKAGES) --cflags` -g  
 #LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
-LIBS_gfortran=`pkg-config imas-gfortran --libs`
+LIBS_gfortran=`pkg-config $(PACKAGES) --libs`
 
 f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
 
@@ -19,7 +25,7 @@ LIB_SOURCE1 += dina_circ.a dina_imas_circ.o n_dina_imas3.o test_dina_imas.o
 all: $(TARGETS)
 
 #--------------------- gfortran ------------------------
-test_dina: test_dina_imas.o dina_imas_circ.a dina_contr.a
+test_dina: test_dina_imas.o dina_imas_circ.a ../interface/kmc.a
 	@echo "   * $^ -> $@"
 	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
 
@@ -41,12 +47,6 @@ dina_imas_circ.a: $(LIB_SOURCE1)
 
 dina_circ.a:
 	make -f Makefile_circ
-
-dina_contr.a: 
-	@cp ../interface/kmc.a dina_contr.a
-
-dina_put_slice.a:
-	@cp ../interface/dina_put_slice.a dina_put_slice.a
 
 clean:
 	rm -f *.o
