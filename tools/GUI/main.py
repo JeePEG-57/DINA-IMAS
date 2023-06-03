@@ -2490,6 +2490,9 @@ class ExampleApp(uiclass, baseclass):
         f.close()
         
         
+        shutil.copy(os.path.join(self.directoryLoad, 'wfconfig.xml'), self.directorySave)
+        
+        
         # archive the saved setup files
         tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
         tar = tarfile.open(tarname, "w:gz")
