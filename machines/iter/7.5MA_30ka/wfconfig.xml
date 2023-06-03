@@ -5,23 +5,24 @@
     <database>test</database>
     <pulse>180</pulse>
     <run>1</run>
-    <time_start>.0</time_start>
+    <time_start>0.</time_start>
     <interp_mode>1</interp_mode>
   </input_start>
   <output>
     <database>test</database>
-    <pulse>180</pulse> 
-    <run>41</run>
-    <decimation>10</decimation>
+    <pulse>170</pulse> 
+    <run>610</run>
+    <decimation>1</decimation>
   </output>
   <input_transp>
-    <database>test</database>
-    <pulse>180</pulse>
-    <run>55</run>
+    <user>public</user>
+    <database>iter</database>
+    <pulse>105033</pulse>
+    <run>1</run>
     <interp_mode>1</interp_mode>
   </input_transp>
   <time_stop>1000.0</time_stop>
-  <time_ext>14.e5</time_ext>
+  <time_ext>4.0</time_ext>
   <controller>kmc</controller>
   <step_max>1000000</step_max>
   <use_astra>0</use_astra>
