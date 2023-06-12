@@ -82,9 +82,11 @@ real (ids_real) :: arr_in1(501), arr_out1(501)
 character (len=255) :: user_default
 character (len=255) :: user_out, database_out
 character (len=255) :: user_prs, database_prs
+character (len=255) :: user_psch, database_psch
 character (len=255) :: user_transp='', database_transp=''
 integer :: pulse_prs=-1, run_prs=-1
 integer :: pulse_out=-1, run_out=-1
+integer :: pulse_psch=-1, run_psch=-1
 integer :: pulse_transp=-1, run_transp=-1
 
 ! Workflow parameters
@@ -144,6 +146,11 @@ print *,' Using workflow config file: ', ConfigFile
 call file2buffer(ConfigFile, io_unit, buffer)
 call xml2eg_parse_memory(buffer, doc)
 
+  call xml2eg_get(doc, 'pulse_schedule/user', user_psch)
+  call xml2eg_get(doc, 'pulse_schedule/database', database_psch)
+  call xml2eg_get(doc, 'pulse_schedule/pulse', pulse_psch)
+  call xml2eg_get(doc, 'pulse_schedule/run', run_psch)
+  
   call xml2eg_get(doc, 'input_start/user', user_prs)
   call xml2eg_get(doc, 'input_start/database', database_prs)
   call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
@@ -172,6 +179,7 @@ deallocate(buffer)
 
 
 if (trim(user_prs).eq.'') user_prs = user_default
+if (trim(user_psch).eq.'') user_psch = user_default
 if (trim(user_transp).eq.'') user_transp = user_default
 user_out = user_default
 
@@ -240,13 +248,18 @@ endif
 
 call ids_get(idx0,"wall",wall)
 call ids_get(idx0,"dataset_description",data_description)
-call ids_get(idx0,"pulse_schedule",pulse_schedule)
-call ids_get(idx0,"pulse_schedule/1",pulse_schedule_term)
-  
+
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
 
 
+write(*,*) 'Reading the pulse schedule'
+call imas_open_env('ids',pulse_psch,run_psch,idx0,user_psch,database_psch,'3')
+
+call ids_get(idx0,"pulse_schedule",pulse_schedule)
+call ids_get(idx0,"pulse_schedule/1",pulse_schedule_term)
+
+call imas_close(idx0)
 
 !print *,'Press any key to begin simulation...'
 !read (*,*)

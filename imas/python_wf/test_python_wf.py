@@ -189,10 +189,12 @@ def ASTRA_DENSITY(idslist):
 
 
 class DINA_Workflow:
-  def __init__(self, IMAS_InputStart, IMAS_Output):
+  def __init__(self, IMAS_PulseSchedule, IMAS_InputStart, IMAS_Output):
     
     # imas.DBEntry object containing input data to initialize the workflow
     self.IMAS_InputStart = IMAS_InputStart
+    
+    self.IMAS_PulseSchedule = IMAS_PulseSchedule
     
     # imas.DBEntry object to put output data in
     self.IMAS_Output = IMAS_Output
@@ -284,10 +286,15 @@ class DINA_Workflow:
     
     idslist['wall'] = self.IMAS_InputStart.get('wall')
     idslist['dataset_description'] = self.IMAS_InputStart.get('dataset_description')
-    idslist['pulse_schedule'] = self.IMAS_InputStart.get('pulse_schedule')
-    idslist['pulse_schedule_term'] = self.IMAS_InputStart.get('pulse_schedule', occurrence = 1)
     
     self.IMAS_InputStart.close()
+    
+    
+    self.IMAS_PulseSchedule.open()
+    idslist['pulse_schedule'] = self.IMAS_PulseSchedule.get('pulse_schedule')
+    idslist['pulse_schedule_term'] = self.IMAS_PulseSchedule.get('pulse_schedule', occurrence = 1)
+    self.IMAS_PulseSchedule.close()
+    
     
     #print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
     
@@ -435,6 +442,20 @@ def start(config):
   IMAS_InputStart = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
   
   
+  input_psch = root.find('pulse_schedule')
+  usernode = input_psch.find('user')
+  if (usernode != None):
+    username = usernode.text
+  else:
+    username = None
+  if (username == None or username == ""):
+    username = user_default
+  database = input_start.find('database').text
+  pulse = int(input_start.find('pulse').text)
+  run = int(input_start.find('run').text)
+  IMAS_PulseSchedule = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
+  
+  
   output = root.find('output')
   database = output.find('database').text
   pulse = int(output.find('pulse').text)
@@ -442,7 +463,7 @@ def start(config):
   IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, user_default, data_version = '3')
   
   
-  Workflow = DINA_Workflow(IMAS_InputStart, IMAS_Output)
+  Workflow = DINA_Workflow(IMAS_PulseSchedule, IMAS_InputStart, IMAS_Output)
   Workflow.InterpStart = int(input_start.find('interp_mode').text)
   Workflow.Time_Start = float(input_start.find('time_start').text)
   Workflow.Time_Stop = float(root.find('time_stop').text)
