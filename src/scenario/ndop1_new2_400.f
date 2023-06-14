@@ -3572,7 +3572,7 @@ c---
 c---                                                                    
                                                                         
 	m1=m-1                                                                 
-!	if(kpr.eq.1)print *,' n m mp m1 pi',n,m,mp,m1,pi                      
+	if(kpr.eq.1)print *,' n m mp m1 pi',n,m,mp,m1,pi                      
       TETM=2.*PI                                                        
       H2=TETM/(M-2)                                                     
       DO 15 J=2,M                                                       
@@ -3605,15 +3605,15 @@ c	call out42(n_pr,a_print,num,apr)
                                 
 c	alftet=0.85                                                            
 	alftet=1.d0                                                            
-	alftet1=1.d0/alftet                                                      
+	alftet1=1.d0/alftet                                        
 
 	do j=3,m                                                             
-	if(tet(j).gt.tet_sep-d_tet_sep.and.tet(j).le.tet_sep)then                                         
+	if(tet(j).gt.tet_sep-d_tet_sep.and.tet(j).le.tet_sep)then  
 	ht(j)=ht(j-1)*alftet                                                   
 
 	end if                                                                 
 
-	if(tet(j).lt.tet_sep+d_tet_sep.and.tet(j).gt.tet_sep)then                        
+	if(tet(j).lt.tet_sep+d_tet_sep.and.tet(j).gt.tet_sep)then 
 	ht(j)=ht(j-1)*alftet1                                                  
 
 
@@ -3630,7 +3630,7 @@ c	alftet=0.85
 	tetsum=tetsum+ht(j)                                                    
 	end do                                                                 
 	alftet=(2.*pi/tetsum)                                                  
-c	print *,'alftet=',alftet                                              
+	if(kpr.eq.1)print *,'alftet=',alftet     
 	do j=3,m                                                               
 	ht(j)=ht(j)*alftet                                                     
 	tet(j)=tet(j-1)+ht(j)  
