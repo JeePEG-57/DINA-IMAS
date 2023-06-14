@@ -46,11 +46,10 @@ real(ids_real)::  gridrange(4)
  call read_green_params(npass,nact,kloop,kprobe,ke,ngrid2)
 
 
-print *,'nact',nact
-print *,'npass',npass
-print *,'kprobe',kprobe
-print *,'ngrid ngrid2',ngrid, ngrid2
-
+print *,'nact, npass =', nact,npass
+print *,'kloop, kprobe =', kloop,kprobe
+print *,'ngrid ngrid2 =', ngrid,ngrid2
+print *,'ke =', ke
 
 
 ALLOCATE(fluxarr(ngrid,nact))
@@ -114,19 +113,15 @@ flush(6)
 
 
 
-i=size(pf_active0%coil%resistance)
+i=size(pf_active0%coil)
 print *,'pf_active0%coil%resistance',i
+print *,pf_active0%coil(1:i)%resistance
 
-print *,pf_active0%coil(1:nact)%resistance
-
-i=size(pf_passive0%loop%resistance)
+i=size(pf_passive0%loop)
 print *,'pf_passive0%loop%resistance',i
-print *,pf_passive0%loop(1:npass)%resistance
+print *,pf_passive0%loop(1:i)%resistance
 
-write(*,100) shape(pf_active0%coil%resistance),shape(pf_passive0%loop%resistance)
-
-  write(*,*) "pfres(1:3)=",pfres(1:3)
-  write(*,*) "rcam(1:3)=",rcam(1:3)
+write(*,100) shape(pf_active0%coil),shape(pf_passive0%loop)
 
 100 format (2I5, 4x,2I5, 4x, 2I5, 4x,2I5)
     

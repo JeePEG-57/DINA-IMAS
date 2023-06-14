@@ -13,6 +13,8 @@ import xml.etree.ElementTree as ET
 import dinaimas21.wrapper as dinaimas21
 import dina_green.wrapper as dina_green
 
+import kmc.wrapper as kmc
+
 import dinatransp_bootcond.wrapper as dinatransp_bootcond
 import dinatransp_curdrive.wrapper as dinatransp_curdrive
 import dinatransp_density.wrapper as dinatransp_density
@@ -65,7 +67,25 @@ def DINA(idslist, arr_volt):
   
   return arr_curr
   
+  
+  
+def KMC(idslist, arr_curr):
+  
+  output = kmc.kmc_actor(idslist['pulse_schedule'],
+                                       idslist['pulse_schedule_term'],
+                                       idslist['equilibrium'],
+                                       idslist['pf_active'],
+                                       arr_curr)
+  
+  idslist['pf_active'] = output[0]
+  arr_volt = output[1]
+  
+  return arr_volt
+
+
+
 def GREEN(idslist):
+  
   output = dina_green.dina_green_actor(idslist['pf_active'],
                                        idslist['pf_passive'],
                                        idslist['magnetics'])
@@ -169,10 +189,12 @@ def ASTRA_DENSITY(idslist):
 
 
 class DINA_Workflow:
-  def __init__(self, IMAS_InputStart, IMAS_Output):
+  def __init__(self, IMAS_PulseSchedule, IMAS_InputStart, IMAS_Output):
     
     # imas.DBEntry object containing input data to initialize the workflow
     self.IMAS_InputStart = IMAS_InputStart
+    
+    self.IMAS_PulseSchedule = IMAS_PulseSchedule
     
     # imas.DBEntry object to put output data in
     self.IMAS_Output = IMAS_Output
@@ -224,9 +246,9 @@ class DINA_Workflow:
 
   def Run(self):
   
-    controllername = self.MagneticController
-    exec("import " + controllername + ".wrapper as " + controllername)
-    dinacontr = eval(controllername + "." + controllername + "_actor")
+    #controllername = self.MagneticController
+    #exec("import " + controllername + ".wrapper as " + controllername)
+    #dinacontr = eval(controllername + "." + controllername + "_actor")
   
     idslist = {}
     
@@ -250,8 +272,8 @@ class DINA_Workflow:
       idslist['core_sources'] = self.IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
       idslist['transport_solver_numerics'] = self.IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
     else:
-      print('Start from t = 0')
-      idslist['equilibrium'] = self.IMAS_InputStart.get('equilibrium', occurrence = 0)
+      print('Start from t = 0') 
+      #idslist['equilibrium'] = self.IMAS_InputStart.get('equilibrium')
       idslist['magnetics'] = self.IMAS_InputStart.get('magnetics')
       idslist['pf_active'] = self.IMAS_InputStart.get('pf_active')
       idslist['pf_passive'] = self.IMAS_InputStart.get('pf_passive')
@@ -264,9 +286,15 @@ class DINA_Workflow:
     
     idslist['wall'] = self.IMAS_InputStart.get('wall')
     idslist['dataset_description'] = self.IMAS_InputStart.get('dataset_description')
-    idslist['pulse_schedule'] = self.IMAS_InputStart.get('pulse_schedule')
     
     self.IMAS_InputStart.close()
+    
+    
+    self.IMAS_PulseSchedule.open()
+    idslist['pulse_schedule'] = self.IMAS_PulseSchedule.get('pulse_schedule')
+    idslist['pulse_schedule_term'] = self.IMAS_PulseSchedule.get('pulse_schedule', occurrence = 1)
+    self.IMAS_PulseSchedule.close()
+    
     
     #print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
     
@@ -276,6 +304,7 @@ class DINA_Workflow:
     
     self.IMAS_Output.put(idslist["dataset_description"])
     self.IMAS_Output.put(idslist["pulse_schedule"])
+    self.IMAS_Output.put(idslist["pulse_schedule_term"], occurrence = 1)
     self.IMAS_Output.put(idslist['em_coupling'])
     self.IMAS_Output.put(idslist['wall'])
     
@@ -291,10 +320,15 @@ class DINA_Workflow:
       
       self.idslist = idslist
       
-      # DINA 
+      # DINA
       arr_curr = DINA(idslist, arr_volt)
       
-    
+      # Magnetic controller
+      arr_volt = KMC(idslist, arr_curr)
+      #arr_volt = dinacontr(arr_curr)
+      #arr_volt = dinacontr21_1a.dinacontr21_1a_actor(arr_curr)
+      
+      
       ip = idslist['summary'].global_quantities.ip.value[0]
       time = idslist['summary'].time[0]
       timearr.append(time)
@@ -313,7 +347,7 @@ class DINA_Workflow:
           self.IMAS_Transp.close()
           
         else:
-        
+          
           HEATSRC(idslist)
           ENERGY(idslist)
           
@@ -329,20 +363,16 @@ class DINA_Workflow:
             densitysrc_valve = ASTRASRC_VALVE(idslist, cmd_valve)
             
             densitysrc = densitysrc_pellet + densitysrc_valve
-                
+            
             DENSITY(idslist, densitysrc)
           
-      
           
           BOOTCOND(idslist)
           CURDRIVE(idslist)
         
-          # Boundary conditions
-          SOLPSZ(idslist)
+      # Boundary conditions
+      SOLPSZ(idslist)
     
-      # Magnetic controller
-      arr_volt = dinacontr(arr_curr)
-      #arr_volt = dinacontr21_1a.dinacontr21_1a_actor(arr_curr)
     
       #n1 = len(core_profiles.profiles_1d[0].grid.rho_tor_norm)
       #print('n1 = ' + str(n1))
@@ -412,6 +442,20 @@ def start(config):
   IMAS_InputStart = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
   
   
+  input_psch = root.find('pulse_schedule')
+  usernode = input_psch.find('user')
+  if (usernode != None):
+    username = usernode.text
+  else:
+    username = None
+  if (username == None or username == ""):
+    username = user_default
+  database = input_start.find('database').text
+  pulse = int(input_start.find('pulse').text)
+  run = int(input_start.find('run').text)
+  IMAS_PulseSchedule = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
+  
+  
   output = root.find('output')
   database = output.find('database').text
   pulse = int(output.find('pulse').text)
@@ -419,7 +463,7 @@ def start(config):
   IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, user_default, data_version = '3')
   
   
-  Workflow = DINA_Workflow(IMAS_InputStart, IMAS_Output)
+  Workflow = DINA_Workflow(IMAS_PulseSchedule, IMAS_InputStart, IMAS_Output)
   Workflow.InterpStart = int(input_start.find('interp_mode').text)
   Workflow.Time_Start = float(input_start.find('time_start').text)
   Workflow.Time_Stop = float(root.find('time_stop').text)

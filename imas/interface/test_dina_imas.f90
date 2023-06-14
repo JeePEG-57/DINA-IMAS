@@ -46,28 +46,32 @@ type (ids_summary) :: summary
     real (ids_real) :: arr_in1(501), arr_out1(501)
 
     end subroutine
+    
 end interface
+
 
 interface 
 ! Declaration of the dina_contr subroutine
-    subroutine dina_contr (arr_in1,arr_out1)
-     use ids_schemas
-    real (ids_real) :: arr_in1(501), arr_out1(501)
-    end subroutine
-    
+subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1,arr_out1)
+use ids_schemas
+type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
+type (ids_pf_active)   :: pf_active0, pf_active
+type (ids_equilibrium) :: equilibrium0
+real (ids_real):: arr_in1(*), arr_out1(*)
+end subroutine
 end interface
 
 
 type (ids_em_coupling) :: em_coupling
 type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics, magnetics0
-type (ids_pf_active) :: pf_active, pf_active0
+type (ids_pf_active) :: pf_active, pf_active1, pf_active0
 type (ids_pf_passive) :: pf_passive, pf_passive0
 type (ids_core_profiles)   :: core_profiles0, core_profiles
 type (ids_core_sources)   :: core_sources0, core_sources
 type (ids_core_transport)   :: core_transport
 type (ids_transport_solver_numerics) :: bndcond
-type (ids_pulse_schedule)   :: pulse_schedule
+type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
 type (ids_dataset_description) :: data_description
 type (ids_summary) :: summary
 type (ids_wall) :: wall
@@ -78,9 +82,11 @@ real (ids_real) :: arr_in1(501), arr_out1(501)
 character (len=255) :: user_default
 character (len=255) :: user_out, database_out
 character (len=255) :: user_prs, database_prs
+character (len=255) :: user_psch, database_psch
 character (len=255) :: user_transp='', database_transp=''
 integer :: pulse_prs=-1, run_prs=-1
 integer :: pulse_out=-1, run_out=-1
+integer :: pulse_psch=-1, run_psch=-1
 integer :: pulse_transp=-1, run_transp=-1
 
 ! Workflow parameters
@@ -140,6 +146,11 @@ print *,' Using workflow config file: ', ConfigFile
 call file2buffer(ConfigFile, io_unit, buffer)
 call xml2eg_parse_memory(buffer, doc)
 
+  call xml2eg_get(doc, 'pulse_schedule/user', user_psch)
+  call xml2eg_get(doc, 'pulse_schedule/database', database_psch)
+  call xml2eg_get(doc, 'pulse_schedule/pulse', pulse_psch)
+  call xml2eg_get(doc, 'pulse_schedule/run', run_psch)
+  
   call xml2eg_get(doc, 'input_start/user', user_prs)
   call xml2eg_get(doc, 'input_start/database', database_prs)
   call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
@@ -168,6 +179,7 @@ deallocate(buffer)
 
 
 if (trim(user_prs).eq.'') user_prs = user_default
+if (trim(user_psch).eq.'') user_psch = user_default
 if (trim(user_transp).eq.'') user_transp = user_default
 user_out = user_default
 
@@ -236,12 +248,18 @@ endif
 
 call ids_get(idx0,"wall",wall)
 call ids_get(idx0,"dataset_description",data_description)
-call ids_get(idx0,"pulse_schedule",pulse_schedule)
-  
+
 write(*,*) 'Finished reading the prescribed IDS'
 call imas_close(idx0)
 
 
+write(*,*) 'Reading the pulse schedule'
+call imas_open_env('ids',pulse_psch,run_psch,idx0,user_psch,database_psch,'3')
+
+call ids_get(idx0,"pulse_schedule",pulse_schedule)
+call ids_get(idx0,"pulse_schedule/1",pulse_schedule_term)
+
+call imas_close(idx0)
 
 !print *,'Press any key to begin simulation...'
 !read (*,*)
@@ -260,6 +278,7 @@ arr_out1(1:31)=0
   call ids_put(idx,"em_coupling",em_coupling)
   call ids_put(idx,"dataset_description",data_description)
   call ids_put(idx,"pulse_schedule",pulse_schedule)
+  call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
 
 
 
@@ -274,7 +293,7 @@ call dina_imas( &
  &   em_coupling, equilibrium0, magnetics0, pf_active0, pf_passive0, wall, core_profiles0, core_sources0 &
  & , bndcond &
  & , pulse_schedule &
- & , equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+ & , equilibrium, magnetics, pf_active1, pf_passive, core_profiles, core_sources, core_transport &
  & , summary &
  & , arr_in1,arr_out1)
 
@@ -293,7 +312,10 @@ write(*,*) "DINA_IMAS inputs deallocated"
 flush(6)
 
 
-call dina_contr(arr_out1,arr_in1)
+call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active, arr_out1, arr_in1)
+
+call ids_deallocate(pf_active1)
+
 
 write(*,*) "Controller finished"
 flush(6)
