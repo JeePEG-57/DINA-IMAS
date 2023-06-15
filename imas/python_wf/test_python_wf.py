@@ -450,9 +450,9 @@ def start(config):
     username = None
   if (username == None or username == ""):
     username = user_default
-  database = input_start.find('database').text
-  pulse = int(input_start.find('pulse').text)
-  run = int(input_start.find('run').text)
+  database = input_psch.find('database').text
+  pulse = int(input_psch.find('pulse').text)
+  run = int(input_psch.find('run').text)
   IMAS_PulseSchedule = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
   
   
