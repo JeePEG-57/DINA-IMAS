@@ -138,11 +138,11 @@ c        print 71,apr,(te0(i),i=1,n)
 	apr='tq0'
 c        print 71,apr,(tq0(i),i=1,n)
 	apr='pne'
-c        print 71,apr,(pne(i),i=1,n)
+!        print 71,apr,(pne(i),i=1,n)
 	apr='pd0'
-c        print 71,apr,(pd0(i),i=1,n)
+!        print 71,apr,(pd0(i),i=1,n)
 	apr='pt0'
-c        print 71,apr,(pt0(i),i=1,n)
+!        print 71,apr,(pt0(i),i=1,n)
 	apr='ph0'
 c        print 71,apr,(ph0(i),i=1,n)
 	apr='tq0'
@@ -278,11 +278,20 @@ C^M
               
         pne1=pd0(i)+pt0(i)
 
+        p_imp1=pne1*coef_imp1
+        p_imp2=pne1*coef_imp2
+        p_imp3=pne1*coef_imp3
+        p_imp4=pne1*coef_imp4
 
-!      	pd0(i)=0.5d0*pne(i)*(1.d0-coef_imp*z-coef_imp1*z-
-!     *  coef_imp2*z2)
-     
-!        pt0(i)=pd0(i)
+      	pne(i)=pd0(i)+pt0(i)+pnal(i)*z+p_imp1*z1+
+     *  p_imp2*z2+p_imp3*z3+p_imp4*z4
+
+        zeff(i)=(pd0(i)+pt0(i)+pnal(i)*zsq+p_imp1*z1sq+
+     *  p_imp2*z2sq+p_imp3*z3sq+p_imp4*z4sq)/pne(i)
+
+        i_old=0
+        if(i_old.eq.1)then
+        pne1=pd0(i)+pt0(i)
 
       	pne(i)=-(pd0(i)+pt0(i))/ (coef_imp*z+coef_imp1*z1+
      *  coef_imp2*z2+coef_imp3*z3+coef_imp4*z4-1.d0)
@@ -292,7 +301,8 @@ C^M
      *  +(coef_imp*zsq+coef_imp1*z1sq+
      *  coef_imp2*z2sq+coef_imp3*z3sq+coef_imp4*z4sq)
 
-
+       end if
+      
         if(i.eq.2)then
         if(kpr.eq.1)print *,' i coef_imp pnal pne  ',
      *  i,coef_imp,pnal(i),pne(i)
