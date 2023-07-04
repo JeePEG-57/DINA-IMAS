@@ -148,8 +148,10 @@ c     *  wdop,qtep,w_fusion,
 c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
 
 	include 'double.inc'
+        include 'imas_interface.inc'
         include 'parf0'
         include 'parf8'
+        
 
         common
      *  /c_ramp2/rsep2,zsep2,psep2
@@ -195,40 +197,40 @@ c     *  pf2,pf6,cs2L,cs1,cs2U,volume,z_tok,tokc,zvel_out)
 
         
 c******* Begin of Sign changing ******
-        tpl_imas=tpl*(-1)
+        tpl_imas=tpl*tpl_dir
 
-        pf1_imas=pf1*(-1)
-        pf2_imas=pf2*(-1)
-        pf3_imas=pf3*(-1)
-        pf4_imas=pf4*(-1)
-        pf5_imas=pf5*(-1)
-        pf6_imas=pf6*(-1)
-        pf7_imas=pf7*(-1)
-        pf8_imas=pf8*(-1)
-        pf9_imas=pf9*(-1)
-        pf10_imas=pf10*(-1)
-        pf11_imas=pf11*(-1)
+        pf1_imas=pf1*tpl_dir
+        pf2_imas=pf2*tpl_dir
+        pf3_imas=pf3*tpl_dir
+        pf4_imas=pf4*tpl_dir
+        pf5_imas=pf5*tpl_dir
+        pf6_imas=pf6*tpl_dir
+        pf7_imas=pf7*tpl_dir
+        pf8_imas=pf8*tpl_dir
+        pf9_imas=pf9*tpl_dir
+        pf10_imas=pf10*tpl_dir
+        pf11_imas=pf11*tpl_dir
 
-        zv1_imas=zv1*(-1)
-        zv2_imas=zv2*(-1)
-        zv3_imas=zv3*(-1)
-        zv4_imas=zv4*(-1)
-        zv5_imas=zv5*(-1)
-        zv6_imas=zv6*(-1)
-        zv7_imas=zv7*(-1)
-        zv8_imas=zv8*(-1)
-        zv9_imas=zv9*(-1)
-        zv10_imas=zv10*(-1)
-        zv11_imas=zv11*(-1)
+        zv1_imas=zv1*tpl_dir
+        zv2_imas=zv2*tpl_dir
+        zv3_imas=zv3*tpl_dir
+        zv4_imas=zv4*tpl_dir
+        zv5_imas=zv5*tpl_dir
+        zv6_imas=zv6*tpl_dir
+        zv7_imas=zv7*tpl_dir
+        zv8_imas=zv8*tpl_dir
+        zv9_imas=zv9*tpl_dir
+        zv10_imas=zv10*tpl_dir
+        zv11_imas=zv11*tpl_dir
 
-        Curr_vs1_imas=Curr_vs1*(-1)
-        Curr_vs2_imas=Curr_vs2*(-1)
+        Curr_vs1_imas=Curr_vs1*tpl_dir
+        Curr_vs2_imas=Curr_vs2*tpl_dir
 
-        U_vs1_imas=U_vs1*(-1)
-        U_vs2_imas=U_vs2*(-1)
+        U_vs1_imas=U_vs1*tpl_dir
+        U_vs2_imas=U_vs2*tpl_dir
         
         
-        uact_imas = -uact
+        uact_imas = uact*tpl_dir
         
 c******* End of Sign changing ******
 
@@ -286,9 +288,9 @@ c-----------------
         pohm=wdh
 
 c*** Begin of sign changing ***
-        psiext_av_imas=psiext_av*(-1)
-        psi_pf_imas=psi_pf*(-1)
-        psi_ax_imas=psi_ax*(-1)
+        psiext_av_imas=psiext_av*tpl_dir
+        psi_pf_imas=psi_pf*tpl_dir
+        psi_ax_imas=psi_ax*tpl_dir
 c*** End of sign changing ***
 
 cc        psi_ext=psiext_av
@@ -538,7 +540,7 @@ cccccc	wr(73)=r_lh
         wr_imas(26)=tqc
         wr_imas(27)=tq_ax/tqc
         wr_imas(28)=zeff_a
-        wr_imas(29)=uact
+        wr_imas(29)=uact_imas
         wr_imas(30)=vs
         wr_imas(31)=c_e_old
         wr_imas(32)=psi_ext !!!! %%% one needs to need to add tcam to psi_pf 
