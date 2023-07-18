@@ -84,11 +84,16 @@ character(len=200):: gaps_r_str, gaps_z_str
 integer :: ic(11)
 data ic(1:11) /1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12/
 
+integer :: grid_n
+real*8 :: grid_rho, grid_alpha
+
 !      n=n_c
       n_c=50
       n=n_c
       
       if(kpr.eq.1)print *,'n n_c ',n,n_c
+      
+      
       
       ! Initializing 1D grid
       call one2d()
@@ -99,6 +104,10 @@ data ic(1:11) /1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12/
 call file2buffer(ConfigFile, io_unit, buffer)
 call xml2eg_parse_memory(buffer, doc)
 
+         
+         call xml2eg_get(doc, 'grid_n', grid_n)
+         call xml2eg_get(doc, 'grid_rho', grid_rho)
+         call xml2eg_get(doc, 'grid_alpha', grid_alpha)
          
 ! 	open (unit=40,file='tt_kavin.dat',form='formatted') 
         !read (49,*) 
