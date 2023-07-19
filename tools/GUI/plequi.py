@@ -487,7 +487,7 @@ def main():
     window = Second_window(idslist)
     window.setObjectName("EQUIL_win")
     window.show() 
-    sys.exit(app.exec_())  # Start application
+    sys.exit(app.exec())  # Start application
 
 if __name__ == '__main__':  # If direct run, not import
     main() 
