@@ -321,7 +321,7 @@ class ExampleApp(uiclass, baseclass):
 #        QVizGlobalOperations.checkEnvSettings()
 #        QVizPreferences().build()
         #layout1.addWidget(self.GUIVIZ)
-        self.tabVIZ.setLayout(layout1)
+#        self.tabVIZ.setLayout(layout1)
         #--------------------------------
         
         
@@ -2585,7 +2585,7 @@ def main():
     window = ExampleApp()  # Create instance of ExampleApp
     window.setObjectName("IMASViz root window")
     window.show() 
-    sys.exit(app.exec_())  # Start application
+    sys.exit(app.exec())  # Start application
 
 if __name__ == '__main__':  # If direct run, not import
     main() 
