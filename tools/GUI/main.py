@@ -3,7 +3,7 @@ import sys
 import os
 import shutil
 
-from PyQt5 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 import design
 import captions
 
@@ -11,15 +11,15 @@ import math
 import numpy
 import random
 import matplotlib
-matplotlib.use('Qt5Agg')
+#matplotlib.use('Qt5Agg')
 
 
 import tarfile
 import datetime
 
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -38,29 +38,29 @@ from plequi import Second_window
 from functools import partial
 #from matplotlib.figure import Figure
 from pathlib import Path
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
                              QMenu, QMainWindow, QDockWidget,QMenuBar,QSizePolicy,
                              QLineEdit, QPushButton, QVBoxLayout, QComboBox,
-                             QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView, QAction) 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
+                             QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView) 
+from PySide6.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
+from PySide6.QtGui import  QAction
+
+from PySide6.QtUiTools import loadUiType
 
 
-from PyQt5.uic import loadUiType
-
-
-import viz_plug
+# import viz_plug
 
 
 
 
-sys.path.append((os.environ['VIZ_HOME']))
+#sys.path.append((os.environ['VIZ_HOME']))
 
-from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-                              QVizGlobalOperations, QVizLogger)
+#from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
+#                              QVizGlobalOperations, QVizLogger)
 
 
 #--------------------------END NEW IMPORT
@@ -173,7 +173,7 @@ class ExampleApp(uiclass, baseclass):
         #self.GUIVIZ = GUIFrame(self)
         self.setObjectName("IMASViz root window")
         self.MDI = QVizMDI(self)
-        self.startWindow = viz_plug.QVizStartWindow(self)
+#        self.startWindow = viz_plug.QVizStartWindow(self)
         #self.viz_plug.QVizStartWindow.setStatusBar()
         #self.GUIVIZ = viz_plug.QVizMainWindow(self)
         self.EQUIL_win = None
@@ -315,11 +315,11 @@ class ExampleApp(uiclass, baseclass):
         #layout1.addLayout(GUIFrame)
         layout1.setColumnStretch(0, 1)
         layout1.setColumnStretch(1, 7)
-        layout1.addWidget(self.startWindow, 0, 0, 1, 1)
+#        layout1.addWidget(self.startWindow, 0, 0, 1, 1)
         layout1.addWidget(self.MDI, 0, 1, 1, 1)
         #self.setCentralWidget(centralWidget)
-        QVizGlobalOperations.checkEnvSettings()
-        QVizPreferences().build()
+#        QVizGlobalOperations.checkEnvSettings()
+#        QVizPreferences().build()
         #layout1.addWidget(self.GUIVIZ)
 #        self.tabVIZ.setLayout(layout1)
         #--------------------------------
