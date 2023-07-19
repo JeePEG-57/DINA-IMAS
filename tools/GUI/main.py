@@ -350,9 +350,9 @@ class ExampleApp(uiclass, baseclass):
         self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
         
         
-        self.DINAData["grid_n"] = CodeParameter(mytype=int, value=50, name='Grid n', comment = 'Amount of grid points')
-        self.DINAData["grid_rho"] = CodeParameter(mytype=float, value=0.8, name='Grid rho', comment = 'Rho value after which the grid increases density')
-        self.DINAData["grid_alpha"] = CodeParameter(mytype=float, value=0.2, name='Grid compression', comment = 'Grid density increase factor')
+        self.DINAData["grid_n"] = CodeParameter(mytype=int, value=50, name='Grid n', comment = 'Amount of 1D grid points')
+        self.DINAData["grid_rho"] = CodeParameter(mytype=float, value=0.8, name='Grid rho', comment = 'Rho value after which the 1D grid gradually increases density')
+        self.DINAData["grid_alpha"] = CodeParameter(mytype=float, value=0.2, name='Grid compression', comment = '1D grid compression factor in the boundary region')
         
         
         self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='tcont2')
