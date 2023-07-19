@@ -1,21 +1,22 @@
 from pathlib import Path
-from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
+from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
                              QMenu, QMainWindow, QDockWidget,QMenuBar,QSizePolicy,
                              QLineEdit, QPushButton, QVBoxLayout, QComboBox,
-                             QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView, QAction) 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
+                             QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView) 
+from PySide6.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QCheckBox, QPushButton, QHBoxLayout, QLabel, QMessageBox
+from PySide6.QtGui import QAction           
 import eq_win4
 import sys
 import math
 import imas # UAL library
 import matplotlib
-matplotlib.use('Qt5Agg')
+#matplotlib.use('QtAgg')
 #matplotlib.use('GTK3Agg')
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -98,7 +99,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.ax_equil = plt.subplot(1, ncols, 1)
         self.ax_equil.set_aspect('equal', adjustable='box')
         
-        self.canvas.draw()
+        self.canvas.draw_idle()
         
         
         self.data_gain()

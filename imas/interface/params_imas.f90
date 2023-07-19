@@ -72,6 +72,8 @@ type (ids_pulse_schedule)   :: psch
      
      common /v_turn/pf_turns(kf)
      common /c_scr_data_c1/pf_c1(kf)
+
+     common /c_one2d/alf,ro_alf
      
      
 character(len=30) :: ConfigFile = 'DINA_Parameters.xml'
@@ -96,7 +98,7 @@ real*8 :: grid_rho, grid_alpha
       
       
       ! Initializing 1D grid
-      call one2d()
+ !     call one2d()
      
      
         !open(unit=49,file='dina_data.dat', form='formatted')
@@ -108,6 +110,22 @@ call xml2eg_parse_memory(buffer, doc)
          call xml2eg_get(doc, 'grid_n', grid_n)
          call xml2eg_get(doc, 'grid_rho', grid_rho)
          call xml2eg_get(doc, 'grid_alpha', grid_alpha)
+
+
+      n=grid_n
+      n_c=n
+      
+      if(kpr.eq.1)print *,'n grid_n n_c ',n,grid_n,n_c
+      
+      ro_alf=grid_rho 
+      alf=grid_alpha
+      
+      if(kpr.eq.1)print *,'alf ro_alf ',alf,ro_alf
+      
+      
+      ! Initializing 1D grid
+      call one2d()
+   
          
 ! 	open (unit=40,file='tt_kavin.dat',form='formatted') 
         !read (49,*) 
@@ -150,8 +168,8 @@ call xml2eg_get(doc, 'gaps/gaps_z', gaps_z_str)
     read(gaps_r_str,*)(x_gaps_c(i),i=1,n_ga_c)
     read(gaps_z_str,*)(y_gaps_c(i),i=1,n_ga_c)
 
-  print*, 'x gaps =', x_gaps_c
-  print*, 'y gaps =', y_gaps_c
+  print*, 'x gaps =', (x_gaps_c(i),i=1,n_ga_c)
+  print*, 'y gaps =', (y_gaps_c(i),i=1,n_ga_c)
 
 !        open (unit=1,file='tran_times.dat',form='formatted')
         !read (49,*)
