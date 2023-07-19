@@ -3690,6 +3690,9 @@ c	implicit real*8 (a-h,o-z)
 	common                                                                 
      *	/pol1/ro(npo,ntet),aj(npo,ntet)                                  
      *	/pol3/Ax(npo),TET(ntet),HAx(npo),HT(ntet)                        
+
+       common /c_one2d/alf,ro_alf
+
 	character *12 apr                                                      
                                                                         
 c                                                                       
@@ -3719,13 +3722,16 @@ c      A(I)=SQRT(A(I))
 	ha(i)=a(i)-a(i-1)                                                      
    11 CONTINUE                                                          
 c                                                                        
-	alf=0.95d0                                                               
+!!!	alf=0.95d0                                                               
 c	alf=0.9                                                               
                                                                         
 c	alf=1.d0                                                                
+
+      if(kpr.eq.1)print *,'++alf ro_alf ',alf,ro_alf
                                                                         
 	do i=2,n                                                               
-	if(i.ge.n/2)ha(i)=ha(i-1)*alf                                          
+!	if(i.ge.n/2)ha(i)=ha(i-1)*alf                                          
+	if(a(i).ge.ro_alf)ha(i)=ha(i-1)*alf
 	end do                                                                 
 c	do i0=2,n                                                             
 c	i=n-i0+2                                                              
