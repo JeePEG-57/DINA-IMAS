@@ -1946,33 +1946,7 @@ class ExampleApp(uiclass, baseclass):
         geometry.oblique.beta = beta_imas        
       
       
-    def SaveInputIDS(self, nameSaveSetups):
-      # Create input ids
-      pulseText = self.lineInputPulse.text()
-      runText = self.lineInputRun.text()
-      
-      if (not pulseText.isnumeric()):
-        
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
-        msg.setWindowTitle("Saving IDS")
-        msg.setText("Saving IDS failed")
-        msg.setInformativeText("Pulse must be numeric.")
-          
-        retval = msg.exec_()
-        return
-  
-  
-      if (not runText.isnumeric()):
-        
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
-        msg.setWindowTitle("Saving IDS")
-        msg.setText("Saving IDS failed")
-        msg.setInformativeText("Run must be numeric.")
-        
-        retval = msg.exec_()
-        return
+    def CreateInputIDS(self):
       
       
       tokamakdata = self.TokamakData
@@ -2385,38 +2359,20 @@ class ExampleApp(uiclass, baseclass):
       
       
       
-      
-      
       dat1 = imas.dataset_description()
       dat1.ids_properties.homogeneous_time = 1
       dat1.time.resize(1)
       dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
-      dat1.simulation.workflow = nameSaveSetups
+      dat1.simulation.workflow = "DINA-IMAS"
       
       
       print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
       
+      return pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1
       
-      pulse = int(pulseText)
-      run = int(runText)
-      user = os.getenv('USER')
-      database = self.lineInputTokamak.text()
       
-      imas_obj = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, pulse, run, user, data_version = '3')
-      imas_obj.create()
-      imas_obj.put(pfa1)
-      imas_obj.put(pfp1)
-      imas_obj.put(magnetics)
-      imas_obj.put(wall)
-      imas_obj.put(psch, occurrence = 0)
-      imas_obj.put(psch_dw, occurrence = 1)
-      imas_obj.put(dat1)
-      imas_obj.close()
-
-
-
-
+      
     def SaveSetups(self): 
       dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder save into...", self.directorySave)
       #dirTmp = self.directoryLoad + '/temp'
@@ -2512,8 +2468,57 @@ class ExampleApp(uiclass, baseclass):
         tar.add(new_imp)
         tar.close()
         print(tarname+' saved')
-
-        self.SaveInputIDS(tarname)
+        
+        
+        # Create input ids
+        pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
+        
+        
+        
+        # Save input IDS
+        pulseText = self.lineInputPulse.text()
+        runText = self.lineInputRun.text()
+        
+        if (not pulseText.isnumeric()):
+          
+          msg = QtWidgets.QMessageBox()
+          msg.setIcon(QtWidgets.QMessageBox.Critical)
+          msg.setWindowTitle("Saving IDS")
+          msg.setText("Saving IDS failed")
+          msg.setInformativeText("Pulse must be numeric.")
+            
+          retval = msg.exec_()
+          return
+    
+    
+        if (not runText.isnumeric()):
+          
+          msg = QtWidgets.QMessageBox()
+          msg.setIcon(QtWidgets.QMessageBox.Critical)
+          msg.setWindowTitle("Saving IDS")
+          msg.setText("Saving IDS failed")
+          msg.setInformativeText("Run must be numeric.")
+          
+          retval = msg.exec_()
+          return
+        
+        
+        pulse = int(pulseText)
+        run = int(runText)
+        user = os.getenv('USER')
+        database = self.lineInputTokamak.text()
+        
+        imas_obj = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, pulse, run, user, data_version = '3')
+        imas_obj.create()
+        imas_obj.put(pfa1)
+        imas_obj.put(pfp1)
+        imas_obj.put(magnetics)
+        imas_obj.put(wall)
+        imas_obj.put(psch, occurrence = 0)
+        imas_obj.put(psch_dw, occurrence = 1)
+        imas_obj.put(dat1)
+        imas_obj.close()
+      
 
     def PlotOutput(self):
       
