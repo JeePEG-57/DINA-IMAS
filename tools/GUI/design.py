@@ -245,21 +245,30 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.labelIDSInfo, 4, 0, 1, 1)
 
         self.tabWidget.addTab(self.tabOutput, "")
+        self.tabVIZ = QWidget()
+        self.tabVIZ.setObjectName(u"tabVIZ")
+        self.gridLayoutWidget = QWidget(self.tabVIZ)
+        self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
+        self.gridLayoutWidget.setGeometry(QRect(0, 0, 1571, 1011))
+        self.gridLayout_3 = QGridLayout(self.gridLayoutWidget)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.tabWidget.addTab(self.tabVIZ, "")
 
         self.verticalLayout.addWidget(self.tabWidget)
 
         MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(MainWindow)
+        self.menubar.setObjectName(u"menubar")
+        self.menubar.setGeometry(QRect(0, 0, 1598, 22))
+        self.menuFile = QMenu(self.menubar)
+        self.menuFile.setObjectName(u"menuFile")
+        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.menuBar = QMenuBar(MainWindow)
-        self.menuBar.setObjectName(u"menuBar")
-        self.menuBar.setGeometry(QRect(0, 0, 1598, 19))
-        self.menuDINA = QMenu(self.menuBar)
-        self.menuDINA.setObjectName(u"menuDINA")
-        MainWindow.setMenuBar(self.menuBar)
 
-        self.menuBar.addAction(self.menuDINA.menuAction())
+        self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
 
@@ -299,6 +308,7 @@ class Ui_MainWindow(object):
         self.btnLoadIDS.setText(QCoreApplication.translate("MainWindow", u"Load IDS", None))
         self.labelIDSInfo.setText("")
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabOutput), QCoreApplication.translate("MainWindow", u"Output", None))
-        self.menuDINA.setTitle(QCoreApplication.translate("MainWindow", u"DINA", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabVIZ), QCoreApplication.translate("MainWindow", u"VIZ", None))
+        self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi
 

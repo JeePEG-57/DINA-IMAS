@@ -15,11 +15,11 @@ import os
 import sys
 import logging
 from functools import partial
-from PyQt5.QtWidgets import (QTabWidget, QWidget, QFormLayout, QApplication,
-                             QMenu, QMainWindow, QDockWidget,
-                             QLineEdit, QPushButton, QVBoxLayout, QComboBox,
-                             QPlainTextEdit, QGridLayout, QMdiArea, QTableView)
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import (QTabWidget, QWidget, QFormLayout, QApplication,
+                                 QMenu, QMainWindow, QDockWidget,
+                                 QLineEdit, QPushButton, QVBoxLayout, QComboBox,
+                                 QPlainTextEdit, QGridLayout, QMdiArea, QTableView)
+from PySide6.QtCore import Qt
 from pathlib import Path
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -30,7 +30,7 @@ sys.path.append((os.environ['VIZ_HOME']))
 from imasviz.VizGUI.VizGuiCustomization import QVizDefault
 from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
 from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-                              QVizGlobalOperations, QVizLogger)
+                              QVizGlobalOperations, QVizLoggerSingleton)
 from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
 
 
@@ -292,7 +292,9 @@ class QVizStartWindow(QMainWindow):
 
         self.addDockWidget(Qt.DockWidgetArea(8), self.dockWidget_log)
         logging.getLogger().setLevel(logging.INFO)
-        QVizLogger.getHandler().new_record.connect(self.logWidget.appendHtml)
+        handler = QVizLoggerSingleton()
+        logging.getLogger().addHandler(handler)
+        handler.new_signal_emiter.new_signal.connect(self.logWidget.appendHtml)
 
     def closeEvent(self, event):
         """Modify close event to request confirmation trough dialog. If

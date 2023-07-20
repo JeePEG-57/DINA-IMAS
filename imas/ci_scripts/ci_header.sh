@@ -69,11 +69,8 @@ module load TotalView
 
 export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
-#module load PyQt5
-
-module load Viz/2.6.1-intel-2020b
 module switch --force matplotlib/3.5.1-intel-2020b
-module load PySide6/6.2.3-GCCcore-10.2.0
+module load Viz/2.7.0-intel-2020b
 
 export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 

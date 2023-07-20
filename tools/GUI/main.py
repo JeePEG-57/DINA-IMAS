@@ -52,15 +52,15 @@ from PySide6.QtGui import  QAction
 from PySide6.QtUiTools import loadUiType
 
 
-# import viz_plug
+import viz_plug
 
 
 
 
-#sys.path.append((os.environ['VIZ_HOME']))
+sys.path.append((os.environ['VIZ_HOME']))
 
-#from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-#                              QVizGlobalOperations, QVizLogger)
+from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
+                              QVizGlobalOperations, QVizLoggerSingleton)
 
 
 #--------------------------END NEW IMPORT
@@ -173,7 +173,7 @@ class ExampleApp(uiclass, baseclass):
         #self.GUIVIZ = GUIFrame(self)
         self.setObjectName("IMASViz root window")
         self.MDI = QVizMDI(self)
-#        self.startWindow = viz_plug.QVizStartWindow(self)
+        self.startWindow = viz_plug.QVizStartWindow(self)
         #self.viz_plug.QVizStartWindow.setStatusBar()
         #self.GUIVIZ = viz_plug.QVizMainWindow(self)
         self.EQUIL_win = None
@@ -315,13 +315,13 @@ class ExampleApp(uiclass, baseclass):
         #layout1.addLayout(GUIFrame)
         layout1.setColumnStretch(0, 1)
         layout1.setColumnStretch(1, 7)
-#        layout1.addWidget(self.startWindow, 0, 0, 1, 1)
+        layout1.addWidget(self.startWindow, 0, 0, 1, 1)
         layout1.addWidget(self.MDI, 0, 1, 1, 1)
         #self.setCentralWidget(centralWidget)
-#        QVizGlobalOperations.checkEnvSettings()
-#        QVizPreferences().build()
+        QVizGlobalOperations.checkEnvSettings()
+        QVizPreferences().build()
         #layout1.addWidget(self.GUIVIZ)
-#        self.tabVIZ.setLayout(layout1)
+        self.tabVIZ.setLayout(layout1)
         #--------------------------------
         
         
