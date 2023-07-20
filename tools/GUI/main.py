@@ -3,7 +3,7 @@ import sys
 import os
 import shutil
 
-from PySide6 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui
 import design
 import captions
 
@@ -11,15 +11,15 @@ import math
 import numpy
 import random
 import matplotlib
-#matplotlib.use('Qt5Agg')
+matplotlib.use('Qt5Agg')
 
 
 import tarfile
 import datetime
 
 
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -38,29 +38,29 @@ from plequi import Second_window
 from functools import partial
 #from matplotlib.figure import Figure
 from pathlib import Path
-from PySide6 import QtGui
-from PySide6 import QtCore
-from PySide6.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
+from PyQt5 import QtGui
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
                              QMenu, QMainWindow, QDockWidget,QMenuBar,QSizePolicy,
                              QLineEdit, QPushButton, QVBoxLayout, QComboBox,
-                             QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView) 
-from PySide6.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
+                             QPlainTextEdit, QGridLayout, QMdiArea, QMdiSubWindow, QTableView, QAction) 
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QPushButton, QHBoxLayout, QLabel, QMessageBox
-from PySide6.QtGui import  QAction
-
-from PySide6.QtUiTools import loadUiType
 
 
-# import viz_plug
+from PyQt5.uic import loadUiType
+
+
+import viz_plug
 
 
 
 
-#sys.path.append((os.environ['VIZ_HOME']))
+sys.path.append((os.environ['VIZ_HOME']))
 
-#from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-#                              QVizGlobalOperations, QVizLogger)
+from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
+                              QVizGlobalOperations, QVizLogger)
 
 
 #--------------------------END NEW IMPORT
@@ -173,7 +173,7 @@ class ExampleApp(uiclass, baseclass):
         #self.GUIVIZ = GUIFrame(self)
         self.setObjectName("IMASViz root window")
         self.MDI = QVizMDI(self)
-#        self.startWindow = viz_plug.QVizStartWindow(self)
+        self.startWindow = viz_plug.QVizStartWindow(self)
         #self.viz_plug.QVizStartWindow.setStatusBar()
         #self.GUIVIZ = viz_plug.QVizMainWindow(self)
         self.EQUIL_win = None
@@ -315,11 +315,11 @@ class ExampleApp(uiclass, baseclass):
         #layout1.addLayout(GUIFrame)
         layout1.setColumnStretch(0, 1)
         layout1.setColumnStretch(1, 7)
-#        layout1.addWidget(self.startWindow, 0, 0, 1, 1)
+        layout1.addWidget(self.startWindow, 0, 0, 1, 1)
         layout1.addWidget(self.MDI, 0, 1, 1, 1)
         #self.setCentralWidget(centralWidget)
-#        QVizGlobalOperations.checkEnvSettings()
-#        QVizPreferences().build()
+        QVizGlobalOperations.checkEnvSettings()
+        QVizPreferences().build()
         #layout1.addWidget(self.GUIVIZ)
 #        self.tabVIZ.setLayout(layout1)
         #--------------------------------
@@ -351,8 +351,8 @@ class ExampleApp(uiclass, baseclass):
         
         
         self.DINAData["grid_n"] = CodeParameter(mytype=int, value=50, name='Grid n', comment = 'Amount of 1D grid points')
-        self.DINAData["grid_rho"] = CodeParameter(mytype=float, value=0.8, name='Grid rho', comment = 'Rho value after which the 1D grid gradually increases density')
-        self.DINAData["grid_alpha"] = CodeParameter(mytype=float, value=0.2, name='Grid compression', comment = '1D grid compression factor in the boundary region')
+        self.DINAData["grid_rho"] = CodeParameter(mytype=float, value=0.5, name='Grid rho', comment = 'Rho value after which the 1D grid gradually increases density')
+        self.DINAData["grid_alpha"] = CodeParameter(mytype=float, value=0.95, name='Grid compression', comment = '1D grid compression factor in the boundary region')
         
         
         self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='tcont2')
@@ -1946,33 +1946,7 @@ class ExampleApp(uiclass, baseclass):
         geometry.oblique.beta = beta_imas        
       
       
-    def SaveInputIDS(self, nameSaveSetups):
-      # Create input ids
-      pulseText = self.lineInputPulse.text()
-      runText = self.lineInputRun.text()
-      
-      if (not pulseText.isnumeric()):
-        
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
-        msg.setWindowTitle("Saving IDS")
-        msg.setText("Saving IDS failed")
-        msg.setInformativeText("Pulse must be numeric.")
-          
-        retval = msg.exec_()
-        return
-  
-  
-      if (not runText.isnumeric()):
-        
-        msg = QtWidgets.QMessageBox()
-        msg.setIcon(QtWidgets.QMessageBox.Critical)
-        msg.setWindowTitle("Saving IDS")
-        msg.setText("Saving IDS failed")
-        msg.setInformativeText("Run must be numeric.")
-        
-        retval = msg.exec_()
-        return
+    def CreateInputIDS(self):
       
       
       tokamakdata = self.TokamakData
@@ -2385,38 +2359,20 @@ class ExampleApp(uiclass, baseclass):
       
       
       
-      
-      
       dat1 = imas.dataset_description()
       dat1.ids_properties.homogeneous_time = 1
       dat1.time.resize(1)
       dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
-      dat1.simulation.workflow = nameSaveSetups
+      dat1.simulation.workflow = "DINA-IMAS"
       
       
       print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
       
+      return pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1
       
-      pulse = int(pulseText)
-      run = int(runText)
-      user = os.getenv('USER')
-      database = self.lineInputTokamak.text()
       
-      imas_obj = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, pulse, run, user, data_version = '3')
-      imas_obj.create()
-      imas_obj.put(pfa1)
-      imas_obj.put(pfp1)
-      imas_obj.put(magnetics)
-      imas_obj.put(wall)
-      imas_obj.put(psch, occurrence = 0)
-      imas_obj.put(psch_dw, occurrence = 1)
-      imas_obj.put(dat1)
-      imas_obj.close()
-
-
-
-
+      
     def SaveSetups(self): 
       dirTmp = QtWidgets.QFileDialog.getExistingDirectory(self, "Select folder save into...", self.directorySave)
       #dirTmp = self.directoryLoad + '/temp'
@@ -2512,8 +2468,57 @@ class ExampleApp(uiclass, baseclass):
         tar.add(new_imp)
         tar.close()
         print(tarname+' saved')
-
-        self.SaveInputIDS(tarname)
+        
+        
+        # Create input ids
+        pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
+        
+        
+        
+        # Save input IDS
+        pulseText = self.lineInputPulse.text()
+        runText = self.lineInputRun.text()
+        
+        if (not pulseText.isnumeric()):
+          
+          msg = QtWidgets.QMessageBox()
+          msg.setIcon(QtWidgets.QMessageBox.Critical)
+          msg.setWindowTitle("Saving IDS")
+          msg.setText("Saving IDS failed")
+          msg.setInformativeText("Pulse must be numeric.")
+            
+          retval = msg.exec_()
+          return
+    
+    
+        if (not runText.isnumeric()):
+          
+          msg = QtWidgets.QMessageBox()
+          msg.setIcon(QtWidgets.QMessageBox.Critical)
+          msg.setWindowTitle("Saving IDS")
+          msg.setText("Saving IDS failed")
+          msg.setInformativeText("Run must be numeric.")
+          
+          retval = msg.exec_()
+          return
+        
+        
+        pulse = int(pulseText)
+        run = int(runText)
+        user = os.getenv('USER')
+        database = self.lineInputTokamak.text()
+        
+        imas_obj = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, pulse, run, user, data_version = '3')
+        imas_obj.create()
+        imas_obj.put(pfa1)
+        imas_obj.put(pfp1)
+        imas_obj.put(magnetics)
+        imas_obj.put(wall)
+        imas_obj.put(psch, occurrence = 0)
+        imas_obj.put(psch_dw, occurrence = 1)
+        imas_obj.put(dat1)
+        imas_obj.close()
+      
 
     def PlotOutput(self):
       
