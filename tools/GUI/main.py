@@ -1234,10 +1234,11 @@ class ExampleApp(uiclass, baseclass):
         self.ReadParameters(f, [self.DINAData['tt_dina']])
         
         #pfres.dat
+        turns = [554., 554., 554., 554., 554., 248.6, 115.2, 185.9, 169.9, 216.8, 459.4, 1.0]
         timedData = self.ReadTimeTable(f)
-        #for iw in range(len(timedData['waves'])):
-        #  for it in range(len(timedData['waves'][iw])):
-        #    timedData['waves'][iw][it] = timedData['waves'][iw][it]*turns[iw]*turns[iw]
+        for iw in range(len(timedData['waves'])):
+          for it in range(len(timedData['waves'][iw])):
+            timedData['waves'][iw][it] = timedData['waves'][iw][it]*turns[iw]*turns[iw]
         self.generalData['pfres'] = Waveform(timedData['time'], timedData['waves'])
  
         #ech.dat
