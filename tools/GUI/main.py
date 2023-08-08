@@ -1190,6 +1190,8 @@ class ExampleApp(uiclass, baseclass):
         
         self.TokamakData = {}
         
+        self.turnData = [554., 554., 554., 554., 554., 554., 248.6, 115.2, 185.9, 169.9, 216.8, 459.4, 4.0, 4.0]
+        
         # tokamak_config.dat
         self.TokamakData = self.ReadTokamakConfig(f)
         f.close()
@@ -1233,6 +1235,9 @@ class ExampleApp(uiclass, baseclass):
         
         #pfres.dat
         timedData = self.ReadTimeTable(f)
+        #for iw in range(len(timedData['waves'])):
+        #  for it in range(len(timedData['waves'][iw])):
+        #    timedData['waves'][iw][it] = timedData['waves'][iw][it]*turns[iw]*turns[iw]
         self.generalData['pfres'] = Waveform(timedData['time'], timedData['waves'])
  
         #ech.dat

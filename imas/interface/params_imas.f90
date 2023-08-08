@@ -96,6 +96,8 @@ real*8 :: grid_rho, grid_alpha
       if(kpr.eq.1)print *,'n n_c ',n,n_c
       
       
+      print*, 'PF_TURNS =', pf_turns
+      
       
       ! Initializing 1D grid
  !     call one2d()
@@ -206,10 +208,7 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
           pf_t_c1(11,1:n_t_c1) = psch%pf_active%coil(12)%resistance_additional%reference%data(1:n_t_c1)
           pf_t_c1(12,1:n_t_c1) = psch%pf_active%coil(13)%resistance_additional%reference%data(1:n_t_c1) + &
         & psch%pf_active%coil(14)%resistance_additional%reference%data(1:n_t_c1)
-          
-          pf_t_c1(13,1:n_t_c1) = 0.000642411d0
-          pf_t_c1(14,1:n_t_c1) = 1000.d0
-          pf_t_c1(15,1:n_t_c1) = 0.000401657d0
+        
         
         
 !           do k=1,npf_c1
@@ -428,8 +427,7 @@ call xml2eg_get(doc, 'rms_noise', rms_noise)
 call xml2eg_free_doc(doc)
 deallocate(buffer)
 	!close(49)
-
-        print*, 'PF_TURNS =', pf_turns
+        
         
         
 	do i=1,11

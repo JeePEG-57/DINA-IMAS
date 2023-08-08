@@ -46,6 +46,7 @@ real(ids_real)::  gridrange(4)
  call read_green_params(npass,nact,kloop,kprobe,ke,ngrid2)
 
 
+print *,'DINA GREEN:'
 print *,'nact, npass =', nact,npass
 print *,'kloop, kprobe =', kloop,kprobe
 print *,'ngrid ngrid2 =', ngrid,ngrid2
