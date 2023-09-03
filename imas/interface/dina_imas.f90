@@ -63,7 +63,7 @@ integer,save :: loop_count = 0
     integer,parameter :: npo = 310, ntet = 134 ! parf0
     integer,parameter :: mu1 = 1500 ! parf2
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
-    integer,parameter :: nact = 15, npass = 100 ! parf1 - kf, mu
+    integer,parameter :: nact = 12, npass = 102 ! parf1 - kf, mu
     integer,parameter :: npfa = 12, npfx = nact-npfa, npfp = npfx+npass
     integer,parameter :: nflux=41, nbpol=60 ! parf4
     integer,parameter :: n_ions=7
@@ -610,6 +610,8 @@ end if
 
     print *,'++ i_restart ==',i_restart
 
+  
+    
     if(i_restart.eq.1)then
 	call dina_remap(n1,te0,tq0,pne, &
      & pd0,pt0,sigma,jbut,aj0,qe0,qq0,a_xx,ai_xx)
