@@ -80,10 +80,10 @@ wr_prof_imas.o: wr_prof_imas.f90
 	@echo "   * $^ -> $@"
 	$(f2c) -c $<
 
-dina_green.a: $(GREENDIR)/green.a dina_green.o
+dina_green.a: $(GREENDIR)/green.a dina_green.o tokamak_green.o
 	@echo "   * $^ -> $@"
 	@cp $< $@
-	ar -rcs $@ dina_green.o
+	ar -rcs $@ dina_green.o tokamak_green.o
 
 dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"

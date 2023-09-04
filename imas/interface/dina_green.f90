@@ -37,9 +37,15 @@ real(ids_real)::  gridrange(4)
 
 	character *20 apr
 	
+common &
+&  /ge5/kpr
 
+integer:: kpr
 
- call tokamakdata_read_1()
+kpr = 1
+
+ !call tokamakdata_read_1()
+ call tokamakdata_read_ids(pf_active0, pf_passive0, magnetics0)
 
  call congig_calc()
 
