@@ -315,6 +315,7 @@ pmj = em_coupling0%mutual_passive_passive
 
 
 allocate(pf_turns(npfa))
+pf_turns(1:npfa) = 0.d0
 do i=1,npfa
     pf_turns(i) = dabs(pf_active0%coil(i)%element(1)%turns_with_sign)
 enddo

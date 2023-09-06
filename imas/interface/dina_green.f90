@@ -178,8 +178,9 @@ end do
 
 
 allocate(pf_turns(nact))
+pf_turns(1:nact) = 0.d0
 do i=1,nact
-  pf_turns(i) = pf_turns(i) + dabs(pf_active0%coil(i)%element(1)%turns_with_sign)
+  pf_turns(i) = dabs(pf_active0%coil(i)%element(1)%turns_with_sign)
 enddo
 
 

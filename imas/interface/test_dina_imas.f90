@@ -233,6 +233,9 @@ if (restart.eq.1) then
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
 
+  write(*,*) 'Finished reading the prescribed IDS'
+  call imas_close(idx0)
+
   write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
 
 else
@@ -257,26 +260,21 @@ else
   !call ids_get(idx0,"equilibrium",equilibrium0)
 
 
-  call ids_get(idx0,"core_profiles",core_profiles0)
-  call ids_get(idx0,"core_sources",core_sources0)
-  call ids_get(idx0,"transport_solver_numerics",bndcond)
+  !call ids_get(idx0,"core_profiles",core_profiles0)
+  !call ids_get(idx0,"core_sources",core_sources0)
+  !call ids_get(idx0,"transport_solver_numerics",bndcond)
 
   call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
   
 endif
-
-write(*,*) 'Finished reading the prescribed IDS'
-call imas_close(idx0)
-
-
 
 
 
 !call ids_get(idx0,"dataset_description",data_description)
 
 
-!call imas_open_env('ids',116000,2,idx0,"public","ITER_MD",'3')
-call imas_open_env('ids',170,1,idx0,"dubrovm","test",'3')
+call imas_open_env('ids',116000,2,idx0,"public","ITER_MD",'3')
+!call imas_open_env('ids',170,1,idx0,"dubrovm","test",'3')
 call ids_get(idx0,"wall",wall)
 call imas_close(idx0)
 
