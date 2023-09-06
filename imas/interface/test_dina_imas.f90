@@ -96,7 +96,7 @@ integer :: ext_transp, restart=0
 
 ! Local variables
 integer :: i, iloop
-integer :: idx_a, idx_p, idx, idx0, err
+integer :: idx_a, idx_p, idx_m, idx, idx0, err
 !integer :: nact,npass,ngrid
 integer :: interp_start = 1, interp_transp = 1
 real (ids_real) ::time_get,time_ext, current_pf_stop
@@ -238,29 +238,46 @@ if (restart.eq.1) then
 else
 
   write(*,*) 'Start from t=0'
+
   call imas_open_env('ids',111001,202,idx_a,"public","ITER_MD",'3')
+  call ids_get(idx_a,"pf_active",pf_active0)
+  call imas_close(idx_a)
+
   call imas_open_env('ids',115005,2,idx_p,"public","ITER_MD",'3')
+  call ids_get(idx_p,"pf_passive",pf_passive0)
+  call imas_close(idx_p)
+
+  !call imas_open_env('ids',150100,4,idx_m,"public","ITER_MD",'3')
+  call imas_open_env('ids',170,1,idx_m,"dubrovm","test",'3')
+  call ids_get(idx_m,"magnetics",magnetics0)
+  call imas_close(idx_m)
+
 
   !call ids_get(idx0,"em_coupling",em_coupling)
-  call ids_get(idx0,"magnetics",magnetics0)
   !call ids_get(idx0,"equilibrium",equilibrium0)
-  call ids_get(idx_a,"pf_active",pf_active0)
-  call ids_get(idx_p,"pf_passive",pf_passive0)
+
+
   call ids_get(idx0,"core_profiles",core_profiles0)
   call ids_get(idx0,"core_sources",core_sources0)
   call ids_get(idx0,"transport_solver_numerics",bndcond)
 
-  call imas_close(idx_a)
-  call imas_close(idx_p)
-  
   call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
   
 endif
 
-call ids_get(idx0,"wall",wall)
-call ids_get(idx0,"dataset_description",data_description)
-
 write(*,*) 'Finished reading the prescribed IDS'
+call imas_close(idx0)
+
+
+
+
+
+!call ids_get(idx0,"dataset_description",data_description)
+
+
+!call imas_open_env('ids',116000,2,idx0,"public","ITER_MD",'3')
+call imas_open_env('ids',170,1,idx0,"dubrovm","test",'3')
+call ids_get(idx0,"wall",wall)
 call imas_close(idx0)
 
 
@@ -287,7 +304,7 @@ arr_out1(1:31)=0
 
   call ids_put(idx,"wall",wall)
   call ids_put(idx,"em_coupling",em_coupling)
-  call ids_put(idx,"dataset_description",data_description)
+  !call ids_put(idx,"dataset_description",data_description)
   call ids_put(idx,"pulse_schedule",pulse_schedule)
   call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
 

@@ -182,6 +182,10 @@ data ncirc(1:14) /1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12/
 data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
 
 
+real(ids_real) :: x1, y1, x2, y2, dst, dst1, dst2
+integer, dimension(:), allocatable :: limunits
+integer :: nlim, ju, jdir
+
 print *,'DINA_IMAS Enter'
 
 
@@ -225,14 +229,6 @@ kprobe=size(em_coupling0%field_probes_grid,1)
 
 npfa2=size(pf_active0%coil)
 npfp2=size(pf_passive0%loop)
-
-
-nu = size(wall0%description_2d(1)%limiter%unit)
-ke = 0
-do i = 1, nu
-  ke = ke + size(wall0%description_2d(1)%limiter%unit(i)%outline%r,1)
-enddo
-print *,'ke, nu =', ke, nu
 
 
 print *,'npfa, npfa2, npfa3 =', npfa, npfa2, npfa3
@@ -292,8 +288,8 @@ ALLOCATE(pfc(npass,nact))
 ALLOCATE(pfres(nact))
 ALLOCATE(rcam(npass))
 
-ALLOCATE(xu(ke))
-ALLOCATE(yu(ke))
+
+
 
 
   write(*,*) 'Shapes of locally allocated arrays'
@@ -309,18 +305,6 @@ flush(6)
 
 
 ! Greens
-write(*,*) 'Shapes '
-write(*,100) shape(em_coupling0%mutual_grid_active),shape(em_coupling0%mutual_grid_passive)
-
-write(*,*) 'Shapes '
-write(*,100) shape(em_coupling0%mutual_loops_grid),shape(em_coupling0%field_probes_grid)
-
-i=size(em_coupling0%mutual_loops_grid,1)
-print *,'em_coupling0%mutual_loops_grid',i
-
-i=size(em_coupling0%field_probes_grid,1)
-print *,'em_coupling0%field_probes_grid',i
-
 
 vesgreen = em_coupling0%mutual_loops_passive
 vesprobe = em_coupling0%field_probes_passive
@@ -366,9 +350,8 @@ print *,'pf_passive0%loop%resistance',npfp2
 print *,pf_passive0%loop(1:npfp2)%resistance
 
 
-do i=1,nact
-  pfres(i) = 0.d0
-enddo
+
+pfres(1:nact) = 0.d0
 do i=1,npfa
   pfres(ncirc(i)) = pfres(ncirc(i)) + pf_active0%coil(i)%resistance
 enddo
@@ -387,14 +370,85 @@ gridrange(4)=x(nr)
 
 
 ! Limiter
-k = 0
-do i=1,size(wall0%description_2d(1)%limiter%unit)
-  do j=1,size(wall0%description_2d(1)%limiter%unit(i)%outline%r)
-    k = k + 1
-    xu(k) = wall0%description_2d(1)%limiter%unit(i)%outline%r(j)
-    yu(k) = wall0%description_2d(1)%limiter%unit(i)%outline%z(j)
-  enddo
+
+nu = size(wall0%description_2d(1)%limiter%unit)
+ke = 0
+do i = 1, nu
+  ke = ke + size(wall0%description_2d(1)%limiter%unit(i)%outline%r,1)
 enddo
+print *,'ke, nu =', ke, nu
+
+ALLOCATE(xu(ke))
+ALLOCATE(yu(ke))
+
+k = 0
+
+nu = size(wall0%description_2d(1)%limiter%unit)
+allocate(limunits(nu))
+do i=1,nu
+  limunits(i) = i
+enddo
+
+
+do j=1,size(wall0%description_2d(1)%limiter%unit(limunits(1))%outline%r)
+  k = k + 1
+  xu(k) = wall0%description_2d(1)%limiter%unit(limunits(1))%outline%r(j)
+  yu(k) = wall0%description_2d(1)%limiter%unit(limunits(1))%outline%z(j)
+enddo
+limunits(1) = 0
+
+
+do i=2,nu
+  dst = 1.d10
+  ju = 0
+
+  do j=1,nu
+    if (limunits(j).lt.1) cycle
+
+    print*, 'j, limunits(j) =', j, limunits(j)
+
+    nlim = size(wall0%description_2d(1)%limiter%unit(limunits(j))%outline%r)
+
+    x1 = wall0%description_2d(1)%limiter%unit(limunits(j))%outline%r(1)
+    y1 = wall0%description_2d(1)%limiter%unit(limunits(j))%outline%z(1)
+    dst1 = (x1 - xu(k))**2 + (y1 - yu(k))**2
+
+    x2 = wall0%description_2d(1)%limiter%unit(limunits(j))%outline%r(nlim)
+    y2 = wall0%description_2d(1)%limiter%unit(limunits(j))%outline%z(nlim)
+    dst2 = (x2 - xu(k))**2 + (y2 - yu(k))**2 
+
+    if (dst1.lt.dst) then
+      dst = dst1
+      ju = j
+      jdir = 1
+    endif
+
+    if (dst2.lt.dst) then
+      dst = dst2
+      ju = j
+      jdir = -1
+    endif
+  enddo
+
+  nlim = size(wall0%description_2d(1)%limiter%unit(limunits(ju))%outline%r)
+  if (jdir.gt.0) then
+    do j=1,nlim
+      k = k + 1
+      xu(k) = wall0%description_2d(1)%limiter%unit(limunits(ju))%outline%r(j)
+      yu(k) = wall0%description_2d(1)%limiter%unit(limunits(ju))%outline%z(j)
+    enddo
+  else
+    do j=nlim,1,-1
+      k = k + 1
+      xu(k) = wall0%description_2d(1)%limiter%unit(limunits(ju))%outline%r(j)
+      yu(k) = wall0%description_2d(1)%limiter%unit(limunits(ju))%outline%z(j)
+    enddo
+  endif
+  limunits(ju) = 0
+
+enddo
+
+
 print *,'Limiter ke, k =', ke, k
 if(ke.gt.k)then
   stop
@@ -917,7 +971,7 @@ print *,' npass=',npass
 
 pf_passive%ids_properties%homogeneous_time = 1
 if (.NOT.associated(pf_passive%time)) allocate(pf_passive%time(1))
-pf_passive%time(1) = dina_time
+  pf_passive%time(1) = dina_time
 
 !if (.NOT.associated(pf_passive%loop)) allocate(pf_passive%loop(npfp))
 do j=1,npass
