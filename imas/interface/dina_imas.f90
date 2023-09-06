@@ -64,15 +64,15 @@ integer,save :: loop_count = 0
     integer,parameter :: mu1 = 1500 ! parf2
     integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
     integer,parameter :: nact = 12, npass = 102 ! parf1 - kf, mu
-    integer,parameter :: npfa = 12, npfx = nact-npfa, npfp = npfx+npass
+    integer,parameter :: npfa = 14, npfp = npass
     integer,parameter :: nflux=41, nbpol=60 ! parf4
     integer,parameter :: n_ions=7
     integer,parameter :: n_gaps=6
     
     integer :: ksepa,key_lh,n_bnd,n_sep,n_sep2,n_ga_dina
 
-integer,save :: npfa2=-1, npfp2=-1
-integer,save :: nact2=-1, npass2=-1, ngrid2=-1
+integer,save :: npfa2=-1, npfa3=-1, npfp2=-1
+integer,save :: npass2=-1, ngrid2=-1
 integer,save :: kloop=-1,kprobe=-1, ke=-1
 
           
@@ -163,6 +163,7 @@ real (ids_real),save ::  gridrange(4)
 real(ids_real), dimension(:,:), ALLOCATABLE,save :: fluxarr,vesarr,pslgreen,bprgreen,pfind,pmj
 real(ids_real), dimension(:,:), ALLOCATABLE,save :: pfc,pfgreen,vesgreen,pfprobe,vesprobe
 real(ids_real), dimension(:), ALLOCATABLE,save :: pfres, rcam, xu, yu
+real(ids_real), dimension(:), allocatable,save::  pf_turns
 
 real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
@@ -175,6 +176,10 @@ real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
 	
 real(ids_real) :: cocos_psi = -1.d0
 
+
+integer :: ncirc(14), dircirc(14)
+data ncirc(1:14) /1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12/
+data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
 
 
 print *,'DINA_IMAS Enter'
@@ -211,7 +216,7 @@ call system(" ls -ll p_data1 ")
 call system(" pwd")
 
 
-nact2=size(em_coupling0%mutual_grid_active,2)
+npfa3=size(em_coupling0%mutual_grid_active,2)
 npass2=size(em_coupling0%mutual_grid_passive,2)
 ngrid2=size(em_coupling0%mutual_grid_passive,1)
 kloop=size(em_coupling0%mutual_loops_grid,1)
@@ -229,10 +234,10 @@ do i = 1, nu
 enddo
 print *,'ke, nu =', ke, nu
 
-print *,'npfa, npfa2 =', npfa, npfa2
+
+print *,'npfa, npfa2, npfa3 =', npfa, npfa2, npfa3
 print *,'npfp, npfp2 =', npfp, npfp2
 
-print *,'nact, nact2 =', nact, nact2
 print *,'npass, npass2 =', npass, npass2
 print *,'nflux, kloop =', nflux, kloop
 print *,'nbpol, kprobe =', nbpol, kprobe
@@ -247,7 +252,7 @@ if(npfp.gt.npfp2)then
   stop
 end if
 
-if(nact.ne.nact2)then
+if(npfa.ne.npfa3)then
   stop
 end if
 
@@ -266,11 +271,6 @@ end if
 if(kprobe.gt.nbpol)then
   stop
 end if
-
-if(nu.ne.1)then
-  stop
-end if
-
 
 
 
@@ -308,18 +308,12 @@ write(*,*) 'Entering DINA_IMAS, loop_count, dina_time = ', loop_count, dina_time
 flush(6)
 
 
-  ! Greens
+! Greens
 write(*,*) 'Shapes '
 write(*,100) shape(em_coupling0%mutual_grid_active),shape(em_coupling0%mutual_grid_passive)
 
 write(*,*) 'Shapes '
 write(*,100) shape(em_coupling0%mutual_loops_grid),shape(em_coupling0%field_probes_grid)
-
-fluxarr = em_coupling0%mutual_grid_active
-vesarr = em_coupling0%mutual_grid_passive
-
-pslgreen = transpose(em_coupling0%mutual_loops_grid)
-bprgreen = transpose(em_coupling0%field_probes_grid)
 
 i=size(em_coupling0%mutual_loops_grid,1)
 print *,'em_coupling0%mutual_loops_grid',i
@@ -327,18 +321,42 @@ print *,'em_coupling0%mutual_loops_grid',i
 i=size(em_coupling0%field_probes_grid,1)
 print *,'em_coupling0%field_probes_grid',i
 
+
 vesgreen = em_coupling0%mutual_loops_passive
 vesprobe = em_coupling0%field_probes_passive
-
-pfgreen = em_coupling0%mutual_loops_active
-pfprobe = em_coupling0%field_probes_active
-
-pfind = em_coupling0%mutual_active_active
+vesarr = em_coupling0%mutual_grid_passive
+pslgreen = transpose(em_coupling0%mutual_loops_grid)
+bprgreen = transpose(em_coupling0%field_probes_grid)
 pmj = em_coupling0%mutual_passive_passive
-pfc = em_coupling0%mutual_passive_active
 
 
-  ! Resistances
+allocate(pf_turns(npfa))
+do i=1,npfa
+    pf_turns(i) = dabs(pf_active0%coil(i)%element(1)%turns_with_sign)
+enddo
+
+
+pfind(:,:) = 0.d0
+pfgreen(:,:) = 0.d0
+pfprobe(:,:) = 0.d0
+pfc(:,:) = 0.d0
+fluxarr(:,:) = 0.d0
+
+
+do i=1,npfa
+  do j=1,npfa
+    pfind(ncirc(i),ncirc(j)) = pfind(ncirc(i),ncirc(j)) + dircirc(i)*dircirc(j)*em_coupling0%mutual_active_active(i,j)/(pf_turns(i)*pf_turns(j))
+  enddo
+
+  pfgreen(:,ncirc(i)) = pfgreen(:,ncirc(i)) + dircirc(i)*em_coupling0%mutual_loops_active(:,i)/pf_turns(i)
+  pfprobe(:,ncirc(i)) = pfprobe(:,ncirc(i)) + dircirc(i)*em_coupling0%field_probes_active(:,i)/pf_turns(i)
+  pfc(:,ncirc(i)) = pfc(:,ncirc(i)) + dircirc(i)*em_coupling0%mutual_passive_active(:,i)/pf_turns(i)
+  fluxarr(:,ncirc(i)) = fluxarr(:,ncirc(i)) + dircirc(i)*em_coupling0%mutual_grid_active(:,i)/pf_turns(i)
+enddo
+
+
+
+! Resistances
 write(*,100) shape(pf_active0%coil%resistance),shape(pf_passive0%loop%resistance)
 
 print *,'pf_active0%coil%resistance',npfa2
@@ -348,12 +366,17 @@ print *,'pf_passive0%loop%resistance',npfp2
 print *,pf_passive0%loop(1:npfp2)%resistance
 
 
-pfres(1:npfa) = pf_active0%coil(1:npfa)%resistance
-pfres(npfa+1:nact) = pf_passive%loop(1:npfx)%resistance
-rcam(1:npass) = pf_passive%loop(npfx+1:npfp)%resistance
+do i=1,nact
+  pfres(i) = 0.d0
+enddo
+do i=1,npfa
+  pfres(ncirc(i)) = pfres(ncirc(i)) + pf_active0%coil(i)%resistance
+enddo
+
+rcam(1:npass) = pf_passive%loop(1:npfp)%resistance
 
 
-  ! Grid
+! Grid
 x(1:nr)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim1(1:nr) ![m]
 y(1:nz)=equilibrium0%time_slice(1)%profiles_2d(1)%grid%dim2(1:nz) ![m]
 
@@ -363,9 +386,22 @@ gridrange(3)=x(1)
 gridrange(4)=x(nr)
 
 
-  ! Limiter
-xu(1:ke) = wall0%description_2d(1)%limiter%unit(1)%outline%r(1:ke)
-yu(1:ke) = wall0%description_2d(1)%limiter%unit(1)%outline%z(1:ke)
+! Limiter
+k = 0
+do i=1,size(wall0%description_2d(1)%limiter%unit)
+  do j=1,size(wall0%description_2d(1)%limiter%unit(i)%outline%r)
+    k = k + 1
+    xu(k) = wall0%description_2d(1)%limiter%unit(i)%outline%r(j)
+    yu(k) = wall0%description_2d(1)%limiter%unit(i)%outline%z(j)
+  enddo
+enddo
+print *,'Limiter ke, k =', ke, k
+if(ke.gt.k)then
+  stop
+end if
+do i=1,ke
+  print *, xu(i), yu(i)
+enddo
 
 
 
@@ -376,9 +412,6 @@ yu(1:ke) = wall0%description_2d(1)%limiter%unit(1)%outline%z(1:ke)
   write(*,*) "pfres(1:3)=",pfres(1:3)
   write(*,*) "rcam(1:3)=",rcam(1:3)
 
-
-  write(*,*) "limiterxu(1:3)=", xu(1:3)
-  write(*,*) "limiteryu(1:3)=", yu(1:3)
   write(*,*) "gridrange=",gridrange
 
 flush(6)
@@ -468,20 +501,16 @@ call write_cputime(0.d0, 0.d0, 1)
 	fptab(1:n) = cocos_psi * equilibrium0%time_slice(CurTimeStep)%profiles_1d%f_df_dpsi(1:n)
   
 	do i=1,npfa
-	  pf(i) = pf_active0%coil(i)%current%data(CurTimeStep)
+	  pf(ncirc(i)) = dircirc(i)*pf_active0%coil(i)%current%data(CurTimeStep)
 	  
-	 print *,' i pf==',i,pf(i)
+	  print *,' i pf==',i,pf(i)
 	 
 	enddo
 	
- 	!first 3 passive --> last 3 active
-	do i=1,npfx
-	  pf(npfa+i) = pf_passive0%loop(i)%current(CurTimeStep)
-!	 print *,' i pf==',nact+i,pf(nact+i)
-	enddo
+
 	!tokc=0.
-	do i=1,npass-npfx
-	  tcam(i) = pf_passive0%loop(npfx+i)%current(CurTimeStep)
+	do i=1,npass
+	  tcam(i) = pf_passive0%loop(i)%current(CurTimeStep)
 	  !tokc=tokc+tcam(i)
 	enddo	
   
@@ -805,7 +834,7 @@ print *,' nact=',nact
 
 
 pf_active%ids_properties%homogeneous_time = 1
-!if (.NOT.associated(pf_active%time)) allocate(pf_active%time(1))
+if (.NOT.associated(pf_active%time)) allocate(pf_active%time(1))
   pf_active%time(1) = dina_time
 
   
@@ -821,16 +850,16 @@ pf_active%ids_properties%homogeneous_time = 1
   
 !if (.NOT.associated(pf_active%coil)) allocate(pf_active%coil(npfa))
 do i=1,npfa
-  !if (.NOT.associated(pf_active%coil(i)%current%data)) allocate(pf_active%coil(i)%current%data(1))
-    pf_active%coil(i)%current%data(1) = pf(i)
-  !if (.NOT.associated(pf_active%coil(i)%voltage%data)) allocate(pf_active%coil(i)%voltage%data(1))
-    pf_active%coil(i)%voltage%data(1) = vchopper(i)
+  if (.NOT.associated(pf_active%coil(i)%current%data)) allocate(pf_active%coil(i)%current%data(1))
+    pf_active%coil(i)%current%data(1) = dircirc(i)*pf(ncirc(i))
+  if (.NOT.associated(pf_active%coil(i)%voltage%data)) allocate(pf_active%coil(i)%voltage%data(1))
+    pf_active%coil(i)%voltage%data(1) = dircirc(i)*vchopper(ncirc(i))
 enddo
 
 
 !VS3
-  pf_active%coil(12)%current%data(1) = wr_imas(59)
-  pf_active%coil(12)%voltage%data(1) = wr_imas(62)
+  !pf_active%coil(12)%current%data(1) = wr_imas(59)
+  !pf_active%coil(12)%voltage%data(1) = wr_imas(62)
 
 
 
@@ -887,19 +916,13 @@ print *,' npass=',npass
 
 
 pf_passive%ids_properties%homogeneous_time = 1
-!if (.NOT.associated(pf_passive%time)) allocate(pf_passive%time(1))
+if (.NOT.associated(pf_passive%time)) allocate(pf_passive%time(1))
 pf_passive%time(1) = dina_time
 
 !if (.NOT.associated(pf_passive%loop)) allocate(pf_passive%loop(npfp))
-do i=1,npfx
-  j = i
-  !if (.NOT.associated(pf_passive%loop(j)%current)) allocate(pf_passive%loop(j)%current(1))
-    pf_passive%loop(j)%current(1) = pf(npfa+i)
-end do
-do i=1,npass
-  j = npfx+i
-  !if (.NOT.associated(pf_passive%loop(j)%current)) allocate(pf_passive%loop(j)%current(1))
-    pf_passive%loop(j)%current(1) = tcam(i)
+do j=1,npass
+  if (.NOT.associated(pf_passive%loop(j)%current)) allocate(pf_passive%loop(j)%current(1))
+    pf_passive%loop(j)%current(1) = tcam(j)
 end do
 
 

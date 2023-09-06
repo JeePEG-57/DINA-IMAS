@@ -54,44 +54,60 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 	if(kpr.eq.1)print *,' 1'
 	!read(49,*)npf_c
     !npf_c = size(pf_active%coil)
-    npfa = size(pf_active%coil)
+    ncoil = size(pf_active%coil)
+    ncoil = 14
     i = 0
-	do ipf=1,npfa
+	do ic=1,ncoil
         ! Name of the coil
 	    !read(49,*)
 
-        nelem = size(pf_active%coil(ipf)%element)
+        nelem = size(pf_active%coil(ic)%element)
         do ie=1,nelem
             i = i + 1
 
-            nr_c(i) = 10 
-            nz_c(i) = 10 
-            nt_c(i) = pf_active%coil(ipf)%element(ie)%turns_with_sign
-            n_pf_num_c(i) = ipf
+            nr_c(i) = 20 
+            nz_c(i) = 20 
+            if (pf_active%coil(ic)%element(ie)%turns_with_sign.gt.0) then
+                nt_c(i) = 1
+            else
+                nt_c(i) = -1
+            endif
+            n_pf_num_c(i) = ic
             !read(49,*)nr_c(i),nz_c(i),nt_c(i),n_pf_num_c(i)
             if(kpr.eq.1)PRINT*,'i Nr Nz nt pf_num',i,Nr_c(I),nz_c(i),nt_c(i),n_pf_num_c(i)
-            if (pf_active%coil(ipf)%element(ie)%geometry%geometry_type.eq.2) then
-                R_c_c(I) = pf_active%coil(ipf)%element(ie)%geometry%rectangle%r
-                Z_c_c(I) = pf_active%coil(ipf)%element(ie)%geometry%rectangle%z
-                dr_c(i) = pf_active%coil(ipf)%element(ie)%geometry%rectangle%width
-                dz_c(i) = pf_active%coil(ipf)%element(ie)%geometry%rectangle%height
+            if (pf_active%coil(ic)%element(ie)%geometry%geometry_type.eq.2) then
+                ! Rectangle
+                R_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%rectangle%r
+                Z_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%rectangle%z
+                dr_c(i) = pf_active%coil(ic)%element(ie)%geometry%rectangle%width
+                dz_c(i) = pf_active%coil(ic)%element(ie)%geometry%rectangle%height
                 alpha_c(i) = PI2
                 beta_c(i) = 0.d0
-            elseif (pf_active%coil(ipf)%element(ie)%geometry%geometry_type.eq.3) then
-                alpha = PI2 + pf_active%coil(ipf)%element(ie)%geometry%oblique%beta
-                beta = pf_active%coil(ipf)%element(ie)%geometry%oblique%alpha
-                dlength = pf_active%coil(ipf)%element(ie)%geometry%oblique%length_alpha
-                dheight = pf_active%coil(ipf)%element(ie)%geometry%oblique%length_beta
-                R_c_c(i) = pf_active%coil(ipf)%element(ie)%geometry%oblique%r &
+            elseif (pf_active%coil(ic)%element(ie)%geometry%geometry_type.eq.3) then
+                ! Oblique
+                alpha = PI2 + pf_active%coil(ic)%element(ie)%geometry%oblique%beta
+                beta = pf_active%coil(ic)%element(ie)%geometry%oblique%alpha
+                dlength = pf_active%coil(ic)%element(ie)%geometry%oblique%length_alpha
+                dheight = pf_active%coil(ic)%element(ie)%geometry%oblique%length_beta
+                
+                R_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%oblique%r &
                 & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
-                Z_c_c(I) = pf_active%coil(ipf)%element(ie)%geometry%oblique%z &
+                Z_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%oblique%z &
                 & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
                 dr_c(i) = dlength
                 dz_c(i) = dheight
                 alpha_c(i) = alpha
                 beta_c(i) = beta
+            elseif (pf_active%coil(ic)%element(ie)%geometry%geometry_type.eq.5) then
+                ! Annulus
+                R_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%annulus%r
+                Z_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%annulus%z
+                dr_c(i) = pf_active%coil(ic)%element(ie)%geometry%annulus%radius_outer*2.d0
+                dz_c(i) = pf_active%coil(ic)%element(ie)%geometry%annulus%radius_outer*2.d0
+                alpha_c(i) = PI2
+                beta_c(i) = 0.d0
             else
-                print *,'Unsupported geometry type =', pf_active%coil(ipf)%element(1)%geometry%geometry_type, ' for coil ', i
+                print *,'Unsupported geometry type =', pf_active%coil(ic)%element(ie)%geometry%geometry_type, ' for coil, element= ', ic, ie
             endif
             !read(49,*)R_c_c(I),Z_c_c(I),dr_c(i),dz_c(i),alpha_c(i),beta_c(i)
             if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ', r_c_c(i),z_c_c(i),dr_c(i),dz_c(i),alpha_c(i),beta_c(i)
@@ -104,7 +120,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 	!read(49,*)
 	if(kpr.eq.1)print *,' res_pf'
 	!read(49,*)npf_res_c
-    npf_res_c = npfa
+    npf_res_c = ncoil
 	if(kpr.eq.1)print *,'npf_res ',npf_res_c
 	do I=1,npf_res_c
         !read(49,*)pfres_c(i)
@@ -129,7 +145,8 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
         if(kpr.eq.1)PRINT*,'i N M nt ves_n',i,Ndl_ves_c(I),ndh_ves_c(i),nt_ves_c(i),n_ves_num_c(i)
 
         !read(49,*)Rc_c(I),Zc_c(I),dl_c(i),hl_c(i),alpha_ves_c(i),beta_ves_c(i)
-        if (pf_passive%loop(i)%element(1)%geometry%geometry_type.eq.2) then 
+        if (pf_passive%loop(i)%element(1)%geometry%geometry_type.eq.2) then
+            ! Rectangle
             Rc_c(i) = pf_passive%loop(i)%element(1)%geometry%rectangle%r
             Zc_c(I) = pf_passive%loop(i)%element(1)%geometry%rectangle%z
             dl_c(i) = pf_passive%loop(i)%element(1)%geometry%rectangle%width
@@ -137,6 +154,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
             alpha_ves_c(i) = PI2
             beta_ves_c(i) = 0.d0
         elseif (pf_passive%loop(i)%element(1)%geometry%geometry_type.eq.3) then
+            ! Oblique
             alpha = PI2 + pf_passive%loop(i)%element(1)%geometry%oblique%beta
             beta = pf_passive%loop(i)%element(1)%geometry%oblique%alpha
             dlength = pf_passive%loop(i)%element(1)%geometry%oblique%length_alpha
@@ -224,30 +242,26 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
     end
 
 
-! subroutine read_geometry(rc, zc, dlength, dheight, alpha, beta)
-
-!     if (pf_passive%loop(i)%element(1)%geometry%geometry_type.eq.2) then 
-!         Rc_c(i) = pf_passive%loop(i)%element(1)%geometry%rectangle%r
-!         Zc_c(I) = pf_passive%loop(i)%element(1)%geometry%rectangle%z
-!         dl_c(i) = pf_passive%loop(i)%element(1)%geometry%rectangle%width
-!         hl_c(i) = pf_passive%loop(i)%element(1)%geometry%rectangle%height
-!         alpha_ves_c(i) = PI2
-!         beta_ves_c(i) = 0.d0
-!     elseif (pf_passive%loop(i)%element(1)%geometry%geometry_type.eq.3) then
-!         alpha = PI2 + pf_passive%loop(i)%element(1)%geometry%oblique%beta
-!         beta = pf_passive%loop(i)%element(1)%geometry%oblique%alpha
-!         dlength = pf_passive%loop(i)%element(1)%geometry%oblique%length_alpha
-!         dheight = pf_passive%loop(i)%element(1)%geometry%oblique%length_beta
-!         Rc_c(i) = pf_passive%loop(i)%element(1)%geometry%oblique%r &
+! subroutine read_geometry(rc, zc, dlength, dheight, alpha, beta, geometry)
+!
+!     if (geometry%geometry_type.eq.2) then 
+!         rc = geometry%rectangle%r
+!         zc = geometry%rectangle%z
+!         dlength = geometry%rectangle%width
+!         dheight = geometry%rectangle%height
+!         alpha = PI2
+!         beta = 0.d0
+!     elseif (geometry%geometry_type.eq.3) then
+!         alpha = PI2 + geometry%oblique%beta
+!         beta = geometry%oblique%alpha
+!         dlength = geometry%oblique%length_alpha
+!         dheight = geometry%oblique%length_beta
+!         rc = geometry%oblique%r &
 !         & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
-!         Zc_c(I) = pf_passive%loop(i)%element(1)%geometry%oblique%z &
+!         zc = geometry%oblique%z &
 !         & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
-!         dl_c(i) = dlength
-!         hl_c(i) = dheight
-!         alpha_ves_c(i) = alpha
-!         beta_ves_c(i) = beta
 !     else
-!         print *,'Unsupported geometry type =', pf_passive%loop(i)%element(1)%geometry%geometry_type, ' for loop ', i
+!         print *,'Unsupported geometry type =', geometry%geometry_type, '
 !     endif
 !     return
 ! end

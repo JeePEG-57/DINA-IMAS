@@ -80,9 +80,9 @@ real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! IDS location data
 character (len=255) :: user_default
-character (len=255) :: user_out, database_out
-character (len=255) :: user_prs, database_prs
-character (len=255) :: user_psch, database_psch
+character (len=255) :: user_out='', database_out
+character (len=255) :: user_prs='', database_prs
+character (len=255) :: user_psch='', database_psch
 character (len=255) :: user_transp='', database_transp=''
 integer :: pulse_prs=-1, run_prs=-1
 integer :: pulse_out=-1, run_out=-1
@@ -96,7 +96,7 @@ integer :: ext_transp, restart=0
 
 ! Local variables
 integer :: i, iloop
-integer :: idx, idx0, err
+integer :: idx_a, idx_p, idx, idx0, err
 !integer :: nact,npass,ngrid
 integer :: interp_start = 1, interp_transp = 1
 real (ids_real) ::time_get,time_ext, current_pf_stop
@@ -158,6 +158,7 @@ call xml2eg_parse_memory(buffer, doc)
   call xml2eg_get(doc, 'input_start/time_start', time_start)
   call xml2eg_get(doc, 'input_start/interp_mode', interp_start)
 
+  call xml2eg_get(doc, 'output/user', user_out)
   call xml2eg_get(doc, 'output/database', database_out)
   call xml2eg_get(doc, 'output/pulse', pulse_out)
   call xml2eg_get(doc, 'output/run', run_out)
@@ -181,8 +182,12 @@ deallocate(buffer)
 if (trim(user_prs).eq.'') user_prs = user_default
 if (trim(user_psch).eq.'') user_psch = user_default
 if (trim(user_transp).eq.'') user_transp = user_default
-user_out = user_default
+if (trim(user_out).eq.'') user_out = user_default
 
+
+print *,' Pulse schedule user =', trim(user_psch)
+print *,' Pulse schedule database =', trim(database_psch)
+print *,' Pulse schedule pulse, run =', pulse_psch, run_psch
 
 print *,' Start user =', trim(user_prs)
 print *,' Start database =', trim(database_prs)
@@ -233,14 +238,20 @@ if (restart.eq.1) then
 else
 
   write(*,*) 'Start from t=0'
+  call imas_open_env('ids',111001,202,idx_a,"public","ITER_MD",'3')
+  call imas_open_env('ids',115005,2,idx_p,"public","ITER_MD",'3')
+
   !call ids_get(idx0,"em_coupling",em_coupling)
   call ids_get(idx0,"magnetics",magnetics0)
   !call ids_get(idx0,"equilibrium",equilibrium0)
-  call ids_get(idx0,"pf_active",pf_active0)
-  call ids_get(idx0,"pf_passive",pf_passive0)
+  call ids_get(idx_a,"pf_active",pf_active0)
+  call ids_get(idx_p,"pf_passive",pf_passive0)
   call ids_get(idx0,"core_profiles",core_profiles0)
   call ids_get(idx0,"core_sources",core_sources0)
   call ids_get(idx0,"transport_solver_numerics",bndcond)
+
+  call imas_close(idx_a)
+  call imas_close(idx_p)
   
   call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
   

@@ -34,6 +34,7 @@ real(ids_real), dimension(:,:), ALLOCATABLE :: fluxarr,vesarr,pslgreen,bprgreen,
 real(ids_real), dimension(:,:), ALLOCATABLE :: pfc,pfgreen,vesgreen,pfprobe,vesprobe
 real(ids_real), dimension(:), ALLOCATABLE :: pfres, rcam, xu, yu
 real(ids_real)::  gridrange(4)
+real(ids_real), dimension(:), allocatable::  pf_turns
 
 	character *20 apr
 	
@@ -167,20 +168,31 @@ em_coupling%mutual_passive_passive = pmj(1:npass,1:npass)
 em_coupling%mutual_grid_passive = vesarr(1:ngrid,1:npass)
 em_coupling%mutual_loops_passive = vesgreen(1:kloop,1:npass)
 em_coupling%field_probes_passive = vesprobe(1:kprobe,1:npass)
-
-em_coupling%mutual_active_active = pfind(1:nact,1:nact) 
-em_coupling%mutual_grid_active = fluxarr(1:ngrid,1:nact)
-em_coupling%mutual_loops_active = pfgreen(1:kloop,1:nact)
-em_coupling%field_probes_active = pfprobe(1:kprobe,1:nact)
-
-em_coupling%mutual_passive_active = pfc(1:npass,1:nact)
-
 do j=1,kloop
   em_coupling%mutual_loops_grid(j,1:ngrid)=pslgreen(1:ngrid,j)
 end do
 do j=1,kprobe
   em_coupling%field_probes_grid(j,1:ngrid)=bprgreen(1:ngrid,j)
 end do
+
+
+
+allocate(pf_turns(nact))
+do i=1,nact
+  pf_turns(i) = pf_turns(i) + dabs(pf_active0%coil(i)%element(1)%turns_with_sign)
+enddo
+
+
+do i=1,nact
+  do j=1,nact
+    em_coupling%mutual_active_active(i,j) = pfind(i,j)*pf_turns(i)*pf_turns(j)
+  enddo
+
+  em_coupling%mutual_grid_active(:,i) = fluxarr(1:ngrid,i)*pf_turns(i)
+  em_coupling%mutual_loops_active(:,i) = pfgreen(1:kloop,i)*pf_turns(i)
+  em_coupling%field_probes_active(:,i) = pfprobe(1:kprobe,i)*pf_turns(i)
+  em_coupling%mutual_passive_active(:,i) = pfc(1:npass,i)*pf_turns(i)
+enddo
 
 
 
