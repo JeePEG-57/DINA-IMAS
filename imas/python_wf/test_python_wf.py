@@ -189,60 +189,6 @@ def ASTRA_DENSITY(idslist):
 
 
 class DINA_Workflow:
-  def __init__(self, IMAS_PulseSchedule, IMAS_InputStart, IMAS_Output):
-    
-    # imas.DBEntry object containing input data to initialize the workflow
-    self.IMAS_InputStart = IMAS_InputStart
-    
-    self.IMAS_PulseSchedule = IMAS_PulseSchedule
-    
-    # imas.DBEntry object to put output data in
-    self.IMAS_Output = IMAS_Output
-    
-    # imas.DBEntry object containing prescribed transport profiles
-    # Applied only when Time > self.Time_ExternalTranspStarts
-    # If a valid object: the transport profiles are read from the object
-    # If None: the transport is simulated in the workflow
-    self.IMAS_Transp = None
-    
-    # Mode of interpolation for initialization data reading
-    # imasdef.CLOSEST_INTERP == 1
-    # imasdef.LINEAR_INTERP == 3
-    #self.InterpMode = imasdef.LINEAR_INTERP # may cause a crash!
-    self.InterpStart = imasdef.CLOSEST_INTERP
-    
-    # Mode of interpolation for prescribed transport reading
-    #self.InterpMode = imasdef.LINEAR_INTERP # may cause a crash!
-    self.InterpTransp = imasdef.CLOSEST_INTERP
-    
-    # Magnetic controller used in the simulation
-    # One of directory names in src/controllers/
-    self.MagneticController = "kmc"
-    
-    # Decimation used to put IDS's in the database
-    # A full set of IDS's is saved only at each Decimation-th step
-    # Other steps only pf_active and summary are saved
-    self.Decimation = 1
-    
-    # Key for using ASTRA density transport model
-    # Applied only when Time > self.Time_ExternalTranspStarts and self.IMAS_Transp is None
-    # True: ASTRA density transport actor with internal density control
-    # False: Transport module extracted from DINA with explicit puffing and pellet control
-    self.USE_ASTRA = False
-    
-    # Time (s) after which DINA actor receives transport profiles (Prescribed, ASTRA, etc.) instead of calculating internally
-    # Should correspond to tt_dina setting in the DINA actor
-    self.Time_ExternalTranspStarts = 4.0e4
-    
-    # Starting time of the scenario
-    # Initialization of the state uses data from IMAS_Input
-    self.Time_Start = 0.0
-    
-    # Maximum time of the scenario
-    self.Time_Stop = 1000.0
-    
-    self.idslist = {}
-
 
   def Run(self):
   
@@ -250,50 +196,12 @@ class DINA_Workflow:
     #exec("import " + controllername + ".wrapper as " + controllername)
     #dinacontr = eval(controllername + "." + controllername + "_actor")
   
-    idslist = {}
+    idslist = self.idslist
     
-    # Reading initial IDS's
-    self.IMAS_InputStart.open()
-    
-    Restart = self.Time_Start > 0.0
-    
-    
-    
-    if (Restart == True):
-      interp = self.InterpStart
-      TimeGet = self.Time_Start
-      print('Restart at t = ' + str(TimeGet))
-      idslist['equilibrium'] = self.IMAS_InputStart.get_slice('equilibrium', TimeGet, interp)
-      idslist['em_coupling'] = self.IMAS_InputStart.get_slice('em_coupling', TimeGet, interp)
-      idslist['magnetics'] = self.IMAS_InputStart.get_slice('magnetics', TimeGet, interp)
-      idslist['pf_active'] = self.IMAS_InputStart.get_slice('pf_active', TimeGet, interp)
-      idslist['pf_passive'] = self.IMAS_InputStart.get_slice('pf_passive', TimeGet, interp)
-      idslist['core_profiles'] = self.IMAS_InputStart.get_slice('core_profiles', TimeGet, interp)
-      idslist['core_sources'] = self.IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
-      idslist['transport_solver_numerics'] = self.IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
-    else:
-      print('Start from t = 0') 
-      #idslist['equilibrium'] = self.IMAS_InputStart.get('equilibrium')
-      idslist['magnetics'] = self.IMAS_InputStart.get('magnetics')
-      idslist['pf_active'] = self.IMAS_InputStart.get('pf_active')
-      idslist['pf_passive'] = self.IMAS_InputStart.get('pf_passive')
-      idslist['core_profiles'] = self.IMAS_InputStart.get('core_profiles')
-      idslist['core_sources'] = self.IMAS_InputStart.get('core_sources')
-      idslist['transport_solver_numerics'] = self.IMAS_InputStart.get('transport_solver_numerics')
-      
+
+    # Calculate em_coupling if not read
+    if (idslist['em_coupling'] == None):
       GREEN(idslist)
-    
-    
-    idslist['wall'] = self.IMAS_InputStart.get('wall')
-    idslist['dataset_description'] = self.IMAS_InputStart.get('dataset_description')
-    
-    self.IMAS_InputStart.close()
-    
-    
-    self.IMAS_PulseSchedule.open()
-    idslist['pulse_schedule'] = self.IMAS_PulseSchedule.get('pulse_schedule')
-    idslist['pulse_schedule_term'] = self.IMAS_PulseSchedule.get('pulse_schedule', occurrence = 1)
-    self.IMAS_PulseSchedule.close()
     
     
     #print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
@@ -302,7 +210,7 @@ class DINA_Workflow:
     self.IMAS_Output.create()
     
     
-    self.IMAS_Output.put(idslist["dataset_description"])
+    #self.IMAS_Output.put(idslist["dataset_description"])
     self.IMAS_Output.put(idslist["pulse_schedule"])
     self.IMAS_Output.put(idslist["pulse_schedule_term"], occurrence = 1)
     self.IMAS_Output.put(idslist['em_coupling'])
@@ -402,7 +310,8 @@ class DINA_Workflow:
       # Condition for stopping the simulation
       tpfa = 0.
       for coil in idslist['pf_active'].coil:
-        tpfa = tpfa + abs(coil.current.data[0])
+        if len(coil.current.data) > 0:
+          tpfa = tpfa + abs(coil.current.data[0])
   
       if ((tpfa < 1.e3 and abs(ip) < 1.e3) or time > self.Time_Stop):
         print('Workflow stop condition is met', flush=True)
@@ -419,79 +328,216 @@ class DINA_Workflow:
     #print(dir(pf_active))
 
 
-def start(config):
-  
-  if (type(config) == str):
-    tree = ET.parse(config)
-  root = tree.getroot()
-  
-  user_default = os.getenv('USER')
-  
-  
-  input_start = root.find('input_start')
-  usernode = input_start.find('user')
-  if (usernode != None):
-    username = usernode.text
-  else:
-    username = None
-  if (username == None or username == ""):
-    username = user_default
-  database = input_start.find('database').text
-  pulse = int(input_start.find('pulse').text)
-  run = int(input_start.find('run').text)
-  IMAS_InputStart = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
-  
-  
-  input_psch = root.find('pulse_schedule')
-  usernode = input_psch.find('user')
-  if (usernode != None):
-    username = usernode.text
-  else:
-    username = None
-  if (username == None or username == ""):
-    username = user_default
-  database = input_psch.find('database').text
-  pulse = int(input_psch.find('pulse').text)
-  run = int(input_psch.find('run').text)
-  IMAS_PulseSchedule = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
-  
-  
-  output = root.find('output')
-  database = output.find('database').text
-  pulse = int(output.find('pulse').text)
-  run = int(output.find('run').text)
-  IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, user_default, data_version = '3')
-  
-  
-  Workflow = DINA_Workflow(IMAS_PulseSchedule, IMAS_InputStart, IMAS_Output)
-  Workflow.InterpStart = int(input_start.find('interp_mode').text)
-  Workflow.Time_Start = float(input_start.find('time_start').text)
-  Workflow.Time_Stop = float(root.find('time_stop').text)
-  Workflow.Time_ExternalTranspStarts = float(root.find('time_ext').text)
-  Workflow.MagneticController = root.find('controller').text
-  Workflow.Decimation = int(output.find('decimation').text)
-  Workflow.USE_ASTRA = bool(root.find('use_astra').text)
-  
-  
-  input_transp = root.find('input_transp')
-  if (input_transp != None):
-    usernode = input_transp.find('user')
+  def get_dbentry(self, root, user_default):
+    if root == None:
+      return None
+    usernode = root.find('user')
     if (usernode != None):
       username = usernode.text
     else:
       username = None
     if (username == None or username == ""):
       username = user_default
-    database = input_transp.find('database').text
-    pulse = int(input_transp.find('pulse').text)
-    run = int(input_transp.find('run').text)
+    database = root.find('database').text
+    if database == None or database == '':
+      return None
+    pulse = int(root.find('pulse').text)
+    run = int(root.find('run').text)
+    IMAS_DBEntry = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
+    status,_ = IMAS_DBEntry.open()
+    if status == 0:
+      IMAS_DBEntry.close()
+      return IMAS_DBEntry
+    return None
+
+
+  def __init__(self, config):
+    # Default workflow parameters
     
-    if (database != None):
-      Workflow.IMAS_Transp = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
-      Workflow.InterpTransp = int(input_transp.find('interp_mode').text)
+    # imas.DBEntry object containing prescribed transport profiles
+    # Applied only when Time > self.Time_ExternalTranspStarts
+    # If a valid object: the transport profiles are read from the object
+    # If None: the transport is simulated in the workflow
+    self.IMAS_Transp = None
+    
+    # Mode of interpolation for initialization data reading
+    # imasdef.CLOSEST_INTERP == 1
+    # imasdef.LINEAR_INTERP == 3
+    #self.InterpMode = imasdef.LINEAR_INTERP # may cause a crash!
+    self.InterpStart = imasdef.CLOSEST_INTERP
+    
+    # Mode of interpolation for prescribed transport reading
+    #self.InterpMode = imasdef.LINEAR_INTERP # may cause a crash!
+    self.InterpTransp = imasdef.CLOSEST_INTERP
+    
+    # Magnetic controller used in the simulation
+    # One of directory names in src/controllers/
+    self.MagneticController = "kmc"
+    
+    # Decimation used to put IDS's in the database
+    # A full set of IDS's is saved only at each Decimation-th step
+    # Other steps only pf_active and summary are saved
+    self.Decimation = 1
+    
+    # Key for using ASTRA density transport model
+    # Applied only when Time > self.Time_ExternalTranspStarts and self.IMAS_Transp is None
+    # True: ASTRA density transport actor with internal density control
+    # False: Transport module extracted from DINA with explicit puffing and pellet control
+    self.USE_ASTRA = False
+    
+    # Time (s) after which DINA actor receives transport profiles (Prescribed, ASTRA, etc.) instead of calculating internally
+    # Should correspond to tt_dina setting in the DINA actor
+    self.Time_ExternalTranspStarts = 4.0e4
+    
+    # Starting time of the scenario
+    # Initialization of the state uses data from IMAS_Input
+    self.Time_Start = 0.0
+    
+    # Maximum time of the scenario
+    self.Time_Stop = 1000.0
+
+    #-------------
+    # Reading config file
+
+    if (type(config) == str):
+      tree = ET.parse(config)
+    root = tree.getroot()
+    
+    user_default = os.getenv('USER')
+    
+    idslist = {}
+
+
+    # Reading initial IDS's
+    input_start = root.find('input_start')
+    
+    self.InterpStart = int(input_start.find('interp_mode').text)
+    self.Time_Start = float(input_start.find('time_start').text)
+    # usernode = input_start.find('user')
+    # if (usernode != None):
+    #   username = usernode.text
+    # else:
+    #   username = None
+    # if (username == None or username == ""):
+    #   username = user_default
+    # database = input_start.find('database').text
+    # pulse = int(input_start.find('pulse').text)
+    # run = int(input_start.find('run').text)
+    # IMAS_InputStart = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
+    IMAS_InputStart = self.get_dbentry(input_start, user_default)
+    
+    
+    if (self.Time_Start > 0.0 and IMAS_InputStart != None):     
+      interp = self.InterpStart
+      TimeGet = self.Time_Start
+      print('Restart at t = ' + str(TimeGet))
+
+      IMAS_InputStart.open()
+      idslist['equilibrium'] = self.IMAS_InputStart.get_slice('equilibrium', TimeGet, interp)
+      idslist['core_profiles'] = self.IMAS_InputStart.get_slice('core_profiles', TimeGet, interp)
+      idslist['core_sources'] = self.IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
+      idslist['transport_solver_numerics'] = self.IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
+      IMAS_InputStart.close()
+
+    else:
+      print('Start from t = 0') 
+
+      idslist['equilibrium'] = imas.equilibrium()
+      idslist['core_profiles'] = imas.core_profiles()
+      idslist['core_sources'] = imas.core_sources()
+      idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
+
+    
+    # input_psch = root.find('pulse_schedule')
+    # usernode = input_psch.find('user')
+    # if (usernode != None):
+    #   username = usernode.text
+    # else:
+    #   username = None
+    # if (username == None or username == ""):
+    #   username = user_default
+    # database = input_psch.find('database').text
+    # pulse = int(input_psch.find('pulse').text)
+    # run = int(input_psch.find('run').text)
+    # IMAS_PulseSchedule = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
+    IMAS_PulseSchedule = self.get_dbentry(root.find('pulse_schedule'), user_default)
+    IMAS_PulseSchedule.open()
+    idslist['pulse_schedule'] = IMAS_PulseSchedule.get('pulse_schedule')
+    idslist['pulse_schedule_term'] = IMAS_PulseSchedule.get('pulse_schedule', occurrence = 1)
+    IMAS_PulseSchedule.close()
+    
+
+
+    IMAS_PFA = self.get_dbentry(root.find('input_pf_active'), user_default)
+    IMAS_PFA.open()
+    idslist['pf_active'] = IMAS_PFA.get_slice('pf_active', self.Time_Start, self.InterpStart)
+    IMAS_PFA.close()
+
+    IMAS_PFP = self.get_dbentry(root.find('input_pf_passive'), user_default)
+    IMAS_PFP.open()
+    idslist['pf_passive'] = IMAS_PFP.get_slice('pf_passive', self.Time_Start, self.InterpStart)
+    IMAS_PFP.close()
+
+    IMAS_MAG = self.get_dbentry(root.find('input_magnetics'), user_default)
+    IMAS_MAG.open()
+    idslist['magnetics'] = IMAS_MAG.get_slice('magnetics', self.Time_Start, self.InterpStart)
+    IMAS_MAG.close()
+
+    IMAS_WLL = self.get_dbentry(root.find('input_wall'), user_default)
+    IMAS_WLL.open()
+    idslist['wall'] = IMAS_WLL.get_slice('wall', self.Time_Start, self.InterpStart)
+    IMAS_WLL.close()
+
+
+
+    IMAS_EMCoupling = self.get_dbentry(root.find('input_em_coupling'), user_default)
+    if (IMAS_EMCoupling != None):
+      print('Reading em_coupling from the database')
+      IMAS_EMCoupling.open()
+      idslist['em_coupling'] = IMAS_EMCoupling.get('em_coupling')
+      IMAS_EMCoupling.close()
+    else:
+      idslist['em_coupling'] = None
+
+
+
+    output = root.find('output')
+    database = output.find('database').text
+    pulse = int(output.find('pulse').text)
+    run = int(output.find('run').text)
+    self.IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, user_default, data_version = '3')
+    
+    
+    self.InterpStart = int(input_start.find('interp_mode').text)
+    self.Time_Start = float(input_start.find('time_start').text)
+    self.Time_Stop = float(root.find('time_stop').text)
+    self.Time_ExternalTranspStarts = float(root.find('time_ext').text)
+    self.MagneticController = root.find('controller').text
+    self.Decimation = int(output.find('decimation').text)
+    self.USE_ASTRA = bool(root.find('use_astra').text)
+    
+    
+    input_transp = root.find('input_transp')
+    if (input_transp != None):
+      # usernode = input_transp.find('user')
+      # if (usernode != None):
+      #   username = usernode.text
+      # else:
+      #   username = None
+      # if (username == None or username == ""):
+      #   username = user_default
+      # database = input_transp.find('database').text
+      # pulse = int(input_transp.find('pulse').text)
+      # run = int(input_transp.find('run').text)
+
+      self.IMAS_Transp = self.get_dbentry(input_transp, user_default)  
+      if (self.IMAS_Transp != None):
+        print('External transport profiles are located')
+        self.InterpTransp = int(input_transp.find('interp_mode').text)
+
+
+    self.idslist = idslist
   
-  
-  Workflow.Run()
 
 
 def main():
@@ -505,7 +551,9 @@ def main():
   else:
       config = 'wfconfig.xml'
   
-  start(config)
+
+  Workflow = DINA_Workflow(config)
+  Workflow.Run()
 
 
 if __name__ == '__main__':  # If direct run, not import

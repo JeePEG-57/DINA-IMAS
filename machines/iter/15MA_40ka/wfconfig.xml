@@ -6,6 +6,36 @@
     <pulse>170</pulse>
     <run>1</run>
   </pulse_schedule>
+  <input_pf_active>
+    <user>public</user>
+    <database>ITER_MD</database>
+    <pulse>111001</pulse>
+    <run>202</run>
+  </input_pf_active>
+  <input_pf_passive>
+    <user>public</user>
+    <database>ITER_MD</database>
+    <pulse>115005</pulse>
+    <run>2</run>
+  </input_pf_passive>
+  <input_magnetics>
+    <user>dubrovm</user>
+    <database>test</database>
+    <pulse>170</pulse>
+    <run>1</run>
+  </input_magnetics>
+  <input_em_coupling>
+    <user></user>
+    <database></database>
+    <pulse></pulse>
+    <run></run>
+  </input_em_coupling>
+  <input_wall>
+    <user>public</user>
+    <database>ITER_MD</database>
+    <pulse>116000</pulse>
+    <run>2</run>
+  </input_wall>
   <input_start>
     <user></user>
     <database>test</database>

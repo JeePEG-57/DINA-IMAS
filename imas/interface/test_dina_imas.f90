@@ -80,13 +80,29 @@ real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! IDS location data
 character (len=255) :: user_default
+
 character (len=255) :: user_out='', database_out
-character (len=255) :: user_prs='', database_prs
-character (len=255) :: user_psch='', database_psch
-character (len=255) :: user_transp='', database_transp=''
-integer :: pulse_prs=-1, run_prs=-1
 integer :: pulse_out=-1, run_out=-1
+
+character (len=255) :: user_pfa='', database_pfa
+integer :: pulse_pfa=-1, run_pfa=-1
+
+character (len=255) :: user_pfp='', database_pfp
+integer :: pulse_pfp=-1, run_pfp=-1
+
+character (len=255) :: user_mag='', database_mag
+integer :: pulse_mag=-1, run_mag=-1
+
+character (len=255) :: user_wll='', database_wll
+integer :: pulse_wll=-1, run_wll=-1
+
+character (len=255) :: user_prs='', database_prs
+integer :: pulse_prs=-1, run_prs=-1
+
+character (len=255) :: user_psch='', database_psch
 integer :: pulse_psch=-1, run_psch=-1
+
+character (len=255) :: user_transp='', database_transp=''
 integer :: pulse_transp=-1, run_transp=-1
 
 ! Workflow parameters
@@ -129,20 +145,6 @@ end do
 print *,' Using workflow config file: ', ConfigFile
 
 
-! open(unit=41,file=trim(ConfigFile),form='formatted')
-!     print *,' Opened file ', ConfigFile
-!     read(41,*)
-!     read(41,*) user_prs, database_prs, pulse_prs, run_prs, time_start, interp_start
-!     read(41,*)
-!     read(41,*) database_out, pulse_out, run_out, idec
-!     read(41,*)
-!     read(41,*) user_transp, database_transp, pulse_transp, run_transp, interp_transp
-!     read(41,*)
-!     read(41,*) time_ext, time_stop, imax
-! close(41)
-
-
-
 call file2buffer(ConfigFile, io_unit, buffer)
 call xml2eg_parse_memory(buffer, doc)
 
@@ -151,6 +153,26 @@ call xml2eg_parse_memory(buffer, doc)
   call xml2eg_get(doc, 'pulse_schedule/pulse', pulse_psch)
   call xml2eg_get(doc, 'pulse_schedule/run', run_psch)
   
+  call xml2eg_get(doc, 'input_pf_active/user', user_pfa)
+  call xml2eg_get(doc, 'input_pf_active/database', database_pfa)
+  call xml2eg_get(doc, 'input_pf_active/pulse', pulse_pfa)
+  call xml2eg_get(doc, 'input_pf_active/run', run_pfa)
+
+  call xml2eg_get(doc, 'input_pf_passive/user', user_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/database', database_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/pulse', pulse_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/run', run_pfp)
+
+  call xml2eg_get(doc, 'input_magnetics/user', user_mag)
+  call xml2eg_get(doc, 'input_magnetics/database', database_mag)
+  call xml2eg_get(doc, 'input_magnetics/pulse', pulse_mag)
+  call xml2eg_get(doc, 'input_magnetics/run', run_mag)
+
+  call xml2eg_get(doc, 'input_wall/user', user_wll)
+  call xml2eg_get(doc, 'input_wall/database', database_wll)
+  call xml2eg_get(doc, 'input_wall/pulse', pulse_wll)
+  call xml2eg_get(doc, 'input_wall/run', run_wll)
+
   call xml2eg_get(doc, 'input_start/user', user_prs)
   call xml2eg_get(doc, 'input_start/database', database_prs)
   call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
@@ -179,30 +201,31 @@ call xml2eg_free_doc(doc)
 deallocate(buffer)
 
 
+if (trim(user_pfa).eq.'') user_pfa = user_default
+if (trim(user_pfp).eq.'') user_pfp = user_default
+if (trim(user_mag).eq.'') user_mag = user_default
+if (trim(user_wll).eq.'') user_wll = user_default
 if (trim(user_prs).eq.'') user_prs = user_default
 if (trim(user_psch).eq.'') user_psch = user_default
 if (trim(user_transp).eq.'') user_transp = user_default
 if (trim(user_out).eq.'') user_out = user_default
 
 
-print *,' Pulse schedule user =', trim(user_psch)
-print *,' Pulse schedule database =', trim(database_psch)
-print *,' Pulse schedule pulse, run =', pulse_psch, run_psch
+print *,' Pulse schedule user, database, pulse, run =', trim(user_psch), trim(database_psch), pulse_psch, run_psch
 
-print *,' Start user =', trim(user_prs)
-print *,' Start database =', trim(database_prs)
-print *,' Start pulse, run =', pulse_prs, run_prs
+print *,' PF Active user, database, pulse, run =', trim(user_pfa), trim(database_pfa), pulse_pfa, run_pfa
+print *,' PF Passive user, database, pulse, run =', trim(user_pfp), trim(database_pfp), pulse_pfp, run_pfp
+print *,' Magnetics user, database, pulse, run =', trim(user_mag), trim(database_mag), pulse_mag, run_mag
+print *,' Wall user, database, pulse, run =', trim(user_wll), trim(database_wll), pulse_wll, run_wll
+
+print *,' Start user, database, pulse, run =', trim(user_prs), trim(database_prs), pulse_prs, run_prs
 print *,' Start time, s =', time_start
 print *,' Start interpolation =', interp_start
 
-print *,' Transp user =', trim(user_transp)
-print *,' Transp database =', trim(database_transp)
-print *,' Transp pulse, run =', pulse_transp, run_transp
+print *,' Transp user, database, pulse, run =', trim(user_transp), trim(database_transp), pulse_transp, run_transp
 print *,' Transp interpolation =', interp_transp
 
-print *,' Output user =', trim(user_out)
-print *,' Output database =', trim(database_out)
-print *,' Output pulse, run =', pulse_out, run_out
+print *,' Output user =', trim(user_out), trim(database_out), pulse_out, run_out
 print *,' Output put decimation =', idec
 
 print *,' External transport time, s =', time_ext
@@ -224,11 +247,11 @@ if (restart.eq.1) then
   write(*,*) 'Restart from t=', time_start
   time_get = time_start
   
-  call ids_get_slice(idx0,"em_coupling",em_coupling, time_get, interp_start)
-  call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interp_start)
+  !call ids_get_slice(idx0,"em_coupling",em_coupling, time_get, interp_start)
+  !call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interp_start)
   call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interp_start)
-  call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interp_start)
-  call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interp_start)
+  !call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interp_start)
+  !call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interp_start)
   call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interp_start)
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
@@ -242,19 +265,6 @@ else
 
   write(*,*) 'Start from t=0'
 
-  call imas_open_env('ids',111001,202,idx_a,"public","ITER_MD",'3')
-  call ids_get(idx_a,"pf_active",pf_active0)
-  call imas_close(idx_a)
-
-  call imas_open_env('ids',115005,2,idx_p,"public","ITER_MD",'3')
-  call ids_get(idx_p,"pf_passive",pf_passive0)
-  call imas_close(idx_p)
-
-  !call imas_open_env('ids',150100,4,idx_m,"public","ITER_MD",'3')
-  call imas_open_env('ids',170,1,idx_m,"dubrovm","test",'3')
-  call ids_get(idx_m,"magnetics",magnetics0)
-  call imas_close(idx_m)
-
 
   !call ids_get(idx0,"em_coupling",em_coupling)
   !call ids_get(idx0,"equilibrium",equilibrium0)
@@ -264,19 +274,32 @@ else
   !call ids_get(idx0,"core_sources",core_sources0)
   !call ids_get(idx0,"transport_solver_numerics",bndcond)
 
-  call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
   
 endif
 
 
+call imas_open_env('ids',pulse_pfa,run_pfa,idx_a,user_pfa,database_pfa,'3')
+call ids_get_slice(idx_a,"pf_active",pf_active0, time_start, interp_start)
+call imas_close(idx_a)
 
-!call ids_get(idx0,"dataset_description",data_description)
+call imas_open_env('ids',pulse_pfp,run_pfp,idx_p,user_pfp,database_pfp,'3')
+call ids_get_slice(idx_p,"pf_passive",pf_passive0, time_start, interp_start)
+call imas_close(idx_p)
 
+call imas_open_env('ids',pulse_mag,run_mag,idx_m,user_mag,database_mag,'3')
+call ids_get_slice(idx_m,"magnetics",magnetics0, time_start, interp_start)
+call imas_close(idx_m)
 
-call imas_open_env('ids',116000,2,idx0,"public","ITER_MD",'3')
-!call imas_open_env('ids',170,1,idx0,"dubrovm","test",'3')
-call ids_get(idx0,"wall",wall)
+call imas_open_env('ids',pulse_wll,run_wll,idx0,user_wll,database_wll,'3')
+call ids_get_slice(idx0,"wall",wall, time_start, interp_start)
 call imas_close(idx0)
+
+
+
+
+call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
+
+
 
 
 write(*,*) 'Reading the pulse schedule'
