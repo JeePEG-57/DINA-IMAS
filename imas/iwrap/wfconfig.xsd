@@ -4,6 +4,11 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="pulse_schedule"/>
+        <xs:element ref="input_pf_active"/>
+        <xs:element ref="input_pf_passive"/>
+        <xs:element ref="input_magnetics"/>
+        <xs:element ref="input_em_coupling"/>
+        <xs:element ref="input_wall"/>
         <xs:element ref="input_start"/>
         <xs:element ref="output"/>
         <xs:element ref="input_transp"/>
@@ -16,6 +21,56 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="pulse_schedule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="user"/>
+        <xs:element ref="database"/>
+        <xs:element ref="pulse"/>
+        <xs:element ref="run"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="input_pf_active">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="user"/>
+        <xs:element ref="database"/>
+        <xs:element ref="pulse"/>
+        <xs:element ref="run"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="input_pf_passive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="user"/>
+        <xs:element ref="database"/>
+        <xs:element ref="pulse"/>
+        <xs:element ref="run"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="input_magnetics">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="user"/>
+        <xs:element ref="database"/>
+        <xs:element ref="pulse"/>
+        <xs:element ref="run"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="input_em_coupling">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="user"/>
+        <xs:element ref="database"/>
+        <xs:element ref="pulse"/>
+        <xs:element ref="run"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>  
+  <xs:element name="input_wall">
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="user"/>
@@ -65,9 +120,9 @@
   <xs:element name="step_max" type="xs:integer"/>
   <xs:element name="use_astra" type="xs:integer"/>
   <xs:element name="user">
-    <xs:complexType/>
+    <xs:complexType mixed="true"/>
   </xs:element>
-  <xs:element name="database" type="xs:NCName"/>
+  <xs:element name="database" type="xs:string"/>
   <xs:element name="pulse" type="xs:integer"/>
   <xs:element name="run" type="xs:integer"/>
   <xs:element name="interp_mode" type="xs:integer"/>
