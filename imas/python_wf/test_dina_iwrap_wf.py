@@ -1,3 +1,59 @@
+"""Testing IWrap overhead with 2000 <step_max>2000</step_max> in wfconfig.xml 
+on AMD EPYC 7402 24-Core Processor (UL cluster)
+
+The IWrap workflow actor tested is just outputing IDSs. Input IDSs are being read
+from disk.
+
+1. Fortran with (unmodified) ids_put_slice and idec=10 using
+    time ../interface/test_dina wfconfig.xml 2>&1 > /dev/shm/dina.log &
+    tail -f /dev/shm/dina.log | stdbuf -o0 grep iloop
+
+real    28m47s
+user    11m47s
+
+2. Fortran as in 1. without ids_put_slice (commented out)
+
+real    11m39.354s
+user    11m24.083s
+sys     0m2.137s
+
+3. IWrapped Fortran with returning summary and pf_active each time step and the complete at idec=10
+    time python test_dina_iwrap_wf.py 2>&1 > /dev/shm/dina.log &
+    tail -f /dev/shm/dina.log | stdbuf -o0 grep iloop
+
+real    13m20.151s
+user    13m3.251s
+sys     0m3.273s
+
+4. IWrapped  Fortran as in 3. with returning all IDSs at each time step
+<decimation>1</decimation> in wfconfig.xml. Note that rebuild of the actor is
+needed to get decimation impact. 
+
+real    16m1.107s
+user    15m42.810s
+sys     0m2.925s
+
+5. Python workflow with ids_put_slice commented out as in Fortran (2.) and with 
+    if loop == 2000:  break at the end of while True: loop
+ 
+    . use_actors.sh
+    time python test_python_wf.py 2>&1 > /dev/shm/dina.log &
+    tail -f /dev/shm/dina.log | stdbuf -o0 grep "loop ="
+
+real    23m10.938s
+user    22m52.005s
+sys     0m2.916s
+
+Comments:
+
+We see that there is an Iwrap overhead of case 4. over case 3. if we return
+all results at each step. The strategy of memory transfer decimation in 3. is
+useful and faster than Python workflow in 5. and slower than 1. 
+IWrap actor in 3. is 15% slower than Fortran in 1.
+IWrap actor in 4. is 39% slower than Fortran in 1.
+
+
+"""
 import sys
 
 import imas,os
@@ -76,6 +132,7 @@ class ExampleWorkflowManager:
              self.core_sources_out,
              self.core_transport_out,
              self.bndcond_out) = self.actor_dina_iwrap_wf()
+            #print('>>>>>>>>>>>>>', self.pf_passive_out)
             # SAVE IDSS INTO OUTPUT FILE
             #print( '=> Export output IDSs to local database: ', i )
             #self.output_entry.put( self.equilibrium )
