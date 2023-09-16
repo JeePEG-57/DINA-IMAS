@@ -62,7 +62,7 @@ integer :: ext_transp, restart=0
 
 ! Local variables
 integer :: i, iloop
-integer :: idx_a, idx_p, idx_m, idx, idx0, err
+integer :: idx_a, idx_p, idx_m, idx, idx0, idx_mem, err
 !integer :: nact,npass,ngrid
 integer :: interp_start = 1, interp_transp = 1
 real (ids_real) ::time_get,time_ext, current_pf_stop
@@ -356,8 +356,7 @@ arr_out1(1:31)=0
   call ids_put(idx,"em_coupling",em_coupling)
   !call ids_put(idx,"dataset_description",data_description)
   call ids_put(idx,"pulse_schedule",pulse_schedule)
-  call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
-
+  call ids_put(idx,"pulse_schedule/1",pulse_schedule_term) 
 
   allocate(character(50):: status_msg)
   status_msg = 'DINA initialized'
@@ -383,8 +382,8 @@ type (ids_core_sources)   :: core_sources_out
 type (ids_transport_solver_numerics) :: bndcond_out
 type (ids_pulse_schedule)   :: pulse_schedule_out
 
-
 type(ids_parameters_input) :: codeparam
+integer :: number_of_slices, slice_number
 
 integer, intent(out) :: status_code
 character(len=:), pointer, intent(out) :: status_message
@@ -393,7 +392,14 @@ allocate(character(50):: status_message)
 status_code = 0
 
 ! iloop=1,imax
-if (iloop .le. imax ) then
+!if (iloop .le. imax ) then
+
+number_of_slices = min(idec, imax-iloop+1)
+call ual_begin_pulse_action(MEMORY_BACKEND, pulse_out, run_out, user_out, database_out, '3', idx_mem)
+call ual_open_pulse(idx_mem, FORCE_CREATE_PULSE,'', err)
+
+
+do while (iloop .le. imax )
 
 write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
@@ -442,10 +448,11 @@ call solps_imas(equilibrium, core_transport, bndcond)
 write(*,*) "SOLPS finished"
 flush(6)
 
-  !call ids_put_slice(idx,"pf_active",pf_active)
-  call ids_copy(pf_active,pf_active_out)
-  !call ids_put_slice(idx,"summary",summary)
-  call ids_copy(summary,summary_out)
+    call ids_put_slice(idx_mem,"pf_active",pf_active)
+    !call ids_copy(pf_active,pf_active_out)
+    call ids_put_slice(idx_mem,"summary",summary)
+    !call ids_copy(summary,summary_out)
+
 
   if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
   
@@ -479,10 +486,6 @@ flush(6)
     write(*,*)  'Put transport_solver_numerics'
     !call ids_put_slice(idx,"transport_solver_numerics",bndcond)
     call ids_copy(bndcond,bndcond_out)
-
-    status_code = 1
-    status_message = 'DINA finished one step and ouputed everything'
-    code_state = 1
   endif
 
 
@@ -495,7 +498,6 @@ call ids_copy(pf_active, pf_active0)
 write(*,*) 'Copy pf_passive'
 flush(6)
 call ids_copy(pf_passive, pf_passive0)
-
 
 time_get = summary%time(1)
 
@@ -562,17 +564,23 @@ flush(6)
 
 iloop = iloop + 1
 
-endif
+if (mod(iloop, idec) .eq. 0) exit
+
+enddo
+
+call ids_get(idx_mem,"summary", summary_out)
+call ids_get(idx_mem,"pf_active", pf_active_out)
+call imas_close(idx_mem)
 
 
-if (iloop .eq. imax) then
+if (iloop .gt. imax) then
   status_code = 3
   status_message = 'DINA reached imax'
   code_state = 3
 endif 
 
 if (status_code .eq. 0) then
-  status_message = 'DINA copleted one steps and outputed summary and pf_active only'
+  status_message = 'DINA copleted idec steps'
   code_state = 0
 endif
 

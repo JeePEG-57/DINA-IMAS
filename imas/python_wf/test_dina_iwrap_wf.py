@@ -44,13 +44,30 @@ real    23m10.938s
 user    22m52.005s
 sys     0m2.916s
 
+6. Python workflow with ids_put_slice (unmodified)
+
+real    76m31.742s
+user    24m31.537s
+sys     8m39.438s
+
+7. IWrap workflow with memory backend for summary and pf_active 
+step routine does idec loops and returns idec number of slices.
+
+real    12m15.815s
+user    11m58.820s
+sys     0m2.589s
+
+
 Comments:
 
 We see that there is an Iwrap overhead of case 4. over case 3. if we return
 all results at each step. The strategy of memory transfer decimation in 3. is
-useful and faster than Python workflow in 5. and slower than 1. 
-IWrap actor in 3. is 15% slower than Fortran in 1.
-IWrap actor in 4. is 39% slower than Fortran in 1.
+useful and faster than Python workflow in 5. and slower than 2. Note that 2.
+is having no ids_put or memory transfers.
+
+IWrap actor in 3. is 15% slower than Fortran in 2.
+IWrap actor in 4. is 39% slower than Fortran in 2.
+IWrap actor in 7. is 5% slower that Fortran in 2.
 
 
 """
@@ -132,7 +149,7 @@ class ExampleWorkflowManager:
              self.core_sources_out,
              self.core_transport_out,
              self.bndcond_out) = self.actor_dina_iwrap_wf()
-            #print('>>>>>>>>>>>>>', self.pf_passive_out)
+            #print('>>>>>>>>>>>>>', self.summary_out.time, self.pf_active_out.time, self.equilibrium_out.time)
             # SAVE IDSS INTO OUTPUT FILE
             #print( '=> Export output IDSs to local database: ', i )
             #self.output_entry.put( self.equilibrium )
