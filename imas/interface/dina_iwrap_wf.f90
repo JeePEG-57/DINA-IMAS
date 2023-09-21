@@ -367,20 +367,37 @@ arr_out1(1:31)=0
 end subroutine init
 
 
-subroutine step(pf_active_out, summary_out, magnetics_out, pf_passive_out, equilibrium_out, core_profiles_out, core_sources_out, core_transport_out, bndcond_out, codeparam, status_code, status_message )
-use ids_schemas, only: ids_summary,ids_equilibrium,ids_parameters_input,ids_is_valid
+
+subroutine step(equilibrium_in, magnetics_in, em_coupling_in, pf_active_in, &
+  pf_passive_in, wall_in, core_profiles_in, core_sources_in, &
+  transport_solver_numerics_in, pulse_schedule_in, pf_active_out, summary_out, &
+  magnetics_out, pf_passive_out, equilibrium_out, core_profiles_out, &
+  core_sources_out, core_transport_out, bndcond_out, codeparam, status_code, &
+  status_message )
+
+use ids_schemas!, only: ids_summary,ids_equilibrium,ids_parameters_input,ids_is_valid
 use ids_routines, only: ids_copy
 
-type (ids_pf_active)   :: pf_active_out
-type (ids_summary) :: summary_out
-type (ids_magnetics)   :: magnetics_out
-type (ids_pf_passive)   :: pf_passive_out
-type (ids_equilibrium) :: equilibrium_out
-type (ids_core_profiles)   :: core_profiles_out
-type (ids_core_transport)   :: core_transport_out
-type (ids_core_sources)   :: core_sources_out
-type (ids_transport_solver_numerics) :: bndcond_out
-type (ids_pulse_schedule)   :: pulse_schedule_out
+type(ids_equilibrium), intent(in) :: equilibrium_in      
+type(ids_magnetics), intent(in) :: magnetics_in      
+type(ids_em_coupling), intent(in) :: em_coupling_in      
+type(ids_pf_active), intent(in) :: pf_active_in      
+type(ids_pf_passive), intent(in) :: pf_passive_in      
+type(ids_wall), intent(in) :: wall_in      
+type(ids_core_profiles), intent(in) :: core_profiles_in      
+type(ids_core_sources), intent(in) :: core_sources_in      
+type(ids_transport_solver_numerics), intent(in) :: transport_solver_numerics_in      
+type(ids_pulse_schedule), intent(in) :: pulse_schedule_in      
+
+type (ids_pf_active), intent(out) :: pf_active_out
+type (ids_summary), intent(out) :: summary_out
+type (ids_magnetics), intent(out) :: magnetics_out
+type (ids_pf_passive), intent(out) :: pf_passive_out
+type (ids_equilibrium), intent(out) :: equilibrium_out
+type (ids_core_profiles), intent(out) :: core_profiles_out
+type (ids_core_transport), intent(out) :: core_transport_out
+type (ids_core_sources), intent(out) :: core_sources_out
+type (ids_transport_solver_numerics), intent(out) :: bndcond_out
 
 type(ids_parameters_input) :: codeparam
 integer :: number_of_slices, slice_number
@@ -388,8 +405,13 @@ integer :: number_of_slices, slice_number
 integer, intent(out) :: status_code
 character(len=:), pointer, intent(out) :: status_message
 allocate(character(50):: status_message)
-
 status_code = 0
+
+
+!write(*,*) ids_is_empty(equilibrium_in)!, ids_is_empty(magnetics_in), &
+  !ids_is_empty(em_coupling_in), ids_is_empty(pf_active_in), ids_is_empty(pf_passive_in), &
+  !ids_is_empty(wall_in), ids_is_empty(core_profiles_in), ids_is_empty(core_sources_in), &
+  !ids_is_empty(transport_solver_numerics_in), ids_is_empty(pulse_schedule_in)
 
 ! iloop=1,imax
 !if (iloop .le. imax ) then

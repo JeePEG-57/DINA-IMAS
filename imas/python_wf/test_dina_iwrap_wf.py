@@ -5,7 +5,7 @@ The IWrap workflow actor tested is just outputing IDSs. Input IDSs are being rea
 from disk.
 
 1. Fortran with (unmodified) ids_put_slice and idec=10 using
-    time ../interface/test_dina wfconfig.xml 2>&1 > /dev/shm/dina.log &
+    time ../interface/test_dina wfconfig.xml > /dev/shm/dina.log 2>&1 &
     tail -f /dev/shm/dina.log | stdbuf -o0 grep iloop
 
 real    28m47s
@@ -18,7 +18,7 @@ user    11m24.083s
 sys     0m2.137s
 
 3. IWrapped Fortran with returning summary and pf_active each time step and the complete at idec=10
-    time python test_dina_iwrap_wf.py 2>&1 > /dev/shm/dina.log &
+    time python test_dina_iwrap_wf.py  > /dev/shm/dina.log 2>&1 &
     tail -f /dev/shm/dina.log | stdbuf -o0 grep iloop
 
 real    13m20.151s
@@ -37,7 +37,7 @@ sys     0m2.925s
     if loop == 2000:  break at the end of while True: loop
  
     . use_actors.sh
-    time python test_python_wf.py 2>&1 > /dev/shm/dina.log &
+    time python test_python_wf.py  > /dev/shm/dina.log 2>&1 &
     tail -f /dev/shm/dina.log | stdbuf -o0 grep "loop ="
 
 real    23m10.938s
@@ -57,6 +57,12 @@ real    12m15.815s
 user    11m58.820s
 sys     0m2.589s
 
+8. Iwrap workflow as 7. with added 10 input IDSs?
+
+real    12m16.117s
+user    11m59.082s
+sys     0m2.705s
+
 
 Comments:
 
@@ -68,6 +74,10 @@ is having no ids_put or memory transfers.
 IWrap actor in 3. is 15% slower than Fortran in 2.
 IWrap actor in 4. is 39% slower than Fortran in 2.
 IWrap actor in 7. is 5% slower that Fortran in 2.
+
+According to the difference of 7. and 3. it takes 0.03 seconds (9% of 0.37 s)
+per timestep to IWrap all IDSs from Fortran to Python!
+Empty input IDSs (10 IDS + codeparams) do not bring significant overhead.
 
 
 """
@@ -132,13 +142,27 @@ class ExampleWorkflowManager:
         #print('=> Read input IDSs')
         #self.equilibrium = input_entry.get_slice('equilibrium', time_slice, 1)
 
-    
+
+        self.equilibrium_in = imas.equilibrium()
+        self.magnetics_in = imas.magnetics()
+        self.em_coupling_in = imas.em_coupling()
+        self.pf_active_in = imas.pf_active()
+        self.pf_passive_in = imas.pf_passive()
+        self.wall_in = imas.wall()
+        self.core_profiles_in = imas.core_profiles()
+        self.core_sources_in = imas.core_sources()
+        self.transport_solver_numerics_in = imas.transport_solver_numerics()
+        self.pulse_schedule_in = imas.pulse_schedule()
+
     def execute_workflow(self):
 
         # EXECUTE PHYSICS CODE
         print('=> Execute physics code')
         #self.actor_dina_iwrap_wf.initialize()
         #for i in range( 11 ):
+
+
+
         while int(self.actor_dina_iwrap_wf.get_state()) < 2:
             (self.pf_active_out,
              self.summary_out,
@@ -148,7 +172,10 @@ class ExampleWorkflowManager:
              self.core_profiles_out,
              self.core_sources_out,
              self.core_transport_out,
-             self.bndcond_out) = self.actor_dina_iwrap_wf()
+             self.bndcond_out) = self.actor_dina_iwrap_wf(self.equilibrium_in, self.magnetics_in, 
+                    self.em_coupling_in, self.pf_active_in, self.pf_passive_in, self.wall_in,
+                    self.core_profiles_in, self.core_sources_in,
+                    self.transport_solver_numerics_in, self.pulse_schedule_in)
             #print('>>>>>>>>>>>>>', self.summary_out.time, self.pf_active_out.time, self.equilibrium_out.time)
             # SAVE IDSS INTO OUTPUT FILE
             #print( '=> Export output IDSs to local database: ', i )
