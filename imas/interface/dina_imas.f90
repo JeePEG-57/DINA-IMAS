@@ -117,13 +117,14 @@ real (ids_real),save :: output_3(npo) = (/ (0,i=1,npo) /)
 real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
     
-    real(ids_real) :: tpl = 1000.0, tt = 0.0d0
+    real(ids_real) :: tpl = 1000.d0, tt = 0.d0
     real(ids_real) :: psi_ax,psi_bnd,psi_sep,psi_sep2
-    real(ids_real) :: rs0 = 1000.0, bt0 = 1000.0
-    real(ids_real) :: betap, betat
+    real(ids_real) :: rs0 = 1.d0, bt0 = 1.d0
+    real(ids_real) :: betap = 0.d0, betat = 0.d0
     real(ids_real) :: tene,teit_98
     real(ids_real) :: pec
-    real(ids_real) :: rmag, zmag
+    real(ids_real) :: rmag = 1.d0, zmag = 0.d0
+    real(ids_real) :: b_field_ax = 1.d0
 
     real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
@@ -799,7 +800,17 @@ write(*,*) '!!!solpsza enter'
     pptab = pptab*cocos_psi
     fptab = fptab*cocos_psi
     
-    
+    if (wr_imas(13) .gt. 0.d0) then
+      rmag = wr_imas(13)
+    else 
+      rmag = rs0
+    endif
+
+    if (abs(fpol(0)).gt.0.d0) then
+      b_field_ax = fpol(0)/rmag
+    else
+      b_field_ax = bt0*rs0/rmag
+    endif
 !write(*,*) "output_1",output_1
 
       n_output1=15
@@ -1042,11 +1053,8 @@ AllocIfNull1(summary%local%magnetic_axis%position%r, wr_imas(13))
 AllocIfNull1(summary%local%magnetic_axis%position%z, wr_imas(14))
 
 AllocIfNull1(summary%local%magnetic_axis%position%psi, psi_ax)
-
-!AllocIfNull1(summary%local%magnetic_axis%position%rho_tor_norm, ai(1))
 AllocIfNull1(summary%local%magnetic_axis%position%rho_tor_norm, a(1))
-
-
+AllocIfNull1(summary%local%magnetic_axis%b_field%value, b_field_ax)
 
 AllocIfNull1(summary%local%magnetic_axis%q%value, wr_imas(18))
 AllocIfNull1(summary%local%magnetic_axis%zeff%value, zeff(1))
@@ -1062,8 +1070,6 @@ AllocIfNull1(summary%local%magnetic_axis%n_i%argon%value, wr_imas(82)*pne(1))
 AllocIfNull1(summary%local%magnetic_axis%n_i%neon%value, wr_imas(83)*pne(1))
 
 AllocIfNull1(summary%local%separatrix%position%psi, psi_sep)
-
-!AllocIfNull1(summary%local%separatrix%position%rho_tor_norm, ai(n))
 AllocIfNull1(summary%local%separatrix%position%rho_tor_norm, a(n))
 
 
@@ -1087,6 +1093,7 @@ AllocIfNull1(summary%boundary%magnetic_axis_r%value, wr_imas(13))
 AllocIfNull1(summary%boundary%magnetic_axis_z%value, wr_imas(14))
 AllocIfNull1(summary%boundary%minor_radius%value, wr_imas(4))
 AllocIfNull1(summary%boundary%elongation%value, wr_imas(5))
+AllocIfNull1(summary%boundary%gap_limiter_wall%value, wr_imas(101))
 
 
 AllocIfNull1(summary%volume_average%zeff%value, wr_imas(28))
@@ -1132,6 +1139,8 @@ AllocIfNull1(summary%heating_current_drive%power_additional%value, wr_imas(66))
 
         equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%r = wr_imas(13) ![m]
         equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%z = wr_imas(14) ![m]
+        equilibrium%time_slice(CurTimeStep)%global_quantities%magnetic_axis%b_field_tor = b_field_ax
+
         equilibrium%time_slice(CurTimeStep)%global_quantities%current_centre%r = wr_imas(10) ![m]
         equilibrium%time_slice(CurTimeStep)%global_quantities%current_centre%z = wr_imas(11) ![m]       
         equilibrium%time_slice(CurTimeStep)%global_quantities%current_centre%velocity_z = wr_imas(12) ![m]
@@ -1141,6 +1150,7 @@ AllocIfNull1(summary%heating_current_drive%power_additional%value, wr_imas(66))
         equilibrium%time_slice(CurTimeStep)%global_quantities%energy_mhd = wr_imas(76) ![J]
         equilibrium%time_slice(CurTimeStep)%global_quantities%psi_external_average = wr_imas(32) ! [Wb]
         equilibrium%time_slice(CurTimeStep)%global_quantities%plasma_inductance = wr_imas(75) ! [H]
+        equilibrium%time_slice(CurTimeStep)%global_quantities%plasma_resistance= wr_imas(77) ! [Ohm]
 
 
         equilibrium%vacuum_toroidal_field%r0 = rs0 ![m]
@@ -1175,11 +1185,17 @@ AllocIfNull1(summary%heating_current_drive%power_additional%value, wr_imas(66))
           ! Limiter plasma
           equilibrium%time_slice(CurTimeStep)%boundary_separatrix%active_limiter_point%r = wr_imas(15)
           equilibrium%time_slice(CurTimeStep)%boundary_separatrix%active_limiter_point%z = wr_imas(16)
+
+          equilibrium%time_slice(CurTimeStep)%boundary%active_limiter_point%r = wr_imas(15)
+          equilibrium%time_slice(CurTimeStep)%boundary%active_limiter_point%z = wr_imas(16)
                    
         else
           ! Diverted plasma
           equilibrium%time_slice(CurTimeStep)%boundary_separatrix%active_limiter_point%r = wr_imas(102) ! Closest wall point
           equilibrium%time_slice(CurTimeStep)%boundary_separatrix%active_limiter_point%z = wr_imas(103)
+
+          equilibrium%time_slice(CurTimeStep)%boundary%active_limiter_point%r = wr_imas(102)
+          equilibrium%time_slice(CurTimeStep)%boundary%active_limiter_point%z = wr_imas(103)
           
           allocate(equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1))
             equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1)%r = wr_imas(15)
