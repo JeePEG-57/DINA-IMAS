@@ -2,12 +2,13 @@
 ! test the DINA_IMAS
 ! Jo Lister, August 2013
 
-
 module mod_dina_iwrap_wf
 
 use ids_schemas
 use ids_routines
 
+use f90_file_reader, only: file2buffer
+use xml2eg_mdl, only: xml2eg_parse_memory, xml2eg_get, type_xml2eg_document, xml2eg_free_doc
 
 implicit none
 
@@ -29,13 +30,29 @@ real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! IDS location data
 character (len=255) :: user_default
-character (len=255) :: user_out, database_out
-character (len=255) :: user_prs, database_prs
-character (len=255) :: user_psch, database_psch
-character (len=255) :: user_transp='', database_transp=''
-integer :: pulse_prs=-1, run_prs=-1
+
+character (len=255) :: user_out='', database_out
 integer :: pulse_out=-1, run_out=-1
+
+character (len=255) :: user_pfa='', database_pfa
+integer :: pulse_pfa=-1, run_pfa=-1
+
+character (len=255) :: user_pfp='', database_pfp
+integer :: pulse_pfp=-1, run_pfp=-1
+
+character (len=255) :: user_mag='', database_mag
+integer :: pulse_mag=-1, run_mag=-1
+
+character (len=255) :: user_wll='', database_wll
+integer :: pulse_wll=-1, run_wll=-1
+
+character (len=255) :: user_prs='', database_prs
+integer :: pulse_prs=-1, run_prs=-1
+
+character (len=255) :: user_psch='', database_psch
 integer :: pulse_psch=-1, run_psch=-1
+
+character (len=255) :: user_transp='', database_transp=''
 integer :: pulse_transp=-1, run_transp=-1
 
 ! Workflow parameters
@@ -45,12 +62,13 @@ integer :: ext_transp, restart=0
 
 ! Local variables
 integer :: i, iloop
-integer :: idx, idx0, err
+integer :: idx_a, idx_p, idx_m, idx, idx0, idx_mem, err
 !integer :: nact,npass,ngrid
 integer :: interp_start = 1, interp_transp = 1
 real (ids_real) ::time_get,time_ext, current_pf_stop
 
 !character(len=30) :: ConfigFile
+!type(type_xml2eg_document) :: doc
 !character(len=132), pointer :: buffer(:) => NULL()
 !integer :: io_unit = 1
 logical :: errorflag
@@ -70,8 +88,6 @@ subroutine dina_imas(&
   & ,summary &
   & ,arr_in1, arr_out1 )
   
-
-
 use ids_schemas
 use ids_routines
 implicit none
@@ -93,10 +109,12 @@ type (ids_summary) :: summary
 
     real (ids_real) :: arr_in1(501), arr_out1(501)
 
-end subroutine
+    end subroutine
+    
 end interface
 
-interface
+
+interface 
 ! Declaration of the dina_contr subroutine
 subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1,arr_out1)
 use ids_schemas
@@ -106,6 +124,8 @@ type (ids_equilibrium) :: equilibrium0
 real (ids_real):: arr_in1(*), arr_out1(*)
 end subroutine
 end interface
+
+
 
 
 contains
@@ -121,23 +141,37 @@ subroutine assign_codeparam(codeparam_string)
 
     ! Input/Output
     character(len=132), pointer :: codeparam_string(:)
-    
-
-!call file2buffer(ConfigFile, io_unit, buffer)
-
-character(len=255) :: cwd
-call getcwd(cwd)
-!print *,' Using workflow config file: ', codeparam_string // 'in' // cwd
 
 
-call xml2eg_parse_memory(codeparam_string, doc)
-call set_verbose(.TRUE.) ! Only needed if you want to see what's going on in the parsing
+  !call file2buffer(ConfigFile, io_unit, buffer)
+  call xml2eg_parse_memory(codeparam_string, doc)
+  !call set_verbose(.TRUE.) ! Only needed if you want to see what's going on in the parsing
 
   call xml2eg_get(doc, 'pulse_schedule/user', user_psch)
   call xml2eg_get(doc, 'pulse_schedule/database', database_psch)
   call xml2eg_get(doc, 'pulse_schedule/pulse', pulse_psch)
   call xml2eg_get(doc, 'pulse_schedule/run', run_psch)
   
+  call xml2eg_get(doc, 'input_pf_active/user', user_pfa)
+  call xml2eg_get(doc, 'input_pf_active/database', database_pfa)
+  call xml2eg_get(doc, 'input_pf_active/pulse', pulse_pfa)
+  call xml2eg_get(doc, 'input_pf_active/run', run_pfa)
+
+  call xml2eg_get(doc, 'input_pf_passive/user', user_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/database', database_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/pulse', pulse_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/run', run_pfp)
+
+  call xml2eg_get(doc, 'input_magnetics/user', user_mag)
+  call xml2eg_get(doc, 'input_magnetics/database', database_mag)
+  call xml2eg_get(doc, 'input_magnetics/pulse', pulse_mag)
+  call xml2eg_get(doc, 'input_magnetics/run', run_mag)
+
+  call xml2eg_get(doc, 'input_wall/user', user_wll)
+  call xml2eg_get(doc, 'input_wall/database', database_wll)
+  call xml2eg_get(doc, 'input_wall/pulse', pulse_wll)
+  call xml2eg_get(doc, 'input_wall/run', run_wll)
+
   call xml2eg_get(doc, 'input_start/user', user_prs)
   call xml2eg_get(doc, 'input_start/database', database_prs)
   call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
@@ -145,6 +179,7 @@ call set_verbose(.TRUE.) ! Only needed if you want to see what's going on in the
   call xml2eg_get(doc, 'input_start/time_start', time_start)
   call xml2eg_get(doc, 'input_start/interp_mode', interp_start)
 
+  call xml2eg_get(doc, 'output/user', user_out)
   call xml2eg_get(doc, 'output/database', database_out)
   call xml2eg_get(doc, 'output/pulse', pulse_out)
   call xml2eg_get(doc, 'output/run', run_out)
@@ -161,10 +196,10 @@ call set_verbose(.TRUE.) ! Only needed if you want to see what's going on in the
   call xml2eg_get(doc, 'step_max', imax)
 
 
-call xml2eg_free_doc(doc)
-!deallocate(buffer)
+  call xml2eg_free_doc(doc)
+  !deallocate(buffer)
+end subroutine assign_codeparam  
 
-end subroutine assign_codeparam
 
 
 subroutine init(dina_wf_code_params,  status_code, status_msg)
@@ -175,61 +210,51 @@ type(ids_parameters_input) :: dina_wf_code_params
 integer, intent(out) :: status_code
 character(len=:), pointer, intent(out) :: status_msg
 
-call getenv("USER", user_default)
+! call getenv("USER", user_default)
 
 
-ext_transp=0
+! ext_transp=0
 
-!if (command_argument_count().eq.0) then
-!  print *,'Not enough arguments. First argument must be the name of a workflow config XML file!'
-!  stop
-!endif
-!
-!do i = 1, command_argument_count()
-!  call get_command_argument(i, ConfigFile)
-!end do
-!ConfigFile = 'wfconfig.xml'
+! if (command_argument_count().eq.0) then
+!   print *,'Not enough arguments. First argument must be the name of a workflow config XML file!'
+!   stop
+! endif
+
+! do i = 1, command_argument_count()
+!   call get_command_argument(i, ConfigFile)
+! end do
+
+
+! print *,' Using workflow config file: ', ConfigFile
 
 call assign_codeparam(dina_wf_code_params%parameters_value)
 
 
-
-! open(unit=41,file=trim(ConfigFile),form='formatted')
-!     print *,' Opened file ', ConfigFile
-!     read(41,*)
-!     read(41,*) user_prs, database_prs, pulse_prs, run_prs, time_start, interp_start
-!     read(41,*)
-!     read(41,*) database_out, pulse_out, run_out, idec
-!     read(41,*)
-!     read(41,*) user_transp, database_transp, pulse_transp, run_transp, interp_transp
-!     read(41,*)
-!     read(41,*) time_ext, time_stop, imax
-! close(41)
-
-
-
-
-
+if (trim(user_pfa).eq.'') user_pfa = user_default
+if (trim(user_pfp).eq.'') user_pfp = user_default
+if (trim(user_mag).eq.'') user_mag = user_default
+if (trim(user_wll).eq.'') user_wll = user_default
 if (trim(user_prs).eq.'') user_prs = user_default
 if (trim(user_psch).eq.'') user_psch = user_default
 if (trim(user_transp).eq.'') user_transp = user_default
-user_out = user_default
+if (trim(user_out).eq.'') user_out = user_default
 
 
-print *,' Start user =', trim(user_prs)
-print *,' Start database =', trim(database_prs)
-print *,' Start pulse, run =', pulse_prs, run_prs
+print *,' Pulse schedule user, database, pulse, run =', trim(user_psch), trim(database_psch), pulse_psch, run_psch
+
+print *,' PF Active user, database, pulse, run =', trim(user_pfa), trim(database_pfa), pulse_pfa, run_pfa
+print *,' PF Passive user, database, pulse, run =', trim(user_pfp), trim(database_pfp), pulse_pfp, run_pfp
+print *,' Magnetics user, database, pulse, run =', trim(user_mag), trim(database_mag), pulse_mag, run_mag
+print *,' Wall user, database, pulse, run =', trim(user_wll), trim(database_wll), pulse_wll, run_wll
+
+print *,' Start user, database, pulse, run =', trim(user_prs), trim(database_prs), pulse_prs, run_prs
 print *,' Start time, s =', time_start
 print *,' Start interpolation =', interp_start
 
-print *,' Transp user =', trim(user_transp)
-print *,' Transp database =', trim(database_transp)
-print *,' Transp pulse, run =', pulse_transp, run_transp
+print *,' Transp user, database, pulse, run =', trim(user_transp), trim(database_transp), pulse_transp, run_transp
 print *,' Transp interpolation =', interp_transp
 
-print *,' Output user =', trim(user_out)
-print *,' Output database =', trim(database_out)
-print *,' Output pulse, run =', pulse_out, run_out
+print *,' Output user =', trim(user_out), trim(database_out), pulse_out, run_out
 print *,' Output put decimation =', idec
 
 print *,' External transport time, s =', time_ext
@@ -251,38 +276,59 @@ if (restart.eq.1) then
   write(*,*) 'Restart from t=', time_start
   time_get = time_start
   
-  call ids_get_slice(idx0,"em_coupling",em_coupling, time_get, interp_start)
-  call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interp_start)
+  !call ids_get_slice(idx0,"em_coupling",em_coupling, time_get, interp_start)
+  !call ids_get_slice(idx0,"magnetics",magnetics0, time_get, interp_start)
   call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interp_start)
-  call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interp_start)
-  call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interp_start)
+  !call ids_get_slice(idx0,"pf_active",pf_active0, time_get, interp_start)
+  !call ids_get_slice(idx0,"pf_passive",pf_passive0, time_get, interp_start)
   call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interp_start)
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
+
+  write(*,*) 'Finished reading the prescribed IDS'
+  call imas_close(idx0)
 
   write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
 
 else
 
   write(*,*) 'Start from t=0'
+
+
   !call ids_get(idx0,"em_coupling",em_coupling)
-  call ids_get(idx0,"magnetics",magnetics0)
   !call ids_get(idx0,"equilibrium",equilibrium0)
-  call ids_get(idx0,"pf_active",pf_active0)
-  call ids_get(idx0,"pf_passive",pf_passive0)
-  call ids_get(idx0,"core_profiles",core_profiles0)
-  call ids_get(idx0,"core_sources",core_sources0)
-  call ids_get(idx0,"transport_solver_numerics",bndcond)
-  
-  call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
+
+
+  !call ids_get(idx0,"core_profiles",core_profiles0)
+  !call ids_get(idx0,"core_sources",core_sources0)
+  !call ids_get(idx0,"transport_solver_numerics",bndcond)
+
   
 endif
 
-call ids_get(idx0,"wall",wall)
-call ids_get(idx0,"dataset_description",data_description)
 
-write(*,*) 'Finished reading the prescribed IDS'
+call imas_open_env('ids',pulse_pfa,run_pfa,idx_a,user_pfa,database_pfa,'3')
+call ids_get_slice(idx_a,"pf_active",pf_active0, time_start, interp_start)
+call imas_close(idx_a)
+
+call imas_open_env('ids',pulse_pfp,run_pfp,idx_p,user_pfp,database_pfp,'3')
+call ids_get_slice(idx_p,"pf_passive",pf_passive0, time_start, interp_start)
+call imas_close(idx_p)
+
+call imas_open_env('ids',pulse_mag,run_mag,idx_m,user_mag,database_mag,'3')
+call ids_get_slice(idx_m,"magnetics",magnetics0, time_start, interp_start)
+call imas_close(idx_m)
+
+call imas_open_env('ids',pulse_wll,run_wll,idx0,user_wll,database_wll,'3')
+call ids_get_slice(idx0,"wall",wall, time_start, interp_start)
 call imas_close(idx0)
+
+
+
+
+call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
+
+
 
 
 write(*,*) 'Reading the pulse schedule'
@@ -303,14 +349,14 @@ arr_out1(1:31)=0
 
 
 
-  !call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
-  !write(*,*) 'Pulse file is created'
+  call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
+  write(*,*) 'Pulse file is created'
 
-  !call ids_put(idx,"wall",wall)
-  !call ids_put(idx,"em_coupling",em_coupling)
+  call ids_put(idx,"wall",wall)
+  call ids_put(idx,"em_coupling",em_coupling)
   !call ids_put(idx,"dataset_description",data_description)
-  !call ids_put(idx,"pulse_schedule",pulse_schedule)
-  !call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
+  call ids_put(idx,"pulse_schedule",pulse_schedule)
+  call ids_put(idx,"pulse_schedule/1",pulse_schedule_term) 
 
   allocate(character(50):: status_msg)
   status_msg = 'DINA initialized'
@@ -321,30 +367,61 @@ arr_out1(1:31)=0
 end subroutine init
 
 
-subroutine step(pf_active_out, summary_out, magnetics_out, pf_passive_out, equilibrium_out, core_profiles_out, core_sources_out, core_transport_out, bndcond_out, codeparam, status_code, status_message )
-use ids_schemas, only: ids_summary,ids_equilibrium,ids_parameters_input,ids_is_valid
+
+subroutine step(equilibrium_in, magnetics_in, em_coupling_in, pf_active_in, &
+  pf_passive_in, wall_in, core_profiles_in, core_sources_in, &
+  transport_solver_numerics_in, pulse_schedule_in, pf_active_out, summary_out, &
+  magnetics_out, pf_passive_out, equilibrium_out, core_profiles_out, &
+  core_sources_out, core_transport_out, bndcond_out, codeparam, status_code, &
+  status_message )
+
+use ids_schemas!, only: ids_summary,ids_equilibrium,ids_parameters_input,ids_is_valid
 use ids_routines, only: ids_copy
 
-type (ids_pf_active)   :: pf_active_out
-type (ids_summary) :: summary_out
-type (ids_magnetics)   :: magnetics_out
-type (ids_pf_passive)   :: pf_passive_out
-type (ids_equilibrium) :: equilibrium_out
-type (ids_core_profiles)   :: core_profiles_out
-type (ids_core_transport)   :: core_transport_out
-type (ids_core_sources)   :: core_sources_out
-type (ids_transport_solver_numerics) :: bndcond_out
-type (ids_pulse_schedule)   :: pulse_schedule_out
+type(ids_equilibrium), intent(in) :: equilibrium_in      
+type(ids_magnetics), intent(in) :: magnetics_in      
+type(ids_em_coupling), intent(in) :: em_coupling_in      
+type(ids_pf_active), intent(in) :: pf_active_in      
+type(ids_pf_passive), intent(in) :: pf_passive_in      
+type(ids_wall), intent(in) :: wall_in      
+type(ids_core_profiles), intent(in) :: core_profiles_in      
+type(ids_core_sources), intent(in) :: core_sources_in      
+type(ids_transport_solver_numerics), intent(in) :: transport_solver_numerics_in      
+type(ids_pulse_schedule), intent(in) :: pulse_schedule_in      
 
+type (ids_pf_active), intent(out) :: pf_active_out
+type (ids_summary), intent(out) :: summary_out
+type (ids_magnetics), intent(out) :: magnetics_out
+type (ids_pf_passive), intent(out) :: pf_passive_out
+type (ids_equilibrium), intent(out) :: equilibrium_out
+type (ids_core_profiles), intent(out) :: core_profiles_out
+type (ids_core_transport), intent(out) :: core_transport_out
+type (ids_core_sources), intent(out) :: core_sources_out
+type (ids_transport_solver_numerics), intent(out) :: bndcond_out
 
 type(ids_parameters_input) :: codeparam
+integer :: number_of_slices, slice_number
 
 integer, intent(out) :: status_code
 character(len=:), pointer, intent(out) :: status_message
 allocate(character(50):: status_message)
+status_code = 0
 
 
-!do iloop=1,imax
+!write(*,*) ids_is_empty(equilibrium_in)!, ids_is_empty(magnetics_in), &
+  !ids_is_empty(em_coupling_in), ids_is_empty(pf_active_in), ids_is_empty(pf_passive_in), &
+  !ids_is_empty(wall_in), ids_is_empty(core_profiles_in), ids_is_empty(core_sources_in), &
+  !ids_is_empty(transport_solver_numerics_in), ids_is_empty(pulse_schedule_in)
+
+! iloop=1,imax
+!if (iloop .le. imax ) then
+
+number_of_slices = min(idec, imax-iloop+1)
+call ual_begin_pulse_action(MEMORY_BACKEND, pulse_out, run_out, user_out, database_out, '3', idx_mem)
+call ual_open_pulse(idx_mem, FORCE_CREATE_PULSE,'', err)
+
+
+do while (iloop .le. imax )
 
 write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
@@ -393,45 +470,45 @@ call solps_imas(equilibrium, core_transport, bndcond)
 write(*,*) "SOLPS finished"
 flush(6)
 
-  !call ids_put_slice(idx,"pf_active",pf_active)
-  !call ids_put_slice(idx,"summary",summary)
-  call ids_copy(pf_active, pf_active_out)
-  call ids_copy(summary, summary_out)
+    call ids_put_slice(idx_mem,"pf_active",pf_active)
+    !call ids_copy(pf_active,pf_active_out)
+    call ids_put_slice(idx_mem,"summary",summary)
+    !call ids_copy(summary,summary_out)
 
-  !if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
+
+  if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
   
     write(*,*) 'Put ids slice to database, iloop = ', iloop
     flush(6)
     
     write(*,*)  'Put magnetics'
     !call ids_put_slice(idx,"magnetics",magnetics)
-    call ids_copy(magnetics, magnetics_out)
-    
+    call ids_copy(magnetics,magnetics_out)
+
     write(*,*)  'Put pf_passive'
     !call ids_put_slice(idx,"pf_passive",pf_passive)
-    call ids_copy(pf_passive, pf_passive_out)
-  
+    call ids_copy(pf_passive,pf_passive_out)
+
     write(*,*)  'Put equilibrium'
     !call ids_put_slice(idx,"equilibrium",equilibrium)
-    call ids_copy(equilibrium, equilibrium_out)
-  
+    call ids_copy(equilibrium,equilibrium_out)
+
     write(*,*)  'Put core_profiles'
     !call ids_put_slice(idx,"core_profiles",core_profiles)
-    call ids_copy(core_profiles, core_profiles_out)
-  
+    call ids_copy(core_profiles,core_profiles_out)
+
     write(*,*)  'Put core_sources'
     !call ids_put_slice(idx,"core_sources",core_sources)
-    call ids_copy(core_sources, core_sources_out)
-  
+    call ids_copy(core_sources,core_sources_out)
+
     write(*,*)  'Put core_transport'
     !call ids_put_slice(idx,"core_transport",core_transport)
-    call ids_copy(core_transport, core_transport_out)
-  
+    call ids_copy(core_transport,core_transport_out)
+
     write(*,*)  'Put transport_solver_numerics'
     !call ids_put_slice(idx,"transport_solver_numerics",bndcond)
-    call ids_copy(bndcond, bndcond_out)
-  
-  !endif
+    call ids_copy(bndcond,bndcond_out)
+  endif
 
 
 write(*,*) 'Copy magnetics'
@@ -443,7 +520,6 @@ call ids_copy(pf_active, pf_active0)
 write(*,*) 'Copy pf_passive'
 flush(6)
 call ids_copy(pf_passive, pf_passive0)
-
 
 time_get = summary%time(1)
 
@@ -487,13 +563,12 @@ do i=1,11
   current_pf_stop = current_pf_stop + dabs(pf_active%coil(i)%current%data(1))
 enddo
 
+
 if (summary%time(1).gt.time_stop .or. (dabs(summary%global_quantities%ip%value(1)).lt.1.d3 .and. current_pf_stop.lt.1.d3)) then
   code_state = 2
-  status_code = 0
+  status_code = 2
   status_message = 'DINA completed'
-  return
 end if
-
 
 write(*,*) 'Deallocate IDS '
 flush(6)
@@ -508,10 +583,29 @@ call ids_deallocate(summary)
 write(*,*) 'IDS deallocated'
 flush(6)
 
-status_code = 0
-status_message = 'DINA step finished'
-code_state = 1
+
 iloop = iloop + 1
+
+if (mod(iloop, idec) .eq. 0) exit
+
+enddo
+
+call ids_get(idx_mem,"summary", summary_out)
+call ids_get(idx_mem,"pf_active", pf_active_out)
+call imas_close(idx_mem)
+
+
+if (iloop .gt. imax) then
+  status_code = 3
+  status_message = 'DINA reached imax'
+  code_state = 3
+endif 
+
+if (status_code .eq. 0) then
+  status_message = 'DINA copleted idec steps'
+  code_state = 0
+endif
+
 
 end subroutine step
 
@@ -535,13 +629,13 @@ call ids_deallocate(wall)
 call ids_deallocate(pulse_schedule)
 call ids_deallocate(data_description)
 
+
 write(*,*) 'DINA_IMAS Exiting cleanly'
 
-status_code = 0
+status_code = 4
 status_message = 'DINA finished'
-code_state = 3
+code_state = 4
 end subroutine finalize
-
 
 subroutine get_status(state_str, status_code, status_message)
   implicit none
@@ -555,6 +649,7 @@ subroutine get_status(state_str, status_code, status_message)
   write(state_str,*) code_state
 end subroutine
 
+
 subroutine loop()
 ! call init()
 !do iloop=1,imax
@@ -564,8 +659,3 @@ subroutine loop()
 end subroutine loop
 
 end module mod_dina_iwrap_wf
-
-!program DINA_Workflow
-!use mod_dina_iwrap
-!call loop
-!end program DINA_Workflow

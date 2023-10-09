@@ -1,4 +1,4 @@
-# Saved with iWrap 0.7.0+72.g99e902a.dirty
+# Saved with iWrap 0.7.0+73.g8329ab4
 ---
 actor_description:
     actor_name: dina_iwrap_wf
@@ -6,6 +6,36 @@ actor_description:
     data_type: legacy
 code_description:
     arguments:
+    -   intent: IN
+        name: equilibrium_in
+        type: equilibrium
+    -   intent: IN
+        name: magnetics_in
+        type: magnetics
+    -   intent: IN
+        name: em_coupling_in
+        type: em_coupling
+    -   intent: IN
+        name: pf_active_in
+        type: pf_active
+    -   intent: IN
+        name: pf_passive_in
+        type: pf_passive
+    -   intent: IN
+        name: wall_in
+        type: wall
+    -   intent: IN
+        name: core_profiles_in
+        type: core_profiles
+    -   intent: IN
+        name: core_sources_in
+        type: core_sources
+    -   intent: IN
+        name: transport_solver_numerics_in
+        type: transport_solver_numerics
+    -   intent: IN
+        name: pulse_schedule_in
+        type: pulse_schedule
     -   intent: OUT
         name: pf_active_out
         type: pf_active
