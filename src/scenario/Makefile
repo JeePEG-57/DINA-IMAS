@@ -2,11 +2,9 @@
 
 AR = ar
 ARFLAGS = -ru
-FC = gfortran
+FC = $(FCOMPILER)
 
-f2c= cc -fpic
-
-FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
+FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -freal-4-real-8
 
 DINASRC = \
 		a_dina.f  add.f atsv_kav.f\
@@ -38,16 +36,13 @@ test.exe: test.o dina_99.a
 	$(FC) -o $@ $^
 
 dina_99.a: $(DINAOBJ)
-	$(RM) -r dina_99.a
+	$(RM) -r $@
 	$(AR) $(ARFLAGS) $@ $(DINAOBJ)
 
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
 
-%.o: %.c
-	$(f2c)  -c $<
-
 clean:
-	-rm -f *.o 
+	-rm -f *.o
 	-rm -f *.a
 	-rm -f *.exe

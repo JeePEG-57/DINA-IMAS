@@ -1,21 +1,24 @@
-subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1,arr_out1)
+subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1, arr_out1)
 
 use ids_schemas
 use ids_routines
 implicit none
 
 
-type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
-type (ids_pf_active)   :: pf_active0, pf_active
-type (ids_equilibrium) :: equilibrium0
+type (ids_pulse_schedule), intent(IN) :: pulse_schedule, pulse_schedule_term
+type (ids_pf_active), intent(IN) :: pf_active0
+type (ids_pf_active), intent(OUT) :: pf_active
+type (ids_equilibrium), intent(IN) :: equilibrium0
+
+real (ids_real), intent(IN) :: arr_in1(*)
+real (ids_real), intent(OUT) :: arr_out1(*)
+
 
 integer,save :: i
 integer,save :: first_call = 1, loop_count = 0, ntime = 0
 
 integer :: idx, idx0
 
-!integer, parameter :: DP = kind(1.0d0)
-real (ids_real):: arr_in1(*), arr_out1(*)
 
 integer,save :: n_input1, n_input2, ng
 integer,save :: n_output1, n_output2

@@ -1,18 +1,20 @@
 !> reading tokamak config from IMAS ids's 
 
 
+
+
 subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 
     use ids_schemas
     use ids_routines
     !implicit none
+    include 'double.inc'
 
+    
+    type (ids_pf_active), INTENT(IN)   :: pf_active
+    type (ids_pf_passive), INTENT(IN)  :: pf_passive
+    type (ids_magnetics), INTENT(IN)   :: magnetics
 
-    type (ids_pf_active)   :: pf_active
-    type (ids_pf_passive)  :: pf_passive
-    type (ids_magnetics)   :: magnetics
-
-	!include 'double.inc'
 
 	include 'parf1'
  	include 'parf_mike'
@@ -52,6 +54,8 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 	if(kpr.eq.1)print *,'Reading tokamakdata from IDS'
 	!read(49,*)
 	if(kpr.eq.1)print *,' 1'
+    flush(6)
+    
 	!read(49,*)npf_c
     !npf_c = size(pf_active%coil)
     ncoil = size(pf_active%coil)

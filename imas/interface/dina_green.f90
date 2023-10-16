@@ -6,6 +6,7 @@
 !>   equilibrium contains r(nr),z(nz) arrays of used 2D grid
 
 
+
 subroutine dina_green(&
   & pf_active0, pf_passive0, magnetics0,&
   & em_coupling, equilibrium)
@@ -13,14 +14,14 @@ subroutine dina_green(&
 
 use ids_schemas
 use ids_routines
-implicit none
+!implicit none
 
 
-type (ids_pf_active)   :: pf_active0
-type (ids_pf_passive)  :: pf_passive0
-type (ids_magnetics)   :: magnetics0
-type (ids_em_coupling) :: em_coupling
-type (ids_equilibrium) :: equilibrium
+type (ids_pf_active), INTENT(IN)   :: pf_active0
+type (ids_pf_passive), INTENT(IN)  :: pf_passive0
+type (ids_magnetics), INTENT(IN)   :: magnetics0
+type (ids_em_coupling), INTENT(OUT) :: em_coupling
+type (ids_equilibrium), INTENT(OUT) :: equilibrium
 
 
 integer:: i, j, k
@@ -38,18 +39,57 @@ real(ids_real), dimension(:), allocatable::  pf_turns
 
 	character *20 apr
 	
+
+
+
+	include 'parf1'
+ 	include 'parf_mike'
+
+                                                      
+
+    common /c_tokamak_config1/&
+     & npf_c,&
+     & npf_res_c,&
+     & ncam_c,&
+     & kloop_c,&
+     & kprobe_c,kpb_c,&
+     & ke_c
+
+    common /c_tokamak_config2/&
+     & nr_c(mu),nz_c(mu),nt_c(mu),n_pf_num_c(mu),&
+     & R_c_c(mu),Z_c_c(mu),dr_c(mu),dz_c(mu),alpha_c(mu),beta_c(mu),&
+     & pfres_c(mu),&
+     & ndl_ves_c(mu),ndh_ves_c(mu),nt_ves_c(mu),n_ves_num_c(mu),&
+     & Rc_c(mu),Zc_c(mu),dl_c(mu),hl_c(mu),alpha_ves_c(mu),&
+     & beta_ves_c(mu),&
+     & rcam_c(mu),&
+     & Rl_c(mu),Zl_c(mu),&
+     & R_prob_c(mu),Z_prob_c(mu),anglep_c(mu),smp_c(mu),&
+     & xu_c(mu),yu_c(mu),&
+     & r00_c,rk_c,&
+     & z00_c,zk_c
+
+
+
+
 common &
 &  /ge5/kpr
 
 integer:: kpr
 
-kpr = 1
+!kpr = 1
 
+print *,'DINA GREEN: read tokamak data...'
+flush(6)
  !call tokamakdata_read_1()
  call tokamakdata_read_ids(pf_active0, pf_passive0, magnetics0)
 
+ print *,'DINA GREEN: Calculation...'
+ flush(6)
  call congig_calc()
 
+ print *,'DINA GREEN: Mapping matrices...'
+ flush(6)
  call read_green_params(npass,nact,kloop,kprobe,ke,ngrid2)
 
 

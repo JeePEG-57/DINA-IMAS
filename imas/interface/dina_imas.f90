@@ -34,23 +34,30 @@ use ids_routines
 implicit none
 
 
-! trees are static or dynamic; if not defined, they are static
-type (ids_em_coupling)  :: em_coupling0
-type (ids_equilibrium) :: equilibrium0, equilibrium
-type (ids_magnetics)   :: magnetics0, magnetics
-type (ids_pf_active)   :: pf_active0, pf_active
-type (ids_pf_passive)   :: pf_passive0, pf_passive
-type (ids_wall) :: wall0
-type (ids_core_profiles)   :: core_profiles0, core_profiles
-type (ids_core_transport)   :: core_transport
-type (ids_core_sources)   :: core_sources0, core_sources
-type (ids_transport_solver_numerics) :: bndcond_in
-type (ids_pulse_schedule)   :: pulse_schedule
-type (ids_summary) :: summary
+type (ids_em_coupling), INTENT(IN)  :: em_coupling0
+type (ids_equilibrium), INTENT(IN) :: equilibrium0
+type (ids_magnetics), INTENT(IN)   :: magnetics0
+type (ids_pf_active), INTENT(IN)   :: pf_active0
+type (ids_pf_passive), INTENT(IN)   :: pf_passive0
+type (ids_wall), INTENT(IN) :: wall0
+type (ids_core_profiles), INTENT(IN)   :: core_profiles0
+type (ids_core_sources), INTENT(IN)   :: core_sources0
+type (ids_transport_solver_numerics), INTENT(IN) :: bndcond_in
+type (ids_pulse_schedule), INTENT(IN)   :: pulse_schedule
 
 
-!integer, parameter :: DP = kind(1.0d0)
-real (ids_real) :: arr_in1(*), arr_out1(*)
+type (ids_equilibrium), INTENT(OUT) :: equilibrium
+type (ids_magnetics), INTENT(OUT)   :: magnetics
+type (ids_pf_active), INTENT(OUT)   :: pf_active
+type (ids_pf_passive), INTENT(OUT)   :: pf_passive
+type (ids_core_profiles), INTENT(OUT)   :: core_profiles
+type (ids_core_transport), INTENT(OUT)   :: core_transport
+type (ids_core_sources), INTENT(OUT)   :: core_sources
+type (ids_summary), INTENT(OUT) :: summary
+
+
+real (ids_real), INTENT(IN) :: arr_in1(*)
+real (ids_real), INTENT(OUT) :: arr_out1(*)
 
 
 ! define local fixed size variables
