@@ -132,8 +132,13 @@ class ExampleWorkflowManager:
 
 
         code_parameters = self.actor_dina_iwrap_wf.get_code_parameters()
+        code_parameters.set_parameter( 'parameters/step_max', 2000 )
+        code_parameters.set_parameter('parameters/output/decimation', 10)        
+        step_max = code_parameters.get_parameter('parameters/step_max')
+        decimation = code_parameters.get_parameter('parameters/output/decimation')
+        print(f'{step_max=}, {decimation=}')
+        
         self.actor_dina_iwrap_wf.initialize(runtime_settings=runtime_settings, code_parameters=code_parameters)
-
         #self.actor_dina_iwrap_wf.code_parameters.parameters= '/gss_efgw_work/scratch/g2bpalak/tmp/xml_new_location.xml'
 
 
@@ -153,6 +158,7 @@ class ExampleWorkflowManager:
         self.core_sources_in = imas.core_sources()
         self.transport_solver_numerics_in = imas.transport_solver_numerics()
         self.pulse_schedule_in = imas.pulse_schedule()
+        self.pulse_schedule_term_in = imas.pulse_schedule()
 
     def execute_workflow(self):
 
@@ -175,7 +181,7 @@ class ExampleWorkflowManager:
              self.bndcond_out) = self.actor_dina_iwrap_wf(self.equilibrium_in, self.magnetics_in, 
                     self.em_coupling_in, self.pf_active_in, self.pf_passive_in, self.wall_in,
                     self.core_profiles_in, self.core_sources_in,
-                    self.transport_solver_numerics_in, self.pulse_schedule_in)
+                    self.transport_solver_numerics_in, self.pulse_schedule_in, self.pulse_schedule_term_in)
             #print('>>>>>>>>>>>>>', self.summary_out.time, self.pf_active_out.time, self.equilibrium_out.time)
             # SAVE IDSS INTO OUTPUT FILE
             #print( '=> Export output IDSs to local database: ', i )

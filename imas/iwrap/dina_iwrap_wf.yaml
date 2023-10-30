@@ -36,6 +36,9 @@ code_description:
     -   intent: IN
         name: pulse_schedule_in
         type: pulse_schedule
+    -   intent: IN
+        name: pulse_schedule_term_in
+        type: pulse_schedule
     -   intent: OUT
         name: pf_active_out
         type: pf_active
