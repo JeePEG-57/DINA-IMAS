@@ -87,7 +87,7 @@ end interface
 
 
 type (ids_em_coupling) :: em_coupling
-type (ids_equilibrium) :: equilibrium0, equilibrium
+type (ids_equilibrium) :: equilibrium0, equilibrium_green, equilibrium
 type (ids_magnetics) :: magnetics, magnetics0
 type (ids_pf_active) :: pf_active, pf_active1, pf_active0
 type (ids_pf_passive) :: pf_passive, pf_passive0
@@ -321,8 +321,11 @@ call imas_close(idx0)
 
 
 
-call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
+call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium_green)
 
+if (.NOT.associated(equilibrium0%time_slice)) then
+  equilibrium0 = equilibrium_green
+endif
 
 
 

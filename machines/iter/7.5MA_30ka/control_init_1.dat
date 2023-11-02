@@ -1,5 +1,5 @@
   tcont2   dtcont2  Ip_div   ref_ramp    Ip_rd   trd_ref  max_VS_lim   c_a_tpl2_lim  Time_stop !control_data2.dat
-  1.9        0.3    -3.2      1.          4.4      25         0.3           2.5         100
+  1.9        0.3     3.2      1.          4.4      25         0.3           2.5         100
 c_a_tpl1   c_a_tpl1_eob   c_a_tpl2   c_a_tpl_min    y0    c1_y0  c2_y0
   5.         1.7             2.5        0.55        0.3    0.7    2.2
 t_tran2D   tt_dw !tt_kavin.dat
@@ -104,7 +104,7 @@ time
 tt_rampup
  30000  
  dc2/dt       dtpl_term_l       cIp_end
- 0.            28                -1.4 
+ 0.            28                1.4 
  Ics1_eob(kA)   rms_noise(m/s)
  -29.             0.6    
 VS1_max(V)   VS3_max(V)   CS3U_max(V)   CS2U_max(V)   CS1_max(V)   CS2L_max(V)   CS3L_max(V)   PF1_max(V)   PF2_max(V)   PF3_max(V)   PF4_max(V)   PF5_max(V)   PF6_max(V)   Tu(s)   !control_data.dat

@@ -572,10 +572,19 @@ call write_cputime(0.d0, 0.d0, 1)
 	
 
 	!tokc=0.
-	do i=1,npass
-	  tcam(i) = pf_passive0%loop(i)%current(CurTimeStep)
-	  !tokc=tokc+tcam(i)
-	enddo	
+  if (associated(pf_passive0%loop(i)%current)) then  
+    do i=1,npass
+      tcam(i) = pf_passive0%loop(i)%current(CurTimeStep)
+      !tokc=tokc+tcam(i)
+    enddo
+    print *,'Passive currents are assigned'
+  else 
+    do i=1,npass
+      tcam(i) = 0.d0
+    enddo
+    print *,'Passive currents are set to zero'
+  endif
+    
   
   
         i_restart=1
