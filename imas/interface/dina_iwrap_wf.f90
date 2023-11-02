@@ -73,6 +73,7 @@ real (ids_real) ::time_get,time_ext, current_pf_stop
 !integer :: io_unit = 1
 logical :: errorflag
 integer :: code_state
+logical :: ids_input_initialized
 
 ! For timing tests
 INTEGER :: clock_start,clock_end,clock_rate
@@ -267,7 +268,18 @@ if (time_start.gt.0.d0) then
   restart = 1
 endif
 
+ids_input_initialized = .FALSE.
 
+  allocate(character(50):: status_msg)
+  status_msg = 'DINA initialized'
+  status_code = 0
+  code_state = 0
+  iloop = 1
+
+end subroutine init
+
+subroutine read_prescribed_ids()
+implicit none
 write(*,*) 'Reading the prescribed IDS'
 call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
 
@@ -324,11 +336,7 @@ call ids_get_slice(idx0,"wall",wall, time_start, interp_start)
 call imas_close(idx0)
 
 
-
-
 call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
-
-
 
 
 write(*,*) 'Reading the pulse schedule'
@@ -358,19 +366,13 @@ arr_out1(1:31)=0
   call ids_put(idx,"pulse_schedule",pulse_schedule)
   call ids_put(idx,"pulse_schedule/1",pulse_schedule_term) 
 
-  allocate(character(50):: status_msg)
-  status_msg = 'DINA initialized'
-  status_code = 0
-  code_state = 0
-  iloop = 1
-
-end subroutine init
-
+end subroutine read_prescribed_ids
 
 
 subroutine step(equilibrium_in, magnetics_in, em_coupling_in, pf_active_in, &
   pf_passive_in, wall_in, core_profiles_in, core_sources_in, &
-  transport_solver_numerics_in, pulse_schedule_in, pf_active_out, summary_out, &
+  transport_solver_numerics_in, pulse_schedule_in, pulse_schedule_term_in, &
+  pf_active_out, summary_out, &
   magnetics_out, pf_passive_out, equilibrium_out, core_profiles_out, &
   core_sources_out, core_transport_out, bndcond_out, codeparam, status_code, &
   status_message )
@@ -387,7 +389,8 @@ type(ids_wall), intent(in) :: wall_in
 type(ids_core_profiles), intent(in) :: core_profiles_in      
 type(ids_core_sources), intent(in) :: core_sources_in      
 type(ids_transport_solver_numerics), intent(in) :: transport_solver_numerics_in      
-type(ids_pulse_schedule), intent(in) :: pulse_schedule_in      
+type(ids_pulse_schedule), intent(in) :: pulse_schedule_in
+type(ids_pulse_schedule), intent(in) :: pulse_schedule_term_in         
 
 type (ids_pf_active), intent(out) :: pf_active_out
 type (ids_summary), intent(out) :: summary_out
@@ -406,6 +409,98 @@ integer, intent(out) :: status_code
 character(len=:), pointer, intent(out) :: status_message
 allocate(character(50):: status_message)
 status_code = 0
+
+
+
+
+if (.not. ids_input_initialized ) then
+  ids_input_initialized = .TRUE.
+  if (pulse_schedule_in%ids_properties%homogeneous_time .lt. 0) then
+    call read_prescribed_ids()
+  else
+    if (restart.eq.1) then
+      write(*,*) 'Restart from t=', time_start
+      time_get = time_start
+      !call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interp_start)
+      !call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interp_start)
+      !call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
+      !call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
+      call ids_copy(equilibrium_in, equilibrium0)
+      call ids_copy(core_profiles_in, core_profiles0)
+      call ids_copy(core_sources_in, core_sources0)
+      call ids_copy(transport_solver_numerics_in, bndcond)
+      write(*,*) 'Finished reading the prescribed IDS'
+      !call imas_close(idx0)
+
+      write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
+
+    else
+
+      write(*,*) 'Start from t=0'
+      
+    endif
+
+
+    !call imas_open_env('ids',pulse_pfa,run_pfa,idx_a,user_pfa,database_pfa,'3')
+    !call ids_get_slice(idx_a,"pf_active",pf_active0, time_start, interp_start)
+    !call imas_close(idx_a)
+    call ids_copy(pf_active_in, pf_active0)
+
+    !call imas_open_env('ids',pulse_pfp,run_pfp,idx_p,user_pfp,database_pfp,'3')
+    !call ids_get_slice(idx_p,"pf_passive",pf_passive0, time_start, interp_start)
+    !call imas_close(idx_p)
+    call ids_copy(pf_passive_in, pf_passive0)
+
+    !call imas_open_env('ids',pulse_mag,run_mag,idx_m,user_mag,database_mag,'3')
+    !call ids_get_slice(idx_m,"magnetics",magnetics0, time_start, interp_start)
+    !call imas_close(idx_m)
+    call ids_copy(magnetics_in, magnetics0)
+
+    !call imas_open_env('ids',pulse_wll,run_wll,idx0,user_wll,database_wll,'3')
+    !call ids_get_slice(idx0,"wall",wall, time_start, interp_start)
+    !call imas_close(idx0)
+    call ids_copy(wall_in, wall)
+
+
+    call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
+
+
+    write(*,*) 'Reading the pulse schedule'
+    !call imas_open_env('ids',pulse_psch,run_psch,idx0,user_psch,database_psch,'3')
+
+    !call ids_get(idx0,"pulse_schedule",pulse_schedule)
+    !call ids_get(idx0,"pulse_schedule/1",pulse_schedule_term)
+    call ids_copy(pulse_schedule_in, pulse_schedule)
+    call ids_copy(pulse_schedule_term_in, pulse_schedule_term)
+
+    !call imas_close(idx0)
+
+    print *,'Press any key to begin simulation...'
+    !read (*,*)
+
+
+
+    arr_in1(1:31)=1
+    arr_out1(1:31)=0
+
+
+
+      !call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
+      write(*,*) 'Pulse file is created'
+
+      !call ids_put(idx,"wall",wall)
+      !call ids_put(idx,"em_coupling",em_coupling)
+      !call ids_put(idx,"pulse_schedule",pulse_schedule)
+      !call ids_put(idx,"pulse_schedule/1",pulse_schedule_term) 
+
+      !call ids_copy(em_coupling, em_coupling_out)
+      !call ids_copy(pulse_schedule, pulse_schedule_out)
+      !call ids_copy(pulse_schedule_term, pulse_schedule_term_out)
+
+
+  endif
+endif
+
 
 
 !write(*,*) ids_is_empty(equilibrium_in)!, ids_is_empty(magnetics_in), &
