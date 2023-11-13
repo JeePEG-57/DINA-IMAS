@@ -11,7 +11,7 @@ r coordinates
 z coordinates
 -374.7   -425.40   46.65     299.71   458.04    77.77   
 tt_dina   !tran_times.dat
-5.e3   
+500000000.e3   
 n_t   !pfres.dat
 8
 time CS3Ures CS2Ures CS1res CS2Lres CS3Lres PF1res PF2res PF3res PF4res PF5res PF6res VS3res 
@@ -136,8 +136,8 @@ Time[ms]   Content
 1500.0  1e-1  
 2600.0  1e-1  
 75000.0  1e-1  
-80000.0  0.002  
-10000000.0  0.002  
+80000.0  1e-1  
+10000000.0  1e-1  
 Bohm/gyroBohm   L-mode   !bohm_gbohm.dat
 0   
 tay_simul[ms]   !tay_simul.dat
@@ -147,7 +147,7 @@ tay_dw[ms]   !dw.dat
 pcchp_end[19]   !pcchp_end.dat
 1.574   
 k_ener_ext   k_dens_ext   k_ajb_ext   !transp_ext.dat
-0   0   0   
+1   1   1   
 tt_rampup   !tt_kavin2.dat
  30000  
  dc2/dt       dtpl_term_l       cIp_end

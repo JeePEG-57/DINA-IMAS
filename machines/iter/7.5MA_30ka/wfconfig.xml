@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <parameters>
   <pulse_schedule>
-    <user>dubrovm</user>
+    <user></user>
     <database>test</database>
     <pulse>180</pulse>
     <run>1</run>
   </pulse_schedule>
   <input_pf_active>
     <user>dubrovm</user>
-    <database>test</database>
+    <database>iter</database>
     <pulse>105033</pulse>
-    <run>1</run>
+    <run>2</run>
   </input_pf_active>
   <input_pf_passive>
-    <user>public</user>
-    <database>ITER_MD</database>
-    <pulse>115005</pulse>
+    <user>dubrovm</user>
+    <database>iter</database>
+    <pulse>105033</pulse>
     <run>2</run>
   </input_pf_passive>
   <input_magnetics>
-    <user>dubrovm</user>
+    <user></user>
     <database>test</database>
     <pulse>180</pulse>
     <run>1</run>
@@ -38,26 +38,27 @@
   </input_wall>
   <input_start>
     <user>dubrovm</user>
-    <database>test</database>
+    <database>iter</database>
     <pulse>105033</pulse>
-    <run>1</run>
+    <run>2</run>
     <time_start>10.0</time_start>
     <interp_mode>1</interp_mode>
   </input_start>
   <output>
     <database>test</database>
     <pulse>180</pulse> 
-    <run>41</run>
+    <run>42</run>
     <decimation>1</decimation>
   </output>
   <input_transp>
-    <database>test</database>
+    <user>dubrovm</user>
+    <database>iter</database>
     <pulse>105033</pulse>
-    <run>1</run>
+    <run>2</run>
     <interp_mode>1</interp_mode>
   </input_transp>
   <time_stop>1000.0</time_stop>
-  <time_ext>3.0</time_ext>
+  <time_ext>50000000.0</time_ext>
   <controller>kmc</controller>
   <step_max>1000000</step_max>
   <use_astra>0</use_astra>
