@@ -66,17 +66,18 @@ integer,save :: i, k, j, isrc, ion
 integer,save :: loop_count = 0
 
 
-
+include 'parf0'
 include 'parf2'
+include 'parf4'
 
       
 ! DINA parameters
-    integer,parameter :: npo = 310, ntet = 134 ! parf0
+!    integer,parameter :: npo = 310, ntet = 134 ! parf0
 !    integer,parameter :: mu1 = 1500 ! parf2
 !    integer,parameter :: nr = 65, nz = 129, nwnh = nr*nz ! parf2
     integer,parameter :: nact = 12, npass = 102 ! parf1 - kf, mu
     integer,parameter :: npfa = 14, npfp = npass
-    integer,parameter :: nflux=41, nbpol=60 ! parf4
+!    integer,parameter :: nloop=41, nprobe=60 ! parf4
     integer,parameter :: n_ions=7
     integer,parameter :: n_gaps=6
     
@@ -158,7 +159,7 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 !    real(ids_real),parameter :: pi = 3.14159265358979323846
 !    real(ids_real) :: coef_ppx,coef_pffx,pmu0
     
-    real(ids_real) :: bprobe(nbpol), psloop(nflux)
+    real(ids_real) :: bprobe(nprobe), psloop(nloop)
     
     real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
     
@@ -247,8 +248,8 @@ print *,'npfa, npfa2, npfa3 =', npfa, npfa2, npfa3
 print *,'npfp, npfp2 =', npfp, npfp2
 
 print *,'npass, npass2 =', npass, npass2
-print *,'nflux, kloop =', nflux, kloop
-print *,'nbpol, kprobe =', nbpol, kprobe
+print *,'nloop, kloop =', nloop, kloop
+print *,'nprobe, kprobe =', nprobe, kprobe
 print *,'nwnh, ngrid2 =', nwnh, ngrid2
 
 
@@ -272,11 +273,11 @@ if(nwnh.ne.ngrid2)then
   stop
 end if
 
-if(kloop.gt.nflux)then
+if(kloop.gt.nloop)then
   stop
 end if
 
-if(kprobe.gt.nbpol)then
+if(kprobe.gt.nprobe)then
   stop
 end if
 

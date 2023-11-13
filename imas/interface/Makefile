@@ -1,3 +1,4 @@
+INCDIR := ../../src/include
 DINADIR := ../../src/scenario
 GREENDIR := ../../src/green
 CONTROLDIR := ../../src/controllers
@@ -9,13 +10,13 @@ PACKAGES += imas-$(FCOMPILER)
 PACKAGES += libxml-2.0
 PACKAGES += xmllib
 
-F90_gfortran=$(FCOMPILER) -w -I$(DINADIR)
+F90_gfortran=$(FCOMPILER) -w -I$(INCDIR)
 COPTS_gfortran = -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config $(PACKAGES) --cflags` -g
 #COPTS_gfortran += -traceback -check-all -fp-stack-check
 LIBS_gfortran=`pkg-config $(PACKAGES) --libs`
 
 
-f2c= $(FCOMPILER) -w -I$(DINADIR) -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -g
+f2c= $(FCOMPILER) -w -I$(INCDIR) -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -g
 #f2c+= -traceback -check all -fp-stack-check
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o

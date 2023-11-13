@@ -4,7 +4,9 @@ AR = ar
 ARFLAGS = -ru
 FC = $(FCOMPILER)
 
-FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -freal-4-real-8
+INCDIR=../include
+
+FFLAGS = -w -I$(INCDIR) -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -freal-4-real-8
 
 DINASRC = \
 		a_dina.f  add.f atsv_kav.f\
