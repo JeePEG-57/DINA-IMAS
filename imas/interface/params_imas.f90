@@ -313,9 +313,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            n_t_c7 = size(psch%ec%power%reference%time)
            t_t_c7(1:n_t_c7) = psch%ec%power%reference%time(1:n_t_c7)
            emoe_t_c7(1:n_t_c7) = psch%ec%power%reference%data(1:n_t_c7)*1.d-6
-           do i=1,n_t_c7
-             emoq_t_c7(i) = 0.d0
-           enddo
+           emoq_t_c7(1:n_t_c7) = psch%ic%power%reference%data(1:n_t_c7)*1.d-6
         
         
 !           open (unit=41,file='dens.dat',form='formatted')
