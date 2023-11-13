@@ -459,9 +459,9 @@ class DINA_Workflow:
     else:
       print('Start from t = 0') 
 
-      IMAS_PulseSchedule.open()
-      idslist['equilibrium'] = IMAS_PulseSchedule.get_slice('equilibrium', 0.0, 1)
-      IMAS_PulseSchedule.close()
+      IMAS_InputStart.open()
+      idslist['equilibrium'] = IMAS_InputStart.get_slice('equilibrium', 0.0, 1)
+      IMAS_InputStart.close()
       idslist['core_profiles'] = imas.core_profiles()
       idslist['core_sources'] = imas.core_sources()
       idslist['transport_solver_numerics'] = imas.transport_solver_numerics()

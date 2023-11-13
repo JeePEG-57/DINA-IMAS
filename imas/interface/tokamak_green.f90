@@ -194,12 +194,18 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
 	!read(49,*)
 	if(kpr.eq.1)print *,' Flux loops'
 	!read(49,*)kloop_c
-    kloop_c = size(magnetics%flux_loop)
+    if (associated(magnetics%flux_loop)) then
+        kloop_c = size(magnetics%flux_loop)
+    else
+        kloop_c = 0
+    endif
 	if(kpr.eq.1)print *,'kloop ',kloop_c
 	do I=1,kloop_c
         !read(49,*)Rl_c(I),Zl_c(I)
+
         Rl_c(I) = magnetics%flux_loop(i)%position(1)%r
         Zl_c(I) = magnetics%flux_loop(i)%position(1)%z
+
         if(kpr.eq.1)print *,'r_l z_l ',rl_c(i),zl_c(i)
 	END DO
 
@@ -207,7 +213,11 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
 	!read(49,*)
 	if(kpr.eq.1)print *,' Probe'
 	!read(49,*)kprobe_c,kpb_c
-    kprobe_c = size(magnetics%b_field_pol_probe)
+    if (associated(magnetics%b_field_pol_probe)) then
+        kprobe_c = size(magnetics%b_field_pol_probe)
+    else
+        kprobe_c = 0
+    endif
     kpb_c = 3
 	if(kpr.eq.1)print *,'kprobe,kpb ',kprobe_c,kpb_c
 	do I=1,kprobe_c
