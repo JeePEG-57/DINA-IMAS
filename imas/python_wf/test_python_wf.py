@@ -88,10 +88,10 @@ def GREEN(idslist):
   
   output = dina_green.dina_green_actor(idslist['pf_active'],
                                        idslist['pf_passive'],
-                                       idslist['magnetics'])
+                                       idslist['magnetics'],
+                                       idslist['equilibrium'])
   
-  idslist['em_coupling'] = output[0]
-  idslist['equilibrium'] = output[1]
+  idslist['em_coupling'] = output
 
 
 
@@ -299,6 +299,7 @@ class DINA_Workflow:
         self.IMAS_Output.put_slice(idslist['core_sources'])
         self.IMAS_Output.put_slice(idslist['core_transport'])
         self.IMAS_Output.put_slice(idslist['summary'])
+        self.IMAS_Output.put_slice(idslist['transport_solver_numerics'])
       else:
         self.IMAS_Output.put_slice(idslist['pf_active'])
         self.IMAS_Output.put_slice(idslist['summary'])
@@ -426,28 +427,7 @@ class DINA_Workflow:
     # IMAS_InputStart = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
     IMAS_InputStart = self.get_dbentry(input_start, user_default)
     
-    
-    if (self.Time_Start > 0.0 and IMAS_InputStart != None):     
-      interp = self.InterpStart
-      TimeGet = self.Time_Start
-      print('Restart at t = ' + str(TimeGet))
 
-      IMAS_InputStart.open()
-      idslist['equilibrium'] = self.IMAS_InputStart.get_slice('equilibrium', TimeGet, interp)
-      idslist['core_profiles'] = self.IMAS_InputStart.get_slice('core_profiles', TimeGet, interp)
-      idslist['core_sources'] = self.IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
-      idslist['transport_solver_numerics'] = self.IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
-      IMAS_InputStart.close()
-
-    else:
-      print('Start from t = 0') 
-
-      idslist['equilibrium'] = imas.equilibrium()
-      idslist['core_profiles'] = imas.core_profiles()
-      idslist['core_sources'] = imas.core_sources()
-      idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
-
-    
     # input_psch = root.find('pulse_schedule')
     # usernode = input_psch.find('user')
     # if (usernode != None):
@@ -461,6 +441,33 @@ class DINA_Workflow:
     # run = int(input_psch.find('run').text)
     # IMAS_PulseSchedule = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
     IMAS_PulseSchedule = self.get_dbentry(root.find('pulse_schedule'), user_default)
+
+
+    
+    if (self.Time_Start > 0.0 and IMAS_InputStart != None):     
+      interp = self.InterpStart
+      TimeGet = self.Time_Start
+      print('Restart at t = ' + str(TimeGet))
+
+      IMAS_InputStart.open()
+      idslist['equilibrium'] = IMAS_InputStart.get_slice('equilibrium', TimeGet, interp)
+      idslist['core_profiles'] = IMAS_InputStart.get_slice('core_profiles', TimeGet, interp)
+      idslist['core_sources'] = IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
+      idslist['transport_solver_numerics'] = IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
+      IMAS_InputStart.close()
+
+    else:
+      print('Start from t = 0') 
+
+      IMAS_PulseSchedule.open()
+      idslist['equilibrium'] = IMAS_PulseSchedule.get_slice('equilibrium', 0.0, 1)
+      IMAS_PulseSchedule.close()
+      idslist['core_profiles'] = imas.core_profiles()
+      idslist['core_sources'] = imas.core_sources()
+      idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
+
+    
+
     IMAS_PulseSchedule.open()
     idslist['pulse_schedule'] = IMAS_PulseSchedule.get('pulse_schedule')
     idslist['pulse_schedule_term'] = IMAS_PulseSchedule.get('pulse_schedule', occurrence = 1)

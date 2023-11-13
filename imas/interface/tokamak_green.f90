@@ -3,7 +3,7 @@
 
 
 
-subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
+subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
 
     use ids_schemas
     use ids_routines
@@ -14,10 +14,12 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
     type (ids_pf_active), INTENT(IN)   :: pf_active
     type (ids_pf_passive), INTENT(IN)  :: pf_passive
     type (ids_magnetics), INTENT(IN)   :: magnetics
+    type (ids_equilibrium), INTENT(IN) :: equilibrium
 
 
 	include 'parf1'
  	include 'parf_mike'
+    include 'parf2'
 
 
     common &
@@ -217,26 +219,56 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
         if(kpr.eq.1)print *,'r_pr z_pr alpha smp ', R_prob_c(I),Z_prob_c(I),anglep_c(i),smp_c(i)
 	END DO
 
-	!read(49,*)
-	if(kpr.eq.1)print *,' limiter'
-	!read(49,*)ke_c
-    ke_c = 56
-	if(kpr.eq.1)print *,'ke ',ke_c
-	do I=1,ke_c
-	    !read(49,*)xu_c(I),yu_c(I)
-        xu_c(I) = 6.d0 + cos(i*6.d0/ke_c)
-        yu_c(I) = 0.d0 + dsin(i*6.d0/ke_c)
-	    if(kpr.eq.1)print *,'xu yu ',xu_c(I),yu_c(I)
-	END DO
+	! !read(49,*)
+	! if(kpr.eq.1)print *,' limiter'
+	! !read(49,*)ke_c
+    ! ke_c = 56
+	! if(kpr.eq.1)print *,'ke ',ke_c
+	! do I=1,ke_c
+	!     !read(49,*)xu_c(I),yu_c(I)
+    !     xu_c(I) = 6.d0 + cos(i*6.d0/ke_c)
+    !     yu_c(I) = 0.d0 + dsin(i*6.d0/ke_c)
+	!     if(kpr.eq.1)print *,'xu yu ',xu_c(I),yu_c(I)
+	! END DO
 
     ! Equilibrium 2D grid
     !read(49,*)    
 	!read(49,*)r00_c,rk_c
     !read(49,*)z00_c,zk_c
-    r00_c = 3.d0
-    rk_c = 9.d0
-    z00_c = -6.d0
-    zk_c = 6.d0
+    ! r00_c = 3.d0
+    ! rk_c = 9.d0
+    ! z00_c = -6.d0
+    ! zk_c = 6.d0
+
+    if (.NOT.associated(equilibrium%time_slice))then
+         print *, 'equilibrium%time_slice is not associated'
+        return
+    endif
+    if (.NOT.associated(equilibrium%time_slice(1)%profiles_2d)) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d is not associated'
+        return
+    endif
+    if (.NOT.associated(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1)) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1 is not associated'
+        return
+    endif
+    if (.NOT.associated(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2)) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2 is not associated'
+        return
+    endif
+    if (size(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1).NE.nr) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1 size is not equal nr', equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1, nr
+        return
+    endif
+    if (size(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2).NE.nz) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2 size is not equal nz', equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2, nz
+        return
+    endif
+
+    r00_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(1)
+    rk_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(nr)
+    z00_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(1)
+    zk_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(nz)
 
 
 	if(kpr.eq.1)print *,'r00,rk ',r00_c,rk_c

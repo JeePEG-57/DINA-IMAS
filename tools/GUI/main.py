@@ -2204,7 +2204,23 @@ class ExampleApp(uiclass, baseclass):
         wall.description_2d[0].limiter.unit[0].outline.z[i] = float(limiter["items_z"][i].text())
       
       
+      equilibrium = imas.equilibrium()
+      # Filling equilibrium
+      equilibrium.time_slice.resize(1)
+      equilibrium.time.resize(1)
+      equilibrium.ids_properties.homogeneous_time = 1
+      equilibrium.time_slice[0].time = 0.
+      equilibrium.time[0] = 0.
       
+      # Grid dimensions
+      nr = 65
+      nz = 129
+      equilibrium.time_slice[0].profiles_2d.resize(1)
+      equilibrium.time_slice[0].profiles_2d[0].grid_type.index = 1 # Rectangular a la eqdsk
+      equilibrium.time_slice[0].profiles_2d[0].grid.dim1 = numpy.linspace(3., 9., num=nr)
+      equilibrium.time_slice[0].profiles_2d[0].grid.dim2 = numpy.linspace(-6., 6., num=nz)
+
+
       
       # Pulse schedule
       psch = imas.pulse_schedule()
@@ -2273,7 +2289,7 @@ class ExampleApp(uiclass, baseclass):
       # EC+EQ heating (Ip > 1.5 MA)
       record = self.generalData['emo'] #self.GetStuctWithFieldValue(self.generalData, "title", "emo.dat")
       self.FillPulseScheduleItem(psch.ec.power.reference, record, col=0, mult=1.e6)
-      #self.FillPulseScheduleItem(psch.ic.power.reference, record, col=1, mult=1.e6)
+      self.FillPulseScheduleItem(psch.ic.power.reference, record, col=1, mult=1.e6)
  
  
       ## Magnetic control
@@ -2375,7 +2391,8 @@ class ExampleApp(uiclass, baseclass):
       print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
       
-      return pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1
+      return psch,psch_dw,equilibrium,magnetics,dat1
+      #return pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1
       
       
       
@@ -2477,8 +2494,8 @@ class ExampleApp(uiclass, baseclass):
         
         
         # Create input ids
-        pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
-        
+        #pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
+        psch,psch_dw,equilibrium,magnetics,dat1 = self.CreateInputIDS()
         
         
         # Save input IDS
@@ -2516,13 +2533,14 @@ class ExampleApp(uiclass, baseclass):
         
         imas_obj = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, pulse, run, user, data_version = '3')
         imas_obj.create()
-        imas_obj.put(pfa1)
-        imas_obj.put(pfp1)
+        #imas_obj.put(pfa1)
+        #imas_obj.put(pfp1)
         imas_obj.put(magnetics)
-        imas_obj.put(wall)
+        #imas_obj.put(wall)
         imas_obj.put(psch, occurrence = 0)
         imas_obj.put(psch_dw, occurrence = 1)
         imas_obj.put(dat1)
+        imas_obj.put(equilibrium)
         imas_obj.close()
       
 

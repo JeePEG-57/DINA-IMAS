@@ -31,7 +31,8 @@ subroutine dina_imas(&
 
 use ids_schemas
 use ids_routines
-implicit none
+!implicit none
+include 'double.inc'
 
 
 type (ids_em_coupling), INTENT(IN)  :: em_coupling0
@@ -64,12 +65,15 @@ real (ids_real), INTENT(OUT) :: arr_out1(*)
 integer,save :: i, k, j, isrc, ion
 integer,save :: loop_count = 0
 
-      
+
+
+include 'parf2'
+
       
 ! DINA parameters
     integer,parameter :: npo = 310, ntet = 134 ! parf0
-    integer,parameter :: mu1 = 1500 ! parf2
-    integer,parameter :: nr = 65, nz = 129, ngrid = nr*nz ! parf2
+!    integer,parameter :: mu1 = 1500 ! parf2
+!    integer,parameter :: nr = 65, nz = 129, nwnh = nr*nz ! parf2
     integer,parameter :: nact = 12, npass = 102 ! parf1 - kf, mu
     integer,parameter :: npfa = 14, npfp = npass
     integer,parameter :: nflux=41, nbpol=60 ! parf4
@@ -245,7 +249,7 @@ print *,'npfp, npfp2 =', npfp, npfp2
 print *,'npass, npass2 =', npass, npass2
 print *,'nflux, kloop =', nflux, kloop
 print *,'nbpol, kprobe =', nbpol, kprobe
-print *,'ngrid, ngrid2 =', ngrid, ngrid2
+print *,'nwnh, ngrid2 =', nwnh, ngrid2
 
 
 if(npfa.gt.npfa2)then
@@ -264,7 +268,7 @@ if(npass.ne.npass2)then
   stop
 end if
 
-if(ngrid.ne.ngrid2)then
+if(nwnh.ne.ngrid2)then
   stop
 end if
 
@@ -278,10 +282,10 @@ end if
 
 
 
-ALLOCATE(fluxarr(ngrid,nact))
-ALLOCATE(vesarr(ngrid,npass))
-ALLOCATE(pslgreen(ngrid,kloop))
-ALLOCATE(bprgreen(ngrid,kprobe))
+ALLOCATE(fluxarr(nwnh,nact))
+ALLOCATE(vesarr(nwnh,npass))
+ALLOCATE(pslgreen(nwnh,kloop))
+ALLOCATE(bprgreen(nwnh,kprobe))
 
 ALLOCATE(vesgreen(kloop,npass))
 ALLOCATE(vesprobe(kprobe,npass))
@@ -496,7 +500,7 @@ call write_cputime(0.d0, 0.d0, 1)
 &	pfind,pmj,pfc, pfres,rcam,&
 &	xu,yu,ke,key,&
 &   pfgreen,vesgreen,pfprobe,&
-&   vesprobe,ngrid)
+&   vesprobe,nwnh)
 
   
   
@@ -572,7 +576,7 @@ call write_cputime(0.d0, 0.d0, 1)
 	
 
 	!tokc=0.
-  if (associated(pf_passive0%loop(i)%current)) then  
+  if (associated(pf_passive0%loop(1)%current)) then  
     do i=1,npass
       tcam(i) = pf_passive0%loop(i)%current(CurTimeStep)
       !tokc=tokc+tcam(i)

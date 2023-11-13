@@ -63,16 +63,16 @@
             <string>null</string>
           </vector>
           <vector>
-            <string>em_coupling</string>
-            <string>0</string>
+            <string>equilibrium</string>
             <string>0</string>
             <string>0</string>
             <string>0</string>
             <string>1</string>
+            <string>0</string>
             <string>null</string>
           </vector>
           <vector>
-            <string>equilibrium</string>
+            <string>em_coupling</string>
             <string>0</string>
             <string>0</string>
             <string>0</string>

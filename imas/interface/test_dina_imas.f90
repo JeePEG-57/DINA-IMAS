@@ -16,18 +16,16 @@ implicit none
 
 interface
   subroutine dina_green(&
-  & pf_active0, pf_passive0, magnetics0,&
-  & em_coupling, equilibrium)
+    & pf_active0, pf_passive0, magnetics0, equilibrium0, &
+    & em_coupling)
 
     use ids_schemas
-    use ids_routines
-
 
     type (ids_pf_active), INTENT(IN)   :: pf_active0
     type (ids_pf_passive), INTENT(IN)  :: pf_passive0
     type (ids_magnetics), INTENT(IN)   :: magnetics0
+    type (ids_equilibrium), INTENT(IN) :: equilibrium0
     type (ids_em_coupling), INTENT(OUT) :: em_coupling
-    type (ids_equilibrium), INTENT(OUT) :: equilibrium
 
   end subroutine
 
@@ -41,8 +39,6 @@ interface
     & ,arr_in1, arr_out1 )
     
     use ids_schemas
-    use ids_routines
-
 
     type (ids_em_coupling), INTENT(IN)  :: em_coupling0
     type (ids_equilibrium), INTENT(IN) :: equilibrium0
@@ -74,7 +70,9 @@ interface
 
 
   subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1, arr_out1)
-  use ids_schemas
+    
+    use ids_schemas
+
     type (ids_pulse_schedule), intent(IN) :: pulse_schedule, pulse_schedule_term
     type (ids_pf_active), intent(IN) :: pf_active0
     type (ids_pf_active), intent(OUT) :: pf_active
@@ -82,12 +80,13 @@ interface
     
     real (ids_real), intent(IN) :: arr_in1(*)
     real (ids_real), intent(OUT) :: arr_out1(*)
+
   end subroutine
 end interface
 
 
 type (ids_em_coupling) :: em_coupling
-type (ids_equilibrium) :: equilibrium0, equilibrium_green, equilibrium
+type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics, magnetics0
 type (ids_pf_active) :: pf_active, pf_active1, pf_active0
 type (ids_pf_passive) :: pf_passive, pf_passive0
@@ -291,7 +290,7 @@ else
 
 
   !call ids_get(idx0,"em_coupling",em_coupling)
-  !call ids_get(idx0,"equilibrium",equilibrium0)
+  call ids_get_slice(idx0,"equilibrium",equilibrium0, 0.0, 1)
 
 
   !call ids_get(idx0,"core_profiles",core_profiles0)
@@ -321,11 +320,7 @@ call imas_close(idx0)
 
 
 
-call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium_green)
-
-if (.NOT.associated(equilibrium0%time_slice)) then
-  equilibrium0 = equilibrium_green
-endif
+call dina_green(pf_active0, pf_passive0, magnetics0, equilibrium0, em_coupling)
 
 
 
