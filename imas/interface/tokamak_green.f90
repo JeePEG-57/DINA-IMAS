@@ -61,7 +61,6 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
 	!read(49,*)npf_c
     !npf_c = size(pf_active%coil)
     ncoil = size(pf_active%coil)
-    ncoil = 14
     i = 0
 	do ic=1,ncoil
         ! Name of the coil

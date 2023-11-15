@@ -44,12 +44,7 @@ real(ids_real), dimension(:), allocatable::  pf_turns
 
 	character *20 apr
 	
-
-
-
-
-
-                                                      
+                                              
 
     common /c_tokamak_config1/&
      & npf_c,&
@@ -198,9 +193,7 @@ allocate(em_coupling%field_probes_grid(kprobe,nwnh))
 
 
 
-em_coupling%ids_properties%homogeneous_time = 1
-allocate(em_coupling%time(1))
-em_coupling%time(1) = 0.d0
+em_coupling%ids_properties%homogeneous_time = 2
 
 print *,' end allocation em_coupling'
 
