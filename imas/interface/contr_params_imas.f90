@@ -21,7 +21,7 @@ character(len=132), pointer :: buffer(:) => NULL()
 integer :: io_unit = 1
 logical :: errorflag
       
-      real (ids_real) Ip_div, Ip_rd, max_VS_lim, k_g4
+      real (ids_real) Ip_div, Ip_rd, max_VS_lim, c_a_tpl2_lim
       
       real (ids_real) pf_turn
       dimension pf_turn(17)
@@ -40,10 +40,10 @@ logical :: errorflag
       call xml2eg_get(doc, 'Ip_rd', Ip_rd)
       call xml2eg_get(doc, 'trd_ref', trd_ref)
       call xml2eg_get(doc, 'max_VS_lim', max_VS_lim)
-      call xml2eg_get(doc, 'k_g4', k_g4)
+      call xml2eg_get(doc, 'c_a_tpl2_lim', c_a_tpl2_lim)
       call xml2eg_get(doc, 'time_stop', time_stop)
-      write (49,*) 'tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop'
-      write (49,*) tcont2, dtcont2, Ip_div, ref_ramp, Ip_rd, trd_ref, max_VS_lim, k_g4, time_stop
+      write (49,*) 'tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'c_a_tpl2_lim', 'time_stop'
+      write (49,*) tcont2, dtcont2, Ip_div, ref_ramp, Ip_rd, trd_ref, max_VS_lim, c_a_tpl2_lim, time_stop
 
 
       call xml2eg_get(doc, 'c_a_tpl1', c_a_tpl1)
