@@ -19,7 +19,7 @@
     <run>2</run>
   </input_pf_passive>
   <input_magnetics>
-    <user>dubrovm</user>
+    <user></user>
     <database>test</database>
     <pulse>171</pulse>
     <run>1</run>
@@ -39,7 +39,7 @@
   <input_start>
     <user></user>
     <database>test</database>
-    <pulse>190</pulse>
+    <pulse>171</pulse>
     <run>1</run>
     <time_start>.0</time_start>
     <interp_mode>1</interp_mode>
