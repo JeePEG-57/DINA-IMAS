@@ -82,50 +82,17 @@ Empty input IDSs (10 IDS + codeparams) do not bring significant overhead.
 
 """
 import sys
-
-import imas,os
+import imas
+import os
 
 from dina_iwrap_wf.actor import dina_iwrap_wf
 from dina_iwrap_wf.common.runtime_settings import RunMode, DebugMode, SandboxMode
 
-from contextlib import contextmanager
-
-@contextmanager
-def output_redirected(to=os.devnull):
-    '''
-    import os
-
-    with stdout_redirected(to=filename):
-        print("from Python")
-        os.system("echo non-Python applications are also supported")
-    '''
-    fd = sys.stdout.fileno()
-    fde = sys.stderr.fileno()
-
-    ##### assert that Python and C stdio write using the same file descriptor
-    ####assert libc.fileno(ctypes.c_void_p.in_dll(libc, "stdout")) == fd == 1
-
-    def _redirect_stdout(to):
-        sys.stdout.close() # + implicit flush()
-        os.dup2(to.fileno(), fd) # fd writes to 'to' file
-        sys.stdout = os.fdopen(fd, 'w') # Python writes to fd
-
-    def _redirect_stderr(to):
-        sys.stderr.close() # + implicit flush()
-        os.dup2(to.fileno(), fde) # fd writes to 'to' file
-        sys.stderr = os.fdopen(fde, 'w') # Python writes to fd
-
-    with os.fdopen(os.dup(fd), 'w') as old_stdout:
-      with os.fdopen(os.dup(fde), 'w') as old_stderr:
-        with open(to, 'w') as file:
-            _redirect_stdout(to=file)
-            _redirect_stderr(to=file)
-        try:
-            yield # allow code to be run with the redirected stdout
-        finally:
-            _redirect_stdout(to=old_stdout) # restore stdout and stderr
-            _redirect_stderr(to=old_stderr) # buffering and flags such as
-                                            # CLOEXEC may be different
+try:
+    import wurlitzer
+except ImportError:
+    os.system("wget https://raw.githubusercontent.com/minrk/wurlitzer/main/wurlitzer.py")
+    import wurlitzer
 
 
 class ExampleWorkflowManager:
@@ -200,18 +167,18 @@ class ExampleWorkflowManager:
 
         # EXECUTE PHYSICS CODE
         print('=> Execute physics code')
-        
         while int(self.actor_dina_iwrap_wf.get_state()) < 2:
-          with output_redirected():
-            (self.pf_active_out,  self.summary_out, self.magnetics_out,
-             self.pf_passive_out, self.equilibrium_out, self.core_profiles_out,
-             self.core_sources_out, self.core_transport_out, self.bndcond_out
-            ) = self.actor_dina_iwrap_wf(self.equilibrium_in, self.magnetics_in, 
-                    self.em_coupling_in, self.pf_active_in, self.pf_passive_in,
-                    self.wall_in, self.core_profiles_in, self.core_sources_in,
-                    self.transport_solver_numerics_in, self.pulse_schedule_in, 
-                    self.pulse_schedule_term_in)
-          print('slices ', *self.summary_out.time)
+            with wurlitzer.pipes() as (out, err): 
+                (self.pf_active_out,  self.summary_out, self.magnetics_out,
+                 self.pf_passive_out, self.equilibrium_out, self.core_profiles_out,
+                 self.core_sources_out, self.core_transport_out, self.bndcond_out
+                ) = self.actor_dina_iwrap_wf(self.equilibrium_in, self.magnetics_in, 
+                        self.em_coupling_in, self.pf_active_in, self.pf_passive_in,
+                        self.wall_in, self.core_profiles_in, self.core_sources_in,
+                        self.transport_solver_numerics_in, self.pulse_schedule_in, 
+                        self.pulse_schedule_term_in)
+            print('slices ', *self.summary_out.time)
+            #print('out=', out.read())
           # SAVE IDSs INTO OUTPUT FILE
             #print( '=> Export output IDSs to local database: ', i )
             #self.output_entry.put( self.equilibrium )
