@@ -372,7 +372,7 @@ class ExampleApp(uiclass, baseclass):
         self.controlData["y0"] = CodeParameter(mytype=float, value=0., comment = 'Tunable coefficient for divertor controller gain at the plasma current termination phase')
         self.controlData["c1_y0"] = CodeParameter(mytype=float, value=0., comment = 'Tunable coefficient for divertor controller gain at the plasma current termination phase')
         self.controlData["c2_y0"] = CodeParameter(mytype=float, value=0., comment = 'Tunable coefficient for divertor controller gain at the plasma current termination phase')
-        self.controlData["t_tran2D"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
+        self.controlData["t_tran2D"] = CodeParameter(mytype=float, value=3500., comment = 'Time when the limiter controller starts to control extended set of the plasma shape parameters to maintain elongated plasma', unit='ms')
         self.controlData["Tu"] = CodeParameter(mytype=float, value=0., comment = 'Minimum time of voltage variation from –Vmax to +Vmax for CS&PF power supplies', name='Tu', unit='s')
         self.controlData["c_cur_max"] = CodeParameter(mytype=int, value=0., comment = 'Fraction of coil current limit when the current limitation alghorithm starts protection', name='c_cur_max')
         
