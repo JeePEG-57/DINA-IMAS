@@ -67,21 +67,22 @@ integer,save :: loop_count = 0
 
 
 include 'parf0'
+include 'parf1'
 include 'parf2'
 include 'parf4'
+include 'parf8'
 
       
 ! DINA parameters
 !    integer,parameter :: npo = 310, ntet = 134 ! parf0
 !    integer,parameter :: mu1 = 1500 ! parf2
 !    integer,parameter :: nr = 65, nz = 129, nwnh = nr*nz ! parf2
-    integer,parameter :: nact = 12, npass = 102 ! parf1 - kf, mu
-    integer,parameter :: npfa = 14, npfp = npass
+    integer :: nact = 12
+    integer :: npfa = 0, npfp = 0
 !    integer,parameter :: nloop=41, nprobe=60 ! parf4
     integer,parameter :: n_ions=7
-    integer,parameter :: n_gaps=6
     
-    integer :: ksepa,key_lh,n_bnd,n_sep,n_sep2,n_ga_dina
+    integer :: ksepa,key_lh,n_bnd,n_sep,n_sep2,n_gaps
 
 integer,save :: npfa2=-1, npfa3=-1, npfp2=-1
 integer,save :: npass2=-1, ngrid2=-1
@@ -97,7 +98,6 @@ real (ids_real),save :: vec(npo) = (/ (0,i=1,npo) /)
 
 
 ! static and prescribed data expressed in DINA terms
-real (ids_real),save :: dina_time=0
 real (ids_real),save :: time_8,tt_8,tay_8
 
 
@@ -148,9 +148,9 @@ real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
     real(ids_real) :: sigma(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo)
     
     real(ids_real) :: xbound(ntet),ybound(ntet),x_sep(mu1),y_sep(mu1),x_sep2(mu1),y_sep2(mu1)
-    real(ids_real) :: gaps(n_gaps)
+    real(ids_real) :: gaps(kf_c)
     
-    real(ids_real) :: vchopper(nact),pf(nact),tcam(npass)
+    real(ids_real) :: vchopper(kf),pf(kf),tcam(mu)
 
     real(ids_real) :: fpol(npo),pptab(npo),fptab(npo)
 
@@ -190,7 +190,7 @@ real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
 real(ids_real) :: cocos_psi = -1.d0
 
 
-integer :: ncirc(14), dircirc(14)
+integer :: ncirc(30), dircirc(30)
 data ncirc(1:14) /1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12/
 data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
 
@@ -203,15 +203,6 @@ print *,'DINA_IMAS Enter'
 
 
 flush(6)
-
-
-
-call ids_copy(pf_active0, pf_active)
-call ids_copy(pf_passive0, pf_passive)
-call ids_copy(magnetics0, magnetics)
-!call ids_copy(equilibrium0, equilibrium)
-!call ids_copy(core_profiles0, core_profiles)
-!call ids_copy(core_sources0, core_sources)
 
 
 
@@ -233,50 +224,68 @@ call system(" ls -ll p_data1 ")
 call system(" pwd")
 
 
-npfa3=size(em_coupling0%mutual_grid_active,2)
-npass2=size(em_coupling0%mutual_grid_passive,2)
+
+if (associated(pf_active0%coil)) then
+  npfa=size(pf_active0%coil)
+else
+  npfa = 0
+endif
+if (associated(pf_passive0%loop)) then
+  npfp = size(pf_passive0%loop)
+else
+  npfp = 0
+end if
+if (associated(magnetics0%flux_loop)) then
+  kloop = size(magnetics0%flux_loop)
+else
+  kloop = 0
+endif
+if (associated(magnetics0%b_field_pol_probe)) then
+  kprobe = size(magnetics0%b_field_pol_probe)
+else
+  kprobe = 0
+endif
+
+
+npfa2=size(em_coupling0%mutual_grid_active,2)
+npfp2=size(em_coupling0%mutual_grid_passive,2)
 ngrid2=size(em_coupling0%mutual_grid_passive,1)
-kloop=size(em_coupling0%mutual_loops_grid,1)
-kprobe=size(em_coupling0%field_probes_grid,1)
+kloop2=size(em_coupling0%mutual_loops_grid,1)
+kprobe2=size(em_coupling0%field_probes_grid,1)
 
 
-npfa2=size(pf_active0%coil)
-npfp2=size(pf_passive0%loop)
 
-
-print *,'npfa, npfa2, npfa3 =', npfa, npfa2, npfa3
+print *,'npfa, npfa2 =', npfa, npfa2
 print *,'npfp, npfp2 =', npfp, npfp2
 
-print *,'npass, npass2 =', npass, npass2
 print *,'nloop, kloop =', nloop, kloop
 print *,'nprobe, kprobe =', nprobe, kprobe
 print *,'nwnh, ngrid2 =', nwnh, ngrid2
 
 
-if(npfa.gt.npfa2)then
+if(npfa.ne.npfa2)then
   stop
 end if
-
-if(npfp.gt.npfp2)then
+if(npfp.ne.npfp2)then
   stop
 end if
-
-if(npfa.ne.npfa3)then
-  stop
-end if
-
-if(npass.ne.npass2)then
-  stop
-end if
-
 if(nwnh.ne.ngrid2)then
   stop
 end if
-
-if(kloop.gt.nloop)then
+if(kloop.ne.kloop2)then
+  stop
+end if
+if(kprobe.ne.kprobe2)then
   stop
 end if
 
+
+if(npfp.gt.mu)then
+  stop
+end if
+if(kloop.gt.nloop)then
+  stop
+end if
 if(kprobe.gt.nprobe)then
   stop
 end if
@@ -284,22 +293,22 @@ end if
 
 
 ALLOCATE(fluxarr(nwnh,nact))
-ALLOCATE(vesarr(nwnh,npass))
+ALLOCATE(vesarr(nwnh,npfp))
 ALLOCATE(pslgreen(nwnh,kloop))
 ALLOCATE(bprgreen(nwnh,kprobe))
 
-ALLOCATE(vesgreen(kloop,npass))
-ALLOCATE(vesprobe(kprobe,npass))
+ALLOCATE(vesgreen(kloop,npfp))
+ALLOCATE(vesprobe(kprobe,npfp))
 
 ALLOCATE(pfgreen(kloop,nact))
 ALLOCATE(pfprobe(kprobe,nact))
 
 ALLOCATE(pfind(nact,nact))
-ALLOCATE(pmj(npass,npass))
-ALLOCATE(pfc(npass,nact))
+ALLOCATE(pmj(npfp,npfp))
+ALLOCATE(pfc(npfp,nact))
 
 ALLOCATE(pfres(nact))
-ALLOCATE(rcam(npass))
+ALLOCATE(rcam(npfp))
 
 
 
@@ -312,7 +321,7 @@ ALLOCATE(rcam(npass))
   write(*,100) shape(pfres),shape(rcam),shape(xu),shape(yu)
 
 
-write(*,*) 'Entering DINA_IMAS, loop_count, dina_time = ', loop_count, dina_time
+write(*,*) 'Entering DINA_IMAS, loop_count, tt = ', loop_count, tt
 
 flush(6)
 
@@ -328,7 +337,7 @@ pmj = em_coupling0%mutual_passive_passive
 
 
 allocate(pf_turns(npfa))
-pf_turns(1:npfa) = 0.d0
+pf_turns(1:npfa) = 1.d0
 do i=1,npfa
     pf_turns(i) = dabs(pf_active0%coil(i)%element(1)%turns_with_sign)
 enddo
@@ -357,11 +366,11 @@ enddo
 ! Resistances
 write(*,100) shape(pf_active0%coil%resistance),shape(pf_passive0%loop%resistance)
 
-print *,'pf_active0%coil%resistance',npfa2
-print *,pf_active0%coil(1:npfa2)%resistance
+print *,'pf_active0%coil%resistance',npfa
+print *,pf_active0%coil(1:npfa)%resistance
 
-print *,'pf_passive0%loop%resistance',npfp2
-print *,pf_passive0%loop(1:npfp2)%resistance
+print *,'pf_passive0%loop%resistance',npfp
+print *,pf_passive0%loop(1:npfp)%resistance
 
 
 
@@ -370,7 +379,7 @@ do i=1,npfa
   pfres(ncirc(i)) = pfres(ncirc(i)) + pf_active0%coil(i)%resistance
 enddo
 
-rcam(1:npass) = pf_passive%loop(1:npfp)%resistance
+rcam(1:npfp) = pf_passive0%loop(1:npfp)%resistance
 
 
 ! Grid
@@ -495,8 +504,8 @@ call write_cputime(0.d0, 0.d0, 1)
 
 
 
-     call  dina_v96_in(npass,nact,kloop,kprobe,&
-& 	gridrange,nact,npass,&
+     call  dina_v96_in(npfp,nact,kloop,kprobe,&
+& 	gridrange,nact,npfp,&
 &	fluxarr,vesarr, pslgreen,bprgreen,&
 &	pfind,pmj,pfc, pfres,rcam,&
 &	xu,yu,ke,key,&
@@ -543,9 +552,6 @@ call write_cputime(0.d0, 0.d0, 1)
   
      CurTimeStep = 1
      
-  if(associated(pf_passive%time)) then
-    !allocate(pf_passive%time(1))
-  endif
   
   if (associated(equilibrium0%time_slice)) then
   if (associated(equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm)) then
@@ -578,13 +584,13 @@ call write_cputime(0.d0, 0.d0, 1)
 
 	!tokc=0.
   if (associated(pf_passive0%loop(1)%current)) then  
-    do i=1,npass
+    do i=1,npfp
       tcam(i) = pf_passive0%loop(i)%current(CurTimeStep)
       !tokc=tokc+tcam(i)
     enddo
     print *,'Passive currents are assigned'
   else 
-    do i=1,npass
+    do i=1,npfp
       tcam(i) = 0.d0
     enddo
     print *,'Passive currents are set to zero'
@@ -598,7 +604,7 @@ call write_cputime(0.d0, 0.d0, 1)
 
   
        call dina_input2(tt,tpl, n,a, pptab,fptab &
-     & , npass,tcam, nact,pf,rmag,zmag,psi_tr, rs0,bt0)
+     & , npfp,tcam, nact,pf,rmag,zmag,psi_tr, rs0,bt0)
     
     endif
     endif
@@ -779,17 +785,26 @@ write(*,*) '!!!dina_outp enter'
      & n_bnd,xbound,ybound,&
      & n_sep,x_sep,y_sep,&
      & n_sep2,x_sep2,y_sep2,&
-     & n_ga_dina,gaps,&
+     & n_gaps,gaps,&
      & betap,betat,&
      & tene,teit_98)
      
 
-        call dina_wr_output(wr_imas)
+  call dina_wr_output(wr_imas)
 
         
 !  	call dina_map(n1,te0,tq0,pne, &
 !     & pd0,pt0,sigma,jbut,aj0,qe0,qq0,a_xx,ai_xx)
-     
+
+
+
+  call ids_copy(pf_active0, pf_active)
+  call ids_copy(pf_passive0, pf_passive)
+  call ids_copy(magnetics0, magnetics)
+  !call ids_copy(equilibrium0, equilibrium)
+  !call ids_copy(core_profiles0, core_profiles)
+  !call ids_copy(core_sources0, core_sources)
+
         
 
 write(*,*) '!!!solpsza enter'
@@ -797,8 +812,6 @@ write(*,*) '!!!solpsza enter'
 
     write(*,*) 'yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx= ', &
     & yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
-
-    dina_time=tt
  
     pec = wr_imas(21)
 
@@ -841,7 +854,7 @@ write(*,*) '!!!solpsza enter'
       end do
 
 
-      n_output2=n_gaps+nact+npass
+      n_output2=n_gaps+nact+npfp
 
       
       
@@ -879,7 +892,7 @@ write(*,*) '!!!solpsza enter'
 magnetics%ids_properties%homogeneous_time = 1
 
 if (.NOT.associated(magnetics%time)) allocate(magnetics%time(1))
-magnetics%time(1) = dina_time
+magnetics%time(1) = tt
 
 ! Loops
 if (.NOT.associated(magnetics%flux_loop)) allocate(magnetics%flux_loop(kloop))
@@ -898,44 +911,13 @@ end do
 
   
 
-!write(*,*) '!!!ids_copy pf_active0 enter'
-!call ids_copy(pf_active0,pf_active)
-!write(*,*) '!!!ids_copy pf_active0 exit'
-!write(*,*) '!!!ids_copy pf_passive0 enter'
-!call ids_copy(pf_passive0,pf_passive)
-!write(*,*) '!!!ids_copy pf_passive0 exit'
-
-
-
-print *,' nact=',nact
-! do i=1,npfa
-! 
-!         allocate(pf_active%coil(i)%current%data(1))
-! !        allocate(pf_active%coil(i)%current%time(1))
-! 
-!         allocate(pf_active%coil(i)%voltage%data(1))
-! !        allocate(pf_active%coil(i)%voltage%time(1))
-! enddo
-! 
-! allocate(pf_active%time(1))
-
+! PF Active
 
 pf_active%ids_properties%homogeneous_time = 1
 if (.NOT.associated(pf_active%time)) allocate(pf_active%time(1))
-  pf_active%time(1) = dina_time
+pf_active%time(1) = tt
+  
 
-  
-  
-!pf_active%global_quantities%psi_coils_list(:)
-!if(.NOT.associated(pf_active%global_quantities%psi_coils_average)) allocate(pf_active%global_quantities%psi_coils_average(1))
-!if(.NOT.associated(pf_active%global_quantities%time)) allocate(pf_active%global_quantities%time(1))
-!pf_active%global_quantities%psi_coils_average(1) = wr_imas(33)
-!pf_active%global_quantities%time(1) = dina_time
-  
-  
-  
-  
-!if (.NOT.associated(pf_active%coil)) allocate(pf_active%coil(npfa))
 do i=1,npfa
   if (.NOT.associated(pf_active%coil(i)%current%data)) allocate(pf_active%coil(i)%current%data(1))
     pf_active%coil(i)%current%data(1) = dircirc(i)*pf(ncirc(i))
@@ -990,24 +972,20 @@ enddo
 ! pf_active%supply(12)%voltage%data(1) = wr_imas(62) ! VS3
 
 
+!pf_active%global_quantities%psi_coils_list(:)
+!if(.NOT.associated(pf_active%global_quantities%psi_coils_average)) allocate(pf_active%global_quantities%psi_coils_average(1))
+!if(.NOT.associated(pf_active%global_quantities%time)) allocate(pf_active%global_quantities%time(1))
+!pf_active%global_quantities%psi_coils_average(1) = wr_imas(33)
+!pf_active%global_quantities%time(1) = tt
 
 
-
-print *,' npass=',npass
-    
-! do i=1,npfp
-!     allocate(pf_passive%loop(i)%current(1))
-! end do
-! 
-! allocate(pf_passive%time(1))
 
 
 pf_passive%ids_properties%homogeneous_time = 1
 if (.NOT.associated(pf_passive%time)) allocate(pf_passive%time(1))
-  pf_passive%time(1) = dina_time
+pf_passive%time(1) = tt
 
-!if (.NOT.associated(pf_passive%loop)) allocate(pf_passive%loop(npfp))
-do j=1,npass
+do j=1,npfp
   if (.NOT.associated(pf_passive%loop(j)%current)) allocate(pf_passive%loop(j)%current(1))
     pf_passive%loop(j)%current(1) = tcam(j)
 end do
@@ -1016,22 +994,14 @@ end do
 
 flush(6)
    
-! Work with IDS
 
-    TimeSteps = 1 ! One time step filled for put_slice function
-    CurTimeStep = 1
-
-
-! Allocations summary
-if(.NOT.associated(summary%time)) then 
-  allocate(summary%time(TimeSteps))
-  print *,'dina_imas summary reallocation, loop_count = ', loop_count
-endif
-
+  TimeSteps = 1 ! One time step filled for put_slice function
+  CurTimeStep = 1
 
 
 ! Filling summary
 summary%ids_properties%homogeneous_time = 1
+allocate(summary%time(TimeSteps))
 summary%time(CurTimeStep) = tt;
 
 print *,' teit_98 tene tqc==',teit_98,tene
@@ -1141,11 +1111,11 @@ AllocIfNull1(summary%heating_current_drive%power_additional%value, wr_imas(66))
 
 
 ! Filling equilibrium
-    allocate(equilibrium%time_slice(TimeSteps))
-    allocate(equilibrium%time(TimeSteps))
-    equilibrium%ids_properties%homogeneous_time = 1
-    equilibrium%time_slice(CurTimeStep)%time = tt
-    equilibrium%time(CurTimeStep) = tt ![s]  
+equilibrium%ids_properties%homogeneous_time = 1
+allocate(equilibrium%time_slice(TimeSteps))
+equilibrium%time_slice(CurTimeStep)%time = tt
+allocate(equilibrium%time(TimeSteps))
+equilibrium%time(CurTimeStep) = tt
   
 ! 0D Quantities
         equilibrium%time_slice(CurTimeStep)%global_quantities%ip = tpl ![A]
