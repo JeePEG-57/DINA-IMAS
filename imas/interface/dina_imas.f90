@@ -72,17 +72,13 @@ include 'parf2'
 include 'parf4'
 include 'parf8'
 
-      
-! DINA parameters
-!    integer,parameter :: npo = 310, ntet = 134 ! parf0
-!    integer,parameter :: mu1 = 1500 ! parf2
-!    integer,parameter :: nr = 65, nz = 129, nwnh = nr*nz ! parf2
-    integer :: nact = 12
-    integer :: npfa = 0, npfp = 0
-!    integer,parameter :: nloop=41, nprobe=60 ! parf4
-    integer,parameter :: n_ions=7
-    
-    integer :: ksepa,key_lh,n_bnd,n_sep,n_sep2,n_gaps
+
+integer :: nact = 12
+integer :: npfa = 0, npfp = 0
+
+integer,parameter :: n_ions=7
+
+integer :: ksepa,key_lh,n_bnd,n_sep,n_sep2,n_gaps
 
 integer,save :: npfa2=-1, npfa3=-1, npfp2=-1
 integer,save :: npass2=-1, ngrid2=-1
@@ -129,50 +125,51 @@ real (ids_real),save :: output_3(npo) = (/ (0,i=1,npo) /)
 real (ids_real),save :: output_4(npo) = (/ (0,i=1,npo) /)
 
     
-    real(ids_real) :: tpl = 1000.d0, tt = 0.d0
-    real(ids_real) :: psi_ax,psi_bnd,psi_sep,psi_sep2
-    real(ids_real) :: rs0 = 1.d0, bt0 = 1.d0
-    real(ids_real) :: betap = 0.d0, betat = 0.d0
-    real(ids_real) :: tene,teit_98
-    real(ids_real) :: pec
-    real(ids_real) :: rmag = 1.d0, zmag = 0.d0
-    real(ids_real) :: b_field_ax = 1.d0
+real(ids_real) :: tpl = 1000.d0, tt = 0.d0
+real(ids_real) :: psi_ax,psi_bnd,psi_sep,psi_sep2
+real(ids_real) :: rs0 = 1.d0, bt0 = 1.d0
+real(ids_real) :: betap = 0.d0, betat = 0.d0
+real(ids_real) :: tene,teit_98
+real(ids_real) :: pec
+real(ids_real) :: rmag = 1.d0, zmag = 0.d0
+real(ids_real) :: b_field_ax = 1.d0
+real(ids_real) :: tokc = 0.d0
 
-    real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
+real(ids_real) :: x(nr),y(nz),psi(nr,nz),psi1(nr,nz),curr_d(nr,nz)
 
-    real(ids_real) :: a(npo),ai(npo),psi_tr(npo),psi_eq(npo),phi_1D(npo),tok1(npo),q(npo)
-    
-    real(ids_real) :: a_xx(npo),ai_xx(npo)
+real(ids_real) :: a(npo),ai(npo),psi_tr(npo),psi_eq(npo),phi_1D(npo),tok1(npo),q(npo)
 
-    real(ids_real) :: pd0(npo),pt0(npo),pne(npo),te0(npo),tq0(npo),press(npo),qe0(npo),qq0(npo)
-    real(ids_real) :: sigma(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo)
-    
-    real(ids_real) :: xbound(ntet),ybound(ntet),x_sep(mu1),y_sep(mu1),x_sep2(mu1),y_sep2(mu1)
-    real(ids_real) :: gaps(kf_c)
-    
-    real(ids_real) :: vchopper(kf),pf(kf),tcam(mu)
+real(ids_real) :: a_xx(npo),ai_xx(npo)
 
-    real(ids_real) :: fpol(npo),pptab(npo),fptab(npo)
+real(ids_real) :: pd0(npo),pt0(npo),pne(npo),te0(npo),tq0(npo),press(npo),qe0(npo),qq0(npo)
+real(ids_real) :: sigma(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo)
 
-    real(ids_real) :: wr_imas(150)
+real(ids_real) :: xbound(ntet),ybound(ntet),x_sep(mu1),y_sep(mu1),x_sep2(mu1),y_sep2(mu1)
+real(ids_real) :: gaps(kf_c)
+
+real(ids_real) :: vchopper(kf),pf(kf),tcam(mu)
+
+real(ids_real) :: fpol(npo),pptab(npo),fptab(npo)
+
+real(ids_real) :: wr_imas(150)
 
 !    real(ids_real),parameter :: pi = 3.14159265358979323846
 !    real(ids_real) :: coef_ppx,coef_pffx,pmu0
-    
-    real(ids_real) :: bprobe(nprobe), psloop(nloop)
-    
-    real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
-    
-    real(ids_real) :: dsep_ref
+
+real(ids_real) :: bprobe(nprobe), psloop(nloop)
+
+real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
+
+real(ids_real) :: dsep_ref
 
 
-  integer :: TimeSteps, CurTimeStep
-  
-  integer,save :: n1, n2, nu, n, i_wr
+integer :: TimeSteps = 1, CurTimeStep = 1
 
-  integer,save :: i_bnd, i_restart
+integer,save :: n1, n2, nu, n, i_wr
 
-real (ids_real),save ::  gridrange(4)
+integer,save :: i_bnd, i_restart
+
+real(ids_real), save ::  gridrange(4)
 real(ids_real), dimension(:,:), ALLOCATABLE,save :: fluxarr,vesarr,pslgreen,bprgreen,pfind,pmj
 real(ids_real), dimension(:,:), ALLOCATABLE,save :: pfc,pfgreen,vesgreen,pfprobe,vesprobe
 real(ids_real), dimension(:), ALLOCATABLE,save :: pfres, rcam, xu, yu
@@ -181,11 +178,8 @@ real(ids_real), dimension(:), allocatable,save::  pf_turns
 real(ids_real),save :: cpu_old = 0.d0, cpu_new
 
 real(ids_real) :: yfluxd_xx,yfluxt_xx,yfluxe_xx,yfluxi_xx,ysbound_xx
-
-real(ids_real) :: pne_cop(npo),pd0_cop(npo),pt0_cop(npo)
  
-	character *20 apr
-
+character *20 apr
 	
 real(ids_real) :: cocos_psi = -1.d0
 
@@ -312,15 +306,6 @@ ALLOCATE(rcam(npfp))
 
 
 
-
-
-  write(*,*) 'Shapes of locally allocated arrays'
-  write(*,100) shape(fluxarr),shape(vesarr),shape(pslgreen),shape(bprgreen)
-  write(*,100) shape(pfgreen),shape(vesgreen),shape(pfprobe),shape(vesprobe)
-  write(*,100) shape(pfind),shape(pmj),shape(pfc)
-  write(*,100) shape(pfres),shape(rcam),shape(xu),shape(yu)
-
-
 write(*,*) 'Entering DINA_IMAS, loop_count, tt = ', loop_count, tt
 
 flush(6)
@@ -393,13 +378,21 @@ gridrange(4)=x(nr)
 
 
 ! Limiter
+if (.NOT.associated(wall0%description_2d)) then
+  print*, 'wall%description_2d is NULL. STOP'
+  stop
+endif
+if (.NOT.associated(wall0%description_2d(1)%limiter%unit)) then
+  print*, 'wall0%description_2d(1)%limiter%unit is NULL. STOP'
+  stop
+endif
 
 nu = size(wall0%description_2d(1)%limiter%unit)
 ke = 0
 do i = 1, nu
   ke = ke + size(wall0%description_2d(1)%limiter%unit(i)%outline%r,1)
 enddo
-print *,'ke, nu =', ke, nu
+print *,'Limiter: ke, nu =', ke, nu
 
 ALLOCATE(xu(ke))
 ALLOCATE(yu(ke))
@@ -472,8 +465,9 @@ do i=2,nu
 enddo
 
 
-print *,'Limiter ke, k =', ke, k
-if(ke.gt.k)then
+if(ke.ne.k)then
+  print *,'Limiter ke, k =', ke, k
+  print*, 'Limiter reading error. STOP'
   stop
 end if
 do i=1,ke
@@ -482,14 +476,23 @@ enddo
 
 
 
-  write(*,*) "fluxarr(1:3)=",fluxarr(1,1:3)
-  write(*,*) "vesarr(1:3)=",vesarr(1,1:3)
-  write(*,*) "pslgreen(1:3)=",pslgreen(1,1:3)
-  write(*,*) "bprgreen(1:3)=",bprgreen(1,1:3)
-  write(*,*) "pfres(1:3)=",pfres(1:3)
-  write(*,*) "rcam(1:3)=",rcam(1:3)
+write(*,*) 'Shapes of locally allocated arrays'
+write(*,100) shape(fluxarr),shape(vesarr),shape(pslgreen),shape(bprgreen)
+write(*,100) shape(pfgreen),shape(vesgreen),shape(pfprobe),shape(vesprobe)
+write(*,100) shape(pfind),shape(pmj),shape(pfc)
+write(*,100) shape(pfres),shape(rcam),shape(xu),shape(yu)
 
-  write(*,*) "gridrange=",gridrange
+
+write(*,*) "fluxarr(1:3)=",fluxarr(1,1:3)
+write(*,*) "vesarr(1:3)=",vesarr(1,1:3)
+write(*,*) "pslgreen(1:3)=",pslgreen(1,1:3)
+write(*,*) "bprgreen(1:3)=",bprgreen(1,1:3)
+write(*,*) "pfres(1:3)=",pfres(1:3)
+write(*,*) "rcam(1:3)=",rcam(1:3)
+
+write(*,*) "gridrange=",gridrange
+
+
 
 flush(6)
 
@@ -553,18 +556,22 @@ call write_cputime(0.d0, 0.d0, 1)
      CurTimeStep = 1
      
   
-  if (associated(equilibrium0%time_slice)) then
-  if (associated(equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm)) then
-  
+if (associated(equilibrium0%time_slice)) then
+if (associated(equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm)) then
+if (associated(core_profiles0%profiles_1d)) then
+if (associated(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)) then
+
+  print*, 'Applying restart...'
+
 	tt = equilibrium0%time_slice(CurTimeStep)%time
 	tpl = equilibrium0%time_slice(CurTimeStep)%global_quantities%ip
 	n = size(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)
 	a(1:n) = equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n)
 	
-        write(*,*) 'DINA_IMAS - core_profiles poloidal flux: '
+  write(*,*) 'DINA_IMAS - core_profiles poloidal flux: '
 	psi_tr(1:n) = cocos_psi * core_profiles0%profiles_1d(CurTimeStep)%grid%psi(1:n)
 	
-        bt0 = core_profiles0%vacuum_toroidal_field%b0(1)
+  bt0 = core_profiles0%vacuum_toroidal_field%b0(1)
 	rs0 = core_profiles0%vacuum_toroidal_field%r0
 	rmag=equilibrium0%time_slice(CurTimeStep)%global_quantities%magnetic_axis%r ![m]
         zmag=equilibrium0%time_slice(CurTimeStep)%global_quantities%magnetic_axis%z ![m]
@@ -576,19 +583,20 @@ call write_cputime(0.d0, 0.d0, 1)
   
 	do i=1,npfa
 	  pf(ncirc(i)) = dircirc(i)*pf_active0%coil(i)%current%data(CurTimeStep)
-	  
-	  print *,' i pf==',i,pf(i)
-	 
+	  print *,' i pfa==',i,pf_active0%coil(i)%current%data(CurTimeStep) 	 
 	enddo
-	
+	print *,'Active currents are assigned to:'
+  do i=1,nact
+    print *,' i pf==',i,pf(i)
+  enddo
 
-	!tokc=0.
+	tokc=0.d0
   if (associated(pf_passive0%loop(1)%current)) then  
     do i=1,npfp
       tcam(i) = pf_passive0%loop(i)%current(CurTimeStep)
-      !tokc=tokc+tcam(i)
+      tokc=tokc+tcam(i)
     enddo
-    print *,'Passive currents are assigned'
+    print *,'Passive currents are assigned, tokc=', tokc
   else 
     do i=1,npfp
       tcam(i) = 0.d0
@@ -596,18 +604,20 @@ call write_cputime(0.d0, 0.d0, 1)
     print *,'Passive currents are set to zero'
   endif
     
-  
-  
-        i_restart=1
-    
-    	call dina_input2_remap(n,pptab,fptab,a)
+   
+    i_restart=1
 
-  
-       call dina_input2(tt,tpl, n,a, pptab,fptab &
-     & , npfp,tcam, nact,pf,rmag,zmag,psi_tr, rs0,bt0)
+    call ONE2d()
     
-    endif
-    endif
+    call dina_input2_remap(n,pptab,fptab,a)
+  
+    call dina_input2(tt,tpl, n,a, pptab,fptab &
+  & , npfp,tcam, nact,pf,rmag,zmag,psi_tr, rs0,bt0)
+    
+endif
+endif
+endif
+endif ! end of restart assignment
     
 end if ! end of first_call
 
@@ -691,10 +701,6 @@ end if
  pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)
  pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)
- 
- pne_cop(1:n1) = pne(1:n1) 
- pd0_cop(1:n1) = pd0(1:n1) 
- pt0_cop(1:n1) = pt0(1:n1) 
  
       apr='--&pne-' 
       print 71,apr,(pne(i),i=1,n1) 
