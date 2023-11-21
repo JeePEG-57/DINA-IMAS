@@ -1,5 +1,6 @@
 *~
 *.[oa]
+*.mod
 *.exe
 #*#
 *.tif
@@ -50,7 +51,7 @@ imas/python_wf/DINA_Parameters.xml
 imas/python_wf/KMC_Parameters.xml
 imas/python_wf/control_init_1.dat
 __pycache__/
-
+.vscode
  
 *cputime*
 */temp
