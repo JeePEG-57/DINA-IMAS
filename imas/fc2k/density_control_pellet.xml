@@ -57,7 +57,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/density_control_pellet</actorFolder>
   <semantic>ITER</semantic>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

@@ -2,20 +2,16 @@ DINADIR := ../../src/scenario
 CONTROLDIR := ../../src/controllers
 ASTRADIR := ../astra_transp
 
-
 PACKAGES =
 PACKAGES += imas-$(FCOMPILER)
 PACKAGES += libxml-2.0
 PACKAGES += xmllib
 
-F90_gfortran=$(FCOMPILER) -w
-COPTS_gfortran = -O0 -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config $(PACKAGES) --cflags` -g
-#COPTS_gfortran += -traceback -check-all -fp-stack-check
-LIBS_gfortran=`pkg-config $(PACKAGES) --libs`
-
-
-f2c= $(FCOMPILER) -w -I$(DINADIR) -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -g
-#f2c+= -traceback -check all -fp-stack-check
+F90 ?= $(FCOMPILER) -w
+FFLAGS ?= -O0 -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none
+FFLAGS += -fpp -mcmodel=medium
+FFLAGS += `pkg-config $(PACKAGES) --cflags`
+LDFLAGS += `pkg-config $(PACKAGES) --libs` -mcmodel=large -Wl,--no-relax
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 
@@ -34,27 +30,27 @@ all: $(TARGETS)
 #--------------------- gfortran ------------------------
 test_dina: test_dina_imas.o dina_put_slice.a dina_imas.a kmc.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 test_dina_pfpo1a: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 test_dina_pfpo1b: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_pfpo1_1b.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 test_dina_pfpo1c: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 test_dina_2madiv: test_dina_imas.o dina_put_slice.a dina_imas.a kmc_2madiv.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 test_dina_astra: test_dina_imas_astra.o dina_put_slice.a dina_imas.a kmc.a solps_imas.a astra_transp_density.a
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 astra_transp_density.a: $(ASTRADIR)/astra_transp_density.a
 	@echo "   * $^ -> $@"
@@ -62,23 +58,23 @@ astra_transp_density.a: $(ASTRADIR)/astra_transp_density.a
 
 test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 test_wr_prof: test_wr_prof.o wr_prof_imas.o n_dina_imas3.o
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
+	$(F90) $(FFLAGS) -c -o $@ $^
 
 wr_prof_imas.o: wr_prof_imas.f90
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) $(COPTS_gfortran) -I$(DINADIR) -c -o $@ $^
+	$(F90) $(FFLAGS) -I$(DINADIR) -c -o $@ $^
 
 %.o: %.f
 	@echo "   * $^ -> $@"
-	$(f2c) -c $<
+	$(F90) $(FFLAGS) -c $<
 
 dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"

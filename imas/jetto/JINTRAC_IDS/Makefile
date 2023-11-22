@@ -3,7 +3,7 @@ COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-l
 #LIBS_gfortran=-L$(UAL)/fortraninterface -lUALFORTRANInterface_gfortran -Wl,-rpath,$(UAL)/itmcatalog/lib -L$(UAL)/lowlevel -lUALLowLevel -lm
 LIBS_gfortran=`pkg-config imas-gfortran --libs`
 
-f2c= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
+CC ?= gfortran -w  -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC  
 
 TARGETS += jetto_prof_to_ids jetto_prof_from_ids
 

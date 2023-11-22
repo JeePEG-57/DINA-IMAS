@@ -108,7 +108,7 @@
   <actorFolder>org/iter/imas/dinatransp_density</actorFolder>
   <semantic>ITER</semantic>
   <pythonActorDir>$HOME/public/PYTHON_ACTORS</pythonActorDir>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

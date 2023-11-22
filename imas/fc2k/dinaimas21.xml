@@ -225,7 +225,7 @@
   <actorFolder>org/iter/imas/dinaimas21</actorFolder>
   <semantic>ITER</semantic>
   <pythonActorDir>../python_wf/PYTHON_DINA_ACTORS</pythonActorDir>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

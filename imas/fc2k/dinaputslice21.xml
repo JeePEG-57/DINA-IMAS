@@ -147,7 +147,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/dinaputslice21</actorFolder>
   <semantic>ITER</semantic>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

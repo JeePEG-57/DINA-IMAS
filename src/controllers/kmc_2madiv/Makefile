@@ -1,10 +1,11 @@
 # Makefile for compilation of DINA components
 
-AR = ar
-ARFLAGS = -ru
-FC = gfortran
+AR ?= ar
+ARFLAGS ?= -ru
+FC ?= gfortran
 
-f2c= cc -fpic -w
+CC ?= cc
+CFLAGS ?= -fpic -w
 
 FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
 
@@ -35,7 +36,7 @@ $(DINA_KAV): $(CONTROLOBJ)
 	$(FC) $(FFLAGS) -c $<
 
 %.o: %.c
-	$(f2c)  -c $<
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm -f *.o 

@@ -93,7 +93,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/dinatransp_energy</actorFolder>
   <semantic>ITER</semantic>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

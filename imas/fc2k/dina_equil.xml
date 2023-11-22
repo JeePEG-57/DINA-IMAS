@@ -84,7 +84,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/dina_equil</actorFolder>
   <semantic>ITER</semantic>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

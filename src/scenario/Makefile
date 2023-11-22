@@ -1,12 +1,13 @@
 # Makefile for compilation of DINA components
 
-AR = ar
-ARFLAGS = -ru
-FC = gfortran
+AR ?= ar
+ARFLAGS ?= -ru
+FC ?= gfortran
 
-f2c= cc -fpic
+CC ?= cc -fpic
 
-FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
+FFLAGS ?= -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
+FFLAGS += -fpp -mcmodel=medium
 
 DINASRC = \
 		a_dina.f  add.f atsv_kav.f\
@@ -41,8 +42,7 @@ dina_99.a: $(DINAOBJ)
 	$(FC) $(FFLAGS) -c $<
 
 %.o: %.c
-	$(f2c)  -c $<
-
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm -f *.o 

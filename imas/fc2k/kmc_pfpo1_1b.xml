@@ -629,7 +629,7 @@
   <keplerFolder>/home/ITER/dubrovm/.local/Kepler/MY2.5p4-3.0.6/kepler</keplerFolder>
   <ptFolder>empty</ptFolder>
   <homeFolder>/home/ITER/dubrovm</homeFolder>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <lang>fortran</lang>
   <HasTimeSlice>false</HasTimeSlice>

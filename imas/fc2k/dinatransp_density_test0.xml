@@ -66,7 +66,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/dinatransp_density_test0</actorFolder>
   <semantic>ITER</semantic>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

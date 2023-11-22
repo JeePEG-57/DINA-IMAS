@@ -1,12 +1,9 @@
-F90_gfortran=gfortran -w
-COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
-LIBS_gfortran=`pkg-config imas-gfortran --libs`
+F90 ?= gfortran -w
+FFLAGS ?= -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none -g
+FFLAGS += `pkg-config imas-ifort --cflags`
+LIBS = `pkg-config imas-ifort --libs`
 
 XLIB= /usr/X11R6/lib
-
-#f2c= g77 -ff2c -fno-automatic
-f2c= gfortran -w  -ffixed-line-length-none -fno-automatic -fPIC
-
 
 S=./
 V=$(S)
@@ -53,57 +50,57 @@ astra_sources_valve.a: astra_sources_valve.o $(os_s_puff)
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
+	$(F90) $(FFLAGS) -c -o $@ $^
 
 p_4dina:	$(os_d)
-		gfortran -o p_4dina $(os_d) -lm -L$(XLIB) -lX11
+		$(FC) -o p_4dina $(os_d) -lm -L$(XLIB) -lX11
 
 
 a_main_dina.o:	$(S)a_main_dina.f
-		$(f2c) -c   -w   $(S)a_main_dina.f
+		$(F90) $(FFLAGS) -c -w $(S)a_main_dina.f
 
 a_dina.o:	$(S)a_dina.f
-		$(f2c) -c   -w   $(S)a_dina.f
+		$(F90) $(FFLAGS) -c -w $(S)a_dina.f
 
 
 add_dll.o:	$(S)add_dll.f
-		$(f2c) -c   -w    $(S)add_dll.f
+		$(F90) $(FFLAGS) -c -w  $(S)add_dll.f
 
 feed_pel.o:	$(S)feed_pel.f
-		$(f2c) -c   -w    $(S)feed_pel.f
+		$(F90) $(FFLAGS) -c -w  $(S)feed_pel.f
 
 feed_src.o:	$(S)feed_src.f
-		$(f2c) -c   -w    $(S)feed_src.f
+		$(F90) $(FFLAGS) -c -w  $(S)feed_src.f
 
 tran6.o:	$(S)tran6.f
-		$(f2c) -c   -w    $(S)tran6.f
+		$(F90) $(FFLAGS) -c -w  $(S)tran6.f
 
 tran_pel.o:	$(S)tran_pel.f
-		$(f2c) -c   -w    $(S)tran_pel.f
+		$(F90) $(FFLAGS) -c -w  $(S)tran_pel.f
 
 tran_neut.o:	$(S)tran_neut.f
-		$(f2c) -c   -w    $(S)tran_neut.f
+		$(F90) $(FFLAGS) -c -w  $(S)tran_neut.f
 
 main_astra.o:	$(S)main_astra.f
-		$(f2c) -c   -w    $(S)main_astra.f
+		$(F90) $(FFLAGS) -c -w  $(S)main_astra.f
 mainp_astra.o:	$(S)mainp_astra.f
-		$(f2c) -c   -w    $(S)mainp_astra.f
+		$(F90) $(FFLAGS) -c -w  $(S)mainp_astra.f
 
 solsrs_IMAS.o:	$(S)solsrs_IMAS.f
-		$(f2c) -c   -w    $(S)solsrs_IMAS.f
+		$(F90) $(FFLAGS) -c -w  $(S)solsrs_IMAS.f
 solsrsP_IMAS.o:	$(S)solsrsP_IMAS.f
-		$(f2c) -c   -w    $(S)solsrsP_IMAS.f
+		$(F90) $(FFLAGS) -c -w  $(S)solsrsP_IMAS.f
 
 neutex_IMAS.o:	$(S)neutex_IMAS.f
-		$(f2c) -c   -w    $(S)neutex_IMAS.f
+		$(F90) $(FFLAGS) -c -w  $(S)neutex_IMAS.f
 
 pelsrs1_IMAS.o:	$(S)pelsrs1_IMAS.f
-		$(f2c) -c   -w    $(S)pelsrs1_IMAS.f
+		$(F90) $(FFLAGS) -c -w  $(S)pelsrs1_IMAS.f
 
 solpsz3.o:	$(S)solpsz3.f
-		$(f2c) -c   -w    $(S)solpsz3.f
+		$(F90) $(FFLAGS) -c -w  $(S)solpsz3.f
 nbicomR_IMAS.o:	$(S)nbicomR_IMAS.f
-		$(f2c) -c   -w    $(S)nbicomR_IMAS.f
+		$(F90) $(FFLAGS) -c -w  $(S)nbicomR_IMAS.f
 
 clean:
 	rm -f *.o
