@@ -147,7 +147,7 @@ real(ids_real) :: sigma(npo),jbut(npo),aj0(npo),ajae(npo),zeff(npo)
 real(ids_real) :: xbound(ntet),ybound(ntet),x_sep(mu1),y_sep(mu1),x_sep2(mu1),y_sep2(mu1)
 real(ids_real) :: gaps(kf_c)
 
-real(ids_real) :: vchopper(kf),pf(kf),tcam(mu)
+real(ids_real) :: vchopper0(kf),vchopper(kf),pf(kf),tcam(mu)
 
 real(ids_real) :: fpol(npo),pptab(npo),fptab(npo)
 
@@ -755,13 +755,35 @@ write(*,*) 'dina_imas loop_count = ', loop_count
       n_input2=38
 
 do i=1,n_input1
-input_1(i)=arr_in1(i)
+!input_1(i)=arr_in1(i)
+input_1(i) = 0.d0
 !print *,' i input_1=',i,input_1(i)
 end do
 do i=1,n_input2
-input_2(i)=arr_in1(n_input1+i)
+!input_2(i)=arr_in1(n_input1+i)
+input_2(i) = 0.d0
 !print *,' i input_2 arr2=',i,input_2(i),arr_in1(n_input1+i)
 end do
+
+do i=1,nact
+  vchopper0(i) = arr_in1(n_input1+i)
+enddo
+
+vchopper(1:nact) = 0.d0
+do i=1,npfa
+  if (associated(pf_active0%coil(i)%voltage%data)) then
+    vchopper(ncirc(i)) = vchopper(ncirc(i)) - 1.d0*dircirc(i)*pf_active0%coil(i)%voltage%data(1)/pf_turns(i)
+  endif
+enddo
+
+
+print*, 'i  vchopper0(i)  vchopper(i)'
+do i=1,nact
+  print*, i, vchopper0(i), vchopper(i)
+enddo
+
+
+call get_contr_signals(vchopper)
 
 
 write(*,*) '!!!dina0 enter'
@@ -901,15 +923,12 @@ if (.NOT.associated(magnetics%time)) allocate(magnetics%time(1))
 magnetics%time(1) = tt
 
 ! Loops
-if (.NOT.associated(magnetics%flux_loop)) allocate(magnetics%flux_loop(kloop))
 do i=1,kloop
   if (.NOT.associated(magnetics%flux_loop(i)%flux%data)) allocate(magnetics%flux_loop(i)%flux%data(1))
   magnetics%flux_loop(i)%flux%data(1) = psloop(i)
 end do
 
-  
-! Probes  
-if (.NOT.associated(magnetics%b_field_pol_probe)) allocate(magnetics%b_field_pol_probe(kprobe))
+! Probes
 do i=1,kprobe
   if (.NOT.associated(magnetics%b_field_pol_probe(i)%field%data)) allocate(magnetics%b_field_pol_probe(i)%field%data(1))
   magnetics%b_field_pol_probe(i)%field%data(1) = bprobe(i)
@@ -927,8 +946,8 @@ pf_active%time(1) = tt
 do i=1,npfa
   if (.NOT.associated(pf_active%coil(i)%current%data)) allocate(pf_active%coil(i)%current%data(1))
     pf_active%coil(i)%current%data(1) = dircirc(i)*pf(ncirc(i))
-  if (.NOT.associated(pf_active%coil(i)%voltage%data)) allocate(pf_active%coil(i)%voltage%data(1))
-    pf_active%coil(i)%voltage%data(1) = dircirc(i)*vchopper(ncirc(i))
+  !if (.NOT.associated(pf_active%coil(i)%voltage%data)) allocate(pf_active%coil(i)%voltage%data(1))
+    !pf_active%coil(i)%voltage%data(1) = dircirc(i)*vchopper(ncirc(i))
 enddo
 
 

@@ -257,8 +257,8 @@ c ============ outputs ==============================================
 	
 !	print *,' n_xx tpl_xx=',n_xx,tpl_xx
 
-!	tt_xx=tt/1000.d0
-	tt_xx=(tt-tay)/1000.d0
+	tt_xx=tt/1000.d0
+	!tt_xx=(tt-tay)/1000.d0
 
         rs0_xx = rs0/100.d0
         bt0_xx = bt0_dir*bt0/10.d0
@@ -626,7 +626,26 @@ c=================================================
         return
         end
       
-      
+
+        
+        subroutine get_contr_signals(vchopper_xx)
+
+         include 'double.inc'
+         include 'new_com.inc'
+   
+         dimension vchopper_xx(*)
+   
+         do i=1,npf
+            vchopper(i)=vchopper_xx(i)
+         end do
+   
+   
+         if(kpr.eq.1)print*,'END of reading contr_signals'
+   
+         return
+         end
+         
+         
       
 !> dina_input is the subroutine to collect the initial kinetic profiles before enter 
 !> to DINA to write them after that to DINA from IDSs in dina_imas subroutine
@@ -2050,37 +2069,31 @@ c----------------------------
       character *8 apr      
       
       include 'imas_interface.inc'
-      arg=1.d0
-      pi=4.d0*atan(ARG)   
-
-
+        arg=1.d0
+        pi=4.d0*atan(ARG)      
       call vic_turn()
 
       
       rs0 = rs0_xx*100.d0
       bt0 = bt0_dir*bt0_xx*10.d0
         
+        
+      kpr=1
       
       if(n.ne.n_xx)then
-         print *,' n n_xx',n,n_xx
-         print *,' n .ne.n_xx => STOP'
-         stop
+      print *,' n n_xx',n,n_xx
+      print *,' n .ne.n_xx   STOP'
+      stop
       end if
-
-      if (npf.ne.npf_xx) then
-         print *, 'npf npf_xx', npf, npf_xx
-         print*, 'npf.NE.npf_xx => STOP'
-         stop
-      endif
       
-      if (ncam.ne.ncam_xx) then
-         print *, 'ncam ncam_xx', ncam, ncam_xx
-         print*, 'ncam.NE.ncam_xx => STOP'
-         stop
-      endif
+      
+!      n = n_xx
+      
       
       
       nutab = n_xx
+      ncam = ncam_xx
+      npf = npf_xx
       tt = tt_xx*1.d3
       tpl = tpl_xx*1.d-3*tpl_dir
       rmag = rmag_xx*1.d2

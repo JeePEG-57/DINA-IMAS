@@ -187,29 +187,30 @@
 !      stop
 
 
-        tpl_x2=c_input1(1)      
-        tt_dw_x2=c_input1(2)   
+        !tpl_x2=c_input1(1)      
+        !tt_dw_x2=c_input1(2)   
         
-        if(kpr.eq.1)print *,'   tpl_x2==',tpl_x2 
+        !if(kpr.eq.1)print *,'   tpl_x2,tt_dw_x2==', tpl_x2, tt_dw_x2
 
  !           call prof_astra()
-
-        do i=1,npf
-        vchopper_x2(i)=c_input2(i)
-        end do
+            
+      ! do i=1,npf
+      !       vchopper_x2(i)=c_input2(i)
+      !       if(kpr.eq.1)print *,'   vchopper_x2(i)==', i, vchopper_x2(i)
+      ! end do
       
-       do i=1,11
-      zvconverter(i)=c_input2(npf+i)
-!      if(kpr.eq.1)print *,'   zvconverter==',zvconverter(i)
-      end do      
+      ! do i=1,11
+      !       zvconverter(i)=c_input2(npf+i)
+      !       if(kpr.eq.1)print *,'   zvconverter(i)==', i, zvconverter(i)
+      ! end do      
 
-      do i=1,12
-      u_kd(i)=c_input2(npf+11+i)
-      if(kpr.eq.1.and.i.eq.12)print *,'   u_kd==',u_kd(i)
-      end do      
+      ! do i=1,12
+      !       u_kd(i)=c_input2(npf+11+i)
+      !       if(kpr.eq.1)print *,'   u_kd(i)==', i, u_kd(i)
+      ! end do      
 
 
-      call get_contr_signals(vchopper_x2,tpl_x2,tt_dw_x2)
+      !call get_contr_signals(vchopper_x2,tpl_x2,tt_dw_x2)
       end if
 
       if(i_en.eq.1)then
@@ -860,29 +861,6 @@ c------------
 
  1000 continue
  5000 format (50(1pe14.5))
-
-	return
-      end
-	subroutine get_contr_signals(vchopper_xx,tpl_xx,tt_dw_xx)
-
-      include 'double.inc'
-	include 'new_com.inc'                                                  
-
-	dimension vchopper_xx(*)
-     
-      do i=1,npf
-        vchopper(i)=vchopper_xx(i)
-      end do
-
-!      tpl=tpl_xx
-!      tt_dw=tt_dw_xx
-
-      
-      
- 1000 continue
- 5000 format (50(1pe14.5))
-
-      if(kpr.eq.1)print*,'END of reading contr_signals'
 
 	return
       end
