@@ -9,19 +9,19 @@
 
 !      program main
       
-      common /cb/ i, j, k
-      integer i, j, k
+      !common /cb/ i, j, k
+      integer i
            
-      integer status
+      !integer status
 
 !     pointer (p2, sub2)
  !     pointer (p3, sub3)
       
-      character(80) dll_name
-	logical aa2
+      !character(80) dll_name
+	!logical aa2
           
-      real *8 a, b, a_in(200),a_out(100)
-      real *8 EqTime,SimStep
+      real *8 a_in(200),a_out(100)
+      !real *8 EqTime,SimStep
 
       i_en=i_en+1
 
@@ -30,8 +30,8 @@
  !     stop
       
 
-	EqTime=1.5
-	SimStep=1.
+	!EqTime=1.5
+	!SimStep=1.
 
       if(i_en.eq.1)then
 !       call t15_2_initialize(aa2)
@@ -86,11 +86,4 @@
       
 
 	return
-	end
-
-      subroutine sub1
-      common /cb/ i, j, k
-      integer i, j, k
-      print *,i,j,k
-      return
-      end
+      end subroutine

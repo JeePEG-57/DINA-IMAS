@@ -39,7 +39,7 @@ import solps_imas.wrapper as solps_imas
 
 
 
-def DINA(idslist, arr_volt):
+def DINA(idslist):
 
   output = dinaimas21.dinaimas21_actor(idslist['em_coupling'],
                                        idslist['equilibrium'],
@@ -50,10 +50,9 @@ def DINA(idslist, arr_volt):
                                        idslist['core_profiles'],
                                        idslist['core_sources'],
                                        idslist['transport_solver_numerics'],
-                                       idslist['pulse_schedule'],
-                                       arr_volt)
-  # output of the actor is a tuple in Python
+                                       idslist['pulse_schedule'])
   
+  # output of the actor is a tuple in Python
   idslist['equilibrium'] = output[0]
   idslist['magnetics'] = output[1]
   idslist['pf_active'] = output[2]
@@ -62,25 +61,17 @@ def DINA(idslist, arr_volt):
   idslist['core_sources'] = output[5]
   idslist['core_transport'] = output[6]
   idslist['summary'] = output[7]
-  
-  arr_curr = output[8]
-  
-  return arr_curr
+
   
   
-  
-def KMC(idslist, arr_curr):
+def KMC(idslist):
   
   output = kmc.kmc_actor(idslist['pulse_schedule'],
                                        idslist['pulse_schedule_term'],
                                        idslist['equilibrium'],
-                                       idslist['pf_active'],
-                                       arr_curr)
+                                       idslist['pf_active'])
   
-  idslist['pf_active'] = output[0]
-  arr_volt = output[1]
-  
-  return arr_volt
+  idslist['pf_active'] = output
 
 
 
@@ -216,9 +207,6 @@ class DINA_Workflow:
     self.IMAS_Output.put(idslist['em_coupling'])
     self.IMAS_Output.put(idslist['wall'])
     
-    # Allocation for initial voltages of the magnetic control
-    arr_volt = np.float64(range(501))
-    
     
     # The main loop
     iloop_start = 0
@@ -229,13 +217,11 @@ class DINA_Workflow:
       self.idslist = idslist
       
       # DINA
-      arr_curr = DINA(idslist, arr_volt)
+      DINA(idslist)
       
       # Magnetic controller
-      arr_volt = KMC(idslist, arr_curr)
-      #arr_volt = dinacontr(arr_curr)
-      #arr_volt = dinacontr21_1a.dinacontr21_1a_actor(arr_curr)
-      
+      KMC(idslist)
+
       
       ip = idslist['summary'].global_quantities.ip.value[0]
       time = idslist['summary'].time[0]

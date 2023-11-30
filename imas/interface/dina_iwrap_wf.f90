@@ -26,7 +26,6 @@ type (ids_dataset_description) :: data_description
 type (ids_summary) :: summary
 type (ids_wall) :: wall
 
-real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! IDS location data
 character (len=255) :: user_default
@@ -80,50 +79,65 @@ INTEGER :: clock_start,clock_end,clock_rate
 
 
 interface
-! Declaration of the dina_imas subroutine
-subroutine dina_imas(&
-  &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0 &
-  & ,bndcond_in &
-  & ,pulse_schedule &
-  & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
-  & ,summary &
-  & ,arr_in1, arr_out1 )
-  
-use ids_schemas
-use ids_routines
-implicit none
+
+  subroutine dina_green(&
+    & pf_active0, pf_passive0, magnetics0, equilibrium0, &
+    & em_coupling)
+    use ids_schemas
+
+    type (ids_pf_active), INTENT(IN)   :: pf_active0
+    type (ids_pf_passive), INTENT(IN)  :: pf_passive0
+    type (ids_magnetics), INTENT(IN)   :: magnetics0
+    type (ids_equilibrium), INTENT(IN) :: equilibrium0
+    type (ids_em_coupling), INTENT(OUT) :: em_coupling
+
+  end subroutine
 
 
-! trees are static or dynamic; if not defined, they are static
-type (ids_em_coupling)  :: em_coupling0, em_coupling
-type (ids_equilibrium) :: equilibrium0, equilibrium
-type (ids_magnetics)   :: magnetics0, magnetics
-type (ids_pf_active)   :: pf_active0, pf_active
-type (ids_pf_passive)   :: pf_passive0, pf_passive
-type (ids_wall) :: wall0
-type (ids_core_profiles)   :: core_profiles0, core_profiles
-type (ids_core_transport)   :: core_transport
-type (ids_core_sources)   :: core_sources0, core_sources
-type (ids_transport_solver_numerics) :: bndcond_in
-type (ids_pulse_schedule)   :: pulse_schedule
-type (ids_summary) :: summary
-
-    real (ids_real) :: arr_in1(501), arr_out1(501)
-
-    end subroutine
+  ! Declaration of the dina_imas subroutine
+  subroutine dina_imas(&
+    &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0 &
+    & ,bndcond_in &
+    & ,pulse_schedule &
+    & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
+    & ,summary)
     
-end interface
+    use ids_schemas
+
+    type (ids_em_coupling), INTENT(IN)  :: em_coupling0
+    type (ids_equilibrium), INTENT(IN) :: equilibrium0
+    type (ids_magnetics), INTENT(IN)   :: magnetics0
+    type (ids_pf_active), INTENT(IN)   :: pf_active0
+    type (ids_pf_passive), INTENT(IN)   :: pf_passive0
+    type (ids_wall), INTENT(IN) :: wall0
+    type (ids_core_profiles), INTENT(IN)   :: core_profiles0
+    type (ids_core_sources), INTENT(IN)   :: core_sources0
+    type (ids_transport_solver_numerics), INTENT(IN) :: bndcond_in
+    type (ids_pulse_schedule), INTENT(IN)   :: pulse_schedule
 
 
-interface 
-! Declaration of the dina_contr subroutine
-subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1,arr_out1)
-use ids_schemas
-type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
-type (ids_pf_active)   :: pf_active0, pf_active
-type (ids_equilibrium) :: equilibrium0
-real (ids_real):: arr_in1(*), arr_out1(*)
-end subroutine
+    type (ids_equilibrium), INTENT(OUT) :: equilibrium
+    type (ids_magnetics), INTENT(OUT)   :: magnetics
+    type (ids_pf_active), INTENT(OUT)   :: pf_active
+    type (ids_pf_passive), INTENT(OUT)   :: pf_passive
+    type (ids_core_profiles), INTENT(OUT)   :: core_profiles
+    type (ids_core_transport), INTENT(OUT)   :: core_transport
+    type (ids_core_sources), INTENT(OUT)   :: core_sources
+    type (ids_summary), INTENT(OUT) :: summary
+
+  end subroutine
+    
+
+  ! Declaration of the dina_contr subroutine
+  subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active)
+    use ids_schemas
+
+    type (ids_pulse_schedule), intent(IN) :: pulse_schedule, pulse_schedule_term
+    type (ids_equilibrium), intent(IN) :: equilibrium0
+    type (ids_pf_active), intent(IN) :: pf_active0
+    type (ids_pf_active), intent(OUT) :: pf_active
+
+  end subroutine
 end interface
 
 
@@ -308,7 +322,7 @@ else
 
 
   !call ids_get(idx0,"em_coupling",em_coupling)
-  !call ids_get(idx0,"equilibrium",equilibrium0)
+  call ids_get_slice(idx0,"equilibrium",equilibrium0, 0.d0, 1)
 
 
   !call ids_get(idx0,"core_profiles",core_profiles0)
@@ -336,7 +350,7 @@ call ids_get_slice(idx0,"wall",wall, time_start, interp_start)
 call imas_close(idx0)
 
 
-call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
+call dina_green(pf_active0, pf_passive0, magnetics0, equilibrium0, em_coupling)
 
 
 write(*,*) 'Reading the pulse schedule'
@@ -349,11 +363,6 @@ call imas_close(idx0)
 
 !print *,'Press any key to begin simulation...'
 !read (*,*)
-
-
-
-arr_in1(1:31)=1
-arr_out1(1:31)=0
 
 
 
@@ -462,7 +471,7 @@ if (.not. ids_input_initialized ) then
     call ids_copy(wall_in, wall)
 
 
-    call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium0)
+    call dina_green(pf_active0, pf_passive0, magnetics0, equilibrium0, em_coupling)
 
 
     write(*,*) 'Reading the pulse schedule'
@@ -477,11 +486,6 @@ if (.not. ids_input_initialized ) then
 
     print *,'Press any key to begin simulation...'
     !read (*,*)
-
-
-
-    arr_in1(1:31)=1
-    arr_out1(1:31)=0
 
 
 
@@ -527,8 +531,7 @@ call dina_imas( &
  & , bndcond &
  & , pulse_schedule &
  & , equilibrium, magnetics, pf_active1, pf_passive, core_profiles, core_sources, core_transport &
- & , summary &
- & , arr_in1,arr_out1)
+ & , summary)
 
  
 write(*,*) "DINA_IMAS finished"
@@ -545,7 +548,7 @@ write(*,*) "DINA_IMAS inputs deallocated"
 flush(6)
 
 
-call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active, arr_out1, arr_in1)
+call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active)
 
 call ids_deallocate(pf_active1)
 

@@ -28,7 +28,7 @@ TARGETS += $(FORTRANWF) dina_imas.a dina_sdn.a kmc.a kmc_pfpo1_1a.a kmc_pfpo1_1b
 
 LIB_SOURCEDINA := dina_imas.o params_imas.o
 
-LIB_SOURCECTRL := dina_contr.o n_kav.o out42_for.o main_1l.o contr_params_imas.o
+LIB_SOURCECTRL := dina_contr.o kav_contr.o contr_params_imas.o
 
 
 

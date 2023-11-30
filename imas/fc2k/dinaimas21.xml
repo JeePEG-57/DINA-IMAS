@@ -197,24 +197,6 @@
             <string>1</string>
             <string>null</string>
           </vector>
-          <vector>
-            <string>double</string>
-            <string>0</string>
-            <string>1</string>
-            <string>501</string>
-            <string>1</string>
-            <string>0</string>
-            <string>null</string>
-          </vector>
-          <vector>
-            <string>double</string>
-            <string>0</string>
-            <string>1</string>
-            <string>501</string>
-            <string>0</string>
-            <string>1</string>
-            <string>null</string>
-          </vector>
         </tupleParams>
       </default>
     </org.iter.imas.fc2k.TupleP>

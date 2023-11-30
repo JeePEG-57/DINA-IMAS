@@ -35,8 +35,7 @@ interface
     & ,bndcond_in &
     & ,pulse_schedule &
     & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
-    & ,summary &
-    & ,arr_in1, arr_out1 )
+    & ,summary)
     
     use ids_schemas
 
@@ -61,25 +60,19 @@ interface
     type (ids_core_sources), INTENT(OUT)   :: core_sources
     type (ids_summary), INTENT(OUT) :: summary
 
-
-    real (ids_real), INTENT(IN) :: arr_in1(*)
-    real (ids_real), INTENT(OUT) :: arr_out1(*)
-
   end subroutine
     
 
 
-  subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1, arr_out1)
+  subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active)
     
     use ids_schemas
 
     type (ids_pulse_schedule), intent(IN) :: pulse_schedule, pulse_schedule_term
+    type (ids_equilibrium), intent(IN) :: equilibrium0
     type (ids_pf_active), intent(IN) :: pf_active0
     type (ids_pf_active), intent(OUT) :: pf_active
-    type (ids_equilibrium), intent(IN) :: equilibrium0
     
-    real (ids_real), intent(IN) :: arr_in1(*)
-    real (ids_real), intent(OUT) :: arr_out1(*)
 
   end subroutine
 end interface
@@ -99,7 +92,6 @@ type (ids_dataset_description) :: data_description
 type (ids_summary) :: summary
 type (ids_wall) :: wall
 
-real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! IDS location data
 character (len=255) :: user_default
@@ -337,11 +329,6 @@ call imas_close(idx0)
 
 
 
-arr_in1(1:31)=1
-arr_out1(1:31)=0
-
-
-
   call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
   write(*,*) 'Pulse file is created'
 
@@ -365,8 +352,7 @@ call dina_imas( &
  & , bndcond &
  & , pulse_schedule &
  & , equilibrium, magnetics, pf_active1, pf_passive, core_profiles, core_sources, core_transport &
- & , summary &
- & , arr_in1,arr_out1)
+ & , summary)
 
  
 write(*,*) "DINA_IMAS finished"
@@ -383,7 +369,7 @@ write(*,*) "DINA_IMAS inputs deallocated"
 flush(6)
 
 
-call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active, arr_out1, arr_in1)
+call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active)
 
 call ids_deallocate(pf_active1)
 

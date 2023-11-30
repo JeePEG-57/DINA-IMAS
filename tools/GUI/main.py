@@ -331,7 +331,7 @@ class ExampleApp(uiclass, baseclass):
         self.DINAData["tau"] = CodeParameter(mytype=float, value=2., name='dt start', comment = 'Time step before switching to 1D transport model', unit='ms')
         self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=10., comment = 'Time step for simulation after switching to 1D transport model and before plasma current rampdown.', name='dt simulation', unit='ms')
         self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=5., comment = 'Time step for simulation during plasma current ramp-down', name='dt rampdown', unit='ms')
-        self.DINAData["rs0"] = CodeParameter(mytype=float, value=620., name='R_Btor', comment = 'R coordinate at which the toroidal field is specified', unit='cm')
+        self.DINAData["rs0"] = CodeParameter(mytype=float, value=620., name='R_Btor', comment = 'R coordinate at which the toroidal field is represented internally', unit='cm')
         self.DINAData["bt0"] = CodeParameter(mytype=float, value=53., name='Btor', comment = 'The toroidal field at the specified R coordinate', unit='Gs')
         self.DINAData["key_t11"] = CodeParameter(mytype=int, value=1, comment = 'JET Ohmic scaling')
         self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=100000.e3, comment = 'Time after which input 1D transport profiles are used, internal transport model switches off.', unit='ms')
