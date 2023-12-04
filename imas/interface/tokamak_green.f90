@@ -98,7 +98,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
                 R_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%oblique%r &
                 & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
                 Z_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%oblique%z &
-                & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
+                & + 0.5d0*(dlength*sin(beta) + dheight*sin(alpha))
                 dr_c(i) = dlength
                 dz_c(i) = dheight
                 alpha_c(i) = alpha
@@ -164,10 +164,11 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
             beta = pf_passive%loop(i)%element(1)%geometry%oblique%alpha
             dlength = pf_passive%loop(i)%element(1)%geometry%oblique%length_alpha
             dheight = pf_passive%loop(i)%element(1)%geometry%oblique%length_beta
+
             Rc_c(i) = pf_passive%loop(i)%element(1)%geometry%oblique%r &
             & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
             Zc_c(I) = pf_passive%loop(i)%element(1)%geometry%oblique%z &
-            & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
+            & + 0.5d0*(dlength*sin(beta) + dheight*sin(alpha))
             dl_c(i) = dlength
             hl_c(i) = dheight
             alpha_ves_c(i) = alpha
@@ -175,7 +176,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
         else
             print *,'Unsupported geometry type =', pf_passive%loop(i)%element(1)%geometry%geometry_type, ' for loop ', i
         endif
-        if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ', rc_c(i),zc_c(i),dl_c(i),hl_c(i),alpha_ves_c(i),beta_ves_c(i)
+        if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ', Rc_c(i),Zc_c(i),dl_c(i),hl_c(i),alpha_ves_c(i),beta_ves_c(i)
 	END DO
 
 
@@ -304,7 +305,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
 !         rc = geometry%oblique%r &
 !         & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
 !         zc = geometry%oblique%z &
-!         & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
+!         & + 0.5d0*(dlength*sin(beta) + dheight*sin(alpha))
 !     else
 !         print *,'Unsupported geometry type =', geometry%geometry_type, '
 !     endif
