@@ -33,10 +33,11 @@ real*8 :: output_1(kint), output_2(kint)
 real*8 :: pf(npf)
 integer :: ncirc(npf), dircirc(npf)
 real*8 :: vmult(npf)
+real*8 :: pf_turn(nact)
 data ncirc(1:14) /1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12/
 data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
 data vmult(1:14) /1, 1, 0.5d0, 0.5d0, 1, 1, 1, 1, 1, 1, 1, 1, 0.5d0, -0.5d0/
-
+data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 216.8, 459.4, 4.0/
 
 
   if (loop_count.eq.0) then
@@ -73,7 +74,7 @@ data vmult(1:14) /1, 1, 0.5d0, 0.5d0, 1, 1, 1, 1, 1, 1, 1, 1, 0.5d0, -0.5d0/
 
   pf(1:npf) = 0.d0
   do i=1,npfa
-    pf(ncirc(i)) = tpl_dir*dircirc(i)*pf_active0%coil(i)%current%data(1)*pf_active0%coil(i)%element(1)%turns_with_sign
+    pf(ncirc(i)) = tpl_dir*dircirc(i)*pf_active0%coil(i)%current%data(1)*pf_turn(ncirc(i))
   enddo
 
   kk=0
@@ -118,7 +119,7 @@ data vmult(1:14) /1, 1, 0.5d0, 0.5d0, 1, 1, 1, 1, 1, 1, 1, 1, 0.5d0, -0.5d0/
 
   do i=1,npfa
     if (.NOT.associated(pf_active%coil(i)%voltage%data)) allocate(pf_active%coil(i)%voltage%data(1))
-    pf_active%coil(i)%voltage%data(1) = tpl_dir*vmult(i)*output_2(ncirc(i))*dabs(pf_active%coil(i)%element(1)%turns_with_sign)
+    pf_active%coil(i)%voltage%data(1) = tpl_dir*vmult(i)*output_2(ncirc(i))*pf_turn(ncirc(i))
   enddo
 
 

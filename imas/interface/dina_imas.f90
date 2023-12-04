@@ -317,24 +317,31 @@ do i=1,npfa
 enddo
 
 
+if (kpr.eq.1) then
+  print*, 'pfind'
+  do i=1,nact
+    print*, i, pfind(i,i)
+  enddo
+endif
+
 
 ! Resistances
-write(*,100) shape(pf_active0%coil%resistance),shape(pf_passive0%loop%resistance)
-
-print *,'pf_active0%coil%resistance',npfa
-print *,pf_active0%coil(1:npfa)%resistance
-
-print *,'pf_passive0%loop%resistance',npfp
-print *,pf_passive0%loop(1:npfp)%resistance
-
-
-
 pfres(1:nact) = 0.d0
 do i=1,npfa
-  pfres(ncirc(i)) = pfres(ncirc(i)) + pf_active0%coil(i)%resistance
+  pfres(ncirc(i)) = pfres(ncirc(i)) + pf_active0%coil(i)%resistance/(pf_turns(i)*pf_turns(i))
 enddo
 
+
 rcam(1:npfp) = pf_passive0%loop(1:npfp)%resistance
+
+
+if (kpr.eq.1) then
+  print *,'nact, pfres',nact
+  print *,pfres
+
+  print *,'npfp, rcam',npfp
+  print *,rcam
+endif
 
 
 ! Grid

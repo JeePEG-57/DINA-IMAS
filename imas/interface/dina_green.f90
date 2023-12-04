@@ -15,6 +15,7 @@ subroutine dina_green(&
 use ids_schemas
 use ids_routines
 !implicit none
+include 'double.inc'
 
 
 type (ids_pf_active), INTENT(IN)   :: pf_active0
@@ -44,6 +45,17 @@ real(ids_real), dimension(:), allocatable::  pf_turns
 
 	character *20 apr
 	
+  interface
+    subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
+      use ids_schemas
+  
+      type (ids_pf_active), INTENT(IN)   :: pf_active
+      type (ids_pf_passive), INTENT(IN)  :: pf_passive
+      type (ids_magnetics), INTENT(IN)   :: magnetics
+      type (ids_equilibrium), INTENT(IN) :: equilibrium
+
+    end subroutine
+  end interface
                                               
 
     common /c_tokamak_config1/&
