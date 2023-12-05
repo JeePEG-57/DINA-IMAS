@@ -3,25 +3,25 @@
   <pulse_schedule>
     <user></user>
     <database>test</database>
-    <pulse>180</pulse>
+    <pulse>177</pulse>
     <run>1</run>
   </pulse_schedule>
   <input_pf_active>
-    <user>dubrovm</user>
-    <database>iter</database>
-    <pulse>105033</pulse>
-    <run>2</run>
+    <user>public</user>
+    <database>ITER_MD</database>
+    <pulse>111001</pulse>
+    <run>203</run>
   </input_pf_active>
   <input_pf_passive>
-    <user>dubrovm</user>
-    <database>iter</database>
-    <pulse>105033</pulse>
+    <user>public</user>
+    <database>ITER_MD</database>
+    <pulse>115005</pulse>
     <run>2</run>
   </input_pf_passive>
   <input_magnetics>
     <user></user>
     <database>test</database>
-    <pulse>180</pulse>
+    <pulse>177</pulse>
     <run>1</run>
   </input_magnetics>
   <input_em_coupling>
@@ -37,28 +37,27 @@
     <run>2</run>
   </input_wall>
   <input_start>
-    <user>dubrovm</user>
-    <database>iter</database>
-    <pulse>105033</pulse>
-    <run>2</run>
-    <time_start>10.0</time_start>
+    <user></user>
+    <database>test</database>
+    <pulse>177</pulse>
+    <run>1</run>
+    <time_start>.0</time_start>
     <interp_mode>1</interp_mode>
   </input_start>
   <output>
     <database>test</database>
-    <pulse>180</pulse> 
-    <run>42</run>
-    <decimation>1</decimation>
+    <pulse>177</pulse> 
+    <run>41</run>
+    <decimation>10</decimation>
   </output>
   <input_transp>
-    <user>dubrovm</user>
-    <database>iter</database>
-    <pulse>105033</pulse>
-    <run>2</run>
+    <database>test</database>
+    <pulse>177</pulse>
+    <run>41</run>
     <interp_mode>1</interp_mode>
   </input_transp>
   <time_stop>1000.0</time_stop>
-  <time_ext>50000000.0</time_ext>
+  <time_ext>14.e5</time_ext>
   <controller>kmc</controller>
   <step_max>1000000</step_max>
   <use_astra>0</use_astra>
