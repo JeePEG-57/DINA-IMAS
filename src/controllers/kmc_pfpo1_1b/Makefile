@@ -1,12 +1,10 @@
 # Makefile for compilation of DINA components
 
-AR = ar
-ARFLAGS = -ru
-FC = gfortran
+AR ?= ar
+ARFLAGS ?= -ru
 
-f2c= cc -fpic -w
-
-FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
+CC ?= cc
+CFLAGS ?= -fpic -w
 
 CONTROLSRC = t15_2.c t15_2_data.c pf_lookup3.c pf_lookup3_wrapper.c read_pf.c \
 read_gaps.c  read_gaps_wrapper.c read_gaps_term.c  read_gaps_term_wrapper.c \
@@ -19,23 +17,14 @@ rt_nonfinite.c rt_rand.c rtGetNaN.c rtGetInf.c
 
 CONTROLOBJ = $(CONTROLSRC:.c=.o)
 
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-DINA_KAV := kmc.a
-#DINA_KAV := $(current_dir).a
+all: kmc.a
 
-all: $(DINA_KAV)
-
-$(DINA_KAV): $(CONTROLOBJ)
-	$(info Controller library: $@ from $(current_dir))
+kmc.a: $(CONTROLOBJ)
 	$(RM) -r $@
 	$(AR) $(ARFLAGS) $@ $^
 
-%.o: %.f
-	$(FC) $(FFLAGS) -c $<
-
 %.o: %.c
-	$(f2c)  -c $<
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm -f *.o 

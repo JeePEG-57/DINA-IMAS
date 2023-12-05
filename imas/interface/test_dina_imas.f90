@@ -271,8 +271,6 @@ if (restart.eq.1) then
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
 
-  write(*,*) 'Finished reading the prescribed IDS'
-  call imas_close(idx0)
 
   write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
 
@@ -280,9 +278,11 @@ else
 
   write(*,*) 'Start from t=0'
 
+  time_get = 0.d0
+  interp_start = 1
 
   !call ids_get(idx0,"em_coupling",em_coupling)
-  call ids_get_slice(idx0,"equilibrium",equilibrium0, 0.0, 1)
+  call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interp_start)
 
 
   !call ids_get(idx0,"core_profiles",core_profiles0)
@@ -291,6 +291,9 @@ else
 
   
 endif
+
+write(*,*) 'Finished reading the prescribed IDS'
+call imas_close(idx0)
 
 
 call imas_open_env('ids',pulse_pfa,run_pfa,idx_a,user_pfa,database_pfa,'3')

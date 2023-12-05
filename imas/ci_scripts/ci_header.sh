@@ -65,12 +65,13 @@ module load FC2K
 
 imasdb test
 
-module load TotalView
+#module load TotalView
 
 export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
-module switch --force matplotlib/3.5.1-intel-2020b
-module load Viz/2.7.0-intel-2020b
+#module switch --force matplotlib/3.5.1-intel-2020b
+#module load Viz/2.7.0-intel-2020b
+module load Viz
 
 export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
@@ -78,6 +79,10 @@ export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
 
 export FCOMPILER=gfortran
+export CC=gcc
+#export FCOMPILER=ifort
+#export CC=icc
+
 # # CHOOSE THE COMPILER 0=GFORTRAN (DEFAULT IF VARIABLE IS NOT SET), 1=INTEL
 # if [ -z "$FCOMPILER" ]; then
 #     echo 'FCOMPILER not set'

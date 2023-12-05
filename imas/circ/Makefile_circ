@@ -1,12 +1,10 @@
 # Makefile for compilation of DINA components
 
-AR = ar
-ARFLAGS = -ru
-FC = gfortran
+AR ?= ar
+ARFLAGS ?= -ru
+FC = $(FCOMPILER)
 
-f2c= cc -fpic
-
-FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
+FFLAGS ?= -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
 
 DINASRC = a_dina_cir.f gen.f n_circ.f obrm.f out42_for.f
 
@@ -19,13 +17,8 @@ dina_circ.a: $(DINAOBJ)
 	$(RM) -r dina_circ.a
 	$(AR) $(ARFLAGS) $@ $(DINAOBJ)
 
-
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
-
-%.o: %.c
-	$(f2c)  -c $<
-
 
 clean:
 	-rm -f *.o
