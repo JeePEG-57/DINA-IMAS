@@ -73,17 +73,9 @@ test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	@echo "   * $^ -> $@"
 	$(F90) -o $@ $^ $(LDFLAGS)
 
-test_wr_prof: test_wr_prof.o wr_prof_imas.o n_dina_imas3.o
-	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
-
 %.o: %.f90
 	@echo "   * $^ -> $@"
 	$(F90) $(FFLAGS) -c -o $@ $^
-
-wr_prof_imas.o: wr_prof_imas.f90
-	@echo "   * $^ -> $@"
-	$(F90) $(FFLAGS) -I$(DINADIR) -c -o $@ $^
 
 %.o: %.f
 	@echo "   * $^ -> $@"
