@@ -101,8 +101,8 @@ real(ids_real) ::time_eq_c
 real(ids_real) :: tpl = 1000.d0, tt = 0.d0
 real(ids_real) :: psi_ax,psi_bnd,psi_sep,psi_sep2
 real(ids_real) :: rs0 = 1.d0, bt0 = 1.d0
-real(ids_real) :: betap = 0.d0, betat = 0.d0
-real(ids_real) :: tene,teit_98
+real(ids_real) :: betap = 0.d0, betat = 0.d0, betan = 0.d0
+real(ids_real) :: tene, teit_98
 real(ids_real) :: pec
 real(ids_real) :: rmag = 1.d0, zmag = 0.d0
 real(ids_real) :: b_field_ax = 1.d0
@@ -824,6 +824,10 @@ write(*,*) '!!!solpsza enter'
       b_field_ax = bt0*rs0/rmag
     endif
       
+
+
+    betan = 100.d0*betat*wr_imas(4)*bt0/(tpl*1.d-6)
+
       
       ! dsep control
       if ((tt.gt.70.d0).and.(dabs(tpl).gt.14.5d6)) then
@@ -962,17 +966,20 @@ print *,' teit_98 tene tqc==',teit_98,tene
 AllocIfNull1(summary%global_quantities%ip%value, tpl)
 AllocIfNull1(summary%global_quantities%v_loop%value, wr_imas(29))
 AllocIfNull1(summary%global_quantities%li%value, wr_imas(19))
+AllocIfNull1(summary%global_quantities%resistance%value, wr_imas(77))
 AllocIfNull1(summary%global_quantities%psi_external_average%value, wr_imas(32))
 AllocIfNull1(summary%global_quantities%greenwald_fraction%value, wr_imas(22))
 
 AllocIfNull1(summary%global_quantities%beta_pol%value, betap)
 AllocIfNull1(summary%global_quantities%beta_tor%value, betat)
+AllocIfNull1(summary%global_quantities%beta_tor_norm%value, betan)
 
 AllocIfNull1(summary%global_quantities%energy_thermal%value, wr_imas(76))
 AllocIfNull1(summary%global_quantities%energy_b_field_pol%value, wr_imas(74))
 
 AllocIfNull1(summary%global_quantities%tau_energy%value, wr_imas(93))
 AllocIfNull1(summary%global_quantities%tau_energy_98%value, teit_98)
+AllocIfNull1(summary%global_quantities%tau_resistive%value, wr_imas(78))
 
 AllocIfNull1(summary%global_quantities%fusion_gain%value, wr_imas(70))
 AllocIfNull1(summary%global_quantities%fusion_fluence%value, wr_imas(69))
@@ -983,7 +990,6 @@ AllocIfNull1(summary%global_quantities%h_mode%value, key_lh)
 summary%global_quantities%r0%value = rs0
 AllocIfNull1(summary%global_quantities%b0%value, bt0)
 
-AllocIfNull1(summary%global_quantities%resistance%value, wr_imas(77))
 AllocIfNull1(summary%global_quantities%q_95%value, wr_imas(17))
 AllocIfNull1(summary%global_quantities%power_ohm%value, wr_imas(65))
 AllocIfNull1(summary%global_quantities%power_radiated_inside_lcfs%value, wr_imas(91))
@@ -1035,9 +1041,22 @@ AllocIfNull1(summary%boundary%type%value, ksepa)
 AllocIfNull1(summary%boundary%gap_limiter_wall%value, wr_imas(101))
 AllocIfNull1(summary%boundary%magnetic_axis_r%value, wr_imas(13))
 AllocIfNull1(summary%boundary%magnetic_axis_z%value, wr_imas(14))
+AllocIfNull1(summary%boundary%geometric_axis_r%value, wr_imas(3))
+!AllocIfNull1(summary%boundary%geometric_axis_z%value, wr_imas())
 AllocIfNull1(summary%boundary%minor_radius%value, wr_imas(4))
 AllocIfNull1(summary%boundary%elongation%value, wr_imas(5))
+!AllocIfNull1(summary%boundary%triangularity_upper%value, wr_imas())
+!AllocIfNull1(summary%boundary%triangularity_lower%value, wr_imas())
 AllocIfNull1(summary%boundary%gap_limiter_wall%value, wr_imas(101))
+AllocIfNull1(summary%boundary%distance_inner_outer_separatrices%value, wr_imas(96))
+if (ksepa.ne.0) then
+  AllocIfNull1(summary%boundary%x_point_main%r, wr_imas(15))
+  AllocIfNull1(summary%boundary%x_point_main%z, wr_imas(16))
+  !AllocIfNull1(summary%boundary%strike_point_inner_r%value, wr_imas())
+  !AllocIfNull1(summary%boundary%strike_point_inner_z%value, wr_imas())
+  !AllocIfNull1(summary%boundary%strike_point_outer_r%value, wr_imas())
+  !AllocIfNull1(summary%boundary%strike_point_outer_z%value, wr_imas())
+endif
 
 
 AllocIfNull1(summary%volume_average%zeff%value, wr_imas(28))
@@ -1074,6 +1093,7 @@ equilibrium%time(CurTimeStep) = tt
         equilibrium%time_slice(CurTimeStep)%global_quantities%li_3 = wr_imas(19)
         equilibrium%time_slice(CurTimeStep)%global_quantities%beta_pol = betap
         equilibrium%time_slice(CurTimeStep)%global_quantities%beta_tor = betat
+        equilibrium%time_slice(CurTimeStep)%global_quantities%beta_normal = betan
 
         equilibrium%time_slice(CurTimeStep)%global_quantities%volume = wr_imas(7) ![m3]
         equilibrium%time_slice(CurTimeStep)%global_quantities%area = wr_imas(8) ![m2]
@@ -1107,9 +1127,14 @@ equilibrium%time(CurTimeStep) = tt
         equilibrium%time_slice(CurTimeStep)%boundary%type = ksepa ! 0 is limiter, 1 is diverted
         equilibrium%time_slice(CurTimeStep)%boundary%psi = psi_bnd ![Wb]
         equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%r = wr_imas(3)
+        !equilibrium%time_slice(CurTimeStep)%boundary%geometric_axis%z = wr_imas()
         equilibrium%time_slice(CurTimeStep)%boundary%minor_radius = wr_imas(4)
         equilibrium%time_slice(CurTimeStep)%boundary%elongation = wr_imas(5)
         equilibrium%time_slice(CurTimeStep)%boundary%triangularity = wr_imas(6)
+        !equilibrium%time_slice(CurTimeStep)%boundary%triangularity_upper = wr_imas()
+        !equilibrium%time_slice(CurTimeStep)%boundary%triangularity_lower = wr_imas()
+        !equilibrium%time_slice(CurTimeStep)%boundary%triangularity_left = wr_imas()
+        !equilibrium%time_slice(CurTimeStep)%boundary%triangularity_right = wr_imas()
         allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%r(n_bnd))
         allocate(equilibrium%time_slice(CurTimeStep)%boundary%outline%z(n_bnd))
           equilibrium%time_slice(CurTimeStep)%boundary%outline%r(1:n_bnd) = xbound(1:n_bnd)
@@ -1144,6 +1169,7 @@ equilibrium%time(CurTimeStep) = tt
           allocate(equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1))
             equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1)%r = wr_imas(15)
             equilibrium%time_slice(CurTimeStep)%boundary_separatrix%x_point(1)%z = wr_imas(16)
+
         endif
         
       
