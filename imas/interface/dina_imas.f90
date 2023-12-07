@@ -828,14 +828,6 @@ write(*,*) '!!!solpsza enter'
 
     betan = 100.d0*betat*wr_imas(4)*bt0/(tpl*1.d-6)
 
-      
-      ! dsep control
-      if ((tt.gt.70.d0).and.(dabs(tpl).gt.14.5d6)) then
-        dsep_ref = 3.6d-2
-        !output_2(4) = output_2(4) - 10.d0*(dsep-dsep_ref)
-      end if
-      
-
 
 
 	call cpu_time(cpu_new)

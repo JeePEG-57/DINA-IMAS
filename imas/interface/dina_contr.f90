@@ -39,6 +39,8 @@ data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
 data vmult(1:14) /1, 1, 0.5d0, 0.5d0, 1, 1, 1, 1, 1, 1, 1, 1, 0.5d0, -0.5d0/
 data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 216.8, 459.4, 4.0/
 
+!real(ids_real) :: dsep, dsep_ref
+
 
   if (loop_count.eq.0) then
     write(*,*) 'Controller parameters initialization...'
@@ -91,6 +93,17 @@ data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 21
   do i=kk+1,n_input2
     input_2(i) = 0.d0
   enddo
+
+
+  !dsep = equilibrium0%time_slice(1)%boundary_secondary_separatrix%distance_inner_outer
+
+  ! dsep control
+  !if ((tt.gt.70.d0).and.(dabs(input_1(4)).gt.14.5d6)) then
+    !dsep_ref = 3.6d-2
+    !input_2(4) = input_2(4) - 10.d0*(dsep-dsep_ref)
+  !end if
+
+
 
   if (kpr.eq.1) then
     write(*,*) 'kav_contr n_input1 n_input2 = ',n_input1,n_input2
