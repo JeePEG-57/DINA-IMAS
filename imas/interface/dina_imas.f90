@@ -818,8 +818,8 @@ write(*,*) '!!!solpsza enter'
       rmag = rs0
     endif
 
-    if (abs(fpol(0)).gt.0.d0) then
-      b_field_ax = fpol(0)/rmag
+    if (abs(fpol(1)).gt.0.d0) then
+      b_field_ax = fpol(1)/rmag
     else
       b_field_ax = bt0*rs0/rmag
     endif
