@@ -130,8 +130,6 @@ real(ids_real) :: bprobe(nprobe), psloop(nloop)
 
 real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
 
-real(ids_real) :: dsep_ref
-
 
 integer :: TimeSteps = 1, CurTimeStep = 1
 
@@ -1048,6 +1046,9 @@ if (ksepa.ne.0) then
   !AllocIfNull1(summary%boundary%strike_point_inner_z%value, wr_imas())
   !AllocIfNull1(summary%boundary%strike_point_outer_r%value, wr_imas())
   !AllocIfNull1(summary%boundary%strike_point_outer_z%value, wr_imas())
+else
+  AllocIfNull1(summary%boundary%x_point_main%r, 0.d0)
+  AllocIfNull1(summary%boundary%x_point_main%z, 0.d0)
 endif
 
 
