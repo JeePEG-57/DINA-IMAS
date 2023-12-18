@@ -1249,10 +1249,12 @@ class ExampleApp(uiclass, baseclass):
  
         #gamma_z.dat - 0D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
  
         #gamma_z2.dat - 0D and 1D transport, shared
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z2'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         # init.dat
@@ -1269,14 +1271,17 @@ class ExampleApp(uiclass, baseclass):
  
         #gamma_z1.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z1'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
  
         #gamma_z3.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z3'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         #gamma_z4.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z4'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         # bohm_gbohm.dat

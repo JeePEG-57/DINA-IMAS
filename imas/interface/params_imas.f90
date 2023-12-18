@@ -259,7 +259,7 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
            ion = 3
            nz_imp_c4 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c4 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c4(1:n_t_c4) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c4)
+           t_t_c4(1:n_t_c4) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c4)*1.d3
            pn_d_t_c4(1:n_t_c4) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c4)
         
         
@@ -275,7 +275,7 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
            ion = 5
            nz_imp2_c5 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c5 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c5(1:n_t_c5) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c5)
+           t_t_c5(1:n_t_c5) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c5)*1.d3
            pn_d_t_c5(1:n_t_c5) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c5)
         
         
@@ -333,7 +333,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            ion = 4
            nz_imp1_c9 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c9 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c9(1:n_t_c9) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c9)
+           t_t_c9(1:n_t_c9) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c9)*1.d3
            pn_d_t_c9(1:n_t_c9) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c9)
         
 !           open (unit=41,file='gamma_z3.dat',form='formatted') 
@@ -348,7 +348,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            ion = 6
            nz_imp3_c10 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c10 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c10(1:n_t_c10) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c10)
+           t_t_c10(1:n_t_c10) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c10)*1.d3
            pn_d_t_c10(1:n_t_c10) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c10)
         
         
@@ -364,7 +364,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            ion = 7
            nz_imp4_c11 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c11 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c11(1:n_t_c11) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c11)
+           t_t_c11(1:n_t_c11) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c11)*1.d3
            pn_d_t_c11(1:n_t_c11) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c11)
         
 !                 open (unit=41,file='bohm_gbohm.dat',form='formatted')

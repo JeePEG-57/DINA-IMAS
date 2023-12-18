@@ -1341,6 +1341,7 @@ write(*,*) 'Allocate core_profiles... '
     AllocIfNull1(core_profiles%global_quantities%ip, tpl)
     AllocIfNull1(core_profiles%global_quantities%beta_pol, betap)
     AllocIfNull1(core_profiles%global_quantities%beta_tor, betat)
+    AllocIfNull1(core_profiles%global_quantities%beta_tor_norm, betan)
     AllocIfNull1(core_profiles%global_quantities%li_3, wr_imas(19))
     AllocIfNull1(core_profiles%global_quantities%v_loop, wr_imas(29))
 
