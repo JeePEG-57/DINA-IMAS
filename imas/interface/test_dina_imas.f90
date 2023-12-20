@@ -16,18 +16,16 @@ implicit none
 
 interface
   subroutine dina_green(&
-  & pf_active0, pf_passive0, magnetics0,&
-  & em_coupling, equilibrium)
+    & pf_active0, pf_passive0, magnetics0, equilibrium0, &
+    & em_coupling)
 
     use ids_schemas
-    use ids_routines
-
 
     type (ids_pf_active), INTENT(IN)   :: pf_active0
     type (ids_pf_passive), INTENT(IN)  :: pf_passive0
     type (ids_magnetics), INTENT(IN)   :: magnetics0
+    type (ids_equilibrium), INTENT(IN) :: equilibrium0
     type (ids_em_coupling), INTENT(OUT) :: em_coupling
-    type (ids_equilibrium), INTENT(OUT) :: equilibrium
 
   end subroutine
 
@@ -37,12 +35,9 @@ interface
     & ,bndcond_in &
     & ,pulse_schedule &
     & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
-    & ,summary &
-    & ,arr_in1, arr_out1 )
+    & ,summary)
     
     use ids_schemas
-    use ids_routines
-
 
     type (ids_em_coupling), INTENT(IN)  :: em_coupling0
     type (ids_equilibrium), INTENT(IN) :: equilibrium0
@@ -65,29 +60,26 @@ interface
     type (ids_core_sources), INTENT(OUT)   :: core_sources
     type (ids_summary), INTENT(OUT) :: summary
 
-
-    real (ids_real), INTENT(IN) :: arr_in1(*)
-    real (ids_real), INTENT(OUT) :: arr_out1(*)
-
   end subroutine
     
 
 
-  subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active, arr_in1, arr_out1)
-  use ids_schemas
+  subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active)
+    
+    use ids_schemas
+
     type (ids_pulse_schedule), intent(IN) :: pulse_schedule, pulse_schedule_term
+    type (ids_equilibrium), intent(IN) :: equilibrium0
     type (ids_pf_active), intent(IN) :: pf_active0
     type (ids_pf_active), intent(OUT) :: pf_active
-    type (ids_equilibrium), intent(IN) :: equilibrium0
     
-    real (ids_real), intent(IN) :: arr_in1(*)
-    real (ids_real), intent(OUT) :: arr_out1(*)
+
   end subroutine
 end interface
 
 
 type (ids_em_coupling) :: em_coupling
-type (ids_equilibrium) :: equilibrium0, equilibrium_green, equilibrium
+type (ids_equilibrium) :: equilibrium0, equilibrium
 type (ids_magnetics) :: magnetics, magnetics0
 type (ids_pf_active) :: pf_active, pf_active1, pf_active0
 type (ids_pf_passive) :: pf_passive, pf_passive0
@@ -100,7 +92,6 @@ type (ids_dataset_description) :: data_description
 type (ids_summary) :: summary
 type (ids_wall) :: wall
 
-real (ids_real) :: arr_in1(501), arr_out1(501)
 
 ! IDS location data
 character (len=255) :: user_default
@@ -280,8 +271,6 @@ if (restart.eq.1) then
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
 
-  write(*,*) 'Finished reading the prescribed IDS'
-  call imas_close(idx0)
 
   write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
 
@@ -289,9 +278,11 @@ else
 
   write(*,*) 'Start from t=0'
 
+  time_get = 0.d0
+  interp_start = 1
 
   !call ids_get(idx0,"em_coupling",em_coupling)
-  !call ids_get(idx0,"equilibrium",equilibrium0)
+  call ids_get_slice(idx0,"equilibrium",equilibrium0, time_get, interp_start)
 
 
   !call ids_get(idx0,"core_profiles",core_profiles0)
@@ -300,6 +291,9 @@ else
 
   
 endif
+
+write(*,*) 'Finished reading the prescribed IDS'
+call imas_close(idx0)
 
 
 call imas_open_env('ids',pulse_pfa,run_pfa,idx_a,user_pfa,database_pfa,'3')
@@ -321,11 +315,7 @@ call imas_close(idx0)
 
 
 
-call dina_green(pf_active0, pf_passive0, magnetics0, em_coupling, equilibrium_green)
-
-if (.NOT.associated(equilibrium0%time_slice)) then
-  equilibrium0 = equilibrium_green
-endif
+call dina_green(pf_active0, pf_passive0, magnetics0, equilibrium0, em_coupling)
 
 
 
@@ -339,11 +329,6 @@ call imas_close(idx0)
 
 !print *,'Press any key to begin simulation...'
 !read (*,*)
-
-
-
-arr_in1(1:31)=1
-arr_out1(1:31)=0
 
 
 
@@ -370,8 +355,7 @@ call dina_imas( &
  & , bndcond &
  & , pulse_schedule &
  & , equilibrium, magnetics, pf_active1, pf_passive, core_profiles, core_sources, core_transport &
- & , summary &
- & , arr_in1,arr_out1)
+ & , summary)
 
  
 write(*,*) "DINA_IMAS finished"
@@ -388,7 +372,7 @@ write(*,*) "DINA_IMAS inputs deallocated"
 flush(6)
 
 
-call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active, arr_out1, arr_in1)
+call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active)
 
 call ids_deallocate(pf_active1)
 

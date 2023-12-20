@@ -1,10 +1,16 @@
-F90_gfortran=gfortran -w
-COPTS_gfortran = -O0 -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none `pkg-config imas-gfortran --cflags` -g  
-LIBS_gfortran=`pkg-config imas-gfortran --libs`
-XLIB= /usr/X11R6/lib
 
-#f2c= g77 -ff2c -fno-automatic
-f2c= gfortran -w  -ffixed-line-length-none -fno-automatic -fPIC -g -ffpe-trap=invalid,zero
+PACKAGES =
+PACKAGES += imas-$(FCOMPILER)
+
+F90=$(FCOMPILER)
+FFLAGS ?= -w -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none
+FFLAGS += `pkg-config $(PACKAGES) --cflags`
+LDFLAGS = `pkg-config $(PACKAGES) --libs`
+
+#XLIB= /usr/X11R6/lib
+
+
+FC= $(FCOMPILER) -w -ffixed-line-length-none -fno-automatic -fPIC -g -ffpe-trap=invalid,zero
 
 
 
@@ -29,92 +35,93 @@ dina_equil.a: dina_equil.o $(os)
 
 test_equil: test_dina_equil.o dina_equil.o $(os)
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) -o $@ $^ $(LIBS_gfortran)
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
-	$(F90_gfortran) $(COPTS_gfortran) -c -o $@ $^
+	$(F90) $(FFLAGS) -c -o $@ $^
 
 p_equi: a_main_equi.o $(os)
-		gfortran -o p_equi a_main_equi.o $(os) -lm -L$(XLIB) -lX11
+	@echo "   * $^ -> $@"
+	$(F90) -o $@ $^ $(LDFLAGS)
 
 
 a_main_equi.o:	$(S)a_main_equi.f
-		$(f2c) -c   -w   $(S)a_main_equi.f
+		$(FC) -c   -w   $(S)a_main_equi.f
 
 a_dina_equi.o:	$(S)a_dina_equi.f
-		$(f2c) -c   -w   $(S)a_dina_equi.f
+		$(FC) -c   -w   $(S)a_dina_equi.f
 
 bispl.o:	$(S)bispl.f
-		$(f2c) -c   -w    $(S)bispl.f
+		$(FC) -c   -w    $(S)bispl.f
 
 bispla.o:	$(S)bispla.f
-		$(f2c) -c   -w    $(S)bispla.f
+		$(FC) -c   -w    $(S)bispla.f
 
 bound.o:	$(S)bound.f
-		$(f2c) -c   -w    $(S)bound.f
+		$(FC) -c   -w    $(S)bound.f
 
 brz.o:		$(S)brz.f
-		$(f2c) -c   -w    $(S)brz.f
+		$(FC) -c   -w    $(S)brz.f
 
 bunema.o:	$(S)bunema.f
-		$(f2c) -c   -w    $(S)bunema.f
+		$(FC) -c   -w    $(S)bunema.f
 
 diter_1.o:	$(S)diter_1.f
-		$(f2c) -c   -w    $(S)diter_1.f
+		$(FC) -c   -w    $(S)diter_1.f
 
 fit.o:		$(S)fit.f
-		$(f2c) -c   -w    $(S)fit.f
+		$(FC) -c   -w    $(S)fit.f
 flux_pl.o:	$(S)flux_pl.f
-		$(f2c) -c   -w    $(S)flux_pl.f
+		$(FC) -c   -w    $(S)flux_pl.f
 gr_psi_d_pc.o:	$(S)gr_psi_d_pc.f
-		$(f2c) -c   -w    $(S)gr_psi_d_pc.f
+		$(FC) -c   -w    $(S)gr_psi_d_pc.f
 
 green_imas.o:	$(S)green_imas.f
-		$(f2c) -c   -w    $(S)green_imas.f
+		$(FC) -c   -w    $(S)green_imas.f
 
 
 inh.o:		$(S)inh.f
-		$(f2c) -c   -w    $(S)inh.f
+		$(FC) -c   -w    $(S)inh.f
 map.o:		$(S)map.f
-		$(f2c) -c   -w    $(S)map.f
+		$(FC) -c   -w    $(S)map.f
 n_equi.o:	n_equi.f new_com.inc
-		$(f2c) -c  -w  n_equi.f
+		$(FC) -c  -w  n_equi.f
 n_dina_imas.o:	n_dina_imas.f new_com.inc
-		$(f2c) -c  -w  n_dina_imas.f
+		$(FC) -c  -w  n_dina_imas.f
 ndop_4.o:	$(S)ndop_4.f
-		$(f2c) -c   -w    $(S)ndop_4.f
+		$(FC) -c   -w    $(S)ndop_4.f
 neq0_sep_lim_32.o:	$(S)neq0_sep_lim_32.f
-		$(f2c) -c   -w    $(S)neq0_sep_lim_32.f
+		$(FC) -c   -w    $(S)neq0_sep_lim_32.f
 neqm.o:		$(S)neqm.f
-		$(f2c) -c   -w    $(S)neqm.f
+		$(FC) -c   -w    $(S)neqm.f
 obrm.o:		$(S)obrm.f
-		$(f2c) -c   -w    $(S)obrm.f
+		$(FC) -c   -w    $(S)obrm.f
 oosep_4.o:	$(S)oosep_4.f
-		$(f2c) -c   -w    $(S)oosep_4.f
+		$(FC) -c   -w    $(S)oosep_4.f
 out42_for.o:	$(S)out42_for.f
-		$(f2c) -c   -w    $(S)out42_for.f
+		$(FC) -c   -w    $(S)out42_for.f
 pet.o:		$(S)pet.f
-		$(f2c) -c   -w    $(S)pet.f
+		$(FC) -c   -w    $(S)pet.f
 pers2.o:	$(S)pers2.f
-		$(f2c) -c   -w    $(S)pers2.f
+		$(FC) -c   -w    $(S)pers2.f
 pid.o:		$(S)pid.f
-		$(f2c) -c   -w    $(S)pid.f
+		$(FC) -c   -w    $(S)pid.f
 sh.o:		$(S)sh.f
-		$(f2c) -c   -w    $(S)sh.f
+		$(FC) -c   -w    $(S)sh.f
 sh1_n2.o:	$(S)sh1_n2.f
-		$(f2c) -c   -w    $(S)sh1_n2.f
+		$(FC) -c   -w    $(S)sh1_n2.f
 sh_d3d.o:	$(S)sh_d3d.f
-		$(f2c) -c   -w    $(S)sh_d3d.f
+		$(FC) -c   -w    $(S)sh_d3d.f
 uuu.o:		$(S)uuu.f
-		$(f2c) -c   -w    $(S)uuu.f
+		$(FC) -c   -w    $(S)uuu.f
 zca_tsp.o:	$(S)zca_tsp.f
-		$(f2c) -c   -w    $(S)zca_tsp.f
+		$(FC) -c   -w    $(S)zca_tsp.f
 zcam_d3d.o:	$(S)zcam_d3d.f
-		$(f2c) -c   -w    $(S)zcam_d3d.f
+		$(FC) -c   -w    $(S)zcam_d3d.f
 zcamit.o:	$(S)zcamit.f
-		$(f2c) -c   -w    $(S)zcamit.f
+		$(FC) -c   -w    $(S)zcamit.f
 
 clean:
 	rm -f *.o

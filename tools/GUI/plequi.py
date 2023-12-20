@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QApplication,
                              QMenu, QMainWindow, QDockWidget,QMenuBar,QSizePolicy,
@@ -7,16 +8,16 @@ from PySide6.QtWidgets import (QTabWidget, QWidget, QSlider, QFormLayout, QAppli
 from PySide6.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, \
                             QWidget, QGridLayout, QVBoxLayout, QLineEdit, \
                             QSlider, QCheckBox, QPushButton, QHBoxLayout, QLabel, QMessageBox
-from PySide6.QtGui import QAction           
+from PySide6.QtGui import QAction
+
 import eq_win4
-import sys
+import imas,argparse,sys,os
 import math
-import imas # UAL library
 import matplotlib
-#matplotlib.use('QtAgg')
+#matplotlib.use('Qt5Agg')
 #matplotlib.use('GTK3Agg')
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -24,6 +25,8 @@ from matplotlib.path import Path
 import matplotlib.patches as patches
 
 import numpy as np
+import ids_util
+import ids_eqdsk
 
 #--------------new class for equilibrium window
 class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
@@ -34,7 +37,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
 
         self.idslist = idslist
         
-        self.t1 = idslist['summary'].time
+        self.t1 = idslist['equilibrium'].time
         self.tor = len(self.t1)
         
         #--------------------
@@ -51,17 +54,34 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         verticalLayout = QtWidgets.QVBoxLayout(self)
         verticalLayout.setObjectName("ToolsLayout")       
         
-        self.CreateCheckBox(verticalLayout, "DrawCoils", True)
-        self.CreateCheckBox(verticalLayout, "DrawLegend", True)
-        self.CreateCheckBox(verticalLayout, "DrawPassive", True)
-        self.CreateCheckBox(verticalLayout, "DrawLimiter", True)
-        self.CreateCheckBox(verticalLayout, "DrawLimiterActivePoint", True)
-        self.CreateCheckBox(verticalLayout, "DrawBoundary", True)
-        self.CreateCheckBox(verticalLayout, "DrawSeparatrix", True)
-        self.CreateCheckBox(verticalLayout, "DrawSeparatrix2", True)
-        self.CreateCheckBox(verticalLayout, "DrawPsiInside", True)
-        self.CreateCheckBox(verticalLayout, "DrawPsiOutside", True)
+        self.Label = QLabel('Draw options')
+        verticalLayout.addWidget(self.Label)
         
+        
+        self.CreateCheckBox(verticalLayout, "Legend", True)
+        self.CreateCheckBox(verticalLayout, "Grid", False)
+        self.CreateCheckBox(verticalLayout, "Coils", True)
+        self.CreateCheckBox(verticalLayout, "Passive", True)
+        self.CreateCheckBox(verticalLayout, "PassiveCurrentColored", False)
+        self.CreateCheckBox(verticalLayout, "Limiter", True)
+        self.CreateCheckBox(verticalLayout, "LimiterActivePoint", True)
+        self.CreateCheckBox(verticalLayout, "Boundary", True)
+        self.CreateCheckBox(verticalLayout, "Separatrix", True)
+        self.CreateCheckBox(verticalLayout, "Separatrix2", True)
+        self.CreateCheckBox(verticalLayout, "PsiInside", True)
+        self.CreateCheckBox(verticalLayout, "PsiOutside", True)
+        self.CreateCheckBox(verticalLayout, "Gaps", True)
+        
+        
+        
+        self.ButtonEQDSK = QPushButton()
+        self.ButtonEQDSK.setText("Save EQDSK")
+        self.ButtonEQDSK.setObjectName("ButtonEQDSK")
+        sp = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        self.ButtonEQDSK.setSizePolicy(sp)
+        verticalLayout.addWidget(self.ButtonEQDSK)
+        self.ButtonEQDSK.clicked.connect(self.SaveEQDSK)
+      
         verticalLayout.addStretch()
         
         #--------------------
@@ -99,13 +119,19 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         self.ax_equil = plt.subplot(1, ncols, 1)
         self.ax_equil.set_aspect('equal', adjustable='box')
         
-        self.canvas.draw_idle()
+        self.canvas.draw()
         
+        self.xlim = [0., 1.]
+        self.ylim = [-1., 1.]
+        self.drawn = False
         
         self.data_gain()
         
         self.matSlider.setValue(int(self.tor/3))
         self.plotty()
+        
+        
+        
         
         
     def CreateCheckBox(self, layout, name, defaultState):
@@ -130,62 +156,14 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         CurrentMax = max(CurrentMax, Current)
       self.pfpCurrentMax = CurrentMax
       #print("pf_passive max loop current = " + str(self.pfpCurrentMax))
-
-  
-    def GetGeometryPath(self, geom):
-      verts = []
-      codes = []
       
-      if (geom.geometry_type == 2):
-        verts = [
-          (geom.rectangle.r - 0.5*geom.rectangle.width, geom.rectangle.z - 0.5*geom.rectangle.height),  # left, bottom
-          (geom.rectangle.r - 0.5*geom.rectangle.width, geom.rectangle.z + 0.5*geom.rectangle.height),  # left, top
-          (geom.rectangle.r + 0.5*geom.rectangle.width, geom.rectangle.z + 0.5*geom.rectangle.height),  # right, top
-          (geom.rectangle.r + 0.5*geom.rectangle.width, geom.rectangle.z - 0.5*geom.rectangle.height),  # right, bottom
-          (0., 0.),  # ignored
-        ]
-        codes = [
-            Path.MOVETO,
-            Path.LINETO,
-            Path.LINETO,
-            Path.LINETO,
-            Path.CLOSEPOLY,
-        ]
-        
-      if (geom.geometry_type == 3):
-        verts = [
-          (geom.oblique.r, geom.oblique.z),  # left, bottom
-          (geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha),
-            geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha)),  # left, top
-          (geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha) -  geom.oblique.length_beta*math.sin(geom.oblique.beta),
-            geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha) +  geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, bottom
-          (geom.oblique.r - geom.oblique.length_beta*math.sin(geom.oblique.beta),
-            geom.oblique.z + geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, top
-          (0., 0.),  # ignored
-        ]
-        codes = [
-            Path.MOVETO,
-            Path.LINETO,
-            Path.LINETO,
-            Path.LINETO,
-            Path.CLOSEPOLY,
-        ]
+    
+    def SaveEQDSK(self):
+      filename,_ = QtWidgets.QFileDialog.getSaveFileName(self, "Enter file name", os.getcwd() + "/file.eqdsk")
       
-      if (geom.geometry_type == 1):
-        n = len(geom.outline.r)
-        for i in range(n):
-          verts.append((geom.outline.r[i], geom.outline.z[i]))
-          codes.append(Path.LINETO)
-          
-        if (n > 0):
-          codes[0] = Path.MOVETO
-          
-          verts.append((0.0, 0.0))
-          codes.append(Path.CLOSEPOLY)
-      
-      path = Path(verts, codes)
-      
-      return path
+      if filename:
+        print(filename)
+        ids_eqdsk.Save(filename, self.idslist["equilibrium"], self.idslist["wall"])
     
     
     def plotty(self):
@@ -296,7 +274,14 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         
   
         #EQUILIBRIUM--------------
+        
         ax = self.ax_equil
+        
+                
+        if (self.drawn == True):
+          self.xlim = ax.get_xlim()
+          self.ylim = ax.get_ylim()
+        
         ax.cla()
         
         x = idslist['equilibrium'].time_slice[it].profiles_2d[0].grid.dim1
@@ -325,16 +310,15 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         dsep = idslist['equilibrium'].time_slice[it].boundary_secondary_separatrix.distance_inner_outer
         
         
+        if (self.Grid.isChecked()):
+          ax.grid(axis = 'both', color = 'black', linestyle = '--', linewidth = 0.5)
+          
         
-        if (self.DrawLimiter.isChecked()):
-          if (len(idslist['wall'].description_2d) > 0):
-            for unit in idslist['wall'].description_2d[0].limiter.unit:
-              ax.plot(unit.outline.r, unit.outline.z, 'k-', linewidth=1, label='limiter')
-          else:
-            print("No wall limiter data")
+        if (self.Limiter.isChecked()):
+          ids_util.plot_limiter(ax, idslist['wall'])
           
           
-        if (self.DrawLimiterActivePoint.isChecked()):
+        if (self.LimiterActivePoint.isChecked()):
           r = idslist['equilibrium'].time_slice[it].boundary_separatrix.active_limiter_point.r
           z = idslist['equilibrium'].time_slice[it].boundary_separatrix.active_limiter_point.z
           #if (idslist['summary'].boundary.type.value[it] == 0):
@@ -360,7 +344,7 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
             if (y[i] < ymax):
               i_ymax = i
           
-          if (self.DrawPsiOutside.isChecked()):
+          if (self.PsiOutside.isChecked()):
             vmax = psi_max
             vmin = psi_bnd + dpsi
             levels = np.arange(vmin, vmax, dpsi)
@@ -376,62 +360,83 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
             psi_ax = ax.contour(x, y[i_ymax:], psi2d[i_ymax:][:],
               levels=levels, colors=colors, linewidths=0.5, linestyles='solid')
           
-          if (self.DrawPsiInside.isChecked()):
+          if (self.PsiInside.isChecked()):
             vmax = psi_bnd
             vmin = psi_axis
             levels = np.arange(vmin, vmax, dpsi)
             colors = 'red'
             psi_ax = ax.contour(x, y[i_ymin:i_ymax], psi2d[i_ymin:i_ymax][:],
               levels=levels, colors=colors, linewidths=0.5, linestyles='solid')
+              
            
         
-        if (self.DrawBoundary.isChecked()):
+        if (self.Boundary.isChecked()):
           psi_sep_ax1 = ax.contour(x, y, psi2d, 
             levels=[psi_bnd], colors=['r'], linewidths=1, linestyles='solid')
           psi_sep_ax1.collections[0].set_label('boundary,    psi=' + "{:.2f}".format(psi_bnd) + " Wb")
         
-        if (self.DrawSeparatrix.isChecked()):
+        if (self.Separatrix.isChecked() and idslist['equilibrium'].time_slice[it].boundary.type == 1):
           psi_sep_ax1 = ax.contour(x, y, psi2d,
             levels=[psi_sep], colors = ['r'], linewidths=1, linestyles='solid')
           psi_sep_ax1.collections[0].set_label('separatrix,   psi=' + "{:.2f}".format(psi_sep) + " Wb")
         
-        if (self.DrawSeparatrix2.isChecked()):
+        if (self.Separatrix2.isChecked() and idslist['equilibrium'].time_slice[it].boundary.type == 1):
           psi_sep_ax1 = ax.contour(x, y, psi2d,
             levels=[psi_sep2], colors = ['m'], linewidths=1, linestyles='solid')
           psi_sep_ax1.collections[0].set_label('separatrix2, psi=' + "{:.2f}".format(psi_sep2) + " Wb")
         
-        if (self.DrawCoils.isChecked()):
-          for coil in idslist['pf_active'].coil:
-            for elem in coil.element:
-              path = self.GetGeometryPath(elem.geometry)
-              patch = patches.PathPatch(path, facecolor='orange', edgecolor='blue', lw=1)
-              ax.add_patch(patch)
+        if (self.Coils.isChecked()):
+          ids_util.plot_pf_active(ax, idslist['pf_active'])
         
-        if (self.DrawPassive.isChecked()):
+        if (self.Passive.isChecked()):
           CurrentMax = 0.
           for loop in idslist['pf_passive'].loop:
             CurrentMax = max(CurrentMax, abs(loop.current[it]))
           for loop in idslist['pf_passive'].loop:
-            current = loop.current[it]
-            
-            r = current/CurrentMax
-            g = -current/CurrentMax
-            b = 0.5
-            
-            r = np.clip(r,0.,1.)
-            g = np.clip(g,0.,1.)
-            b = np.clip(b,0.,1.)
-            
+            if (self.PassiveCurrentColored.isChecked()):
+              current = loop.current[it]
+              
+              r = current/CurrentMax
+              g = -current/CurrentMax
+              b = 0.5
+              
+              r = np.clip(r,0.,1.)
+              g = np.clip(g,0.,1.)
+              b = np.clip(b,0.,1.)
+            else:
+              r = 0.
+              g = 0.
+              b = 1.
+              
             for elem in loop.element:
-              path = self.GetGeometryPath(elem.geometry)
+              path = ids_util.GetGeometryPath(elem.geometry)
               patch = patches.PathPatch(path, facecolor=(r, g, b), edgecolor=(r, g, b), lw=1)
               ax.add_patch(patch)
               
               
+        if (self.Gaps.isChecked()):
+          Rg = [422.30, 556.50, 828.06, 750.95, 533.15, 405.99]
+          Zg = [-379.20, -440.40, 46.65, 299.71, 458.04, 77.77]
+          Ag = [ -65.0, -150.0, 180.0, -135.0, -90.0, 0.0 ]
+          
+          ng = 6
+          lg = 1.0
+          for i in range(ng):
+            #r = [Rg[i]*1.e-2, Rg[i]*1.e-2 + lg*math.cos(Ag[i]*np.pi/180.)]
+            #z = [Zg[i]*1.e-2, Zg[i]*1.e-2 + lg*math.sin(Ag[i]*np.pi/180.)]
+            #ax.plot(r, z, 'r')
+            plt.arrow(Rg[i]*1.e-2, Zg[i]*1.e-2, lg*math.cos(Ag[i]*np.pi/180.), lg*math.sin(Ag[i]*np.pi/180.), head_width = 0.1)
+        
+        
+        if (self.drawn == True):
+          ax.set_xlim(self.xlim)
+          ax.set_ylim(self.ylim)
+        self.drawn = True
+              
         Time = idslist['equilibrium'].time_slice[it].time
         Ipl = idslist['equilibrium'].time_slice[it].global_quantities.ip
         ax.set_title('t = %f s, Ip = %f MA'%(Time, Ipl*1.e-6))
-        if (self.DrawLegend.isChecked()):
+        if (self.Legend.isChecked()):
           ax.legend()
         
         
@@ -447,31 +452,61 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         #self.setWindowTitle('TRY-1-2-3')
 
 def main():
+    # MANAGEMENT OF INPUT ARGUMENTS
+    # ------------------------------
+    parser = argparse.ArgumentParser(description=\
+            '---- Display scenario')
+    parser.add_argument('-s','--shot',help='Shot number', required=True,type=int)
+    parser.add_argument('-r','--run',help='Run number',required=True,type=int)
+    parser.add_argument('-u','--user_or_path',help='User or absolute path name where the data-entry is located', required=False)
+    parser.add_argument('-d','--database',help='Database name where the data-entry is located', required=False)
+    parser.add_argument('-t','--time',help='Time', required=False,type=float)
+    
+    args = vars(parser.parse_args())
+    
+    shot = args["shot"]
+    run  = args["run"]
+    
+    # User or absolute path name
+    if args['user_or_path'] != None:
+        user = args['user_or_path']
+    else:
+        user = 'public'
+    
+    # Database name
+    if args['database'] != None:
+        database = args['database']
+    else:
+        database = 'iter'
+    
+    # Time
+    if args['time'] != None:
+        time = args['time']
+        SingleSlice = True
+    else:
+        time = -99.
+        SingleSlice = False
+  
+  
+  
     app = QApplication(sys.argv)  # New instance QApplication
     
-    shot = 135011
-    run = 7
-    user = "dubrovm"
-    database = "iter"
     
-    SingleSlice = True
-    time = 300.0
-    interp = 1
     
     imas_entry_init = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, shot, run, user, data_version = '3')
     imas_entry_init.open()
     
     idslist = {}
     
-    
     if (SingleSlice):
+      interp = 1
       idslist['equilibrium'] = imas_entry_init.get_slice('equilibrium', time, interp)
       idslist['wall'] = imas_entry_init.get_slice('wall', time, interp)
       idslist['pf_active'] = imas_entry_init.get_slice('pf_active', time, interp)
       idslist['pf_passive'] = imas_entry_init.get_slice('pf_passive', time, interp)
       idslist['core_profiles'] = imas_entry_init.get_slice('core_profiles', time, interp)
       idslist['core_sources'] = imas_entry_init.get_slice('core_sources', time, interp)
-      idslist['summary'] = imas_entry_init.get_slice('summary', time, interp)
+      #idslist['summary'] = imas_entry_init.get_slice('summary', time, interp)
     else:
       idslist['equilibrium'] = imas_entry_init.get('equilibrium')
       idslist['wall'] = imas_entry_init.get('wall')
@@ -479,7 +514,7 @@ def main():
       idslist['pf_passive'] = imas_entry_init.get('pf_passive')
       idslist['core_profiles'] = imas_entry_init.get('core_profiles')
       idslist['core_sources'] = imas_entry_init.get('core_sources')
-      idslist['summary'] = imas_entry_init.get('summary')
+      #idslist['summary'] = imas_entry_init.get('summary')
     
     imas_entry_init.close()
         
@@ -487,7 +522,7 @@ def main():
     window = Second_window(idslist)
     window.setObjectName("EQUIL_win")
     window.show() 
-    sys.exit(app.exec())  # Start application
+    sys.exit(app.exec_())  # Start application
 
 if __name__ == '__main__':  # If direct run, not import
     main() 

@@ -80,24 +80,6 @@
             <string>1</string>
             <string>null</string>
           </vector>
-          <vector>
-            <string>double</string>
-            <string>0</string>
-            <string>1</string>
-            <string>501</string>
-            <string>1</string>
-            <string>0</string>
-            <string>ar_in1</string>
-          </vector>
-          <vector>
-            <string>double</string>
-            <string>0</string>
-            <string>1</string>
-            <string>501</string>
-            <string>0</string>
-            <string>1</string>
-            <string>ar_out1</string>
-          </vector>
         </tupleParams>
       </default>
     </org.iter.imas.fc2k.TupleP>

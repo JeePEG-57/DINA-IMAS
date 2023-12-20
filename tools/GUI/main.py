@@ -328,26 +328,26 @@ class ExampleApp(uiclass, baseclass):
         
         self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, name='Key print', comment = 'Key to print debug and diagnostic logs')
         self.DINAData["tt_kavin"] = CodeParameter(mytype=int, value=3.5, comment = 'Time to switch from 0D transport model to 1D', name='Time 0D->1D', unit='ms')
-        self.DINAData["tau"] = CodeParameter(mytype=float, value=0., name='dt start', comment = 'Time step before switching to 1D transport model', unit='ms')
-        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation after switching to 1D transport model and before plasma current rampdown.', name='dt simulation', unit='ms')
-        self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=0., comment = 'Time step for simulation during plasma current ramp-down', name='dt rampdown', unit='ms')
-        self.DINAData["rs0"] = CodeParameter(mytype=float, value=0., name='R_Btor', comment = 'R coordinate at which the toroidal field is specified', unit='cm')
-        self.DINAData["bt0"] = CodeParameter(mytype=float, value=0., name='Btor', comment = 'The toroidal field at the specified R coordinate', unit='Gs')
-        self.DINAData["key_t11"] = CodeParameter(mytype=int, value=0, comment = 'JET Ohmic scaling')
-        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=0., comment = 'Time after which input 1D transport profiles are used, internal transport model switches off.', unit='ms')
+        self.DINAData["tau"] = CodeParameter(mytype=float, value=2., name='dt start', comment = 'Time step before switching to 1D transport model', unit='ms')
+        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=10., comment = 'Time step for simulation after switching to 1D transport model and before plasma current rampdown.', name='dt simulation', unit='ms')
+        self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=5., comment = 'Time step for simulation during plasma current ramp-down', name='dt rampdown', unit='ms')
+        self.DINAData["rs0"] = CodeParameter(mytype=float, value=620., name='R_Btor', comment = 'R coordinate at which the toroidal field is represented internally', unit='cm')
+        self.DINAData["bt0"] = CodeParameter(mytype=float, value=53., name='Btor', comment = 'The toroidal field at the specified R coordinate', unit='Gs')
+        self.DINAData["key_t11"] = CodeParameter(mytype=int, value=1, comment = 'JET Ohmic scaling')
+        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=100000.e3, comment = 'Time after which input 1D transport profiles are used, internal transport model switches off.', unit='ms')
         
-        self.DINAData["p"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["T_e"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["T_i"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["gam"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.DINAData["gain_puff"] = CodeParameter(mytype=float, value=0., comment = '')
+        self.DINAData["p"] = CodeParameter(mytype=float, value=0., comment = 'Initial neutral D particles pressure', unit='Pa')
+        self.DINAData["T_e"] = CodeParameter(mytype=float, value=0., comment = 'Initial electron temperature', unit='eV')
+        self.DINAData["T_i"] = CodeParameter(mytype=float, value=0., comment = 'Initial ion temperature', unit='eV')
+        self.DINAData["gam"] = CodeParameter(mytype=float, value=0., comment = 'Initial ionization state of D')
+        self.DINAData["gain_puff"] = CodeParameter(mytype=float, value=0., comment = 'Neutrals puffing gain to keep the prescribed waveform of D in 0D model')
         
-        self.DINAData["bohm_gbohm"] = CodeParameter(mytype=int, value=0, comment = 'Key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling')
+        self.DINAData["bohm_gbohm"] = CodeParameter(mytype=int, value=1, comment = 'Key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling')
         self.DINAData["pcchp_end"] = CodeParameter(mytype=float, value=0., comment = 'The level to which plasma density decreases during 4 s after start of plasma current ramp-down phase')
         
-        self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
-        self.DINAData["dens_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
-        self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = '')
+        self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = 'After tt_dina using external energy transport')
+        self.DINAData["dens_ext"] = CodeParameter(mytype=bool, value=False, comment = 'After tt_dina using external density transport')
+        self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = 'After tt_dina using external bootstrap current')
         
         
         self.DINAData["grid_n"] = CodeParameter(mytype=int, value=50, name='Grid n', comment = 'Amount of 1D grid points')
@@ -355,38 +355,36 @@ class ExampleApp(uiclass, baseclass):
         self.DINAData["grid_alpha"] = CodeParameter(mytype=float, value=0.95, name='Grid compression', comment = '1D grid compression factor in the boundary region')
         
         
-        self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='tcont2')
-        self.controlData["dtcont2"] = CodeParameter(mytype=int, value=0., comment = '', name='dtcont2')
-        self.controlData["Ip_div"] = CodeParameter(mytype=int, value=0., comment = '', name='Ip_div')
-        self.controlData["ref_ramp"] = CodeParameter(mytype=float, value=0., comment = '', name='ref_ramp')
-        self.controlData["Ip_rd"] = CodeParameter(mytype=float, value=0., comment = '', name='Ip_rd')
-        self.controlData["trd_ref"] = CodeParameter(mytype=float, value=0., comment = '', name='trd_ref')
-        self.controlData["max_VS_lim"] = CodeParameter(mytype=float, value=0., comment = '', name='max_VS_lim')
-        self.controlData["k_g4"] = CodeParameter(mytype=int, value=0., comment = '', name='key_g4')
-        self.controlData["time_stop"] = CodeParameter(mytype=float, value=0., comment = '', name='time_stop', unit='s')
+        self.controlData["tcont2"] = CodeParameter(mytype=int, value=0., comment = 'Time when the limiter controller is switched on', name='tcont2', unit='s')
+        self.controlData["dtcont2"] = CodeParameter(mytype=int, value=0., comment = 'Transition time of the control voltages from the current controller to the limiter controller at the ramp-up phase', name='dtcont2', unit='s')
+        self.controlData["Ip_div"] = CodeParameter(mytype=int, value=0., comment = 'Negative value of plasma current when the first divertor controller is switched on at the ramp-up phase', name='Ip_div', unit='MA')
+        self.controlData["ref_ramp"] = CodeParameter(mytype=float, value=0., comment = 'Transition time of the control voltages after switching of the first divertor controller', name='ref_ramp', unit='s')
+        self.controlData["Ip_rd"] = CodeParameter(mytype=float, value=0., comment = 'Value of plasma current when the second divertor controller is switched on at the plasma current termination phase', name='Ip_rd', unit='MA')
+        self.controlData["trd_ref"] = CodeParameter(mytype=float, value=0., comment = 'Last time moment in schedule of the gaps for the plasma termination phase', name='trd_ref', unit='s')
+        self.controlData["max_VS_lim"] = CodeParameter(mytype=float, value=0., comment = 'Maximum value of the gain coefficient for VS controller at the limiter phase', name='max_VS_lim')
+        self.controlData["c_a_tpl2_lim"] = CodeParameter(mytype=int, value=0., comment = 'Gain coefficient for the limiter controller at the ramp-up phase', name='c_a_tpl2_lim')
+        self.controlData["time_stop"] = CodeParameter(mytype=float, value=0., comment = 'Time of simulation stop', name='time_stop', unit='s')
         
-        self.controlData["c_a_tpl1"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c_a_tpl1_eob"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c_a_tpl2"] = CodeParameter(mytype=int, value=0., comment = '')
-        self.controlData["c_a_tpl_min"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["y0"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c1_y0"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["c2_y0"] = CodeParameter(mytype=float, value=0., comment = '')
-        self.controlData["t_tran2D"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
-        self.controlData["Tu"] = CodeParameter(mytype=float, value=0., comment = '', name='Tu')
-        self.controlData["c_cur_max"] = CodeParameter(mytype=int, value=0., comment = '', name='c_cur_max')
+        self.controlData["c_a_tpl1"] = CodeParameter(mytype=float, value=0., comment = 'Gain coefficient for the VS controller at the ramp-up and flattop phases')
+        self.controlData["c_a_tpl1_eob"] = CodeParameter(mytype=float, value=0., comment = 'Gain coefficient for the VS controller at the plasma current termination phase')
+        self.controlData["c_a_tpl2"] = CodeParameter(mytype=int, value=0., comment = 'Gain coefficient for the divertor controller at the ramp-up and flattop phases')
+        self.controlData["c_a_tpl_min"] = CodeParameter(mytype=float, value=0., comment = 'Minimum value of the gain coefficient for the VS controller at the plasma current termination phase')
+        self.controlData["y0"] = CodeParameter(mytype=float, value=0., comment = 'Tunable coefficient for divertor controller gain at the plasma current termination phase')
+        self.controlData["c1_y0"] = CodeParameter(mytype=float, value=0., comment = 'Tunable coefficient for divertor controller gain at the plasma current termination phase')
+        self.controlData["c2_y0"] = CodeParameter(mytype=float, value=0., comment = 'Tunable coefficient for divertor controller gain at the plasma current termination phase')
+        self.controlData["t_tran2D"] = CodeParameter(mytype=float, value=3500., comment = 'Time when the limiter controller starts to control extended set of the plasma shape parameters to maintain elongated plasma', unit='ms')
+        self.controlData["Tu"] = CodeParameter(mytype=float, value=0., comment = 'Minimum time of voltage variation from –Vmax to +Vmax for CS&PF power supplies', name='Tu', unit='s')
+        self.controlData["c_cur_max"] = CodeParameter(mytype=int, value=0., comment = 'Fraction of coil current limit when the current limitation alghorithm starts protection', name='c_cur_max')
         
-        self.controlData["tt_rampup"] = CodeParameter(mytype=float, value=0., comment = '', unit='ms')
-        self.controlData["dt_end_sim"] = CodeParameter(mytype=float, value=0., comment = '', unit='s')
-        self.controlData["dtpl_term_l"] = CodeParameter(mytype=float, value=0., comment = '', unit='s')
-        self.controlData["cIp_end"] = CodeParameter(mytype=float, value=0., comment = '', unit='MA')
-        self.controlData["Ics1_eob"] = CodeParameter(mytype=float, value=0., comment = 'Value of the current in CS1 circuit at which the current ramp down starts', name='I_CS1 EOF', unit='kA')
+        self.controlData["tt_rampup"] = CodeParameter(mytype=float, value=0., comment = 'Duration of the plasma current ramp-up', unit='ms')
+        self.controlData["dt_end_sim"] = CodeParameter(mytype=float, value=0., comment = 'Duration of the CS&PF current termination phase, starting after end of plasma', unit='s')
+        self.controlData["dtpl_term_l"] = CodeParameter(mytype=float, value=0., comment = 'Duration of the plasma current ramp-down', unit='s')
+        self.controlData["cIp_end"] = CodeParameter(mytype=float, value=0., comment = 'Minimum plasma current at the ramp-down phase', unit='MA')
+        self.controlData["Ics1_eob"] = CodeParameter(mytype=float, value=0., comment = 'Value of the current in CS1 circuit at which the current ramp-down starts', name='I_CS1 EOF', unit='kA')
         self.controlData["rms_noise"] = CodeParameter(mytype=float, value=0., comment = 'RMS of noise in the diagnostic signal of dZ/dt for VS stabilization', name='VS RMS noise', unit='m/s')
         
         
-        
-        
-        
+            
         
         
     def AddCanvas(self, i, toolbar = 1):
@@ -945,7 +943,7 @@ class ExampleApp(uiclass, baseclass):
       
       params = []
       
-      names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop')
+      names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'c_a_tpl2_lim', 'time_stop')
       params.append([self.controlData[k] for k in names])
       
       names = ('c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0')
@@ -1026,7 +1024,7 @@ class ExampleApp(uiclass, baseclass):
         f = open(filename, 'rt')
         
         #control_data2.dat
-        names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'k_g4', 'time_stop')
+        names = ('tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'c_a_tpl2_lim', 'time_stop')
         self.ReadParameters(f, [self.controlData[k] for k in names])
         names = ('c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0')
         self.ReadParameters(f, [self.controlData[k] for k in names])
@@ -1234,7 +1232,7 @@ class ExampleApp(uiclass, baseclass):
         self.ReadParameters(f, [self.DINAData['tt_dina']])
         
         #pfres.dat
-        turns = [554., 554., 554., 554., 554., 248.6, 115.2, 185.9, 169.9, 216.8, 459.4, 1.0]
+        turns = [554., 554., 554., 554., 554., 248.6, 115.2, 185.9, 169.9, 216.8, 459.4, 4.0]
         timedData = self.ReadTimeTable(f)
         for iw in range(len(timedData['waves'])):
           for it in range(len(timedData['waves'][iw])):
@@ -1251,10 +1249,12 @@ class ExampleApp(uiclass, baseclass):
  
         #gamma_z.dat - 0D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
  
         #gamma_z2.dat - 0D and 1D transport, shared
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z2'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         # init.dat
@@ -1271,14 +1271,17 @@ class ExampleApp(uiclass, baseclass):
  
         #gamma_z1.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z1'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
  
         #gamma_z3.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z3'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         #gamma_z4.dat - 1D transport only
         timedData = self.ReadTimeTable(f)
+        timedData['time'] = [t*1.e-3 for t in timedData['time']]
         self.generalData['gamma_z4'] = WaveformImpurity(timedData['time'], timedData['waves'], z=timedData['add'][0])
 
         # bohm_gbohm.dat
@@ -1959,8 +1962,7 @@ class ExampleApp(uiclass, baseclass):
       
       
       pfa1 = imas.pf_active()
-      pfa1.ids_properties.homogeneous_time = 1
-      pfa1.time.resize(1)
+      pfa1.ids_properties.homogeneous_time = 2
       
       npfa = len(tokamakdata["coils"]["geometry"])
       
@@ -2038,9 +2040,8 @@ class ExampleApp(uiclass, baseclass):
       
       
       pfp1 = imas.pf_passive()
-      pfp1.ids_properties.homogeneous_time = 1
-      pfp1.time.resize(1)
-      
+      pfp1.ids_properties.homogeneous_time = 2
+  
       ncam = len(tokamakdata["vessel"]["geometry"])
       
       #pfp1.loop.resize(ncam)
@@ -2150,8 +2151,7 @@ class ExampleApp(uiclass, baseclass):
       
       # Magnetic diagnostics
       magnetics = imas.magnetics()
-      magnetics.ids_properties.homogeneous_time = 0
-      magnetics.time.resize(1)
+      magnetics.ids_properties.homogeneous_time = 2
       
       nloop = len(tokamakdata["loops"]["items"])
       magnetics.flux_loop.resize(nloop)
@@ -2185,9 +2185,7 @@ class ExampleApp(uiclass, baseclass):
       
       
       wall = imas.wall()
-      wall.ids_properties.homogeneous_time = 1
-      wall.time.resize(1)
-      wall.time[0] = 0.0
+      wall.ids_properties.homogeneous_time = 2
       
       wall.description_2d.resize(1)
       wall.description_2d[0].type.index = 0
@@ -2204,7 +2202,23 @@ class ExampleApp(uiclass, baseclass):
         wall.description_2d[0].limiter.unit[0].outline.z[i] = float(limiter["items_z"][i].text())
       
       
+      equilibrium = imas.equilibrium()
+      # Filling equilibrium
+      equilibrium.time_slice.resize(1)
+      equilibrium.time.resize(1)
+      equilibrium.ids_properties.homogeneous_time = 1
+      equilibrium.time_slice[0].time = 0.
+      equilibrium.time[0] = 0.
       
+      # Grid dimensions
+      nr = 65
+      nz = 129
+      equilibrium.time_slice[0].profiles_2d.resize(1)
+      equilibrium.time_slice[0].profiles_2d[0].grid_type.index = 1 # Rectangular a la eqdsk
+      equilibrium.time_slice[0].profiles_2d[0].grid.dim1 = numpy.linspace(3., 9., num=nr)
+      equilibrium.time_slice[0].profiles_2d[0].grid.dim2 = numpy.linspace(-6., 6., num=nz)
+
+
       
       # Pulse schedule
       psch = imas.pulse_schedule()
@@ -2273,7 +2287,7 @@ class ExampleApp(uiclass, baseclass):
       # EC+EQ heating (Ip > 1.5 MA)
       record = self.generalData['emo'] #self.GetStuctWithFieldValue(self.generalData, "title", "emo.dat")
       self.FillPulseScheduleItem(psch.ec.power.reference, record, col=0, mult=1.e6)
-      #self.FillPulseScheduleItem(psch.ic.power.reference, record, col=1, mult=1.e6)
+      self.FillPulseScheduleItem(psch.ic.power.reference, record, col=1, mult=1.e6)
  
  
       ## Magnetic control
@@ -2366,8 +2380,7 @@ class ExampleApp(uiclass, baseclass):
       
       
       dat1 = imas.dataset_description()
-      dat1.ids_properties.homogeneous_time = 1
-      dat1.time.resize(1)
+      dat1.ids_properties.homogeneous_time = 2
       dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
       dat1.simulation.workflow = "DINA-IMAS"
       
@@ -2375,7 +2388,8 @@ class ExampleApp(uiclass, baseclass):
       print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
       
       
-      return pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1
+      return psch,psch_dw,equilibrium,magnetics,dat1
+      #return pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1
       
       
       
@@ -2477,8 +2491,8 @@ class ExampleApp(uiclass, baseclass):
         
         
         # Create input ids
-        pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
-        
+        #pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
+        psch,psch_dw,equilibrium,magnetics,dat1 = self.CreateInputIDS()
         
         
         # Save input IDS
@@ -2516,13 +2530,14 @@ class ExampleApp(uiclass, baseclass):
         
         imas_obj = imas.DBEntry(imas.imasdef.MDSPLUS_BACKEND, database, pulse, run, user, data_version = '3')
         imas_obj.create()
-        imas_obj.put(pfa1)
-        imas_obj.put(pfp1)
+        #imas_obj.put(pfa1)
+        #imas_obj.put(pfp1)
         imas_obj.put(magnetics)
-        imas_obj.put(wall)
+        #imas_obj.put(wall)
         imas_obj.put(psch, occurrence = 0)
         imas_obj.put(psch_dw, occurrence = 1)
         imas_obj.put(dat1)
+        imas_obj.put(equilibrium)
         imas_obj.close()
       
 

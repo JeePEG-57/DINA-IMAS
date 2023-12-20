@@ -1,197 +1,33 @@
 !> In subroutine dina_0 as a result of call dina2 and then call equil2 or 
 !> call equil according to tt_kavin value the DINA modeling of one time step is
 !> being produced
-
-	subroutine dina_0(time_8,tt_8,tay_8,key_mat,vec_mat,
-     *	p_input_1,p_input_2,p_input_3,
-     *	output_1,output_2,output_3,output_4,ng)
+      subroutine dina_0()
 
 
-	include 'double.inc'
-!	include 'new_com.inc'
-
-      common
-     *  /ge5/kpr
-
-	real *8 time_8, tay_8
-	real *8 tt_8 
-
-	real *8 vec_mat(*)
-		
-	dimension key_mat(*) 
-
-	real *8 p_input_1(*),p_input_2(*),p_input_3(*)
-
-	real *8 output_1(*)
-	real *8 output_2(*)
-	real *8 output_3(*)
-	real *8 output_4(*)
-
-
-	real *8 a_print(200)
+	   real *8 a_print(200)
 	
-      parameter (kint=500)
-      
-      dimension c_input1(kint),c_input2(kint)
-      dimension c_output1(kint),c_output2(kint),c_output3(kint)
+      integer, parameter :: kint = 200
+      ! dynamic inputs and outputs groups
+      real*8 :: c_input_1(kint) = (/ (0,i=1,kint) /)
+      real*8 :: c_input_2(kint) = (/ (0,i=1,kint) /)
+   
+      real*8 :: c_output_1(kint) = (/ (0,i=1,kint) /)
+      real*8 :: c_output_2(kint) = (/ (0,i=1,kint) /)
+      real*8 :: c_output_3(kint) = (/ (0,i=1,kint) /)
 
-	character *25 apr
-
-
-c =================================================================
-
-c	print *,' ok1 '
-
-c =================================================================
-
-	i_en0=i_en0+1    
-
-      ng=i_en0
-
-!      kpr=key_mat(4)
-
- !     kpr=0
-
-      if(kpr.eq.1)print *,' kpr===',kpr
-      
-
-      do i=1,6
-!	a_print(i)=key_mat(i)
-      end do
-      
-	n_pr=6
-	apr='  key'
-	num=6
-!	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
-                                                                        
+	   character *25 apr
 
 
-      n_input1=2
-      do i=1,n_input1
-          c_input1(i)=p_input_1(i)
-      end do
-
-      do i=1,n_input1
-!	a_print(i)=c_input1(i)
-      end do
-      
-	n_pr=n_input1
-	apr='  c_input1'
-	num=10
-!	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
-
-!      n_input2=15
-      n_input2=38
-      
-     
-      do i=1,n_input2
-        c_input2(i)=p_input_2(i)
-      end do
-
-      do i=1,n_input2
-!	a_print(i)=c_input2(i)
-      end do
-      
-	n_pr=n_input2
-	apr='  c_input2'
-	num=10
-!	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
-
-
-  !      c_input1(1)=tpl
-
- !       goto 5
-
-      n_output3=32
-
-      do i=1,n_output3
-!	a_print(i)=c_output3(i)
-      end do
-      
-	n_pr=n_output3
-	apr='  output3'
-	num=10
-!	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
-
-
-
-	  call dina2(
-!-----------------------------------  inputs---
+	   call dina2(
      *  c_input1,c_input2,
-!------------------------------------outputs
      *  c_output1,c_output2,c_output3)
 
-c ============ outputs ==============================================
-
-
-5     continue
-
-
-      n_output1=12
-      do i=1,n_output1
-		output_1(i)=c_output1(i)
-        end do
-
-      do i=1,n_output1
-!	a_print(i)=output_1(i)
-      end do
-      
-	n_pr=n_output1
-	apr='  output1'
-	num=10
-!	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
-
-      npf=15
-      n_gaps=6
-      ncam=100
-      
-      n_output2=n_gaps+npf+ncam
-      
-      n_output3=32
-      
-	a_print(1)=n_gaps
-	a_print(2)=npf
-	a_print(3)=ncam
-      
-	n_pr=3
-	apr='  n_ga npf ncam '
-	num=10
-	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
-              
-        do i=1,n_output2
-        output_2(i)=c_output2(i)
-        end do
-
-      do i=1,n_output2
-!	a_print(i)=output_2(i)
-      end do
-      
-	n_pr=n_output2
-	apr='  output2'
-	num=10
-!	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
-
-        do i=1,n_output3
- !       output_3(i)=c_output3(i)
-        end do
-
-      do i=1,n_output3
-!	a_print(i)=c_output3(i)
-      end do
-      
-	n_pr=n_output3
-	apr='  output3'
-	num=10
-!	if(kpr.eq.3.or.kpr.eq.1)call out42(n_pr,a_print,num,apr)
-
-
       return
-      end
+      end subroutine
 
       
 !> dina_outp is a subroutine to collect the output data to write them after that 
-!> to IDSs in dina_imas subroutine
-      
+!> to IDSs in dina_imas subroutine 
 	subroutine dina_outp(n_xx, tpl_xx, tt_xx,
      * a_xx, ai_xx,
      * rs0_xx,bt0_xx,
@@ -257,8 +93,8 @@ c ============ outputs ==============================================
 	
 !	print *,' n_xx tpl_xx=',n_xx,tpl_xx
 
-!	tt_xx=tt/1000.d0
-	tt_xx=(tt-tay)/1000.d0
+	tt_xx=tt/1000.d0
+	!tt_xx=(tt-tay)/1000.d0
 
         rs0_xx = rs0/100.d0
         bt0_xx = bt0_dir*bt0/10.d0
@@ -626,7 +462,27 @@ c=================================================
         return
         end
       
-      
+
+        
+        subroutine get_contr_signals(vchopper_xx)
+
+         include 'double.inc'
+         include 'new_com.inc'
+         include 'imas_interface.inc'
+   
+         dimension vchopper_xx(*)
+   
+         do i=1,npf
+            vchopper(i) = tpl_dir*vchopper_xx(i)/pf_turns(i)
+         end do
+   
+   
+         if(kpr.eq.1)print*,'END of reading contr_signals'
+   
+         return
+         end
+         
+         
       
 !> dina_input is the subroutine to collect the initial kinetic profiles before enter 
 !> to DINA to write them after that to DINA from IDSs in dina_imas subroutine

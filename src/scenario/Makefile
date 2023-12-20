@@ -1,10 +1,13 @@
 # Makefile for compilation of DINA components
 
-AR = ar
-ARFLAGS = -ru
+AR ?= ar
+ARFLAGS ?= -ru
 FC = $(FCOMPILER)
 
-FFLAGS = -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -freal-4-real-8
+INCDIR=../include
+
+FFLAGS ?= -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -freal-4-real-8
+FFLAGS += -I$(INCDIR)
 
 DINASRC = \
 		a_dina.f  add.f atsv_kav.f\

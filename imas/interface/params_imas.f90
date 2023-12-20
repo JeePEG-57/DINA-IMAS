@@ -83,8 +83,10 @@ integer :: io_unit = 1
 logical :: errorflag
 character(len=200):: gaps_r_str, gaps_z_str
 
-integer :: ic(11)
-data ic(1:11) /1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12/
+
+integer :: ncirc(30), dircirc(30)
+data ncirc(1:14) /1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12/
+data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
 
 integer :: grid_n
 real*8 :: grid_rho, grid_alpha
@@ -125,10 +127,6 @@ call xml2eg_parse_memory(buffer, doc)
       alf=grid_alpha
       
       if(kpr.eq.1)print *,'alf ro_alf ',alf,ro_alf
-      
-      
-      ! Initializing 1D grid
-      call one2d()
    
          
 ! 	open (unit=40,file='tt_kavin.dat',form='formatted') 
@@ -196,20 +194,13 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
           n_t_c1 = size(psch%pf_active%coil(1)%resistance_additional%reference%time)
           t_t_c1(1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%time(1:n_t_c1)
 
-          pf_t_c1(1,1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(2,1:n_t_c1) = psch%pf_active%coil(2)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(3,1:n_t_c1) = psch%pf_active%coil(3)%resistance_additional%reference%data(1:n_t_c1) + &
-         & psch%pf_active%coil(4)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(4,1:n_t_c1) = psch%pf_active%coil(5)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(5,1:n_t_c1) = psch%pf_active%coil(6)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(6,1:n_t_c1) = psch%pf_active%coil(7)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(7,1:n_t_c1) = psch%pf_active%coil(8)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(8,1:n_t_c1) = psch%pf_active%coil(9)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(9,1:n_t_c1) = psch%pf_active%coil(10)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(10,1:n_t_c1) = psch%pf_active%coil(11)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(11,1:n_t_c1) = psch%pf_active%coil(12)%resistance_additional%reference%data(1:n_t_c1)
-          pf_t_c1(12,1:n_t_c1) = psch%pf_active%coil(13)%resistance_additional%reference%data(1:n_t_c1) + &
-        & psch%pf_active%coil(14)%resistance_additional%reference%data(1:n_t_c1)
+          do i=1,npf
+                pf_t_c1(i,1:n_t_c1) = 0.d0
+          enddo
+
+          do i=1,size(psch%pf_active%coil)
+                pf_t_c1(ncirc(i),1:n_t_c1) = pf_t_c1(ncirc(i),1:n_t_c1) + psch%pf_active%coil(i)%resistance_additional%reference%data(1:n_t_c1)
+          enddo
         
         
         do k=1,npf_c1
@@ -268,7 +259,7 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
            ion = 3
            nz_imp_c4 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c4 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c4(1:n_t_c4) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c4)
+           t_t_c4(1:n_t_c4) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c4)*1.d3
            pn_d_t_c4(1:n_t_c4) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c4)
         
         
@@ -284,7 +275,7 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
            ion = 5
            nz_imp2_c5 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c5 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c5(1:n_t_c5) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c5)
+           t_t_c5(1:n_t_c5) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c5)*1.d3
            pn_d_t_c5(1:n_t_c5) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c5)
         
         
@@ -313,9 +304,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            n_t_c7 = size(psch%ec%power%reference%time)
            t_t_c7(1:n_t_c7) = psch%ec%power%reference%time(1:n_t_c7)
            emoe_t_c7(1:n_t_c7) = psch%ec%power%reference%data(1:n_t_c7)*1.d-6
-           do i=1,n_t_c7
-             emoq_t_c7(i) = 0.d0
-           enddo
+           emoq_t_c7(1:n_t_c7) = psch%ic%power%reference%data(1:n_t_c7)*1.d-6
         
         
 !           open (unit=41,file='dens.dat',form='formatted')
@@ -344,7 +333,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            ion = 4
            nz_imp1_c9 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c9 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c9(1:n_t_c9) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c9)
+           t_t_c9(1:n_t_c9) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c9)*1.d3
            pn_d_t_c9(1:n_t_c9) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c9)
         
 !           open (unit=41,file='gamma_z3.dat',form='formatted') 
@@ -359,7 +348,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            ion = 6
            nz_imp3_c10 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c10 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c10(1:n_t_c10) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c10)
+           t_t_c10(1:n_t_c10) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c10)*1.d3
            pn_d_t_c10(1:n_t_c10) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c10)
         
         
@@ -375,7 +364,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
            ion = 7
            nz_imp4_c11 = psch%density_control%ion(ion)%element(1)%z_n
            n_t_c11 = size(psch%density_control%ion(ion)%n_i_volume_average%reference%time)
-           t_t_c11(1:n_t_c11) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c11)
+           t_t_c11(1:n_t_c11) = psch%density_control%ion(ion)%n_i_volume_average%reference%time(1:n_t_c11)*1.d3
            pn_d_t_c11(1:n_t_c11) = psch%density_control%ion(ion)%n_i_volume_average%reference%data(1:n_t_c11)
         
 !                 open (unit=41,file='bohm_gbohm.dat',form='formatted')
@@ -438,11 +427,17 @@ deallocate(buffer)
 	!close(49)
         
         
-        
-	do i=1,11
-          !pf(i)=a(2+i)*1.e3
-          pf(i) = psch%pf_active%coil(ic(i))%current%reference%data(1)*tpl_dir*1.d-3*pf_turns(i)
-          
+
+        pf(1:npf) = 0.d0
+
+        do i=1,size(psch%pf_active%coil)
+                if (associated(psch%pf_active%coil(i)%current%reference%data)) then
+                        pf(ncirc(i)) = dircirc(i)*psch%pf_active%coil(i)%current%reference%data(1)*tpl_dir*1.d-3*pf_turns(ncirc(i))
+                endif
+        enddo
+
+	do i=1,npf
+
 	  pf0(i)=pf(i)
           pf_c1(i)=pf(i)
 

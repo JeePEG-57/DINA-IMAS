@@ -39,7 +39,7 @@ import solps_imas.wrapper as solps_imas
 
 
 
-def DINA(idslist, arr_volt):
+def DINA(idslist):
 
   output = dinaimas21.dinaimas21_actor(idslist['em_coupling'],
                                        idslist['equilibrium'],
@@ -50,10 +50,9 @@ def DINA(idslist, arr_volt):
                                        idslist['core_profiles'],
                                        idslist['core_sources'],
                                        idslist['transport_solver_numerics'],
-                                       idslist['pulse_schedule'],
-                                       arr_volt)
-  # output of the actor is a tuple in Python
+                                       idslist['pulse_schedule'])
   
+  # output of the actor is a tuple in Python
   idslist['equilibrium'] = output[0]
   idslist['magnetics'] = output[1]
   idslist['pf_active'] = output[2]
@@ -62,25 +61,17 @@ def DINA(idslist, arr_volt):
   idslist['core_sources'] = output[5]
   idslist['core_transport'] = output[6]
   idslist['summary'] = output[7]
-  
-  arr_curr = output[8]
-  
-  return arr_curr
+
   
   
-  
-def KMC(idslist, arr_curr):
+def KMC(idslist):
   
   output = kmc.kmc_actor(idslist['pulse_schedule'],
                                        idslist['pulse_schedule_term'],
                                        idslist['equilibrium'],
-                                       idslist['pf_active'],
-                                       arr_curr)
+                                       idslist['pf_active'])
   
-  idslist['pf_active'] = output[0]
-  arr_volt = output[1]
-  
-  return arr_volt
+  idslist['pf_active'] = output
 
 
 
@@ -88,10 +79,10 @@ def GREEN(idslist):
   
   output = dina_green.dina_green_actor(idslist['pf_active'],
                                        idslist['pf_passive'],
-                                       idslist['magnetics'])
+                                       idslist['magnetics'],
+                                       idslist['equilibrium'])
   
-  idslist['em_coupling'] = output[0]
-  idslist['equilibrium'] = output[1]
+  idslist['em_coupling'] = output
 
 
 
@@ -207,6 +198,7 @@ class DINA_Workflow:
     #print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
     
     # Preparing of an IMAS entry for the simulation output
+    
     self.IMAS_Output.create()
     
     
@@ -215,9 +207,6 @@ class DINA_Workflow:
     self.IMAS_Output.put(idslist["pulse_schedule_term"], occurrence = 1)
     self.IMAS_Output.put(idslist['em_coupling'])
     self.IMAS_Output.put(idslist['wall'])
-    
-    # Allocation for initial voltages of the magnetic control
-    arr_volt = np.float64(range(501))
     
     
     # The main loop
@@ -229,13 +218,11 @@ class DINA_Workflow:
       self.idslist = idslist
       
       # DINA
-      arr_curr = DINA(idslist, arr_volt)
+      DINA(idslist)
       
       # Magnetic controller
-      arr_volt = KMC(idslist, arr_curr)
-      #arr_volt = dinacontr(arr_curr)
-      #arr_volt = dinacontr21_1a.dinacontr21_1a_actor(arr_curr)
-      
+      KMC(idslist)
+
       
       ip = idslist['summary'].global_quantities.ip.value[0]
       time = idslist['summary'].time[0]
@@ -299,6 +286,7 @@ class DINA_Workflow:
         self.IMAS_Output.put_slice(idslist['core_sources'])
         self.IMAS_Output.put_slice(idslist['core_transport'])
         self.IMAS_Output.put_slice(idslist['summary'])
+        self.IMAS_Output.put_slice(idslist['transport_solver_numerics'])
       else:
         self.IMAS_Output.put_slice(idslist['pf_active'])
         self.IMAS_Output.put_slice(idslist['summary'])
@@ -330,7 +318,7 @@ class DINA_Workflow:
 
   def get_dbentry(self, root, user_default):
     if root == None:
-      return None
+      return None, -1
     usernode = root.find('user')
     if (usernode != None):
       username = usernode.text
@@ -340,15 +328,15 @@ class DINA_Workflow:
       username = user_default
     database = root.find('database').text
     if database == None or database == '':
-      return None
+      return None, -1
     pulse = int(root.find('pulse').text)
     run = int(root.find('run').text)
     IMAS_DBEntry = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
     status,_ = IMAS_DBEntry.open()
     if status == 0:
       IMAS_DBEntry.close()
-      return IMAS_DBEntry
-    return None
+    return IMAS_DBEntry, status
+
 
 
   def __init__(self, config):
@@ -424,30 +412,9 @@ class DINA_Workflow:
     # pulse = int(input_start.find('pulse').text)
     # run = int(input_start.find('run').text)
     # IMAS_InputStart = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
-    IMAS_InputStart = self.get_dbentry(input_start, user_default)
+    IMAS_InputStart, status = self.get_dbentry(input_start, user_default)
     
-    
-    if (self.Time_Start > 0.0 and IMAS_InputStart != None):     
-      interp = self.InterpStart
-      TimeGet = self.Time_Start
-      print('Restart at t = ' + str(TimeGet))
 
-      IMAS_InputStart.open()
-      idslist['equilibrium'] = self.IMAS_InputStart.get_slice('equilibrium', TimeGet, interp)
-      idslist['core_profiles'] = self.IMAS_InputStart.get_slice('core_profiles', TimeGet, interp)
-      idslist['core_sources'] = self.IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
-      idslist['transport_solver_numerics'] = self.IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
-      IMAS_InputStart.close()
-
-    else:
-      print('Start from t = 0') 
-
-      idslist['equilibrium'] = imas.equilibrium()
-      idslist['core_profiles'] = imas.core_profiles()
-      idslist['core_sources'] = imas.core_sources()
-      idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
-
-    
     # input_psch = root.find('pulse_schedule')
     # usernode = input_psch.find('user')
     # if (usernode != None):
@@ -460,7 +427,34 @@ class DINA_Workflow:
     # pulse = int(input_psch.find('pulse').text)
     # run = int(input_psch.find('run').text)
     # IMAS_PulseSchedule = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, username, data_version = '3')
-    IMAS_PulseSchedule = self.get_dbentry(root.find('pulse_schedule'), user_default)
+    IMAS_PulseSchedule, status = self.get_dbentry(root.find('pulse_schedule'), user_default)
+
+
+    
+    if (self.Time_Start > 0.0):
+      interp = self.InterpStart
+      TimeGet = self.Time_Start
+      print('Restart at t = ' + str(TimeGet))
+
+      IMAS_InputStart.open()
+      idslist['equilibrium'] = IMAS_InputStart.get_slice('equilibrium', TimeGet, interp)
+      idslist['core_profiles'] = IMAS_InputStart.get_slice('core_profiles', TimeGet, interp)
+      idslist['core_sources'] = IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
+      idslist['transport_solver_numerics'] = IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
+      IMAS_InputStart.close()
+
+    else:
+      print('Start from t = 0') 
+
+      IMAS_InputStart.open()
+      idslist['equilibrium'] = IMAS_InputStart.get_slice('equilibrium', 0.0, 1)
+      IMAS_InputStart.close()
+      idslist['core_profiles'] = imas.core_profiles()
+      idslist['core_sources'] = imas.core_sources()
+      idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
+
+    
+
     IMAS_PulseSchedule.open()
     idslist['pulse_schedule'] = IMAS_PulseSchedule.get('pulse_schedule')
     idslist['pulse_schedule_term'] = IMAS_PulseSchedule.get('pulse_schedule', occurrence = 1)
@@ -468,30 +462,33 @@ class DINA_Workflow:
     
 
 
-    IMAS_PFA = self.get_dbentry(root.find('input_pf_active'), user_default)
+    IMAS_PFA, status = self.get_dbentry(root.find('input_pf_active'), user_default)
     IMAS_PFA.open()
     idslist['pf_active'] = IMAS_PFA.get_slice('pf_active', self.Time_Start, self.InterpStart)
     IMAS_PFA.close()
 
-    IMAS_PFP = self.get_dbentry(root.find('input_pf_passive'), user_default)
+    IMAS_PFP, status = self.get_dbentry(root.find('input_pf_passive'), user_default)
     IMAS_PFP.open()
     idslist['pf_passive'] = IMAS_PFP.get_slice('pf_passive', self.Time_Start, self.InterpStart)
     IMAS_PFP.close()
 
-    IMAS_MAG = self.get_dbentry(root.find('input_magnetics'), user_default)
-    IMAS_MAG.open()
-    idslist['magnetics'] = IMAS_MAG.get_slice('magnetics', self.Time_Start, self.InterpStart)
-    IMAS_MAG.close()
+    IMAS_MAG, status = self.get_dbentry(root.find('input_magnetics'), user_default)
+    if (status == 0):
+      IMAS_MAG.open()
+      idslist['magnetics'] = IMAS_MAG.get_slice('magnetics', self.Time_Start, self.InterpStart)
+      IMAS_MAG.close()
+    else:
+      idslist['magnetics'] = imas.magnetics()
 
-    IMAS_WLL = self.get_dbentry(root.find('input_wall'), user_default)
+    IMAS_WLL, status = self.get_dbentry(root.find('input_wall'), user_default)
     IMAS_WLL.open()
     idslist['wall'] = IMAS_WLL.get_slice('wall', self.Time_Start, self.InterpStart)
     IMAS_WLL.close()
 
 
 
-    IMAS_EMCoupling = self.get_dbentry(root.find('input_em_coupling'), user_default)
-    if (IMAS_EMCoupling != None):
+    IMAS_EMCoupling, status = self.get_dbentry(root.find('input_em_coupling'), user_default)
+    if (status == 0):
       print('Reading em_coupling from the database')
       IMAS_EMCoupling.open()
       idslist['em_coupling'] = IMAS_EMCoupling.get('em_coupling')
@@ -502,10 +499,8 @@ class DINA_Workflow:
 
 
     output = root.find('output')
-    database = output.find('database').text
-    pulse = int(output.find('pulse').text)
-    run = int(output.find('run').text)
-    self.IMAS_Output = imas.DBEntry(imasdef.MDSPLUS_BACKEND, database, pulse, run, user_default, data_version = '3')
+    self.IMAS_Output, status = self.get_dbentry(output, user_default)
+      
     
     
     self.InterpStart = int(input_start.find('interp_mode').text)
@@ -530,8 +525,8 @@ class DINA_Workflow:
       # pulse = int(input_transp.find('pulse').text)
       # run = int(input_transp.find('run').text)
 
-      self.IMAS_Transp = self.get_dbentry(input_transp, user_default)  
-      if (self.IMAS_Transp != None):
+      self.IMAS_Transp, status = self.get_dbentry(input_transp, user_default)
+      if (status == 0):
         print('External transport profiles are located')
         self.InterpTransp = int(input_transp.find('interp_mode').text)
 

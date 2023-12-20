@@ -3,7 +3,7 @@
 
 
 
-subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
+subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics, equilibrium)
 
     use ids_schemas
     use ids_routines
@@ -14,10 +14,12 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
     type (ids_pf_active), INTENT(IN)   :: pf_active
     type (ids_pf_passive), INTENT(IN)  :: pf_passive
     type (ids_magnetics), INTENT(IN)   :: magnetics
+    type (ids_equilibrium), INTENT(IN) :: equilibrium
 
 
 	include 'parf1'
  	include 'parf_mike'
+    include 'parf2'
 
 
     common &
@@ -59,7 +61,6 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 	!read(49,*)npf_c
     !npf_c = size(pf_active%coil)
     ncoil = size(pf_active%coil)
-    ncoil = 14
     i = 0
 	do ic=1,ncoil
         ! Name of the coil
@@ -97,7 +98,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
                 R_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%oblique%r &
                 & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
                 Z_c_c(i) = pf_active%coil(ic)%element(ie)%geometry%oblique%z &
-                & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
+                & + 0.5d0*(dlength*sin(beta) + dheight*sin(alpha))
                 dr_c(i) = dlength
                 dz_c(i) = dheight
                 alpha_c(i) = alpha
@@ -163,10 +164,11 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
             beta = pf_passive%loop(i)%element(1)%geometry%oblique%alpha
             dlength = pf_passive%loop(i)%element(1)%geometry%oblique%length_alpha
             dheight = pf_passive%loop(i)%element(1)%geometry%oblique%length_beta
+
             Rc_c(i) = pf_passive%loop(i)%element(1)%geometry%oblique%r &
             & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
             Zc_c(I) = pf_passive%loop(i)%element(1)%geometry%oblique%z &
-            & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
+            & + 0.5d0*(dlength*sin(beta) + dheight*sin(alpha))
             dl_c(i) = dlength
             hl_c(i) = dheight
             alpha_ves_c(i) = alpha
@@ -174,7 +176,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
         else
             print *,'Unsupported geometry type =', pf_passive%loop(i)%element(1)%geometry%geometry_type, ' for loop ', i
         endif
-        if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ', rc_c(i),zc_c(i),dl_c(i),hl_c(i),alpha_ves_c(i),beta_ves_c(i)
+        if(kpr.eq.1)print *,'r_c z_c dr dz alpha beta ', Rc_c(i),Zc_c(i),dl_c(i),hl_c(i),alpha_ves_c(i),beta_ves_c(i)
 	END DO
 
 
@@ -192,12 +194,18 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 	!read(49,*)
 	if(kpr.eq.1)print *,' Flux loops'
 	!read(49,*)kloop_c
-    kloop_c = size(magnetics%flux_loop)
+    if (associated(magnetics%flux_loop)) then
+        kloop_c = size(magnetics%flux_loop)
+    else
+        kloop_c = 0
+    endif
 	if(kpr.eq.1)print *,'kloop ',kloop_c
 	do I=1,kloop_c
         !read(49,*)Rl_c(I),Zl_c(I)
+
         Rl_c(I) = magnetics%flux_loop(i)%position(1)%r
         Zl_c(I) = magnetics%flux_loop(i)%position(1)%z
+
         if(kpr.eq.1)print *,'r_l z_l ',rl_c(i),zl_c(i)
 	END DO
 
@@ -205,7 +213,11 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 	!read(49,*)
 	if(kpr.eq.1)print *,' Probe'
 	!read(49,*)kprobe_c,kpb_c
-    kprobe_c = size(magnetics%b_field_pol_probe)
+    if (associated(magnetics%b_field_pol_probe)) then
+        kprobe_c = size(magnetics%b_field_pol_probe)
+    else
+        kprobe_c = 0
+    endif
     kpb_c = 3
 	if(kpr.eq.1)print *,'kprobe,kpb ',kprobe_c,kpb_c
 	do I=1,kprobe_c
@@ -217,26 +229,56 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
         if(kpr.eq.1)print *,'r_pr z_pr alpha smp ', R_prob_c(I),Z_prob_c(I),anglep_c(i),smp_c(i)
 	END DO
 
-	!read(49,*)
-	if(kpr.eq.1)print *,' limiter'
-	!read(49,*)ke_c
-    ke_c = 56
-	if(kpr.eq.1)print *,'ke ',ke_c
-	do I=1,ke_c
-	    !read(49,*)xu_c(I),yu_c(I)
-        xu_c(I) = 6.d0 + cos(i*6.d0/ke_c)
-        yu_c(I) = 0.d0 + dsin(i*6.d0/ke_c)
-	    if(kpr.eq.1)print *,'xu yu ',xu_c(I),yu_c(I)
-	END DO
+	! !read(49,*)
+	! if(kpr.eq.1)print *,' limiter'
+	! !read(49,*)ke_c
+    ! ke_c = 56
+	! if(kpr.eq.1)print *,'ke ',ke_c
+	! do I=1,ke_c
+	!     !read(49,*)xu_c(I),yu_c(I)
+    !     xu_c(I) = 6.d0 + cos(i*6.d0/ke_c)
+    !     yu_c(I) = 0.d0 + dsin(i*6.d0/ke_c)
+	!     if(kpr.eq.1)print *,'xu yu ',xu_c(I),yu_c(I)
+	! END DO
 
     ! Equilibrium 2D grid
     !read(49,*)    
 	!read(49,*)r00_c,rk_c
     !read(49,*)z00_c,zk_c
-    r00_c = 3.d0
-    rk_c = 9.d0
-    z00_c = -6.d0
-    zk_c = 6.d0
+    ! r00_c = 3.d0
+    ! rk_c = 9.d0
+    ! z00_c = -6.d0
+    ! zk_c = 6.d0
+
+    if (.NOT.associated(equilibrium%time_slice))then
+         print *, 'equilibrium%time_slice is not associated'
+        return
+    endif
+    if (.NOT.associated(equilibrium%time_slice(1)%profiles_2d)) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d is not associated'
+        return
+    endif
+    if (.NOT.associated(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1)) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1 is not associated'
+        return
+    endif
+    if (.NOT.associated(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2)) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2 is not associated'
+        return
+    endif
+    if (size(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1).NE.nr) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1 size is not equal nr', equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1, nr
+        return
+    endif
+    if (size(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2).NE.nz) then
+        print *, 'equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2 size is not equal nz', equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2, nz
+        return
+    endif
+
+    r00_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(1)
+    rk_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(nr)
+    z00_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(1)
+    zk_c = equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(nz)
 
 
 	if(kpr.eq.1)print *,'r00,rk ',r00_c,rk_c
@@ -263,7 +305,7 @@ subroutine tokamakdata_read_ids(pf_active, pf_passive, magnetics)
 !         rc = geometry%oblique%r &
 !         & + 0.5d0*(dlength*cos(beta) + dheight*cos(alpha))
 !         zc = geometry%oblique%z &
-!         & + 0.5d0*(dlenght*sin(beta) + dheight*sin(alpha))
+!         & + 0.5d0*(dlength*sin(beta) + dheight*sin(alpha))
 !     else
 !         print *,'Unsupported geometry type =', geometry%geometry_type, '
 !     endif
