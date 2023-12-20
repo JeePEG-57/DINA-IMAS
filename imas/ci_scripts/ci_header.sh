@@ -71,7 +71,7 @@ export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
 #module switch --force matplotlib/3.5.1-intel-2020b
 #module load Viz/2.7.0-intel-2020b
-module load Viz
+module load Viz/2.7.2-intel-2020b 
 
 export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
