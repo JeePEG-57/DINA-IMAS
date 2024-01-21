@@ -179,6 +179,9 @@ class ExampleWorkflowManager:
                         self.pulse_schedule_term_in)
             print('slices ', *self.summary_out.time)
             #print('out=', out.read())
+            print('v_loop=',self.summary_out.global_quantities.v_loop.value)
+            print('ip=', self.summary_out.global_quantities.ip.value)
+            print('t=', self.summary_out.time)
           # SAVE IDSs INTO OUTPUT FILE
             #print( '=> Export output IDSs to local database: ', i )
             #self.output_entry.put( self.equilibrium )

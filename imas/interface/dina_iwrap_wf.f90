@@ -449,6 +449,8 @@ if (.not. ids_input_initialized ) then
     else
 
       write(*,*) 'Start from t=0'
+
+      call ids_copy(equilibrium_in, equilibrium0)
       
     endif
 
