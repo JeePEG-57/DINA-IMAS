@@ -217,8 +217,8 @@ c=================================================
            
            psi_tr_xx(i) = tpl_dir*dm0(i)*1.d-5
           
-           qe0_xx(i)=qe0(i)
-           qq0_xx(i)=qq0(i)
+           qe0_xx(i)=qe0(i)*1.6d3
+           qq0_xx(i)=qq0(i)*1.6d3
 	   
 
 	   zeff_xx(i)=zeff(i)
