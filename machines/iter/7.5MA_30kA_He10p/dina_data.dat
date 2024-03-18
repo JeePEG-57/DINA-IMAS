@@ -53,10 +53,10 @@ Time_points   !n_d.dat
   16.5		0.501
   18.		0.63
   20.		0.841			
-  30.		3.0
-  31.		3.7
-  60.		3.7
-  60000.0   	3.7  
+  30.		2.7
+  31.		2.7
+  60.		2.7
+  60000.0   	2.7  
 Time_points   Z_Be(Ip<1.5MA)   !gamma_z.dat
   6     4
   time [mS], gamma_z 
@@ -123,8 +123,8 @@ Time[ms]   Content
   1500.e-0  1.00e-15
   2600.e-0  1.00e-15
   10000.    1.00e-15
-  20000.    1.12e-02
-  10000.e3  1.12e-02  
+  20000.    1.2e-02
+  10000.e3  1.2e-02  
 Time_points   Z_He   !gamma_z4.dat
 8  2
 Time[ms]   Content   
