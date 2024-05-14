@@ -152,6 +152,10 @@ call xml2eg_get(doc, 'rs0', rs0_c)
 call xml2eg_get(doc, 'key_t11', key_t11_c)
 call xml2eg_get(doc, 'bt0', bt0_c)
 
+call xml2eg_get(doc, 'q_swth', q_test)
+
+print*, 'q_swth=q_test=', q_test
+
 
 
 

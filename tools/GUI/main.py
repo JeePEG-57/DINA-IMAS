@@ -59,8 +59,7 @@ import viz_plug
 
 sys.path.append((os.environ['VIZ_HOME']))
 
-from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-                              QVizGlobalOperations, QVizLoggerSingleton)
+from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,QVizGlobalOperations)
 
 
 #--------------------------END NEW IMPORT
@@ -343,6 +342,9 @@ class ExampleApp(uiclass, baseclass):
         self.DINAData["gain_puff"] = CodeParameter(mytype=float, value=0., comment = 'Neutrals puffing gain to keep the prescribed waveform of D in 0D model')
         
         self.DINAData["bohm_gbohm"] = CodeParameter(mytype=int, value=1, comment = 'Key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling')
+        
+        self.DINAData["q_swth"] = CodeParameter(mytype=float, value=0.97, name='q_sawtooth', comment = 'Minimal q at axis when a sawtooth is triggered')
+        
         self.DINAData["pcchp_end"] = CodeParameter(mytype=float, value=0., comment = 'The level to which plasma density decreases during 4 s after start of plasma current ramp-down phase')
         
         self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = 'After tt_dina using external energy transport')
@@ -926,7 +928,7 @@ class ExampleApp(uiclass, baseclass):
       
       params = []
       
-      names = ('bohm_gbohm', 'key_t11', 'pcchp_end')
+      names = ('bohm_gbohm', 'key_t11', 'pcchp_end', 'q_swth')
       params.append([self.DINAData[k] for k in names])
       
       names = ('ener_ext', 'dens_ext', 'ajb_ext')

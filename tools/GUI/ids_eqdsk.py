@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 #UAL library
 import imas
 
-#import geqdsk
+import geqdsk
 
 
 def Save(filename, eq1, wall1):
