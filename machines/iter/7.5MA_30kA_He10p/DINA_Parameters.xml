@@ -15,6 +15,7 @@
    <gam>0.05</gam>
    <gain_puff>50.0</gain_puff>
    <bohm_gbohm>0</bohm_gbohm>
+   <q_swth>0.97</q_swth>
    <pcchp_end>1.574</pcchp_end>
    <ener_ext>0</ener_ext>
    <dens_ext>0</dens_ext>
