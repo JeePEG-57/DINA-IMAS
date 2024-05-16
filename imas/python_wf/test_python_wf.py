@@ -207,6 +207,7 @@ class DINA_Workflow:
     self.IMAS_Output.put(idslist["pulse_schedule_term"], occurrence = 1)
     self.IMAS_Output.put(idslist['em_coupling'])
     self.IMAS_Output.put(idslist['wall'])
+    self.IMAS_Output.put(idslist['workflow'])
     
     
     # The main loop
@@ -430,6 +431,10 @@ class DINA_Workflow:
     IMAS_PulseSchedule, status = self.get_dbentry(root.find('pulse_schedule'), user_default)
 
 
+    IMAS_InputStart.open()
+    idslist['workflow'] = IMAS_InputStart.get('workflow')
+    IMAS_InputStart.close()
+    
     
     if (self.Time_Start > 0.0):
       interp = self.InterpStart

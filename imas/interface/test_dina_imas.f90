@@ -91,6 +91,7 @@ type (ids_pulse_schedule)   :: pulse_schedule, pulse_schedule_term
 type (ids_dataset_description) :: data_description
 type (ids_summary) :: summary
 type (ids_wall) :: wall
+type (ids_workflow) :: workflow
 
 
 ! IDS location data
@@ -255,7 +256,9 @@ endif
 
 
 write(*,*) 'Reading the prescribed IDS'
-call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
+ call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
+
+ call ids_get(idx0, "workflow", workflow)
 
 if (restart.eq.1) then
 
@@ -340,7 +343,7 @@ call imas_close(idx0)
   !call ids_put(idx,"dataset_description",data_description)
   call ids_put(idx,"pulse_schedule",pulse_schedule)
   call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
-
+  call ids_put(idx,"workflow",workflow)
 
 
 
@@ -507,6 +510,7 @@ call ids_deallocate(em_coupling)
 call ids_deallocate(wall)
 call ids_deallocate(pulse_schedule)
 call ids_deallocate(data_description)
+call ids_deallocate(workflow)
 
 
 write(*,*) 'DINA_IMAS Exiting cleanly'

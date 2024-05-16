@@ -2,6 +2,7 @@
 import sys
 import os
 import shutil
+import subprocess
 
 from PySide6 import QtWidgets, QtGui
 import design
@@ -167,6 +168,7 @@ class ExampleApp(uiclass, baseclass):
 #class ExampleApp(QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.version = '3.2.0'
         #super(ExampleApp, self).__init__()
         #self.MDI = QVizMDI(self)
         #self.GUIVIZ = GUIFrame(self)
@@ -1857,7 +1859,7 @@ class ExampleApp(uiclass, baseclass):
       return data
  
  
-    def FillIonElement(self, ion:int, z:int, m=None):
+    def FillIonElement(self, ion, z:int, m:float=None):
       if z == 1:
         if m == None:
           m = 2.
@@ -1905,7 +1907,7 @@ class ExampleApp(uiclass, baseclass):
       else:
         print('Unimplemented ion z = ' + str(z))
       
-      ion.z_ion = float(z)
+      #ion.z_ion = float(z)
       ion.element.resize(1)
       ion.element[0].a = m
       ion.element[0].z_n = float(z)
@@ -2185,7 +2187,7 @@ class ExampleApp(uiclass, baseclass):
       
       
       
-      
+      # Filling the wall data
       wall = imas.wall()
       wall.ids_properties.homogeneous_time = 2
       
@@ -2381,6 +2383,7 @@ class ExampleApp(uiclass, baseclass):
       
       
       
+      
       dat1 = imas.dataset_description()
       dat1.ids_properties.homogeneous_time = 2
       dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
@@ -2402,6 +2405,11 @@ class ExampleApp(uiclass, baseclass):
       if dirTmp:
         self.directorySave = dirTmp
         self.labelDirSave.setText(self.directorySave)
+        
+        date = datetime.datetime.now()
+        #datestr = date.strftime('%x') # Local version of date
+        datestr = date.strftime("%d/%m/%Y")
+        print('Date = ' + datestr)
         
         #mydir = os.path.dirname(os.path.realpath(__file__))
         #print(mydir)
@@ -2431,6 +2439,50 @@ class ExampleApp(uiclass, baseclass):
         #self.SaveDataToFile(self.externalData, self.directorySave + '/external_data.dat')
         #self.SaveDataToFile(self.controlData, self.directorySave + '/control_init.dat')
         #self.SaveDataToFile(self.DINAData, self.directorySave + '/dina_data.dat')
+        
+        
+        
+        commit = ''
+        try:
+          result = subprocess.check_output('git rev-parse HEAD', shell = True)
+          line = result.splitlines()[0]
+          commit = line.decode()
+        except subprocess.CalledProcessError as cpe:
+          result = cpe.output
+        #finally:
+          #for line in result.splitlines():
+            #print(line.decode())
+        print('Commit = ' + commit)
+        
+        repourl = ''
+        try:
+          #result = subprocess.check_output('git config --get remote.origin.url', shell = True)
+          result = subprocess.check_output('git remote get-url origin', shell = True)
+          line = result.splitlines()[0]
+          repourl = line.decode()
+        except subprocess.CalledProcessError as cpe:
+          result = cpe.output
+        #finally:
+          #for line in result.splitlines():
+            #print(line.decode())
+        print('URL = ' + repourl)
+        
+        
+        wf = imas.workflow()
+        wf.ids_properties.homogeneous_time = 2
+        wf.ids_properties.comment = "DINA workflow with the magnetic controller"
+        wf.creation_date = datestr
+        
+        wf.code.name = 'DINA-GUI'
+        wf.code.version = self.version
+        wf.code.description = 'Magnetic controller for the plasma current, shape and vertical stabilisation'
+        wf.code.commit = commit
+        wf.code.repository = repourl
+        
+        
+        wf.time_loop.component.resize(2)
+        compDINA = wf.time_loop.component[0]
+        compKMC = wf.time_loop.component[1]
         
         
         fname = self.directorySave + '/DINA_Parameters.xml'
@@ -2464,6 +2516,16 @@ class ExampleApp(uiclass, baseclass):
         f.close()
         
         
+        compDINA.name = 'DINA'
+        compDINA.version = self.version
+        compDINA.description = 'Free boundary equilibrium, circuit equations, 1D flux diffusion, energy and density transport'
+        compDINA.commit = commit
+        compDINA.repository = repourl
+        compDINA.parameters = xmlstr
+        
+        
+        
+        
         fname = self.directorySave + '/KMC_Parameters.xml'
         root = ET.Element("parameters")
         for key in self.controlData:
@@ -2475,7 +2537,26 @@ class ExampleApp(uiclass, baseclass):
         f.close()
         
         
-        shutil.copy(os.path.join(self.directoryLoad, 'wfconfig.xml'), self.directorySave)
+        compKMC.name = 'KMC'
+        compKMC.version = self.version
+        compKMC.description = 'Magnetic controller for the plasma current, shape and vertical stabilisation'
+        compKMC.commit = commit
+        compKMC.repository = repourl
+        compKMC.parameters = xmlstr
+        
+        
+        fname = os.path.join(self.directoryLoad, 'wfconfig.xml')
+        f = open(fname, 'r')
+        self.wfconfigstr = f.read()
+        f.close()
+        
+        fname = os.path.join(self.directorySave, 'wfconfig.xml')
+        f = open(fname, 'w')
+        f.write(self.wfconfigstr)
+        f.close()
+        
+        #shutil.copy(os.path.join(self.directoryLoad, 'wfconfig.xml'), self.directorySave)
+        wf.code.parameters = self.wfconfigstr
         
         
         # archive the saved setup files
@@ -2495,6 +2576,8 @@ class ExampleApp(uiclass, baseclass):
         # Create input ids
         #pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
         psch,psch_dw,equilibrium,magnetics,dat1 = self.CreateInputIDS()
+        
+        
         
         
         # Save input IDS
@@ -2539,6 +2622,7 @@ class ExampleApp(uiclass, baseclass):
         imas_obj.put(psch, occurrence = 0)
         imas_obj.put(psch_dw, occurrence = 1)
         imas_obj.put(dat1)
+        imas_obj.put(wf)
         imas_obj.put(equilibrium)
         imas_obj.close()
       
