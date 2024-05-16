@@ -74,7 +74,8 @@ type (ids_pulse_schedule)   :: psch
      common /c_scr_data_c1/pf_c1(kf)
 
      common /c_one2d/alf,ro_alf
-     
+     common /c_q_test/q_test
+
      
 character(len=30) :: ConfigFile = 'DINA_Parameters.xml'
 type(type_xml2eg_document) :: doc
@@ -152,7 +153,11 @@ call xml2eg_get(doc, 'rs0', rs0_c)
 call xml2eg_get(doc, 'key_t11', key_t11_c)
 call xml2eg_get(doc, 'bt0', bt0_c)
 
-call xml2eg_get(doc, 'q_swth', q_test)
+call xml2eg_get(doc, 'q_swth', q_test, errorflag)
+if (errorflag) then
+   print*, 'q_swth reading error'
+   q_test = 0.97
+end if
 
 print*, 'q_swth=q_test=', q_test
 

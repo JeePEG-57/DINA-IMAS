@@ -137,6 +137,7 @@
 
       common /c_tt_kavin2_c1/tt_rampup_c1,dt_end_sim_c1,
      * dtpl_term_l_c1,cIp_end_c1,CS1_eob_c1,rms_noise_c1
+      common /c_q_test/q_test
 
 	dimension tcam(*),tcam0(*),ind(kf),pfhelp(kf)
 
@@ -2122,7 +2123,11 @@ c	if(q(2).le.0.8)call zyb(n,ires)
 c**********************************************
 ccc	q_test=0.90
 c	q_test=0.96
+        if(kpr.eq.1)print *,' q_test=',q_test
+
+        if(q_test.le.0.1)then
 	q_test=0.97
+        end if
 cccccccc	q_test=0.8
 c	q_test=0.7
 c	q_test=0.98
