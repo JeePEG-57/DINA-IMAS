@@ -9,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
-
+from itertools import cycle
 import numpy as np
 
 
@@ -37,16 +37,32 @@ def GetGeometryPath(geom):
     return path
   
   elif (geom.geometry_type == 3):
+    
+    dr1 = geom.oblique.length_alpha*math.cos(geom.oblique.alpha)
+    dz1 = geom.oblique.length_alpha*math.sin(geom.oblique.alpha)
+    
+    dr2 =-geom.oblique.length_beta*math.sin(geom.oblique.beta)
+    dz2 = geom.oblique.length_beta*math.cos(geom.oblique.beta)
+    
+    
     verts = [
       (geom.oblique.r, geom.oblique.z),  # left, bottom
-      (geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha),
-        geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha)),  # left, top
-      (geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha) -  geom.oblique.length_beta*math.sin(geom.oblique.beta),
-        geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha) +  geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, bottom
-      (geom.oblique.r - geom.oblique.length_beta*math.sin(geom.oblique.beta),
-        geom.oblique.z + geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, top
+      (geom.oblique.r + dr1, geom.oblique.z + dz1),  # right, bottom
+      (geom.oblique.r + dr1 + dr2, geom.oblique.z + dz1 + dz2),  # right, top
+      (geom.oblique.r + dr2, geom.oblique.z + dz2),  # left, top
       (0., 0.),  # ignored
     ]
+    
+    #verts = [
+      #(geom.oblique.r, geom.oblique.z),  # left, bottom
+      #(geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha),
+        #geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha)),  # left, top
+      #(geom.oblique.r + geom.oblique.length_alpha*math.cos(geom.oblique.alpha) -  geom.oblique.length_beta*math.sin(geom.oblique.beta),
+        #geom.oblique.z + geom.oblique.length_alpha*math.sin(geom.oblique.alpha) +  geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, bottom
+      #(geom.oblique.r - geom.oblique.length_beta*math.sin(geom.oblique.beta),
+        #geom.oblique.z + geom.oblique.length_beta*math.cos(geom.oblique.beta)),  # right, top
+      #(0., 0.),  # ignored
+    #]
     codes = [
         Path.MOVETO,
         Path.LINETO,
@@ -88,7 +104,8 @@ def GetGeometryPath(geom):
     # Now apply the transform to the path
     #newpath = transform.transform_path(path)
     return circle
-  
+  else:
+    print('Geometry type ' + str(geom.geometry_type))
   path = Path(verts, codes)
   return path
 
@@ -108,22 +125,29 @@ def plot_pf_active(ax, ids, facecolor='orange', edgecolor='blue'):
           ax.plot(x_mid,y_mid,'b.',linewidth=1.5)
 
         
-def plot_pf_passive(ax, ids, facecolor=(0, 0, 0.5), edgecolor=(0, 0, 1)):
+def plot_pf_passive(ax, ids, facecolor=(0.8, 0.8, 0.8), edgecolor=(0, 0, 1)):
+    prop_cycle = plt.rcParams['axes.prop_cycle']
+    colors = cycle(prop_cycle.by_key()['color'])
     for loop in ids.loop:
+      facecolor = next(colors)
       for elem in loop.element:
         path = GetGeometryPath(elem.geometry)
-        if elem.turns_with_sign < 0.:
-          facecolor = (0, 0.5, 0.5)
-        else:
-          facecolor = (0.5, 0.5, 0)
+        #if elem.turns_with_sign < 0.:
+          #facecolor = (0, 0.5, 0.5)
+        #else:
+          #facecolor = (0.5, 0.5, 0)
+        
         patch = patches.PathPatch(path, facecolor=facecolor, edgecolor=edgecolor)
         ax.add_patch(patch)
         
         
 def plot_limiter(ax, ids, color='k-'):
     if (len(ids.description_2d) > 0):
+      line = None
       for unit in ids.description_2d[0].limiter.unit:
-        ax.plot(unit.outline.r, unit.outline.z, color, linewidth=1, label='limiter')
+        line, = ax.plot(unit.outline.r, unit.outline.z, color, linewidth=1)
+      if line is not None:
+        line.set_label('limiter')
     else:
       print("No limiter data in given IDS")
           

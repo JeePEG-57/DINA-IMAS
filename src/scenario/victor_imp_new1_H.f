@@ -490,6 +490,7 @@ c************************************
      *     pf_turns,npf)
 
 	include 'double.inc'
+        include 'parf1'
         common
      *  /ge5/kpr
 
@@ -512,8 +513,13 @@ c************************************
 !      open (unit=41, file='turn.dat',form='formatted')
 !      read (41,*)
 !      read (41,*)(pf_turns(i),i=1,npf)
-       do i=1,npf
-       pf_turns(i)=pf_data(i)
+!        do i=1,npf
+!        pf_turns(i)=pf_data(i)
+!        end do
+       
+       
+       do i=1,kf
+       pf_turns(i)=1.d0
        end do
             
 !      close (41)

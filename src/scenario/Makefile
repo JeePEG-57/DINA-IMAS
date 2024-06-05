@@ -6,8 +6,12 @@ FC = $(FCOMPILER)
 
 INCDIR=../include
 
+DEBUG = -g -O0
+
 FFLAGS ?= -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -freal-4-real-8
 FFLAGS += -I$(INCDIR)
+FFLAGS += $(DEBUG)
+
 
 DINASRC = \
 		a_dina.f  add.f atsv_kav.f\

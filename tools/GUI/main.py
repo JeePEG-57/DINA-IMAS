@@ -84,10 +84,10 @@ class CodeParameter():
   def SetValue(self, value):
     self.widget.setText(str(value))
     
-  def GetValue(self, value):
-    if mytype == int:
+  def GetValue(self):
+    if self.mytype == int:
       return int(self.widget.text())
-    if mytype == float:
+    if self.mytype == float:
       return float(self.widget.text())
 
 class Wave():
@@ -336,6 +336,8 @@ class ExampleApp(uiclass, baseclass):
         self.DINAData["bt0"] = CodeParameter(mytype=float, value=53., name='Btor', comment = 'The toroidal field at the specified R coordinate', unit='Gs')
         self.DINAData["key_t11"] = CodeParameter(mytype=int, value=1, comment = 'JET Ohmic scaling')
         self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=100000.e3, comment = 'Time after which input 1D transport profiles are used, internal transport model switches off.', unit='ms')
+        
+        self.DINAData["tpl_dir"] = CodeParameter(mytype=float, value=-1., name='Ip_dir', comment = 'Sign of the plasma current')
         
         self.DINAData["p"] = CodeParameter(mytype=float, value=0., comment = 'Initial neutral D particles pressure', unit='Pa')
         self.DINAData["T_e"] = CodeParameter(mytype=float, value=0., comment = 'Initial electron temperature', unit='eV')
@@ -907,6 +909,9 @@ class ExampleApp(uiclass, baseclass):
       params = []
       
       names = ('kpr',)
+      params.append([self.DINAData[k] for k in names])
+      
+      names = ('tpl_dir',)
       params.append([self.DINAData[k] for k in names])
       
       names = ('grid_n', 'grid_rho', 'grid_alpha')
@@ -2213,6 +2218,11 @@ class ExampleApp(uiclass, baseclass):
       equilibrium.ids_properties.homogeneous_time = 1
       equilibrium.time_slice[0].time = 0.
       equilibrium.time[0] = 0.
+      
+      # Toroidal field
+      equilibrium.vacuum_toroidal_field.b0.resize(1)
+      equilibrium.vacuum_toroidal_field.b0[0] = -0.1*self.DINAData["bt0"].GetValue()
+      equilibrium.vacuum_toroidal_field.r0 = 0.01*self.DINAData["rs0"].GetValue()
       
       # Grid dimensions
       nr = 65

@@ -14,7 +14,7 @@ DEBUG = -g -O0
 F90=$(FCOMPILER)
 FFLAGS ?= -w -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none
 FFLAGS += -I$(INCDIR)
-#FFLAGS += $(DEBUG)
+FFLAGS += $(DEBUG)
 #FFLAGS += -fpp -mcmodel=medium
 FFLAGS += `pkg-config $(PACKAGES) --cflags`
 #FFLAGS += -traceback -check-all -fp-stack-check
@@ -28,12 +28,13 @@ FC = $(FCOMPILER) -I$(INCDIR) -w -ffixed-line-length-none -fd-lines-as-comments 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 
 FORTRANWF = test_dina_to_imas test_dina test_dina_pfpo1a test_dina_pfpo1b test_dina_2madiv
+FORTRANWF += test_mast
 
 TARGETS += $(FORTRANWF) dina_imas.a dina_sdn.a kmc.a kmc_pfpo1_1a.a kmc_pfpo1_1b.a kmc_2madiv.a dina_transp_energy.a dina_transp_density.a dina_transp_density_test.a dina_transp_density_test0.a dina_transp_bootcond.a dina_transp_curdrive.a dina_transp_heatsrc.a solps_imas.a 
 #TARGETS += dina_iwrap_wf.a
 
 
-LIB_SOURCEDINA := dina_imas.o params_imas.o
+LIB_SOURCEDINA := dina_imas.o dina_params_imas.o
 
 LIB_SOURCECTRL := dina_contr.o kav_contr.o contr_params_imas.o
 
@@ -42,6 +43,10 @@ LIB_SOURCECTRL := dina_contr.o kav_contr.o contr_params_imas.o
 all: $(TARGETS)
 
 test_dina: test_dina_imas.o dina_green.a dina_imas.a kmc.a solps_imas.a
+	@echo "   * $^ -> $@"
+	$(F90) -o $@ $^ $(LDFLAGS)
+
+test_mast: test_mast.o dina_green.a dina_imas.a
 	@echo "   * $^ -> $@"
 	$(F90) -o $@ $^ $(LDFLAGS)
 

@@ -117,7 +117,7 @@
      * ncam2,tcam, npf2,pf,rmag,zmag,psi_tr,rs0,bt0)
 
 
-       call dina_input(te0,tq0,pne,
+       call dina_input(n,a,te0,tq0,pne,
      * pd0,pt0,sigma,jbut,aj0,qe0,qq0)
 
     
@@ -126,9 +126,7 @@
       
       
        call dina2(
-!-----------------------------------  inputs---
      *  c_input1,c_input2,
-!------------------------------------outputs
      *  c_output1,c_output2,c_output3)
 
 
