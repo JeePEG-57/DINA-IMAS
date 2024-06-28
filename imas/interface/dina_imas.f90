@@ -132,7 +132,7 @@ real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
 
 integer :: TimeSteps = 1, CurTimeStep = 1
 
-integer,save :: n1, n2, nu, n, i_wr
+integer,save :: n1, n2, nu, n, n_eq, n_tr, i_wr
 
 integer,save :: i_bnd, i_restart
 
@@ -619,7 +619,7 @@ call write_cputime(0.d0, 0.d0, 1)
   
   tt = 0.d0
   call dina_input0(tt,pf,tcam,rs0,bt0)
-  call ONE2d()
+  call ONE2()
   
   
 if (associated(equilibrium0%time_slice)) then
@@ -637,11 +637,13 @@ if (associated(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)) then
         
         print *,' ++tt tpl==',tt,tpl
         
-	n = size(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)
-	a_tr(1:n) = equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n)
+	n_tr = size(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)
+        n = n_tr
+	a_tr(1:n) = core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n)
 	psi_tr(1:n) = cocos_psi * core_profiles0%profiles_1d(CurTimeStep)%grid%psi(1:n)
 
-	n = size(equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm)
+	n_eq = size(equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm)
+        n = n_eq
 	a(1:n) = equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n)
   
         write(*,*) 'DINA_IMAS - equilibrium poloidal flux'
@@ -655,8 +657,8 @@ if (associated(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)) then
     
     
     call dina_input2(tt,tpl,rmag,zmag,  &
-  &  n,a,pptab,fptab,psi_eq, &
-  &  a_tr,psi_tr)
+  &  n_eq,a,pptab,fptab,psi_eq, &
+  &  n_tr,a_tr,psi_tr)
     
 endif
 endif

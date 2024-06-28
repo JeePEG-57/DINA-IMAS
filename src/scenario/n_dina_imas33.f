@@ -2205,8 +2205,8 @@ c----------------------------
       
 ! Initializing input
        subroutine dina_input2(tt_xx,tpl_xx,rmag_xx,zmag_xx,
-     *  n_xx,a_xx,pptab_xx,fptab_xx,psi_xx,
-     *  a_tr_xx,psi_tr_xx)
+     *  n_eq_xx,a_xx,pptab_xx,fptab_xx,psi_xx,
+     *  n_tr_xx,a_tr_xx,psi_tr_xx)
      
       include 'double.inc'
       include 'new_com.inc'
@@ -2216,7 +2216,7 @@ c----------------------------
       dimension a_tr_xx(*),psi_tr_xx(*)
      
       
-      character *8 apr      
+      character *10 apr      
       
       include 'imas_interface.inc'
       
@@ -2225,9 +2225,7 @@ c----------------------------
         pi=4.d0*atan(ARG)
         
         
-      print *,'dina_input2 n n_xx,a_xx',n,n_xx
-      apr = 'a_xx'
-      if(kpr.eq.1)print 71,apr,(a_xx(j),j=1,n_xx)
+      print *,'dina_input2 n,n_eq_xx,n_tr_xx',n,n_eq_xx,n_tr_xx
       
       nutab = n
       tt = tt_xx*1.d3
@@ -2235,30 +2233,36 @@ c----------------------------
       rmag = rmag_xx*1.d2
       zmag = zmag_xx*1.d2
       
-      if (( (psi_xx(1)-psi_xx(n_xx))*tpl_dir ).gt.0.d0) then
+      if (( (psi_xx(1)-psi_xx(n_eq_xx))*tpl_dir ).gt.0.d0) then
       psiax_xx = psi_xx(1)
-      psibound_xx = psi_xx(n_xx)
+      psibound_xx = psi_xx(n_eq_xx)
       else
-      psiax_xx = psi_xx(n_xx)
+      psiax_xx = psi_xx(n_eq_xx)
       psibound_xx = psi_xx(1)
       endif
       
       print*, 'psiax_xx, psibound_xx', psiax_xx, psibound_xx
+      
+      
+      
        do i=1,n
+       
+         pstab(i) = a(i)
          
          psix = psiax_xx + (psibound_xx - psiax_xx)*(a(i)**2)
          
+         print*, 'i, psi_xx, psi = ', i, psi_xx(i), psix
+         
 !       pptab(i) = pptab_xx(i)
 !       fptab(i) = fptab_xx(i)
-       call linear2(n_xx,pptab_xx,pptab(i),psi_xx,psix)
-       call linear2(n_xx,fptab_xx,fptab(i),psi_xx,psix)
+       call linear2(n_eq_xx,pptab_xx,pptab(i),psi_xx,psix)
+       call linear2(n_eq_xx,fptab_xx,fptab(i),psi_xx,psix)
        
 !       dmn(i) = psi_tr_xx(i)
-       call linear2(n_xx,psi_xx,dmn(i),a_xx,a(i))
-       !call linear2(n_xx,psi_tr_xx,dmn(i),a_tr_xx,a(i))
+!       call linear2(n_eq_xx,psi_xx,dmn(i),a_xx,a(i))
+       call linear2(n_tr_xx,psi_tr_xx,dmn(i),a_tr_xx,a(i))
 
        end do
-      
       
       
       coef_ppx = 1.d10/(rs0*8.d0*pi**2)
@@ -2268,9 +2272,32 @@ c----------------------------
 
       if(kpr.eq.1)print *,' - coef_ppx coef_pffx==',coef_ppx,coef_pffx
      
+     
+ 	apr='a_xx'
+	if(kpr.eq.1)print 71,apr,(a_xx(j),j=1,n_eq_xx)
+ 	apr='a_tr_xx'
+	if(kpr.eq.1)print 71,apr,(a_tr_xx(j),j=1,n_tr_xx)
+ 	apr='a'
+	if(kpr.eq.1)print 71,apr,(a(j),j=1,nutab)
+        
+ 	apr='pptab_xx'
+	if(kpr.eq.1)print 71,apr,(pptab_xx(j),j=1,n_eq_xx)
+ 	apr='pptab'
+	if(kpr.eq.1)print 71,apr,(pptab(j),j=1,nutab)
+        
+ 	apr='fptab_xx'
+	if(kpr.eq.1)print 71,apr,(fptab_xx(j),j=1,n_eq_xx)
+ 	apr='fptab'
+	if(kpr.eq.1)print 71,apr,(fptab(j),j=1,nutab)
+        
+ 	apr='psi_xx'
+	if(kpr.eq.1)print 71,apr,(psi_xx(j),j=1,n_eq_xx)
+ 	apr='dmn'
+	if(kpr.eq.1)print 71,apr,(dmn(j),j=1,nutab)
+     
  
       do i=1,nutab
-        pstab(i) = a(i)
+        
 !        pptab(i) = pptab_xx(i)*tpl_dir 
 !        fptab(i) = fptab_xx(i)*tpl_dir 
         
@@ -2283,16 +2310,10 @@ c----------------------------
       print *,' nutab',nutab
       print *,' rmag zmag',rmag,zmag
 
- 	apr='pstab'
-	if(kpr.eq.1)print 71,apr,(pstab(j),j=1,nutab)
- 	apr='pptab'
-	if(kpr.eq.1)print 71,apr,(pptab(j),j=1,nutab)
- 	apr='fptab'
-	if(kpr.eq.1)print 71,apr,(fptab(j),j=1,nutab)
- 	apr='dmn'
-	if(kpr.eq.1)print 71,apr,(dmn(j),j=1,nutab)
 
- 71	format(20x,a6/,(6(1x,1pe10.3)))
+
+
+ 71	format(20x,a8/,(6(1x,1pe10.3)))
       
       
       
