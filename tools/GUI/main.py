@@ -3,6 +3,7 @@ import sys
 import os
 import shutil
 import subprocess
+import copy
 
 from PySide6 import QtWidgets, QtGui
 import design
@@ -168,7 +169,6 @@ class ExampleApp(uiclass, baseclass):
 #class ExampleApp(QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        self.version = '3.2.0'
         #super(ExampleApp, self).__init__()
         #self.MDI = QVizMDI(self)
         #self.GUIVIZ = GUIFrame(self)
@@ -1964,9 +1964,8 @@ class ExampleApp(uiclass, baseclass):
         geometry.oblique.beta = beta_imas        
       
       
-    def CreateInputIDS(self):
       
-      
+    def TokamakDataToIDS(self):
       tokamakdata = self.TokamakData
       
       
@@ -2211,6 +2210,14 @@ class ExampleApp(uiclass, baseclass):
         wall.description_2d[0].limiter.unit[0].outline.z[i] = float(limiter["items_z"][i].text())
       
       
+      return pfa1, pfp1, wall, magnetics
+      
+      
+      
+      
+    def CreateInputIDS(self):
+      
+      
       equilibrium = imas.equilibrium()
       # Filling equilibrium
       equilibrium.time_slice.resize(1)
@@ -2392,19 +2399,7 @@ class ExampleApp(uiclass, baseclass):
         psch.pf_active.coil[j].resistance_additional.reference_name = refname
       
       
-      
-      
-      dat1 = imas.dataset_description()
-      dat1.ids_properties.homogeneous_time = 2
-      dat1.ids_properties.comment = "DINA setup file name in simulation/workflow"
-      dat1.simulation.workflow = "DINA-IMAS"
-      
-      
-      print("Dataset_description/simulation/workflow " + dat1.simulation.workflow +' saved')
-      
-      
-      return psch,psch_dw,equilibrium,magnetics,dat1
-      #return pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1
+      return psch,psch_dw,equilibrium
       
       
       
@@ -2415,6 +2410,8 @@ class ExampleApp(uiclass, baseclass):
       if dirTmp:
         self.directorySave = dirTmp
         self.labelDirSave.setText(self.directorySave)
+        
+        CurrentUser = os.getenv('USER')
         
         date = datetime.datetime.now()
         #datestr = date.strftime('%x') # Local version of date
@@ -2478,14 +2475,29 @@ class ExampleApp(uiclass, baseclass):
         print('URL = ' + repourl)
         
         
+        version = ''
+        try:
+          result = subprocess.check_output('git describe --tags --abbrev=0', shell = True)
+          line = result.splitlines()[0]
+          version = line.decode()
+        except subprocess.CalledProcessError as cpe:
+          result = cpe.output
+        #finally:
+          #for line in result.splitlines():
+            #print(line.decode())
+        print('Version = ' + version)
+        
+        
+        
         wf = imas.workflow()
         wf.ids_properties.homogeneous_time = 2
-        wf.ids_properties.comment = "DINA workflow with the magnetic controller"
-        wf.creation_date = datestr
+        wf.ids_properties.comment = "Code parameters for the DINA-IMAS workflow with the magnetic controller for the plasma current, shape and vertical stabilisation"
+        wf.ids_properties.creation_date = datestr
+        wf.ids_properties.provider = CurrentUser
         
         wf.code.name = 'DINA-GUI'
-        wf.code.version = self.version
-        wf.code.description = 'Magnetic controller for the plasma current, shape and vertical stabilisation'
+        wf.code.version = version
+        wf.code.description = 'GUI for creation of the initial set of IDS and XML to run DINA-IMAS workflow with the magnetic controller'
         wf.code.commit = commit
         wf.code.repository = repourl
         
@@ -2501,6 +2513,8 @@ class ExampleApp(uiclass, baseclass):
         keys = ["tt_rampup", "dt_end_sim", "dtpl_term_l", "cIp_end", "Ics1_eob", "rms_noise"]
         for key in keys:
           params[key] = self.controlData[key]
+        params.pop('rs0')
+        params.pop('bt0')
         
         root = ET.Element("parameters")
         for key in params:
@@ -2520,6 +2534,20 @@ class ExampleApp(uiclass, baseclass):
           element_r.text = element_r.text + ' ' + gap.widget_r.text() + ' '
           element_z.text = element_z.text + ' ' + gap.widget_z.text() + ' '
         
+        
+        ncirc = 14
+        circuit = ET.SubElement(root, 'circuit')
+        element = ET.SubElement(circuit, 'ncirc')
+        element.text = str(ncirc)
+        
+        connection = ET.SubElement(circuit, 'connection')
+        connection.text = '1 2 3 3 4 5 6 7 8 9 10 11 12 12'
+        
+        direction = ET.SubElement(circuit, 'direction')
+        direction.text = '1 1 1 1 1 1 1 1 1 1 1 1 1 -1'
+        
+        
+        
         xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
         f = open(fname, 'w')
         f.write(xmlstr)
@@ -2527,7 +2555,7 @@ class ExampleApp(uiclass, baseclass):
         
         
         compDINA.name = 'DINA'
-        compDINA.version = self.version
+        compDINA.version = version
         compDINA.description = 'Free boundary equilibrium, circuit equations, 1D flux diffusion, energy and density transport'
         compDINA.commit = commit
         compDINA.repository = repourl
@@ -2548,8 +2576,8 @@ class ExampleApp(uiclass, baseclass):
         
         
         compKMC.name = 'KMC'
-        compKMC.version = self.version
-        compKMC.description = 'Magnetic controller for the plasma current, shape and vertical stabilisation'
+        compKMC.version = version
+        compKMC.description = 'ITER magnetic controller designed by A.Kavin for the plasma current, shape and vertical stabilisation; working from fully charged central solenoid to the end of poloidal coils discharge, supporting restart.'
         compKMC.commit = commit
         compKMC.repository = repourl
         compKMC.parameters = xmlstr
@@ -2569,23 +2597,17 @@ class ExampleApp(uiclass, baseclass):
         wf.code.parameters = self.wfconfigstr
         
         
-        # archive the saved setup files
-        tarname = 'SaveSetups' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + '.tgz'
-        tar = tarfile.open(tarname, "w:gz")
-        #tar.add(self.directorySave + '/external_data.dat')
-        #tar.add(self.directorySave + '/control_init_1.dat')
-        #tar.add(self.directorySave + '/dina_data.dat')
-        #tar.add(self.directorySave + '/tokamak_config.dat')
-        #tar.add(self.directorySave + '/scr_data.dat')
-        #tar.add(self.directorySave + '/volt.dat')
-        tar.add(new_imp)
-        tar.close()
-        print(tarname+' saved')
+        
+        datadesc = imas.dataset_description()
+        datadesc.ids_properties.homogeneous_time = 2
+        datadesc.ids_properties.comment = "Initial set of IDS and XML to run DINA-IMAS workflow with the magnetic controller"
+        datadesc.ids_properties.creation_date = datestr
+        datadesc.ids_properties.provider = CurrentUser
+        
         
         
         # Create input ids
-        #pfa1,pfp1,magnetics,wall,psch,psch_dw,dat1 = self.CreateInputIDS()
-        psch,psch_dw,equilibrium,magnetics,dat1 = self.CreateInputIDS()
+        psch,psch_dw,equilibrium = self.CreateInputIDS()
         
         
         
@@ -2627,11 +2649,11 @@ class ExampleApp(uiclass, baseclass):
         imas_obj.create()
         #imas_obj.put(pfa1)
         #imas_obj.put(pfp1)
-        imas_obj.put(magnetics)
+        #imas_obj.put(magnetics)
         #imas_obj.put(wall)
         imas_obj.put(psch, occurrence = 0)
         imas_obj.put(psch_dw, occurrence = 1)
-        imas_obj.put(dat1)
+        imas_obj.put(datadesc)
         imas_obj.put(wf)
         imas_obj.put(equilibrium)
         imas_obj.close()
