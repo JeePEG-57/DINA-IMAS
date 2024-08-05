@@ -43,6 +43,7 @@ def Save(filename, eq1, wall1):
   pres = eq1.time_slice[0].profiles_1d.pressure # plasma pressure, Pa
   fpol = eq1.time_slice[0].profiles_1d.f # diamagnetic function f=r*Bt, T*m
   qpsi = eq1.time_slice[0].profiles_1d.q
+  psi1d = eq1.time_slice[0].profiles_1d.psi
   
   nrho = len(rho)
   ## 0D
@@ -78,6 +79,7 @@ def Save(filename, eq1, wall1):
   pprime *= cocos_psi
   ffprime *= cocos_psi
   psirz *= cocos_psi
+  psi1d *= cocos_psi
   simag *= cocos_psi
   sibry *= cocos_psi
   
@@ -86,6 +88,7 @@ def Save(filename, eq1, wall1):
   pprime *= cur_dir
   ffprime *= cur_dir
   psirz *= cur_dir
+  psi1d *= cur_dir
   simag *= cur_dir
   sibry *= cur_dir
   
@@ -106,15 +109,17 @@ def Save(filename, eq1, wall1):
   
   # resample 1d from 1:nrho to 1:nr
   # use uniform grid as used in DINA
-  rho_nw = np.zeros(nr)
+  #rho_nw = np.zeros(nr)
+  psi_nw = np.zeros(nr)
   for i in range(nr):
-    rho_nw[i] = np.sqrt(i/(nr-1))
+    psi_nw[i] = simag + (sibry-simag)*float(i)/(nr-1.)
+    #rho_nw[i] = np.sqrt(i/(nr-1.))
   
-  pprime_nw = np.interp(rho_nw, rho, pprime)
-  ffprime_nw = np.interp(rho_nw, rho, ffprime)
-  qpsi_nw = np.interp(rho_nw, rho, qpsi)
-  fpol_nw = np.interp(rho_nw, rho, fpol)
-  pres_nw = np.interp(rho_nw, rho, pres)
+  pprime_nw = np.interp(psi_nw, psi1d, pprime)
+  ffprime_nw = np.interp(psi_nw, psi1d, ffprime)
+  qpsi_nw = np.interp(psi_nw, psi1d, qpsi)
+  fpol_nw = np.interp(psi_nw, psi1d, fpol)
+  pres_nw = np.interp(psi_nw, psi1d, pres)
   
   
   ## Create dictionary of values and write to the file
