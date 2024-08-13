@@ -98,7 +98,7 @@ real(ids_real) ::time_eq_c
 
     
 real(ids_real) :: tpl = 1000.d0, tt = 0.d0
-real(ids_real) :: psi_ax,psi_bnd,psi_sep,psi_sep2
+real(ids_real) :: psi_ax,psi_bnd,psi_sep,psi_sep2,psi_ext
 real(ids_real) :: rs0 = 1.d0, bt0 = 1.d0
 real(ids_real) :: betap = 0.d0, betat = 0.d0, betan = 0.d0
 real(ids_real) :: tene, teit_98
@@ -842,6 +842,7 @@ write(*,*) '!!!solpsza enter'
     psi_bnd = psi_bnd*cocos_psi
     psi_sep = psi_sep*cocos_psi
     psi_sep2 = psi_sep2*cocos_psi
+    psi_ext = wr_imas(32)*cocos_psi
     psi = psi*cocos_psi
     psi_eq = psi_eq*cocos_psi
     psloop = psloop*cocos_psi
@@ -1020,7 +1021,7 @@ equilibrium%time(CurTimeStep) = tt
         equilibrium%time_slice(CurTimeStep)%global_quantities%q_axis = wr_imas(18)
         equilibrium%time_slice(CurTimeStep)%global_quantities%q_95 = wr_imas(17)
         equilibrium%time_slice(CurTimeStep)%global_quantities%energy_mhd = wr_imas(76) ![J]
-        equilibrium%time_slice(CurTimeStep)%global_quantities%psi_external_average = wr_imas(32) ! [Wb]
+        equilibrium%time_slice(CurTimeStep)%global_quantities%psi_external_average = psi_ext ! [Wb]
         equilibrium%time_slice(CurTimeStep)%global_quantities%plasma_inductance = wr_imas(75) ! [H]
         equilibrium%time_slice(CurTimeStep)%global_quantities%plasma_resistance= wr_imas(77) ! [Ohm]
 
