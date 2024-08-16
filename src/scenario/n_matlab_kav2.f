@@ -1574,6 +1574,7 @@ c
       omg_ppx=omg_ppx*0.99
       if(omg_ppx.le.0.5d0)omg_ppx=0.5d0
      
+      ! pprime and ffprime
       call ppx_pffx()
       call ppx_pffx_corr2()
 	   	      

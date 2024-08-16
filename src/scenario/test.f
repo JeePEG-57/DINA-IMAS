@@ -130,26 +130,33 @@
      *  c_output1,c_output2,c_output3)
 
 
-	call dina_outp(n, tpl, tt, 
-     * a, ai,
+       call dina_outp_eq(n, tpl, tt, 
      * rs0,bt0,
-     * x,y,psi,curr_d,
-     * psi_tr,psi_eq,phi_1D,
-     * fpol,pptab,fptab,
-     * tok1,q,
      * vchopper,pf,tcam,
-     * te0,tq0,press,zeff,
-     * qe0,qq0,
-     * pne,pd0,pt0,
-     * sigma,jbut,aj0,ajae,
+     * x,y,psi,curr_d,
+     * a,psi_eq,phi_1D,
+     * fpol,pptab,fptab,
+     * tok1,q,press,
+     * surface_1d,volume_1d,area_1d,
      * bprobe,psloop,
      * psi_ax, psi_bnd, psi_sep, psi_sep2,
-     * ksepa,key_lh,
-     * surface_1d,volume_1d,area_1d,
+     * ksepa,
      * n_bnd,xbound,ybound,
      * n_sep,x_sep,y_sep,
      * n_sep2,x_sep2,y_sep2,
-     * n_ga_dina,gaps,
+     * n_gaps,gaps,
+     * betap,betat)
+
+
+       call dina_outp_tr(n, tpl, tt, 
+     * a,psi_tr,q,
+     * sigma,tok1,jbut,aj0,ajae,
+     * surface_1d,volume_1d,area_1d,
+     * te0,tq0,press,zeff,
+     * qe0,qq0,
+     * pne,pd0,pt0,
+     * psi_ax,psi_bnd,
+     * ksepa,key_lh,
      * betap,betat,
      * tene,teit_98)
      

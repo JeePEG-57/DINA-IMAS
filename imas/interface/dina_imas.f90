@@ -793,7 +793,6 @@ write(*,*) '!!!dina_outp enter'
      & a,psi_eq,phi_1D,&
      & fpol,pptab,fptab,&
      & tok1,q,press,&
-     & sigma,jbut,aj0,ajae,&
      & surface_1d,volume_1d,area_1d,&
      & bprobe,psloop,&
      & psi_ax, psi_bnd, psi_sep, psi_sep2,&
@@ -806,10 +805,6 @@ write(*,*) '!!!dina_outp enter'
      
 
   call dina_wr_output(wr_imas)
-
-        
-!  	call dina_map(n1,te0,tq0,pne, &
-!     & pd0,pt0,sigma,jbut,aj0,qe0,qq0,a_xx,ai_xx)
 
 
 
@@ -1244,27 +1239,16 @@ equilibrium%time(CurTimeStep) = tt
 
 
 
-write(*,*) '!!!dina_outp enter'
-	call dina_outp(n, tpl, tt, &
-     & a, ai,&
-     & rs0,bt0,&
-     & x,y,psi,curr_d,&
-     & psi_tr,psi_eq,phi_1D,&
-     & fpol,pptab,fptab,&
-     & tok1,q,&
-     & vchopper,pf,tcam,&
+write(*,*) '!!!dina_outp_tr enter'
+	call dina_outp_tr(n, tpl, tt, &
+     & a,psi_tr,q,&
+     & sigma,tok1,jbut,aj0,ajae,&
+     & surface_1d,volume_1d,area_1d,&
      & te0,tq0,press,zeff,&
      & qe0,qq0,&
      & pne,pd0,pt0,&
-     & sigma,jbut,aj0,ajae,&
-     & bprobe,psloop,&
-     & psi_ax, psi_bnd, psi_sep, psi_sep2,&
+     & psi_ax,psi_bnd,&
      & ksepa,key_lh,&
-     & surface_1d,volume_1d,area_1d,&
-     & n_bnd,xbound,ybound,&
-     & n_sep,x_sep,y_sep,&
-     & n_sep2,x_sep2,y_sep2,&
-     & n_gaps,gaps,&
      & betap,betat,&
      & tene,teit_98)
 
@@ -1272,14 +1256,7 @@ write(*,*) '!!!dina_outp enter'
 
     psi_ax = psi_ax*cocos_psi
     psi_bnd = psi_bnd*cocos_psi
-    psi_sep = psi_sep*cocos_psi
-    psi_sep2 = psi_sep2*cocos_psi
-    psi = psi*cocos_psi
-    psi_eq = psi_eq*cocos_psi
     psi_tr = psi_tr*cocos_psi
-    psloop = psloop*cocos_psi
-    pptab = pptab*cocos_psi
-    fptab = fptab*cocos_psi
     
 
 

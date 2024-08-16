@@ -111,8 +111,10 @@ def GetGeometryPath(geom):
 
 
 def plot_pf_active(ax, ids, facecolor='orange', edgecolor='blue'):
-    for coil in ids.coil:
-      for elem in coil.element:
+    for icoil in range(len(ids.coil)):
+      coil = ids.coil[icoil]
+      for ielem in range(len(coil.element)):
+        elem = coil.element[ielem]
         path = GetGeometryPath(elem.geometry)
         #patch = patches.PathPatch(path, facecolor=facecolor, edgecolor=facecolor, lw=2)
         #ax.add_patch(patch)
@@ -123,6 +125,13 @@ def plot_pf_active(ax, ids, facecolor='orange', edgecolor='blue'):
           y_mid = np.mean(y_val[0:-1])
           ax.plot(x_val,y_val,'b',linewidth=1.5)
           ax.plot(x_mid,y_mid,'b.',linewidth=1.5)
+          
+          #if (len(coil.element) > 1):
+            #text = str(icoil+1) + '/' + str(ielem+1)
+          #else:
+            #text = str(icoil+1)
+          #txt = ax.annotate(text, xy=(x_mid, y_mid), fontsize = 16, color='r')
+          #txt.draggable()
 
         
 def plot_pf_passive(ax, ids, facecolor=(0.8, 0.8, 0.8), edgecolor=(0, 0, 1)):
@@ -130,6 +139,7 @@ def plot_pf_passive(ax, ids, facecolor=(0.8, 0.8, 0.8), edgecolor=(0, 0, 1)):
     colors = cycle(prop_cycle.by_key()['color'])
     for loop in ids.loop:
       facecolor = next(colors)
+      edgecolor = (0,0,0)
       for elem in loop.element:
         path = GetGeometryPath(elem.geometry)
         #if elem.turns_with_sign < 0.:

@@ -28,55 +28,28 @@
       
 !> dina_outp is a subroutine to collect the output data to write them after that 
 !> to IDSs in dina_imas subroutine 
-	subroutine dina_outp(n_xx, tpl_xx, tt_xx,
-     * a_xx, ai_xx,
-     * rs0_xx,bt0_xx,
-     * x_xx,y_xx,psi_xx,curr_d_xx,
-     * psi_tr_xx,psi_eq_xx,phi_xx,
-     * fpol_xx,pptab_xx,fptab_xx,
-     * tok1_xx,q_xx,
-     * vchopper_xx,pf_xx,tcam_xx,
+	subroutine dina_outp_tr(n_xx, tpl_xx, tt_xx,
+     * a_xx,psi_tr_xx,q_xx,
+     * sigma_xx,tok1_xx,ajb_xx,aj0_xx,ajae_xx,
+     * surface_1d_xx,volume_1d_xx,area_1d_xx,
      * te0_xx,tq0_xx,press_xx,zeff_xx,
      * qe0_xx,qq0_xx,
      * pne_xx,pd0_xx,pt0_xx,
-     * sigma_xx,ajb_xx,aj0_xx,ajae_xx,
-     * bprobe_xx,psloop_xx,
-     * psi_ax_xx, psi_bnd_xx, psi_sep_xx, psi_sep2_xx,
+     * psi_ax_xx, psi_bnd_xx
      * ksepa_xx,key_lh_xx,
-     * surface_1d_xx,volume_1d_xx,area_1d_xx,
-     * n_bnd_xx,xbound_xx,ybound_xx,
-     * n_sep_xx,x_sep_xx,y_sep_xx,
-     * n_sep2_xx,x_sep2_xx,y_sep2_xx,
-     * n_ga_xx,gaps_xx,
      * betap_xx,betat_xx,
      * tene_xx,teit_98_xx)
 
 
 	include 'double.inc'
 	include 'new_com.inc'
-
-        common /c_imas_curr_d/curr_d(nr,nz)
-!     *  /c_ramp2/rsep2,zsep2,psep2
-!     *  /vic_008/rsep2_gr,zsep2_gr,rsep2_l,zsep2_l,
-!     *           rsep2_r,zsep2_r
-!     *  /cont21/n_ga,n_int
-!     *  /cont20/x_gaps(kf_c),y_gaps(kf_c),gaps(kf_c),n_gaps
      
 
-	dimension a_xx(*),ai_xx(*),psi_tr_xx(*),psi_eq_xx(*),te0_xx(*),
-     *  tq0_xx(*),pne_xx(*),tok1_xx(*),
-     *  q_xx(*),x_xx(*),y_xx(*)
-	dimension pd0_xx(*),pt0_xx(*),sigma_xx(*),ajb_xx(*),ajae_xx(*),
-     *  aj0_xx(*),qe0_xx(*),qq0_xx(*)
-        dimension xbound_xx(*),ybound_xx(*),x_sep_xx(*),y_sep_xx(*),
-     *  x_sep2_xx(*),y_sep2_xx(*) 
-     
-	dimension psi_xx(nr,nz),curr_d_xx(nr,nz)
-        dimension gaps_xx(*)
-        dimension vchopper_xx(*),pf_xx(*),tcam_xx(*)
-        dimension fpol_xx(*),pptab_xx(*),fptab_xx(*),phi_xx(*)
+	dimension a_xx(*),psi_tr_xx(*),tok1_xx(*),q_xx(*)
+        dimension sigma_xx(*),ajb_xx(*),ajae_xx(*),aj0_xx(*)
+        dimension te0_xx(*),tq0_xx(*),qe0_xx(*),qq0_xx(*)
+	dimension pne_xx(*),pd0_xx(*),pt0_xx(*)
         dimension press_xx(*),zeff_xx(*)
-        dimension bprobe_xx(*),psloop_xx(*)
         dimension surface_1d_xx(*),volume_1d_xx(*),area_1d_xx(*)
         
         dimension f_temp(npo)
@@ -95,56 +68,22 @@
 
 	tt_xx=tt/1000.d0
 	!tt_xx=(tt-tay)/1000.d0
-
-        rs0_xx = rs0/100.d0
-        bt0_xx = bt0_dir*bt0/10.d0
 	
         betap_xx = betj
         betat_xx = bett
 
-	  tene_xx = tene*1.d-3
+	tene_xx = tene*1.d-3
         teit_98_xx = teit_98*1.d-3
         key_lh_xx = key_lh
       
       
         psi_ax_xx = tpl_dir*pmag*1.d-5*2.*pi
         psi_bnd_xx = tpl_dir*pbound*1.d-5*2.*pi
-        psi_sep_xx = tpl_dir*psep*1.d-5*2.*pi
-        psi_sep2_xx = tpl_dir*psep2*1.d-5*2.*pi
         
         ksepa_xx = ksepa 
         
-        n_bnd_xx = jbound
-        do i=1,jbound
-           xbound_xx(i) = xbound(i)*1.d-2
-           ybound_xx(i) = ybound(i)*1.d-2
-        end do
-        
-        n_sep_xx = n_sep
-        do i=1,n_sep
-           x_sep_xx(i) = x_sep(i)*1.d-2
-           y_sep_xx(i) = y_sep(i)*1.d-2
-        end do
-        
-        n_sep2_xx = n_sep2
-        do i=1,n_sep2
-           x_sep2_xx(i) = x_sep2(i)*1.d-2
-           y_sep2_xx(i) = y_sep2(i)*1.d-2
-        end do
-        
-        n_ga_xx = n_ga
-        do i=1,n_ga
-          gaps_xx(i) = gaps(i)*1.d-2
-        enddo
         
         
-        bprobe_xx(1:kprobe) = tpl_dir*bprobe(1:kprobe) ! *1.d-1
-        psloop_xx(1:kloop) = tpl_dir*psloop(1:kloop)*2.*pi ! *1.d-5
-c=================================================
-!              call feeti(n,dm_help,dmn(i),dfmax0,df_temp)
-!              call linear(n,dm_help,dmn(i),dfmax0,df_temp)
-
-
         ai(n+1)=1.d0
         teta_xx=1.d0
 
@@ -203,7 +142,6 @@ c=================================================
 
 	do i=1,n
 	   a_xx(i)=a(i)
-           ai_xx(i)=ai(i)
 
 	   te0_xx(i)=te0(i)
 	   tq0_xx(i)=tq0(i)
@@ -222,13 +160,6 @@ c=================================================
 	   
 
 	   zeff_xx(i)=zeff(i)
-   
-!	   pptab_xx(i)=pptab(i)
-!	   fptab_xx(i)=fptab(i)
-
-           psi_eq_xx(i) = tpl_dir*psval(i)*1.d-5*2.*pi
-           phi_xx(i) = bt0_dir*dfmax(i)*1.d-5
-
 
 	   surface_1d_xx(i) = s_surf(i)*1.d-4
 
@@ -314,25 +245,9 @@ c=================================================
 
 	
 	do i=1,n
-	
-	   psix_xx=(psval(i)-pmag)/(pbound-pmag) 
-	   !psix_xx=sqrt(psix_xx)
-	   psix_xx=sqrt(ai(i))
-	
-	   !call linear(n,ppx,pptab_xx(i),a,psix_xx)
-           !call linear(n,pffx,fptab_xx(i),a,psix_xx)          
-           !call linear(n,p,press_xx(i),a,psix_xx)
-           
-           !call linear(n,f,fpol_xx(i),ai,psix_xx)
-           !call linear(n,q,q_xx(i),ai,psix_xx)
-          
-          
-           ! Defined on a-grid?
-           pptab_xx(i) = ppx(i)
-           fptab_xx(i) = pffx(i)
+        
            press_xx(i) = p(i)
            
-
         enddo
         
         ! Defined on ai-grid, to get it on a-grid
@@ -343,96 +258,24 @@ c=================================================
         teta_xx=1.d0
         call inter_h0(q,ai,n,teta_xx,val)
         q(n+1)=val
-        f(n+1)=bt0
            
            
-        fpol_xx(1) = f(1)
-        fpol_xx(n) = f(n)
         q_xx(1) = q(1)
         q_xx(n) = q(n)
-        do i=2,n-1             
-           call linear(n,f,fpol_xx(i),ai,a(i))
-           call linear(n,q,q_xx(i),ai,a(i))          
+        do i=2,n-1
+           call linear(n,q,q_xx(i),ai,a(i))
         enddo
 
-      apr='--f_pol-' 
-      if(kpr.eq.1)print 71,apr,(fpol_xx(i),i=1,n) 
       apr='--q-' 
       if(kpr.eq.1)print 71,apr,(q_xx(i),i=1,n) 
-        
-        
-        do i=1,n  
-           pptab_xx(i) = -tpl_dir*pptab_xx(i) * 1.d10/(rs0*8.d0*pi**2)
-           fptab_xx(i) = -tpl_dir*fptab_xx(i) * rs0/(40.d0*pi)       
-           fpol_xx(i) = bt0_dir*(rs0/100.d0)*fpol_xx(i)/10.d0
-!           press_xx(i) = 1.602176634d0*press_xx(i)/(200.d0*1.d-6)
-           press_xx(i) = 1.d-2*press_xx(i)/(4.d0*pi*1.d-7)
-           q_xx(i) = q_xx(i)
-                   
-	enddo
-	
-	
+      
+      	
 	volume_1d_xx(1) = 2.d0*pi*vi(1)*ha(1)*1.d-6
 	area_1d_xx(1) = spo(1)*ha(1)*1.d-4
 	do i=2,n
 	   volume_1d_xx(i) = volume_1d_xx(i-1) + 2.d0*pi*vi(i)*ha(i)*1.d-6
            area_1d_xx(i) = area_1d_xx(i-1) + spo(i)*ha(i)*1.d-4          
 	enddo
-	
-
-c=================================================
-
-	do i=1,nr
-	   x_xx(i)=x(i)/100.d0
-	end do
-
-	do i=1,nz
-	   y_xx(i)=y(i)/100.d0
-	end do
-
-
-        tok_1=0.
-        tok_2=0.
-        tok_3=0.
-        do i=1,nr
-           do j=1,nz
-                kk=(i-1)*nz+j
-                u_h(kk)=0.
-              psi_xx(i,j) = tpl_dir*psi(i,j)*1.d-5*2.*pi
-              curr_d_xx(i,j) = tpl_dir*curr_d(i,j)*1.d7
-              u_h(kk)=curr_d(i,j)/(coef+1.d-13)
-              tok_1=tok_1+curr_d_xx(i,j)*dx*dy*1.e-4
-              tok_2=tok_2+curr_d(i,j)*dx*dy
-              tok_3=tok_3+u_h(kk)*dx*dy*coef
-           end do
-        end do
-
-        print *,'tpl tok_1 tok_2 tok_3==',
-        
-     *  tpl,-tok_1*1.e-3,tok_2,tok_3
-
-
-        call psi_pl_test(u_h,pspl)
-        
-        do i=1,nr
-          do j=1,nz
-                kk=(i-1)*nz+j
-                u_h(kk)=0.
-          end do
-        end do
-          
-!         call psi_pl_test(u_h,psext)
-
-	
-	do i=1,npf
-	   vchopper_xx(i) = tpl_dir*vchopper(i)*pf_turns(i)
-	   pf_xx(i) = tpl_dir*1.d3*pf(i)/pf_turns(i)
-	enddo
-	
-	do i=1,ncam
-	   tcam_xx(i) = tpl_dir*1.d3*tcam(i)
-	enddo
-
 		
 	
 	if(kpr.eq.1)print *,' tt t_vde=',tt,t_vde
@@ -442,7 +285,6 @@ c=================================================
       stop      
       end if
       
-
 
       return
       end
@@ -459,7 +301,6 @@ c=================================================
      * a_xx,psi_eq_xx,phi_xx,
      * fpol_xx,pptab_xx,fptab_xx,
      * tok1_xx,q_xx,press_xx,
-     * sigma_xx,ajb_xx,aj0_xx,ajae_xx,
      * surface_1d_xx,volume_1d_xx,area_1d_xx,
      * bprobe_xx,psloop_xx,
      * psi_ax_xx, psi_bnd_xx, psi_sep_xx, psi_sep2_xx,
@@ -488,7 +329,6 @@ c=================================================
 	dimension a_xx(*),psi_eq_xx(*),phi_xx(*)
         dimension fpol_xx(*),pptab_xx(*),fptab_xx(*)
         dimension tok1_xx(*),q_xx(*),press_xx(*)
-	dimension sigma_xx(*),ajb_xx(*),ajae_xx(*),aj0_xx(*)
         dimension surface_1d_xx(*),volume_1d_xx(*),area_1d_xx(*)
         dimension bprobe_xx(*),psloop_xx(*)
         dimension xbound_xx(*),ybound_xx(*)
@@ -568,25 +408,9 @@ c=================================================
         ai(n+1)=1.d0
         teta_xx=1.d0
         
-        call inter_h0(sigk,ai,n,teta_xx,val)
-        sigk(n+1)=val
-        sigk(1)=sigk(2)
-        
         call inter_h0(tok1,ai,n,teta_xx,val)
         tok1(n+1)=val
         tok1(1)=tok1(2)
-        
-        call inter_h0(ajb,ai,n,teta_xx,val)
-        ajb(n+1)=val
-        ajb(1)=ajb(2)
-        
-        call inter_h0(aj0,ai,n,teta_xx,val)
-        aj0(n+1)=val
-        aj0(1)=aj0(2)
-        
-        call inter_h0(ajae,ai,n,teta_xx,val)
-        ajae(n+1)=val
-        ajae(1)=ajae(2)
         
         call inter_h0(q,ai,n,teta_xx,val)
         q(n+1)=val
@@ -617,13 +441,9 @@ c=================================================
            call linear2(n,area_1d_xx0,area_1d_xx(i),a,aval)
            
            !On the half-integral grid
-           call linear2(n1,sigk,sigk_xx(i),ai,aval)
            call linear2(n1,f,fpol_xx(i),ai,aval)
            call linear2(n1,q,q_xx(i),ai,aval)
            call linear2(n1,tok1,tok1_xx(i),ai,aval)
-           call linear2(n1,ajb,ajb_xx(i),ai,aval)
-           call linear2(n1,aj0,aj0_xx(i),ai,aval)
-           call linear2(n1,ajae,ajae_xx(i),ai,aval)
            
            
            psi_eq_xx(i) = psval(i)
@@ -643,15 +463,6 @@ c=================================================
         tok1_xx(1) = tok1(1)
         tok1_xx(n) = tok1(n+1)
         
-        ajb_xx(1) = ajb(1)
-        ajb_xx(n) = ajb(n+1)
-        
-        aj0_xx(1) = aj0(1)
-        aj0_xx(n) = aj0(n+1)
-        
-        ajae_xx(1) = ajae(1)
-        ajae_xx(n) = ajae(n+1)
-        
         fpol_xx(1) = f(1)
         fpol_xx(n) = f(n)
         
@@ -662,12 +473,6 @@ c=================================================
         do i=1,n
         
 	   tok1_xx(i) = tpl_dir*tok1_xx(i)*1.d7 ! Toroidal current density
-	   ajb_xx(i) = tpl_dir*ajb_xx(i)*1.d7 ! Bootstrap current density
-	   aj0_xx(i) = tpl_dir*aj0_xx(i)*1.d7 ! Current density by NBI CD
-	   ajae_xx(i) = tpl_dir*ajae_xx(i)*1.d7 ! Current density by ECRH CD
-           
-           !sigma_xx(i)=sigma_dina(i)
-           sigma_xx(i)=1480.d0*sigk_xx(i)*te0_xx(i)**1.5d0
            
            psi_eq_xx(i) = tpl_dir*psi_eq_xx(i)*1.d-5*2.*pi
            
