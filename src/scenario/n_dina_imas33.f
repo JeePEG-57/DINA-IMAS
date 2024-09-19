@@ -35,7 +35,7 @@
      * te0_xx,tq0_xx,press_xx,zeff_xx,
      * qe0_xx,qq0_xx,
      * pne_xx,pd0_xx,pt0_xx,
-     * psi_ax_xx, psi_bnd_xx
+     * psi_ax_xx, psi_bnd_xx,
      * ksepa_xx,key_lh_xx,
      * betap_xx,betat_xx,
      * tene_xx,teit_98_xx)
@@ -74,9 +74,11 @@
 
 	tene_xx = tene*1.d-3
         teit_98_xx = teit_98*1.d-3
+        
         key_lh_xx = key_lh
       
-      
+        print *,' dina_output_tr key_lh key_lh_xx =', key_lh, key_lh_xx
+        
         psi_ax_xx = tpl_dir*pmag*1.d-5*2.*pi
         psi_bnd_xx = tpl_dir*pbound*1.d-5*2.*pi
         
