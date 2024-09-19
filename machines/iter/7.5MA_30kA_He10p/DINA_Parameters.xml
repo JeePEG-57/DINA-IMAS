@@ -5,10 +5,9 @@
    <tau>2.0</tau>
    <tau_sim>10.0</tau_sim>
    <tau_dw>5.0</tau_dw>
-   <rs0>620.0</rs0>
-   <bt0>26.5</bt0>
-   <key_t11>0</key_t11>
+   <key_t11>1</key_t11>
    <tt_dina>5000000000.0</tt_dina>
+   <tpl_dir>-1.0</tpl_dir>
    <p>0.001</p>
    <T_e>0.002</T_e>
    <T_i>0.002</T_i>
@@ -34,4 +33,9 @@
       <gaps_r> 424.5  556.5  828.06  750.95  533.15  405.99 </gaps_r>
       <gaps_z> -374.7  -425.4  46.65  299.71  458.04  77.77 </gaps_z>
    </gaps>
+   <circuit>
+      <ncirc>14</ncirc>
+      <connection>1 2 3 3 4 5 6 7 8 9 10 11 12 12</connection>
+      <direction>1 1 1 1 1 1 1 1 1 1 1 1 1 -1</direction>
+   </circuit>
 </parameters>
