@@ -22,7 +22,7 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 
-module load IMAS/3.39.0-4.11.7-2020b
+module load IMAS/3.39.0-4.11.9-foss-2020b
 
 # Fixed memory leak in PyUAL
 #module use -p /home/ITER/hoeneno/public/imas/etc/modulefiles 
@@ -57,8 +57,10 @@ module load IMAS/3.39.0-4.11.7-2020b
 #fi
 
 
-module load FC2K
+module load FC2K/4.14.2-Java-11
+#FC2K/4.14.2-Java-21
 
+module load Viz/2.8.0-foss-2020b
 
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 #module load MATLAB/2018a
@@ -71,9 +73,8 @@ export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
 #module switch --force matplotlib/3.5.1-intel-2020b
 #module load Viz/2.7.0-intel-2020b
-module load Viz/2.7.2-intel-2020b 
-
-export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
+#module load Viz/2.7.2-intel-2020b 
+#export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
 # # FOR PYUAL (PYTHON WORKFLOWS)
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
@@ -107,9 +108,11 @@ else
   echo '$FCOMPILER set to gfortran'
   #module load mpich2/3.1.3-gnu
   module load XMLlib/3.3.1-GCC-10.2.0
+  #module load XMLlib/3.3.2-GCC-13.2.0
 fi
 
 
-module list -t
+module list
+#-t
 
 
