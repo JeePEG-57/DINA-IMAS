@@ -101,6 +101,7 @@ def Save(filename, eq1, wall1):
   pix2 = 2.0*np.pi
   
   psirz /= pix2
+  psi1d /= pix2
   simag /= pix2
   sibry /= pix2
   
@@ -115,11 +116,12 @@ def Save(filename, eq1, wall1):
     psi_nw[i] = simag + (sibry-simag)*float(i)/(nr-1.)
     #rho_nw[i] = np.sqrt(i/(nr-1.))
   
-  pprime_nw = np.interp(psi_nw, psi1d, pprime)
-  ffprime_nw = np.interp(psi_nw, psi1d, ffprime)
-  qpsi_nw = np.interp(psi_nw, psi1d, qpsi)
-  fpol_nw = np.interp(psi_nw, psi1d, fpol)
-  pres_nw = np.interp(psi_nw, psi1d, pres)
+  
+  pprime_nw = np.interp(-psi_nw, -psi1d, pprime)
+  ffprime_nw = np.interp(-psi_nw, -psi1d, ffprime)
+  qpsi_nw = np.interp(-psi_nw, -psi1d, qpsi)
+  fpol_nw = np.interp(-psi_nw, -psi1d, fpol)
+  pres_nw = np.interp(-psi_nw, -psi1d, pres)
   
   
   ## Create dictionary of values and write to the file
