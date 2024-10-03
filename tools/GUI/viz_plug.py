@@ -30,7 +30,7 @@ sys.path.append((os.environ['VIZ_HOME']))
 from imasviz.VizGUI.VizGuiCustomization import QVizDefault
 from imasviz.VizGUI.VizGUICommands import QVizMainMenuController
 from imasviz.VizUtils import (QVizGlobalValues, QVizPreferences,
-                              QVizGlobalOperations, QVizLoggerSingleton)
+                              QVizGlobalOperations, QVizLogger)
 from imasviz.VizGUI.VizWidgets.QVizIMASdbBrowserWidget import QVizIMASdbBrowserWidget
 
 
@@ -292,7 +292,7 @@ class QVizStartWindow(QMainWindow):
 
         self.addDockWidget(Qt.DockWidgetArea(8), self.dockWidget_log)
         logging.getLogger().setLevel(logging.INFO)
-        handler = QVizLoggerSingleton()
+        handler = QVizLogger()
         logging.getLogger().addHandler(handler)
         handler.new_signal_emiter.new_signal.connect(self.logWidget.appendHtml)
 
