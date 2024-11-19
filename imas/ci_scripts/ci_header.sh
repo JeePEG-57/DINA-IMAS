@@ -22,7 +22,7 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 
-module load IMAS/3.39.0-4.11.9-foss-2020b
+module load IMAS/3.39.0-4.11.10-foss-2023b
 
 # Fixed memory leak in PyUAL
 #module use -p /home/ITER/hoeneno/public/imas/etc/modulefiles 
