@@ -47,61 +47,61 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
 * pulse_schedule - IMAS database with pulse_schedule IDS's (ocurrences 0 and 1) with the scenario target waveforms.
 * input_pf_active - IMAS database with pf_active IDS. Contains PF active coils geometry. In case of restart additionally must contain coil currents.
 * input_pf_passive> - IMAS database with pf_passive IDS. Contains PF passive coils geometry. In case of restart optionally can contain loop currents.
-   input_wall - IMAS database with wall IDS. Contains the first wall contour.
-   input_magnetics - IMAS database with magnetics IDS, optional. Contains the loops and probes geometry.
-   input_em_coupling - IMAS database with em_coupling IDS, optional. If provided, is used directly, coupling matrices are not calculated by geometry.
-   input_start - IMAS database with equilibrium and core_profiles IDS's. The core_profiles is required only in case of restart.
-      time_start - time moment to start simulation from. Zero if start from fully charged CS, non-zero means restart mode.
-   output - IMAS database to store the simulation output.
-      decimation - time decimation of the output, stored in the IMAS database (one slice per this number will be stored).
-   input_transp - IMAS database with core_profiles and core_sources IDS's, optional. Are provided as input to DINA at each time step, when external transport is used.
-      interp_mode - IMAS interpolation mode to read external transport profiles.
-   time_ext - Simulation time, after which the external transport profiles are provided to DINA input
-   time_stop - Simulation maximum time
-   step_max - Simulation maximum time steps
-   controller - Magnetic controller version (one of src/controllers/), changes apply only in the Python workflow.
-   use_astra - Using ASTRA transport actors instead of IDS's from input_transp section
+* input_wall - IMAS database with wall IDS. Contains the first wall contour.
+* input_magnetics - IMAS database with magnetics IDS, optional. Contains the loops and probes geometry.
+* input_em_coupling - IMAS database with em_coupling IDS, optional. If provided, is used directly, coupling matrices are not calculated by geometry.
+* input_start - IMAS database with equilibrium and core_profiles IDS's. The core_profiles is required only in case of restart.
+   - time_start - time moment to start simulation from. Zero if start from fully charged CS, non-zero means restart mode.
+* output - IMAS database to store the simulation output.
+   - decimation - time decimation of the output, stored in the IMAS database (one slice per this number will be stored).
+* input_transp - IMAS database with core_profiles and core_sources IDS's, optional. Are provided as input to DINA at each time step, when external transport is used.
+   - interp_mode - IMAS interpolation mode to read external transport profiles.
+* time_ext - Simulation time, after which the external transport profiles are provided to DINA input
+* time_stop - Simulation maximum time
+* step_max - Simulation maximum time steps
+* controller - Magnetic controller version (one of src/controllers/), changes apply only in the Python workflow.
+* use_astra - Using ASTRA transport actors instead of IDS's from input_transp section
 
 
 ## Step by step instruction to launch the workflow
-$ git clone ssh://git@git.iter.org/scen/dina.git -b feature/passivecomponents dina_tutorial
-$ cd dina_tutorial
-$ source imas/ci_scripts/ci_header.sh
-$ make clean
-$ make
-$ cd tools/GUI
-$ python main.py
+* $ git clone ssh://git@git.iter.org/scen/dina.git -b feature/passivecomponents dina_tutorial
+* $ cd dina_tutorial
+* $ source imas/ci_scripts/ci_header.sh
+* $ make clean
+* $ make
+* $ cd tools/GUI
+* $ python main.py
    - Press button “Load *.dat files", then select folder 15MA_40ka/ or 7.5MA_30kA_He10p/.
    - Press button “Save to work directory”, then ensure the imas/python_wf/ is chosen and press Save.
    - The GUI main window can be closed now.
-$ cd ../../imas/python_wf (Navigate to the working directory).
+* $ cd ../../imas/python_wf (Navigate to the working directory).
    - If needed, change settings of the workflow in the wfconfig.xml.
-$ source ./run_test_python.sh - to run the Python workflow
-$ source ./run_test_fortran.sh - to run the Fortran workflow
+* $ source ./run_test_python.sh - to run the Python workflow
+* $ source ./run_test_fortran.sh - to run the Fortran workflow
 
 
 ## The restart mode
-To start simulation from plasma with non-zero plasma current, stored in IMAS, one has to follow the instruction above until the last step. Before running the workflow, modify the wfconfig.xml:
+  To start simulation from plasma with non-zero plasma current, stored in IMAS, one has to follow the instruction above until the last step. Before running the workflow, modify the wfconfig.xml:
    - input_pf_active - IMAS reference of the pf_active IDS with coil currents;
    - input_start - IMAS reference of the equilibrium and core_profiles IDS's with plasma profiles;
    - input_start/time_start - Time moment to start from.
-Optional modification:
+  Optional modification:
    - input_pf_passive - IMAS reference of the pf_passive IDS with passive currents to start with.
 The pf_active and pf_passive input IDS's also have to contain geometry of coils and loops, otherwise the input_em_coupling section must provide the em_coupling IDS.
 
 
 ## The required IDS fields to initialize the DINA actor
 Vacuum toroidal field
-   equilibrium%vacuum_toroidal_field%b0(1)
-   equilibrium%vacuum_toroidal_field%r0
+- equilibrium%vacuum_toroidal_field%b0(1)
+- equilibrium%vacuum_toroidal_field%r0
 
-2D rectangular uniform grid, each dimension must match value used at DINA compilation time (one of 33, 65, 129, 257).
-   equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(:)
-   equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(:)
+  2D rectangular uniform grid, each dimension must match value used at DINA compilation time (one of 33, 65, 129, 257).
+- equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(:)
+- equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(:)
 
-First wall contour
-   wall%description_2d(1)%limiter%unit(:)%outline%r(:)
-   wall%description_2d(1)%limiter%unit(:)%outline%z(:)
+  First wall contour
+- wall%description_2d(1)%limiter%unit(:)%outline%r(:)
+- wall%description_2d(1)%limiter%unit(:)%outline%z(:)
 
 Electromagnetic coupling matrices
    em_coupling%mutual_active_active(:,:)
