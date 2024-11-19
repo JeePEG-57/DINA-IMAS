@@ -1,4 +1,4 @@
-## How to build DINA actors
+## Environment settings and building DINA actors
 Having the repository downloaded, one needs to:
    1. Setup the environment variables. Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:
 $ source imas/ci_scripts/ci_header.sh
@@ -153,7 +153,6 @@ Impurity content
 
 
 ## Additional IDS initialization data for DINA, required in case of restart
-
    equilibrium%time_slice(1)%time
    equilibrium%time_slice(1)%global_quantities%ip
 
@@ -213,10 +212,10 @@ Second pulse_schedule input IDS for the ramp-down phase:
 
 ## IDS fields required for the magnetic controller at each time step
    equilibrium%time_slice(1)%time
-   equilibrium%time_slice(1)%global_quantities%current_centre%z
-   equilibrium%time_slice(1)%boundary%elongation
    equilibrium%time_slice(1)%global_quantities%ip
+   equilibrium%time_slice(1)%global_quantities%current_centre%z
    equilibrium%time_slice(1)%boundary%type
+   equilibrium%time_slice(1)%boundary%elongation
    equilibrium%time_slice(1)%boundary%geometric_axis%r 
    equilibrium%time_slice(1)%boundary%minor_radius
    equilibrium0%time_slice(1)%boundary_separatrix%gap(25:30)%value
