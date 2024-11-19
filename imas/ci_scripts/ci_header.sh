@@ -102,13 +102,13 @@ if [ "$FCOMPILER" == "ifort" ]; then
   echo '$FCOMPILER set to intel'
   #module load intel/12.0.2
   #module load mpich2/3.1.3-intel
-  module load XMLlib/3.3.1-intel-2020b
+  module load XMLlib/3.3.2-intel-compilers-2023.2.1
 else
 # GFORTRAN
   echo '$FCOMPILER set to gfortran'
   #module load mpich2/3.1.3-gnu
-  module load XMLlib/3.3.1-GCC-10.2.0
-  #module load XMLlib/3.3.2-GCC-13.2.0
+  #module load XMLlib/3.3.1-GCC-10.2.0
+  module load XMLlib/3.3.2-GCC-13.2.0
 fi
 
 
