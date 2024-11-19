@@ -60,7 +60,7 @@ module load IMAS/3.39.0-4.11.9-foss-2020b
 module load FC2K/4.14.2-Java-11
 #FC2K/4.14.2-Java-21
 
-module load Viz/2.8.0-foss-2020b
+module load Viz/2.8.0-foss-2023b
 
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 #module load MATLAB/2018a
