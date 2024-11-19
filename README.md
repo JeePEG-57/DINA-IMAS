@@ -1,14 +1,15 @@
 ## Environment settings and building DINA actors
 Having the repository downloaded, one needs to:
-   1. Setup the environment variables. Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:
+   1. Setup the environment variables. Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:  
 $ source imas/ci_scripts/ci_header.sh
 
-   2. Build libraries and generate fc2k python actors:
-$ make
-  This command:
-    a. builds DINA and magnetic controller core libraries in src/;
-    b. builds DINA fortran with IDS interface and Fortran workflow in imas/interface/;
-    c. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
+   2. Build libraries and generate fc2k python actors:  
+$ make  
+This command:
+      1. builds DINA and magnetic controller core libraries in src/;
+      2. builds DINA fortran with IDS interface and Fortran workflow in imas/interface/;
+      3. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
+
 
 ## Running the workflow
 Having the environment set and libraries built, one needs to:
@@ -18,8 +19,8 @@ Having the environment set and libraries built, one needs to:
    4. Put in the working directory the machines/imp folder with atomic data.
    5. Create initial IDS's pulse_schedule (with target waveforms for DINA and the magnetic controller) and equilibrium (with defined RZ grid and vacuum toroidal field). The input pf_active, pf_passive, wall IDS's can be used from the Machine Description database.
    6. Run Python or Fortran version of the workflow. Navigate to the working directory and from there:
-      - for the Python workflow run the script imas/python_wf/run_test_python.sh
-      - for the Fortran workflow run the script imas/python_wf/run_test_fortran.sh
+      * for the Python workflow run the script imas/python_wf/run_test_python.sh
+      * for the Fortran workflow run the script imas/python_wf/run_test_fortran.sh
 
 
 ## GUI
@@ -28,21 +29,24 @@ The GUI allows to load basic scenario target waveforms and code parameters, modi
 To launch the GUI, having the environment set:
 $ cd tools/GUI
 $ python main.py
-   - Press button “Load *.dat files", then select folder 15MA_40ka or 7.5MA_30kA_He10p in machines/iter/ (shown by default). 
+   1. Press button “Load *.dat files", then select folder 15MA_40ka or 7.5MA_30kA_He10p in machines/iter/ (shown by default). 
       This will load corresponding scenario target waveforms with appropriate code parameters for the actors.
-   - If needed, you can change target waveforms of the scenario or code parameters of DINA and magnetic controller.
-   - Press button “Save to work directory”, then choose an arbitrary working directory (imas/python_wf/ is proposed by default).
-      On this stage together with saving the XML files an IDS shot/run = 170/1 (can be changed before saving) is written in 'test' local database and contains pulse_schedule and equilibrium IDS's properly filled for the DINA actors.
-   - The GUI main window can be closed now.
+   2. If needed, you can change target waveforms of the scenario or code parameters of DINA and magnetic controller.
+   3. Press button “Save to work directory”, then choose an arbitrary working directory (imas/python_wf/ is proposed by default).
+      On this stage:
+      1. the XML files with code parameters are written, to the working directory,
+      2. the imp folder is copied to the working directory,
+      3. set of IDS's is written in the local IMAS database/shot/run = test/170/1 (can be changed before saving) and contains pulse_schedule and equilibrium IDS's properly filled for the DINA actors.
+   4. The GUI main window can be closed now.
 If you have modified the shot/run, you have to open the wfconfig.xml in the working directory, then specify your new shot/run in both <pulse_schedule> and <input_start> sections.
 In the wfconfig.xml you can make other changes of the workflow parameters, such as input IMAS databases, simulation start time, etc.
 
 
 ## Workflow configuration file
 To modify workflow parameters, one has to edit the wfconfig.xml file in the working directory.
-   pulse_schedule - IMAS database with pulse_schedule IDS's (ocurrences 0 and 1) with the scenario target waveforms.
-   input_pf_active - IMAS database with pf_active IDS. Contains PF active coils geometry. In case of restart additionally must contain coil currents.
-   input_pf_passive> - IMAS database with pf_passive IDS. Contains PF passive coils geometry. In case of restart optionally can contain loop currents.
+* pulse_schedule - IMAS database with pulse_schedule IDS's (ocurrences 0 and 1) with the scenario target waveforms.
+* input_pf_active - IMAS database with pf_active IDS. Contains PF active coils geometry. In case of restart additionally must contain coil currents.
+* input_pf_passive> - IMAS database with pf_passive IDS. Contains PF passive coils geometry. In case of restart optionally can contain loop currents.
    input_wall - IMAS database with wall IDS. Contains the first wall contour.
    input_magnetics - IMAS database with magnetics IDS, optional. Contains the loops and probes geometry.
    input_em_coupling - IMAS database with em_coupling IDS, optional. If provided, is used directly, coupling matrices are not calculated by geometry.
