@@ -6,9 +6,9 @@ $ source imas/ci_scripts/ci_header.sh
 2. Build libraries and generate fc2k python actors:  
 $ make  
 This command:
-   i. builds DINA and magnetic controller core libraries in src/;
-   ii. builds DINA fortran with IDS interface and Fortran workflow in imas/interface/;
-   iii. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
+   a. builds DINA and magnetic controller core libraries in src/;
+   b. builds DINA fortran with IDS interface and Fortran workflow in imas/interface/;
+   c. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
 
 
 ## Running the workflow
