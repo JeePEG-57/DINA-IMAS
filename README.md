@@ -1,43 +1,40 @@
 ## Environment settings and building DINA actors
 Having the repository downloaded, one needs to:
-   1. Setup the environment variables. Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:  
+1. Setup the environment variables. Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:  
 $ source imas/ci_scripts/ci_header.sh
 
-   2. Build libraries and generate fc2k python actors:  
+2. Build libraries and generate fc2k python actors:  
 $ make  
 This command:
-      1. builds DINA and magnetic controller core libraries in src/;
-      2. builds DINA fortran with IDS interface and Fortran workflow in imas/interface/;
-      3. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
+   i. builds DINA and magnetic controller core libraries in src/;
+   ii. builds DINA fortran with IDS interface and Fortran workflow in imas/interface/;
+   iii. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
 
 
 ## Running the workflow
 Having the environment set and libraries built, one needs to:
-   1. Create a working directory needed for the workflow.
-   2. Put in the working directory XML files with code parameters for DINA actor and Magnetic controller actor - DINA_Parameters.xml and KMC_Parameters.xml.
-   3. Put in the working directory the workflow configuration file wfconfig.xml with parameters: input and output IMAS databases, simulation start time, etc.
-   4. Put in the working directory the machines/imp folder with atomic data.
-   5. Create initial IDS's pulse_schedule (with target waveforms for DINA and the magnetic controller) and equilibrium (with defined RZ grid and vacuum toroidal field). The input pf_active, pf_passive, wall IDS's can be used from the Machine Description database.
-   6. Run Python or Fortran version of the workflow. Navigate to the working directory and from there:
-      * for the Python workflow run the script imas/python_wf/run_test_python.sh
-      * for the Fortran workflow run the script imas/python_wf/run_test_fortran.sh
+1. Create a working directory needed for the workflow.
+2. Put in the working directory XML files with code parameters for DINA actor and Magnetic controller actor - DINA_Parameters.xml and KMC_Parameters.xml.
+3. Put in the working directory the workflow configuration file wfconfig.xml with parameters: input and output IMAS databases, simulation start time, etc.
+4. Put in the working directory the machines/imp folder with atomic data.
+5. Create initial IDS's pulse_schedule (with target waveforms for DINA and the magnetic controller) and equilibrium (with defined RZ grid and vacuum toroidal field). The input pf_active, pf_passive, wall IDS's can be used from the Machine Description database.
+6. Run Python or Fortran version of the workflow. Navigate to the working directory and from there:
+   * for the Python workflow run the script imas/python_wf/run_test_python.sh
+   * for the Fortran workflow run the script imas/python_wf/run_test_fortran.sh
 
 
 ## GUI
-Dedicated GUI is available to facilitate the preparation steps before running the workflow.
-The GUI allows to load basic scenario target waveforms and code parameters, modify them and save in a working directory (creating a new one if needed).
+Dedicated GUI is available to facilitate the preparation steps before running the workflow. The GUI allows to load basic scenario target waveforms and code parameters, modify them and save in a working directory (creating a new one if needed).  
 To launch the GUI, having the environment set:
-$ cd tools/GUI
-$ python main.py
-   1. Press button “Load *.dat files", then select folder 15MA_40ka or 7.5MA_30kA_He10p in machines/iter/ (shown by default). 
-      This will load corresponding scenario target waveforms with appropriate code parameters for the actors.
-   2. If needed, you can change target waveforms of the scenario or code parameters of DINA and magnetic controller.
-   3. Press button “Save to work directory”, then choose an arbitrary working directory (imas/python_wf/ is proposed by default).
-      On this stage:
-      1. the XML files with code parameters are written, to the working directory,
-      2. the imp folder is copied to the working directory,
-      3. set of IDS's is written in the local IMAS database/shot/run = test/170/1 (can be changed before saving) and contains pulse_schedule and equilibrium IDS's properly filled for the DINA actors.
-   4. The GUI main window can be closed now.
+1. cd tools/GUI
+2. python main.py
+3. Press button “Load *.dat files", then select folder 15MA_40ka or 7.5MA_30kA_He10p in machines/iter/ (shown by default). This will load corresponding scenario target waveforms with appropriate code parameters for the actors.
+4. If needed, you can change target waveforms of the scenario or code parameters of DINA and magnetic controller.
+5. Press button “Save to work directory”, then choose an arbitrary working directory (imas/python_wf/ is proposed by default). On this stage:
+   * The XML files with code parameters are written to the working directory,
+   * The machines/imp folder is copied to the working directory,
+   * Set of IDS's is written in the local IMAS database/shot/run = test/170/1 (can be changed before saving) and contains pulse_schedule and equilibrium IDS's properly filled for the DINA actors.
+6. The GUI main window can be closed now.
 If you have modified the shot/run, you have to open the wfconfig.xml in the working directory, then specify your new shot/run in both <pulse_schedule> and <input_start> sections.
 In the wfconfig.xml you can make other changes of the workflow parameters, such as input IMAS databases, simulation start time, etc.
 
@@ -81,11 +78,11 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
 
 
 ## The restart mode
-  To start simulation from plasma with non-zero plasma current, stored in IMAS, one has to follow the instruction above until the last step. Before running the workflow, modify the wfconfig.xml:
+To start simulation from plasma with non-zero plasma current, stored in IMAS, one has to follow the instruction above until the last step. Before running the workflow, modify the wfconfig.xml:
    - input_pf_active - IMAS reference of the pf_active IDS with coil currents;
    - input_start - IMAS reference of the equilibrium and core_profiles IDS's with plasma profiles;
-   - input_start/time_start - Time moment to start from.
-  Optional modification:
+   - input_start/time_start - Time moment to start from.  
+Optional modification:
    - input_pf_passive - IMAS reference of the pf_passive IDS with passive currents to start with.
 The pf_active and pf_passive input IDS's also have to contain geometry of coils and loops, otherwise the input_em_coupling section must provide the em_coupling IDS.
 
@@ -95,160 +92,160 @@ Vacuum toroidal field
 - equilibrium%vacuum_toroidal_field%b0(1)
 - equilibrium%vacuum_toroidal_field%r0
 
-  2D rectangular uniform grid, each dimension must match value used at DINA compilation time (one of 33, 65, 129, 257).
+2D rectangular uniform grid, each dimension must match value used at DINA compilation time (one of 33, 65, 129, 257).
 - equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(:)
 - equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(:)
 
-  First wall contour
+First wall contour
 - wall%description_2d(1)%limiter%unit(:)%outline%r(:)
 - wall%description_2d(1)%limiter%unit(:)%outline%z(:)
 
 Electromagnetic coupling matrices
-   em_coupling%mutual_active_active(:,:)
-   em_coupling%mutual_loops_active(:,:)
-   em_coupling%field_probes_active(:,:)
-   em_coupling%mutual_passive_active(:,:)
-   em_coupling%mutual_grid_active(:,:)
-   em_coupling%mutual_passive_passive(:,:)
-   em_coupling%mutual_grid_passive(:,:)
-   em_coupling%mutual_loops_passive(:,:)
-   em_coupling%field_probes_passive(:,:)
-   em_coupling%mutual_loops_grid(:,:)
-   em_coupling%field_probes_grid(:,:)
+- em_coupling%mutual_active_active(:,:)
+- em_coupling%mutual_loops_active(:,:)
+- em_coupling%field_probes_active(:,:)
+- em_coupling%mutual_passive_active(:,:)
+- em_coupling%mutual_grid_active(:,:)
+- em_coupling%mutual_passive_passive(:,:)
+- em_coupling%mutual_grid_passive(:,:)
+- em_coupling%mutual_loops_passive(:,:)
+- em_coupling%field_probes_passive(:,:)
+- em_coupling%mutual_loops_grid(:,:)
+- em_coupling%field_probes_grid(:,:)
 
 Active coil resistances
-   pf_active%coil(:)%resistance
+- pf_active%coil(:)%resistance
 
 Passive loop resistances
-   pf_passive%loop(:)%resistance
+- pf_passive%loop(:)%resistance
 
 Initial PF currents
-   pf_active%coil(i)%current%data(1) - in case of the restart mode,
+- pf_active%coil(i)%current%data(1) - in case of the restart mode,
 or
-   pulse_schedule%pf_active%coil(:)%current%reference%data(1) - in case of starting from t=0 with fully charged Central Solenoid
+- pulse_schedule%pf_active%coil(:)%current%reference%data(1) - in case of starting from t=0 with fully charged Central Solenoid
 
 SNU resistance
-   pulse_schedule%pf_active%coil(:)%resistance_additional%reference%data(:)
-   pulse_schedule%pf_active%coil(:)%resistance_additional%reference%time(:)
+- pulse_schedule%pf_active%coil(:)%resistance_additional%reference%data(:)
+- pulse_schedule%pf_active%coil(:)%resistance_additional%reference%time(:)
 
 ECH heating at plasma breakdown (used in 0D transport model)
-   pulse_schedule%ec%launcher(1)%power%reference%data(:)
-   pulse_schedule%ec%launcher(1)%power%reference%time(:)
+- pulse_schedule%ec%launcher(1)%power%reference%data(:)
+- pulse_schedule%ec%launcher(1)%power%reference%time(:)
 
 Auxiliary heating of electrons
-   pulse_schedule%ec%power%reference%data(:)
-   pulse_schedule%ec%power%reference%time(:)
+- pulse_schedule%ec%power%reference%data(:)
+- pulse_schedule%ec%power%reference%time(:)
 
 Auxiliary heating of ions
-   pulse_schedule%ic%power%reference%data(:)
-   pulse_schedule%ic%power%reference%time(:)
+- pulse_schedule%ic%power%reference%data(:)
+- pulse_schedule%ic%power%reference%time(:)
 
 Density of D
-   pulse_schedule%density_control%ion(1)%n_i_volume_average%reference%data(:)
-   pulse_schedule%density_control%ion(1)%n_i_volume_average%reference%time(:)
+- pulse_schedule%density_control%ion(1)%n_i_volume_average%reference%data(:)
+- pulse_schedule%density_control%ion(1)%n_i_volume_average%reference%time(:)
 
 Density of T
-   pulse_schedule%density_control%ion(2)%n_i_volume_average%reference%data(:)
-   pulse_schedule%density_control%ion(2)%n_i_volume_average%reference%time(:)
+- pulse_schedule%density_control%ion(2)%n_i_volume_average%reference%data(:)
+- pulse_schedule%density_control%ion(2)%n_i_volume_average%reference%time(:)
 
 Impurity content
-   pulse_schedule%density_control%ion(3:7)%n_i_volume_average%reference%data(:)
-   pulse_schedule%density_control%ion(3:7)%n_i_volume_average%reference%time(:)
+- pulse_schedule%density_control%ion(3:7)%n_i_volume_average%reference%data(:)
+- pulse_schedule%density_control%ion(3:7)%n_i_volume_average%reference%time(:)
 
 
 ## Additional IDS initialization data for DINA, required in case of restart
-   equilibrium%time_slice(1)%time
-   equilibrium%time_slice(1)%global_quantities%ip
+- equilibrium%time_slice(1)%time
+- equilibrium%time_slice(1)%global_quantities%ip
 
-   equilibrium%time_slice(1)%global_quantities%magnetic_axis%r
-   equilibrium%time_slice(1)%global_quantities%magnetic_axis%z
+- equilibrium%time_slice(1)%global_quantities%magnetic_axis%r
+- equilibrium%time_slice(1)%global_quantities%magnetic_axis%z
 
-   equilibrium%time_slice(1)%profiles_1d%rho_tor_norm(:)
-   equilibrium%time_slice(1)%profiles_1d%psi(:)
+- equilibrium%time_slice(1)%profiles_1d%rho_tor_norm(:)
+- equilibrium%time_slice(1)%profiles_1d%psi(:)
 
-   equilibrium%time_slice(1)%profiles_1d%dpressure_dpsi(:)
-   equilibrium%time_slice(1)%profiles_1d%f_df_dpsi(:)
+- equilibrium%time_slice(1)%profiles_1d%dpressure_dpsi(:)
+- equilibrium%time_slice(1)%profiles_1d%f_df_dpsi(:)
 
-   core_profiles%profiles_1d(1)%grid%rho_tor_norm(:)
-   core_profiles%profiles_1d(1)%grid%psi(:)
+- core_profiles%profiles_1d(1)%grid%rho_tor_norm(:)
+- core_profiles%profiles_1d(1)%grid%psi(:)
 
 
 ## IDS inputs to DINA, required at each time step
 The transport profiles:
-   core_profiles%profiles_1d(1)%grid%rho_tor_norm(:)
-   core_profiles%profiles_1d(1)%electrons%temperature(:)
-   core_profiles%profiles_1d(1)%t_i_average(:)
+- core_profiles%profiles_1d(1)%grid%rho_tor_norm(:)
+- core_profiles%profiles_1d(1)%electrons%temperature(:)
+- core_profiles%profiles_1d(1)%t_i_average(:)
 
-   core_profiles%profiles_1d(1)%electrons%density(:)
-   core_profiles%profiles_1d(1)%ion(1)%density(:)
-   core_profiles%profiles_1d(1)%ion(2)%density(:)
+- core_profiles%profiles_1d(1)%electrons%density(:)
+- core_profiles%profiles_1d(1)%ion(1)%density(:)
+- core_profiles%profiles_1d(1)%ion(2)%density(:)
 
-   core_profiles%profiles_1d(1)%j_bootstrap(:)
-   core_profiles%profiles_1d(1)%conductivity_parallel(:)
-   core_profiles%profiles_1d(1)%j_non_inductive(:)
+- core_profiles%profiles_1d(1)%j_bootstrap(:)
+- core_profiles%profiles_1d(1)%conductivity_parallel(:)
+- core_profiles%profiles_1d(1)%j_non_inductive(:)
 
-   core_sources%source(1)%profiles_1d(1)%electrons%energy(:)
-   core_sources%source(1)%profiles_1d(1)%total_ion_energy(:)
+- core_sources%source(1)%profiles_1d(1)%electrons%energy(:)
+- core_sources%source(1)%profiles_1d(1)%total_ion_energy(:)
 
 Control signals from the magnetic controller:
-   pf_active%coil(:)%voltage%data(1)
+- pf_active%coil(:)%voltage%data(1)
 
 
 ## IDS fields required for initialization of the magnetic controller
 First pulse_schedule input IDS for the ramp-up and flattop phase:
-   pulse_schedule%flux_control%i_plasma%reference%data(:)
-   pulse_schedule%pf_active%coil(1:12)%current%reference%data(:)
-   pulse_schedule%pf_active%coil(1)%current%reference%time(:)
+- pulse_schedule%flux_control%i_plasma%reference%data(:)
+- pulse_schedule%pf_active%coil(1:12)%current%reference%data(:)
+- pulse_schedule%pf_active%coil(1)%current%reference%time(:)
 
-   pulse_schedule%pf_active%supply(1:11)%voltage%reference%data(:)
-   pulse_schedule%pf_active%supply(1)%voltage%reference%time(:)
+- pulse_schedule%pf_active%supply(1:11)%voltage%reference%data(:)
+- pulse_schedule%pf_active%supply(1)%voltage%reference%time(:)
 
-   pulse_schedule%position_control%elongation%reference%data(:)
-   pulse_schedule%position_control%elongation%reference%time(:)
+- pulse_schedule%position_control%elongation%reference%data(:)
+- pulse_schedule%position_control%elongation%reference%time(:)
 
-   pulse_schedule%position_control%gap(1:6)%value%reference%data
-   pulse_schedule%position_control%gap(1:6)%value%reference%time
+- pulse_schedule%position_control%gap(1:6)%value%reference%data
+- pulse_schedule%position_control%gap(1:6)%value%reference%time
 
 Second pulse_schedule input IDS for the ramp-down phase:
-   pulse_schedule%position_control%gap(1:6)%value%reference%data
-   pulse_schedule%position_control%gap(1:6)%value%reference%time
+- pulse_schedule%position_control%gap(1:6)%value%reference%data
+- pulse_schedule%position_control%gap(1:6)%value%reference%time
 
 
 ## IDS fields required for the magnetic controller at each time step
-   equilibrium%time_slice(1)%time
-   equilibrium%time_slice(1)%global_quantities%ip
-   equilibrium%time_slice(1)%global_quantities%current_centre%z
-   equilibrium%time_slice(1)%boundary%type
-   equilibrium%time_slice(1)%boundary%elongation
-   equilibrium%time_slice(1)%boundary%geometric_axis%r 
-   equilibrium%time_slice(1)%boundary%minor_radius
-   equilibrium0%time_slice(1)%boundary_separatrix%gap(25:30)%value
-   pf_active%coil(1:14)%current%data(1)
+- equilibrium%time_slice(1)%time
+- equilibrium%time_slice(1)%global_quantities%ip
+- equilibrium%time_slice(1)%global_quantities%current_centre%z
+- equilibrium%time_slice(1)%boundary%type
+- equilibrium%time_slice(1)%boundary%elongation
+- equilibrium%time_slice(1)%boundary%geometric_axis%r 
+- equilibrium%time_slice(1)%boundary%minor_radius
+- equilibrium0%time_slice(1)%boundary_separatrix%gap(25:30)%value
+- pf_active%coil(1:14)%current%data(1)
 
 
 ## IDS fields required for the DINA_GREEN actor
 Active coil geometry
-   pf_active%coil(:)%element(:)%turns_with_sign
-   pf_active%coil(:)%element(:)%geometry%geometry_type - types 2 (rectangle), 3 (oblique), 5 (annulus) are supported.
-   pf_active%coil(:)%element(:)%geometry%... - corresponding to the geometry_type substructure.
+- pf_active%coil(:)%element(:)%turns_with_sign
+- pf_active%coil(:)%element(:)%geometry%geometry_type - types 2 (rectangle), 3 (oblique), 5 (annulus) are supported.
+- pf_active%coil(:)%element(:)%geometry%... - corresponding to the geometry_type substructure.
 
 Passive loop geometry
-   pf_passive%loop(:)%element(:)%geometry%geometry_type - types 2 (rectangle), 3 (oblique) are supported.
-   pf_passive%loop(:)%element(:)%geometry%... - corresponding to the geometry_type substructure.
+- pf_passive%loop(:)%element(:)%geometry%geometry_type - types 2 (rectangle), 3 (oblique) are supported.
+- pf_passive%loop(:)%element(:)%geometry%... - corresponding to the geometry_type substructure.
 
 Rectangular 2D grid
-   equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(:)
-   equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(:)
+- equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(:)
+- equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(:)
 
 Flux loops
-   magnetics%flux_loop(:)%position(1)%r
-   magnetics%flux_loop(:)%position(1)%z
+- magnetics%flux_loop(:)%position(1)%r
+- magnetics%flux_loop(:)%position(1)%z
 
 Flux probes
-   magnetics%b_field_pol_probe(:)%position%r
-   magnetics%b_field_pol_probe(:)%position%z
-   magnetics%b_field_pol_probe(:)%poloidal_angle
-   magnetics%b_field_pol_probe(:)%length
+- magnetics%b_field_pol_probe(:)%position%r
+- magnetics%b_field_pol_probe(:)%position%z
+- magnetics%b_field_pol_probe(:)%poloidal_angle
+- magnetics%b_field_pol_probe(:)%length
 
 
 
