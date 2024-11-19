@@ -35,7 +35,7 @@ To launch the GUI, having the environment set:
    * The machines/imp folder is copied to the working directory,
    * Set of IDS's is written in the local IMAS database/shot/run = test/170/1 (can be changed before saving) and contains pulse_schedule and equilibrium IDS's properly filled for the DINA actors.
 6. The GUI main window can be closed now.
-If you have modified the shot/run, you have to open the wfconfig.xml in the working directory, then specify your new shot/run in both <pulse_schedule> and <input_start> sections.
+If you have modified the shot/run, you have to open the wfconfig.xml in the working directory, then specify your new shot/run in both pulse_schedule and input_start sections.
 In the wfconfig.xml you can make other changes of the workflow parameters, such as input IMAS databases, simulation start time, etc.
 
 
@@ -48,20 +48,20 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
 * input_magnetics - IMAS database with magnetics IDS, optional. Contains the loops and probes geometry.
 * input_em_coupling - IMAS database with em_coupling IDS, optional. If provided, is used directly, coupling matrices are not calculated by geometry.
 * input_start - IMAS database with equilibrium and core_profiles IDS's. The core_profiles is required only in case of restart.
-   - time_start - time moment to start simulation from. Zero if start from fully charged CS, non-zero means restart mode.
+   *-* time_start - time moment to start simulation from. Zero if start from fully charged CS, non-zero means restart mode.
 * output - IMAS database to store the simulation output.
-   - decimation - time decimation of the output, stored in the IMAS database (one slice per this number will be stored).
-* input_transp - IMAS database with core_profiles and core_sources IDS's, optional. Are provided as input to DINA at each time step, when external transport is used.
-   - interp_mode - IMAS interpolation mode to read external transport profiles.
+   * decimation - time decimation of the output, stored in the IMAS database (one slice per this number will be stored).
+* input_transp - IMAS database with core_profiles and core_sources IDS's, optional. It is provided as input to DINA at each time step, only when external transport is used.
+   * interp_mode - IMAS interpolation mode to read external transport profiles.
 * time_ext - Simulation time, after which the external transport profiles are provided to DINA input
 * time_stop - Simulation maximum time
 * step_max - Simulation maximum time steps
-* controller - Magnetic controller version (one of src/controllers/), changes apply only in the Python workflow.
+* controller - Magnetic controller version (name of a subdirectory in src/controllers/), changes apply only in the Python workflow.
 * use_astra - Using ASTRA transport actors instead of IDS's from input_transp section
 
 
 ## Step by step instruction to launch the workflow
-* $ git clone ssh://git@git.iter.org/scen/dina.git -b feature/passivecomponents dina_tutorial
+* $ git clone ssh://git@git.iter.org/scen/dina.git dina_tutorial
 * $ cd dina_tutorial
 * $ source imas/ci_scripts/ci_header.sh
 * $ make clean
@@ -79,12 +79,23 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
 
 ## The restart mode
 To start simulation from plasma with non-zero plasma current, stored in IMAS, one has to follow the instruction above until the last step. Before running the workflow, modify the wfconfig.xml:
-   - input_pf_active - IMAS reference of the pf_active IDS with coil currents;
-   - input_start - IMAS reference of the equilibrium and core_profiles IDS's with plasma profiles;
-   - input_start/time_start - Time moment to start from.  
+   * input_pf_active - IMAS reference of the pf_active IDS with coil currents;
+   * input_start - IMAS reference of the equilibrium and core_profiles IDS's with plasma profiles;
+   * input_start/time_start - Time moment to start from.  
 Optional modification:
    - input_pf_passive - IMAS reference of the pf_passive IDS with passive currents to start with.
 The pf_active and pf_passive input IDS's also have to contain geometry of coils and loops, otherwise the input_em_coupling section must provide the em_coupling IDS.
+
+
+## Using external transport profiles
+The workflow supports running with prescribed transport profiles, provided to DINA at each time step. The profiles have to be prepared in an IMAS database.  
+To use this possibility:
+* Fill in the wfconfig.xml the section input_transp with IMAS database with the prepared transport profiles.
+* Specify the parameter time_ext in the wfconfig.xml. It is the scenario time moment, after which the external transport profiles are fed into DINA instead of DINA output from previous time step.
+* It is recommended to switch off the DINA internal transport model. Specify the DINA code parameter tt_dina (note that it is in milliseconds) - scenario time moment, after which DINA internal transport modules don't update transport profiles. Each transport module is switched off separately with 1 to DINA code parameters:
+   - ener_ext=1 - switch off the energy transport,
+   - dens_ext=1 - switch off the density transport,
+   - ajb_ext=1 - switch off the bootstrap current and conductivity calculations.
 
 
 ## The required IDS fields to initialize the DINA actor
