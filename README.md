@@ -302,7 +302,7 @@ Control signals from the magnetic controller:
 
 # Magnetic controller
 ## General description
-The Kavin's Magnetic Controller (KMC) was specially designed for PF voltage inputs for ITER feedback magnetic control studies. Supports simulation from fully charged central solenoid, until fully discharged PF system.    
+The Kavin's Magnetic Controller (KMC) was specially designed by Andrey Kavin for PF voltage inputs for ITER feedback magnetic control studies. Supports simulation from fully charged central solenoid, until fully discharged PF system.    
 
 The KMC actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows.  
 The Fortran subroutine dina_contr is built in imas/interface/kmc.a with the interface
@@ -326,7 +326,7 @@ idslist['pf_active'] = output
 ```  
 
 To run correctly, the KMC actor requires:
-1. The DINA_Parameters.xml file placed in the working directory,
+1. The KMC_Parameters.xml file placed in the working directory,
 2. Input IDS's properly filled.
 3. To be called in simulation:
 	* Every 2 ms during initial phase, from fully charged central solenoid until limiter controller switches on (time=tcont2)
