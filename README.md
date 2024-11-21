@@ -103,41 +103,42 @@ To use this possibility:
 # DINA actor
 ## General description
 DINA model consists of:
-* 2D free boundary Grad-Shafranow equation
-* Circuit equations for currents in active coils and passive structures
-* 1D poloidal flux diffusion equation
-* 1D electron and ion energy transport equations
-* 1D density transport model
-* Impurity radiation model
-* 0D transport model for plasma breakdown phase
+* 2D free boundary Grad-Shafranow equation,
+* Circuit equations for currents in active coils and passive structures,
+* 1D poloidal flux diffusion equation,
+* 1D electron and ion energy transport equations,
+* 1D density transport model,
+* Impurity radiation model,
+* 0D transport model for plasma breakdown phase.
 
 Features:
 * Consistent evolution of non-linear deformable plasma, currents in the conducting structures and kinetic profiles
-* Possibility to use external kinetic profiles
-* Simulation starts from fully charged central solenoid, until fully discharged PF system
-* PF voltage inputs allow to study magnetic feedback control during whole scenario
+* Possibility to use external kinetic profiles.
+* Simulation starts from fully charged central solenoid, until fully discharged PF system.
+* PF voltage inputs allow to study magnetic feedback control during whole scenario.
 
 The actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows. 
 The Fortran subroutine dina_imas is built in imas/interface/dina_imas.a with the interface
- `subroutine dina_imas(&
-&  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0, bndcond_in, pulse_schedule &
+ `subroutine dina_imas(&  
+&  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0, bndcond_in, pulse_schedule &  
 & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport,summary)`
 The Python actor is built in the folder imas/python_wf/actors/dinaimas21
 To use it in another workflow:
 1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/dinaimas21
 2. Import dinaimas21.wrapper as dinaimas21
-3. Calling interface:
-`output = dinaimas21.dinaimas21_actor(idslist['em_coupling'],
-								   idslist['equilibrium'],
-								   idslist['magnetics'],
-								   idslist['pf_active'],
-								   idslist['pf_passive'],
-								   idslist['wall'],
-								   idslist['core_profiles'],
-								   idslist['core_sources'],
-								   idslist['transport_solver_numerics'],
-								   idslist['pulse_schedule'])
-
+3. Calling interface:  
+ `output = dinaimas21.dinaimas21_actor(
+								idslist['em_coupling'],
+								idslist['equilibrium'],
+								idslist['magnetics'],
+								idslist['pf_active'],
+								idslist['pf_passive'],
+								idslist['wall'],
+								idslist['core_profiles'],
+								idslist['core_sources'],
+								idslist['transport_solver_numerics'],
+								idslist['pulse_schedule'])
+  
 idslist['equilibrium'] = output[0]
 idslist['magnetics'] = output[1]
 idslist['pf_active'] = output[2]
@@ -145,12 +146,12 @@ idslist['pf_passive'] = output[3]
 idslist['core_profiles'] = output[4]
 idslist['core_sources'] = output[5]
 idslist['core_transport'] = output[6]
-idslist['summary'] = output[7]`
+idslist['summary'] = output[7] `
   
-To work correctly, the DINA actor requires:
-1. The DINA_Parameters.xml file placed in the working directory
-2. The machines/imp folder copied to the working directory
-3. Input IDS's with properly filled fields
+To run correctly, the DINA actor requires:
+1. The DINA_Parameters.xml file placed in the working directory,
+2. The machines/imp folder copied to the working directory (atomic data),
+3. Input IDS's with properly filled fields.
 
 
 ## Code parameters in DINA_Parameters.xml
