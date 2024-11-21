@@ -29,4 +29,4 @@ green.a: $(DINAOBJ)
 clean:
 	-rm -f *.o
 	-rm -f *.a
-	-rm *.exe
+	-rm -f *.exe
