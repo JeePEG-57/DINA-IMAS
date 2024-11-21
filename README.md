@@ -81,11 +81,11 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
 
 ## The restart mode
 To start simulation from plasma with non-zero plasma current, stored in IMAS, one has to follow the instruction above until the last step. Before running the workflow, modify the wfconfig.xml:
-   * input_pf_active - IMAS reference of the pf_active IDS with coil currents;
-   * input_start - IMAS reference of the equilibrium and core_profiles IDS's with plasma profiles;
-   * input_start/time_start - Time moment to start from.  
+* input_pf_active - IMAS reference of the pf_active IDS with coil currents;
+* input_start - IMAS reference of the equilibrium and core_profiles IDS's with plasma profiles;
+* input_start/time_start - Time moment to start from.  
 Optional modification:
-   - input_pf_passive - IMAS reference of the pf_passive IDS with passive currents to start with.
+- input_pf_passive - IMAS reference of the pf_passive IDS with passive currents to start with.
 The pf_active and pf_passive input IDS's also have to contain geometry of coils and loops, otherwise the input_em_coupling section must provide the em_coupling IDS.
 
 
@@ -117,16 +117,15 @@ Features:
 * Simulation starts from fully charged central solenoid, until fully discharged PF system.
 * PF voltage inputs allow to study magnetic feedback control during whole scenario.
 
-The actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows. 
+The DINA actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows.  
 The Fortran subroutine dina_imas is built in imas/interface/dina_imas.a with the interface
 ```
 subroutine dina_imas(&  
 &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0, bndcond_in, pulse_schedule, & ! Inputs
 &  equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, summary & ! Outputs
-&)
+& )
 ```
-The Python actor is built in the folder imas/python_wf/actors/dinaimas21
-To use it in another workflow:
+To use the Python actor in another workflow:
 1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/dinaimas21
 2. Import dinaimas21.wrapper as dinaimas21
 3. Calling interface:  
@@ -155,7 +154,7 @@ idslist['summary'] = output[7]
 To run correctly, the DINA actor requires:
 1. The DINA_Parameters.xml file placed in the working directory,
 2. The machines/imp folder copied to the working directory (atomic data),
-3. Input IDS's with properly filled fields.
+3. Input IDS's properly filled.
 
 
 ## Code parameters in DINA_Parameters.xml
@@ -177,9 +176,9 @@ Description of the parameters in DINA_Parameters.xml:
 * bohm_gbohm - Key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling
 * q_swth - Minimal q at axis when a sawtooth is triggered
 * pcchp_end - The level to which plasma density linearly decreases during 4 s after start of plasma current ramp-down phase. The resulting Greenwald ratio is kept during the rest of ramp-down.
-* ener_ext - When time>tt_dina, switch off internal energy transport calculations
-* dens_ext - When time>tt_dina, switch off internal density transport calculations
-* ajb_ext - When time>tt_dina, switch off internal conductivity and bootstrap current calculations
+* ener_ext - When time - tt_dina, switch off internal energy transport calculations
+* dens_ext - When time - tt_dina, switch off internal density transport calculations
+* ajb_ext - When time - tt_dina, switch off internal conductivity and bootstrap current calculations
 * grid_n - Amount of 1D grid points
 * grid_rho - rho value after which the 1D grid gradually increases density
 * grid_alpha - 1D grid compression factor in the boundary region
@@ -302,6 +301,62 @@ Control signals from the magnetic controller:
 
 
 # Magnetic controller
+## General description
+The Kavin's Magnetic Controller (KMC) was specially designed for PF voltage inputs for ITER feedback magnetic control studies. Supports simulation from fully charged central solenoid, until fully discharged PF system.  
+
+The KMC actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows.  
+The Fortran subroutine kmc is built in imas/interface/kmc.a with the interface
+```
+subroutine dina_contr(&
+& pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, & ! Inputs
+& pf_active & ! Outputs
+& )
+```
+To use the Python actor in another workflow:
+1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/kmc
+2. import kmc.wrapper as kmc
+3. Calling interface:  
+```
+output = kmc.kmc_actor(idslist['pulse_schedule'],
+	idslist['pulse_schedule_term'],
+	idslist['equilibrium'],
+	idslist['pf_active'])
+
+idslist['pf_active'] = output
+```  
+
+To run correctly, the KMC actor requires:
+1. The DINA_Parameters.xml file placed in the working directory,
+2. Input IDS's properly filled.
+
+
+## Code parameters in KMC_Parameters.xml
+- tcont2 [s] - Time when the limiter controller is switched on
+- dtcont2 [s] - Transition time of the control voltages from the current controller to the limiter controller at the ramp-up phase
+- Ip_div [MA] - Value of plasma current (negative) when the first divertor controller is switched on at the ramp-up phase
+- ref_ramp [s] - Transition time of the control voltages after switching of the first divertor controller
+- Ip_rd [MA] - Value of plasma current when the second divertor controller is switched on at the plasma current termination phase
+- trd_ref [s] - Last time moment in schedule of the gaps for the plasma termination phase
+- max_VS_lim - Maximum value of the gain coefficient for VS controller at the limiter phase
+- c_a_tpl2_lim - Gain coefficient for the limiter controller at the ramp-up phase
+- time_stop - Time of simulation stop
+- c_a_tpl1 - Gain coefficient for the VS controller at the ramp-up and flattop phases
+- c_a_tpl1_eob - Gain coefficient for the VS controller at the plasma current termination phase
+- c_a_tpl2 - Gain coefficient for the divertor controller at the ramp-up and flattop phases
+- c_a_tpl_min - Minimum value of the gain coefficient for the VS controller at the plasma current termination phase
+- y0 - Tunable coefficient for divertor controller gain at the plasma current termination phase
+- c1_y0 - Tunable coefficient for divertor controller gain at the plasma current termination phase
+- c2_y0 - Tunable coefficient for divertor controller gain at the plasma current termination phase
+- t_tran2D [ms] - Time when the limiter controller starts to control extended set of the plasma shape parameters to maintain elongated plasma
+- Tu [s] - Minimum time of voltage variation from –Vmax to +Vmax for CS&PF power supplies
+- c_cur_max - Fraction of coil current limit when the current limitation alghorithm starts protection
+- tt_rampup [ms] - Duration of the plasma current ramp-up
+- dt_end_sim [s] - Duration of the CS&PF current termination phase, starting after end of plasma
+- dtpl_term_l - [s] - Duration of the plasma current ramp-down phase
+- cIp_end [MA] - Minimum plasma current at the ramp-down phase
+- Ics1_eob [kA] - Value of the current in CS1 circuit at which the current ramp-down starts
+- rms_noise [m/s] - RMS of noise in the diagnostic signal of dZ/dt for VS stabilization
+
 
 ## IDS fields required for initialization of the magnetic controller
 First pulse_schedule input IDS for the ramp-up and flattop phase:
@@ -333,6 +388,37 @@ Second pulse_schedule input IDS for the ramp-down phase:
 - equilibrium%time_slice(1)%boundary%minor_radius
 - equilibrium0%time_slice(1)%boundary_separatrix%gap(25:30)%value
 - pf_active%coil(1:14)%current%data(1)
+
+
+# Coupling matrices calculation
+## General description
+The actor DINA_GREEN does calculations of the coupling matrices between:
+* Active coils
+* Passive loops
+* 2D plasma grid
+* Magnetic loops
+* Magnetic probes
+  
+The Fortran subroutine dina_green is built in imas/interface/dina_green.a with the interface
+```
+subroutine dina_green(&
+& pf_active0, pf_passive0, magnetics0, equilibrium0, & ! Inputs
+& em_coupling & ! Outputs
+& )
+```
+To use the Python actor in another workflow:
+1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/dina_green
+2. import dina_green.wrapper as dina_green
+3. Calling interface:  
+```
+output = dina_green.dina_green_actor(idslist['pf_active'],
+	idslist['pf_passive'],
+	idslist['magnetics'],
+	idslist['equilibrium'])
+
+idslist['em_coupling'] = output
+```  
+To run correctly, the DINA_GREEN actor requires only the input IDS's properly filled.
 
 
 ## IDS fields required for the DINA_GREEN actor
