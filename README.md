@@ -302,7 +302,7 @@ Control signals from the magnetic controller:
 
 # Magnetic controller
 ## General description
-The Kavin's Magnetic Controller (KMC) was specially designed for PF voltage inputs for ITER feedback magnetic control studies. Supports simulation from fully charged central solenoid, until fully discharged PF system.  
+The Kavin's Magnetic Controller (KMC) was specially designed for PF voltage inputs for ITER feedback magnetic control studies. Supports simulation from fully charged central solenoid, until fully discharged PF system.    
 
 The KMC actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows.  
 The Fortran subroutine kmc is built in imas/interface/kmc.a with the interface
@@ -328,6 +328,10 @@ idslist['pf_active'] = output
 To run correctly, the KMC actor requires:
 1. The DINA_Parameters.xml file placed in the working directory,
 2. Input IDS's properly filled.
+3. To be called in simulation:
+	* Every 2 ms during initial phase, from fully charged central solenoid until limiter controller switches on (time=tcont2)
+	* Every 10 ms from limiter controller switches on until second divertor controller switches on at the current ramp-down phase (Ip=Ip_rd)
+	* Every 5 ms until the end of simulation.
 
 
 ## Code parameters in KMC_Parameters.xml
@@ -386,8 +390,16 @@ Second pulse_schedule input IDS for the ramp-down phase:
 - equilibrium%time_slice(1)%boundary%elongation
 - equilibrium%time_slice(1)%boundary%geometric_axis%r 
 - equilibrium%time_slice(1)%boundary%minor_radius
-- equilibrium0%time_slice(1)%boundary_separatrix%gap(25:30)%value
+- equilibrium0%time_slice(1)%boundary_separatrix%gap(25)%value - Gap g1
+- equilibrium0%time_slice(1)%boundary_separatrix%gap(26)%value - Gap g2
+- equilibrium0%time_slice(1)%boundary_separatrix%gap(28)%value - Gap g4
+- equilibrium0%time_slice(1)%boundary_separatrix%gap(29)%value - Gap g5
 - pf_active%coil(1:14)%current%data(1)
+
+
+## The outputs
+Voltages applied to the coils
+- pf_active%coil(1:14)%voltage%data(1)
 
 
 # Coupling matrices calculation
