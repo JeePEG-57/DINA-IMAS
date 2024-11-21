@@ -3,8 +3,8 @@
 all: dina controllers interface fc2k
 
 dina:
-	make -C src/scenario
 	make -C src/green
+	make -C src/scenario
 
 controllers:
 	make -C src/controllers/kmc
