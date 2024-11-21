@@ -330,12 +330,12 @@ class ExampleApp(uiclass, baseclass):
         self.DINAData["kpr"] = CodeParameter(mytype=int, value=0, name='Key print', comment = 'Key to print debug and diagnostic logs')
         self.DINAData["tt_kavin"] = CodeParameter(mytype=int, value=3.5, comment = 'Time to switch from 0D transport model to 1D', name='Time 0D->1D', unit='ms')
         self.DINAData["tau"] = CodeParameter(mytype=float, value=2., name='dt start', comment = 'Time step before switching to 1D transport model', unit='ms')
-        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=10., comment = 'Time step for simulation after switching to 1D transport model and before plasma current rampdown.', name='dt simulation', unit='ms')
+        self.DINAData["tau_sim"] = CodeParameter(mytype=float, value=10., comment = 'Time step for simulation after switching to 1D transport model and before plasma current rampdown', name='dt simulation', unit='ms')
         self.DINAData["tau_dw"] = CodeParameter(mytype=float, value=5., comment = 'Time step for simulation during plasma current ramp-down', name='dt rampdown', unit='ms')
         self.DINAData["rs0"] = CodeParameter(mytype=float, value=620., name='R_Btor', comment = 'R coordinate at which the toroidal field is represented internally', unit='cm')
         self.DINAData["bt0"] = CodeParameter(mytype=float, value=53., name='Btor', comment = 'The toroidal field at the specified R coordinate', unit='Gs')
         self.DINAData["key_t11"] = CodeParameter(mytype=int, value=1, comment = 'JET Ohmic scaling')
-        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=100000.e3, comment = 'Time after which input 1D transport profiles are used, internal transport model switches off.', unit='ms')
+        self.DINAData["tt_dina"] = CodeParameter(mytype=float, value=100000.e3, comment = 'Time after which input 1D transport profiles are used, internal transport model switches off', unit='ms')
         
         self.DINAData["tpl_dir"] = CodeParameter(mytype=float, value=-1., name='Ip_dir', comment = 'Sign of the plasma current')
         
@@ -351,9 +351,9 @@ class ExampleApp(uiclass, baseclass):
         
         self.DINAData["pcchp_end"] = CodeParameter(mytype=float, value=0., comment = 'The level to which plasma density decreases during 4 s after start of plasma current ramp-down phase')
         
-        self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = 'After tt_dina using external energy transport')
-        self.DINAData["dens_ext"] = CodeParameter(mytype=bool, value=False, comment = 'After tt_dina using external density transport')
-        self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = 'After tt_dina using external bootstrap current')
+        self.DINAData["ener_ext"] = CodeParameter(mytype=bool, value=False, comment = 'When time>tt_dina, switch off internal energy transport calculations')
+        self.DINAData["dens_ext"] = CodeParameter(mytype=bool, value=False, comment = 'When time>tt_dina, switch off internal density transport calculations')
+        self.DINAData["ajb_ext"] = CodeParameter(mytype=bool, value=False, comment = 'When time>tt_dina, switch off internal conductivity and bootstrap current calculations')
         
         
         self.DINAData["grid_n"] = CodeParameter(mytype=int, value=50, name='Grid n', comment = 'Amount of 1D grid points')

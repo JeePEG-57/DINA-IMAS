@@ -1,9 +1,10 @@
-## Environment settings and building DINA actors
-Having the repository downloaded, one needs to:
-1. Setup the environment variables. Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:  
+# Environment and build
+## Setup the environment variables
+Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:  
 $ source imas/ci_scripts/ci_header.sh
 
-2. Build libraries and generate fc2k python actors:  
+## Build libraries actors and executables  
+In the root of the repository execute  
 $ make  
 This command:
    1. builds DINA and magnetic controller core libraries in src/;
@@ -11,6 +12,7 @@ This command:
    3. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
 
 
+# Simulation workflow
 ## Running the workflow
 Having the environment set and libraries built, one needs to:
 1. Create a working directory needed for the workflow.
@@ -43,7 +45,7 @@ In the wfconfig.xml you can make other changes of the workflow parameters, such 
 To modify workflow parameters, one has to edit the wfconfig.xml file in the working directory.
 * pulse_schedule - IMAS database with pulse_schedule IDS's (ocurrences 0 and 1) with the scenario target waveforms.
 * input_pf_active - IMAS database with pf_active IDS. Contains PF active coils geometry. In case of restart additionally must contain coil currents.
-* input_pf_passive> - IMAS database with pf_passive IDS. Contains PF passive coils geometry. In case of restart optionally can contain loop currents.
+* input_pf_passive - IMAS database with pf_passive IDS. Contains PF passive coils geometry. In case of restart optionally can contain loop currents.
 * input_wall - IMAS database with wall IDS. Contains the first wall contour.
 * input_magnetics - IMAS database with magnetics IDS, optional. Contains the loops and probes geometry.
 * input_em_coupling - IMAS database with em_coupling IDS, optional. If provided, is used directly, coupling matrices are not calculated by geometry.
@@ -92,10 +94,102 @@ The workflow supports running with prescribed transport profiles, provided to DI
 To use this possibility:
 * Fill in the wfconfig.xml the section input_transp with IMAS database with the prepared transport profiles.
 * Specify the parameter time_ext in the wfconfig.xml. It is the scenario time moment, after which the external transport profiles are fed into DINA instead of DINA output from previous time step.
-* It is recommended to switch off the DINA internal transport model. Specify the DINA code parameter tt_dina (note that it is in milliseconds) - scenario time moment, after which DINA internal transport modules don't update transport profiles. Each transport module is switched off separately with 1 to DINA code parameters:
+* Switch off the DINA internal transport model. Specify the DINA code parameter tt_dina (note that it is in milliseconds) - scenario time moment, after which DINA internal transport modules switch off. Each transport module is switched off separately with 1 to corresponding DINA code parameter:
    - ener_ext=1 - switch off the energy transport,
    - dens_ext=1 - switch off the density transport,
    - ajb_ext=1 - switch off the bootstrap current and conductivity calculations.
+
+
+# DINA actor
+## General description
+DINA model consists of:
+* 2D free boundary Grad-Shafranow equation
+* Circuit equations for currents in active coils and passive structures
+* 1D poloidal flux diffusion equation
+* 1D electron and ion energy transport equations
+* 1D density transport model
+* Impurity radiation model
+* 0D transport model for plasma breakdown phase
+
+Features:
+* Consistent evolution of non-linear deformable plasma, currents in the conducting structures and kinetic profiles
+* Possibility to use external kinetic profiles
+* Simulation starts from fully charged central solenoid, until fully discharged PF system
+* PF voltage inputs allow to study magnetic feedback control during whole scenario
+
+The actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows. 
+The Fortran subroutine dina_imas is built in imas/interface/dina_imas.a with the interface
+ `subroutine dina_imas(&
+&  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0, bndcond_in, pulse_schedule &
+& ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport,summary)`
+The Python actor is built in the folder imas/python_wf/actors/dinaimas21
+To use it in another workflow:
+1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/dinaimas21
+2. Import dinaimas21.wrapper as dinaimas21
+3. Calling interface:
+`output = dinaimas21.dinaimas21_actor(idslist['em_coupling'],
+								   idslist['equilibrium'],
+								   idslist['magnetics'],
+								   idslist['pf_active'],
+								   idslist['pf_passive'],
+								   idslist['wall'],
+								   idslist['core_profiles'],
+								   idslist['core_sources'],
+								   idslist['transport_solver_numerics'],
+								   idslist['pulse_schedule'])
+
+idslist['equilibrium'] = output[0]
+idslist['magnetics'] = output[1]
+idslist['pf_active'] = output[2]
+idslist['pf_passive'] = output[3]
+idslist['core_profiles'] = output[4]
+idslist['core_sources'] = output[5]
+idslist['core_transport'] = output[6]
+idslist['summary'] = output[7]`
+  
+To work correctly, the DINA actor requires:
+1. The DINA_Parameters.xml file placed in the working directory
+2. The machines/imp folder copied to the working directory
+3. Input IDS's with properly filled fields
+
+
+## Code parameters in DINA_Parameters.xml
+The DINA_Parameters.xml files are stored in scenario folders or can be created using GUI from *.dat files.  
+Description of the parameters in DINA_Parameters.xml:
+* kpr - Key to print debug and diagnostic logs
+* tt_kavin [ms] - Time to switch from 0D transport model to 1D
+* tau [ms] - Time step before switching to 1D transport model
+* tau_sim [ms] - Time step for simulation after switching to 1D transport model and before plasma current rampdown
+* tau_dw [ms] - Time step for simulation during plasma current ramp-down
+* key_t11 - JET Ohmic scaling
+* tt_dina [ms] - Time after which input 1D transport profiles are used, internal transport model switches off
+* tpl_dir - Sign of the plasma current
+* p [Pa] - Initial neutral D particles pressure
+* T_e [eV] - Initial electron temperature
+* T_i [eV] - Initial ion temperature
+* gam - Initial ionization state of D
+* gain_puff - Neutrals puffing gain to keep the prescribed waveform of D in 0D model
+* bohm_gbohm - Key to switch on (=1) or off (=0) Bohm-gyro-Bohm scaling
+* q_swth - Minimal q at axis when a sawtooth is triggered
+* pcchp_end - The level to which plasma density linearly decreases during 4 s after start of plasma current ramp-down phase. The resulting Greenwald ratio is kept during the rest of ramp-down.
+* ener_ext - When time>tt_dina, switch off internal energy transport calculations
+* dens_ext - When time>tt_dina, switch off internal density transport calculations
+* ajb_ext - When time>tt_dina, switch off internal conductivity and bootstrap current calculations
+* grid_n - Amount of 1D grid points
+* grid_rho - rho value after which the 1D grid gradually increases density
+* grid_alpha - 1D grid compression factor in the boundary region
+* tt_rampup [ms] - Duration of the plasma current ramp-up
+* dt_end_sim [s] - Duration of the CS&PF current termination phase, starting after end of plasma
+* dtpl_term_l - [s] - Duration of the plasma current ramp-down phase
+* cIp_end [MA] - Minimum plasma current at the ramp-down phase
+* Ics1_eob [kA] - Value of the current in CS1 circuit at which the current ramp-down starts
+* rms_noise [m/s] - RMS of noise in the diagnostic signal of dZ/dt for VS stabilization
+* gaps/ngaps - amount of plasma shape gaps calculated
+* gaps/gaps_r [cm] - list of R coordinates of plasma shape gaps measuring points
+* gaps/gaps_z [cm] - list of Z coordinates of plasma shape gaps measuring points
+* circuit/ncirc - amount of PF coils
+* circuit/connection - list of circuit numbers to which a corresponding coil belongs to
+* circuit/direction - direction of a corresponding coil in its circuit (1 or -1)
 
 
 ## The required IDS fields to initialize the DINA actor
@@ -201,6 +295,8 @@ The transport profiles:
 Control signals from the magnetic controller:
 - pf_active%coil(:)%voltage%data(1)
 
+
+# Magnetic controller
 
 ## IDS fields required for initialization of the magnetic controller
 First pulse_schedule input IDS for the ramp-up and flattop phase:
