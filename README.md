@@ -121,8 +121,9 @@ The actor with IMAS interface is built in Fortran and Python languages and can b
 The Fortran subroutine dina_imas is built in imas/interface/dina_imas.a with the interface
 ```
 subroutine dina_imas(&  
-&  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0, bndcond_in, pulse_schedule &  
-& ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport,summary)
+&  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0, bndcond_in, pulse_schedule, & ! Inputs
+&  equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, summary & ! Outputs
+&)
 ```
 The Python actor is built in the folder imas/python_wf/actors/dinaimas21
 To use it in another workflow:
@@ -130,17 +131,17 @@ To use it in another workflow:
 2. Import dinaimas21.wrapper as dinaimas21
 3. Calling interface:  
 ```
- output = dinaimas21.dinaimas21_actor(
-								idslist['em_coupling'],
-								idslist['equilibrium'],
-								idslist['magnetics'],
-								idslist['pf_active'],
-								idslist['pf_passive'],
-								idslist['wall'],
-								idslist['core_profiles'],
-								idslist['core_sources'],
-								idslist['transport_solver_numerics'],
-								idslist['pulse_schedule'])
+output = dinaimas21.dinaimas21_actor(
+	idslist['em_coupling'],
+	idslist['equilibrium'],
+	idslist['magnetics'],
+	idslist['pf_active'],
+	idslist['pf_passive'],
+	idslist['wall'],
+	idslist['core_profiles'],
+	idslist['core_sources'],
+	idslist['transport_solver_numerics'],
+	idslist['pulse_schedule'])
   
 idslist['equilibrium'] = output[0]
 idslist['magnetics'] = output[1]
