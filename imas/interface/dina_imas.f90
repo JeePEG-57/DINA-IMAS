@@ -657,7 +657,7 @@ if (associated(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)) then
     
     
     call dina_input2(tt,tpl,rmag,zmag,  &
-  &  n_eq,a,pptab,fptab,psi_eq, &
+  &  n_eq,pptab,fptab,psi_eq, &
   &  n_tr,a_tr,psi_tr)
     
 endif

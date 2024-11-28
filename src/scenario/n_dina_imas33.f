@@ -2012,14 +2012,14 @@ c----------------------------
       
 ! Initializing input
        subroutine dina_input2(tt_xx,tpl_xx,rmag_xx,zmag_xx,
-     *  n_eq_xx,a_xx,pptab_xx,fptab_xx,psi_xx,
+     *  n_eq_xx,pptab_xx,fptab_xx,psi_xx,
      *  n_tr_xx,a_tr_xx,psi_tr_xx)
      
       include 'double.inc'
       include 'new_com.inc'
       
                   
-      dimension a_xx(*),pptab_xx(*),fptab_xx(*),psi_xx(*)
+      dimension pptab_xx(*),fptab_xx(*),psi_xx(*)
       dimension a_tr_xx(*),psi_tr_xx(*)
      
       
@@ -2079,9 +2079,7 @@ c----------------------------
 
       if(kpr.eq.1)print *,' - coef_ppx coef_pffx==',coef_ppx,coef_pffx
      
-     
- 	apr='a_xx'
-	if(kpr.eq.1)print 71,apr,(a_xx(j),j=1,n_eq_xx)
+   
  	apr='a_tr_xx'
 	if(kpr.eq.1)print 71,apr,(a_tr_xx(j),j=1,n_tr_xx)
  	apr='a'
