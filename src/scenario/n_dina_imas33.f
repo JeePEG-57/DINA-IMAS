@@ -617,8 +617,9 @@ c=================================================
      *  pd0(npo),pt0(npo),sigk(npo),ajb(npo),
      *  aj0(npo),qe0(npo),qq0(npo)
 
-	common
+      common
      *	/n_m/n,m,mp
+     *  /ge5/kpr
      */ge2/NTAY,TAY,TT
       COMMON                                                            
      *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)                     
@@ -643,13 +644,13 @@ c=================================================
       
       
       
-	do i=1,n
+	   do i=1,n_xx
            if (te0_xx(i).gt.0.d0) then
              sigk_xx(i)=sigma_xx(i)/(1480.d0*te0_xx(i)**1.5d0)
            else 
              sigk_xx(i) = 0.d0
            endif
-        enddo
+      enddo
       
       
       
@@ -698,6 +699,8 @@ c=================================================
       if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n) 
       apr='--pne-' 
       if(kpr.eq.1)print 71,apr,(pne(i),i=1,n) 
+      apr='--sigk-' 
+      if(kpr.eq.1)print 71,apr,(sigk(i),i=1,n) 
 
    71 FORMAT(20X,A20/,(6(1pE10.3)))
 	

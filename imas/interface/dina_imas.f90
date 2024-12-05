@@ -72,6 +72,7 @@ include 'parf8'
 integer :: npfa = 0, npfp = 0
 
 integer,parameter :: n_ions=7
+integer :: n_ions_in = 2
 
 integer :: ksepa,key_lh,n_bnd,n_sep,n_sep2,n_gaps
 
@@ -580,11 +581,15 @@ call write_cputime(0.d0, 0.d0, 1)
   pf(1:nact) = 0.d0
   
   if (associated(pf_active0%coil(1)%current%data)) then 
-  print*, 'PF currents are assigned from pf_active'
+  
+    print*, 'PF currents are assigned from pf_active'
   do i=1,npfa
-    pf(ncirc(i)) = dircirc(i)*pf_active0%coil(i)%current%data(1)
-    print *,' i pfa==',i,pf_active0%coil(i)%current%data(1)
+    if (associated(pf_active0%coil(i)%current%data)) then
+      pf(ncirc(i)) = dircirc(i)*pf_active0%coil(i)%current%data(1)
+      print *,' i pfa==',i,pf_active0%coil(i)%current%data(1)
+    endif
   enddo
+
   else
   
   print*, 'PF currents are assigned from pulse_schedule'
@@ -639,12 +644,22 @@ if (associated(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)) then
         
 	n_tr = size(core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm)
         n = n_tr
+  if (n_tr.gt.npo) then
+    print*, 'Input profile length is too large, n_tr, npo =', n_tr, npo
+    stop
+  endif
+
 	a_tr(1:n) = core_profiles0%profiles_1d(CurTimeStep)%grid%rho_tor_norm(1:n)
 	psi_tr(1:n) = cocos_psi * core_profiles0%profiles_1d(CurTimeStep)%grid%psi(1:n)
 
-	n_eq = size(equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm)
+	n_eq = size(equilibrium0%time_slice(CurTimeStep)%profiles_1d%psi)
         n = n_eq
-	a(1:n) = equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n)
+  if (n_eq.gt.npo) then
+    print*, 'Input profile length is too large, n_eq, npo =', n_eq, npo
+    stop
+  endif
+
+	!a(1:n) = equilibrium0%time_slice(CurTimeStep)%profiles_1d%rho_tor_norm(1:n)
   
         write(*,*) 'DINA_IMAS - equilibrium poloidal flux'
         psi_eq(1:n) = cocos_psi * equilibrium0%time_slice(CurTimeStep)%profiles_1d%psi(1:n)
@@ -673,6 +688,10 @@ if (associated(core_profiles0%profiles_1d)) then
 write(*,*) 'dina_input prepare...'
 
  n1 = size(core_profiles0%profiles_1d(1)%grid%rho_tor_norm)
+ if (n1.gt.npo) then
+   print*, 'Input profile length is too large, n1, npo =', n1, npo
+   stop
+ endif
 
 
 
@@ -726,22 +745,51 @@ end if
 !Transp2
  pne(1:n1) = core_profiles0%profiles_1d(1)%electrons%density(1:n1)
  pd0(1:n1) = core_profiles0%profiles_1d(1)%ion(1)%density(1:n1)
- pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)
- 
+
+ n_ions_in = size(core_profiles0%profiles_1d(1)%ion)
+ if(n_ions_in.gt.1) then
+  pt0(1:n1) = core_profiles0%profiles_1d(1)%ion(2)%density(1:n1)
+ else
+  pt0(1:n1) = 1.d0
+ endif
       apr='--&pne-' 
       print 71,apr,(pne(i),i=1,n1) 
       apr='--&pd0-' 
       print 71,apr,(pd0(i),i=1,n1) 
       apr='--&pt0-' 
       print 71,apr,(pt0(i),i=1,n1) 
+
 !Transp3
- jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)
- sigma(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
-!Transp4
- aj0(1:n1) = core_profiles0%profiles_1d(1)%j_non_inductive(1:n1) - core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)
-!Sources
- qe0(1:n1) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n1)
- qq0(1:n1) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
+if (associated(core_profiles0%profiles_1d(1)%j_bootstrap)) then
+  jbut(1:n1) = core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)
+else
+  jbut(1:n1) = 0.d0
+endif
+
+if (associated(core_profiles0%profiles_1d(1)%conductivity_parallel)) then
+  sigma(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
+else
+  sigma(1:n1) = 1480.d0*te0(1:n1)**1.5d0
+endif
+
+apr='--sigma-' 
+print 71,apr,(sigma(i),i=1,n1) 
+
+ !Transp4
+ if (associated(core_profiles0%profiles_1d(1)%j_non_inductive).AND.associated(core_profiles0%profiles_1d(1)%j_bootstrap)) then
+   aj0(1:n1) = core_profiles0%profiles_1d(1)%j_non_inductive(1:n1) - core_profiles0%profiles_1d(1)%j_bootstrap(1:n1)
+ else
+   aj0(1:n1) = 0.d0
+ endif
+
+ !Sources
+ if (associated(core_sources0%source)) then
+   qe0(1:n1) = core_sources0%source(1)%profiles_1d(1)%electrons%energy(1:n1)
+   qq0(1:n1) = core_sources0%source(1)%profiles_1d(1)%total_ion_energy(1:n1)
+ else
+   qe0(1:n1) = 0.d0
+   qq0(1:n1) = 0.d0
+ endif
 
       apr='--qe0-' 
       print 71,apr,(qe0(i),i=1,n1) 
