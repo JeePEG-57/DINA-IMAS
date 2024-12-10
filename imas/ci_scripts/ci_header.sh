@@ -22,14 +22,13 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 
+#AL4
 module load IMAS/3.39.0-4.11.10-foss-2023b
 
-# Fixed memory leak in PyUAL
-#module use -p /home/ITER/hoeneno/public/imas/etc/modulefiles 
-#module load IMAS/3.30.0-4.8.6-1-g11197651
+#AL5
+#module load IMAS/3.39.0-2024.09-foss-2023b
 
-#module load IMAS/3.29.0-4.8.4
-# module load IMAS/3.26.0-4.5.0
+
 
 # KEPLER ENVIRONMENT VARIABLES
 

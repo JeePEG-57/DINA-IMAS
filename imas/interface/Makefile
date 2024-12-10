@@ -7,6 +7,7 @@ ASTRADIR := ../astra_transp
 
 PACKAGES =
 PACKAGES += imas-$(FCOMPILER)
+#PACKAGES += al-fortran
 PACKAGES += libxml-2.0
 PACKAGES += xmllib
 DEBUG = -g -O0
