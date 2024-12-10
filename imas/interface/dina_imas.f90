@@ -302,23 +302,30 @@ ALLOCATE(pfres(nact))
 ALLOCATE(rcam(npfp))
 
 
-
-  print*, 'ncirc(1:nact) =', (ncirc(i),i=1,nact)
-  print*, 'dircirc(1:nact) =', (dircirc(i),i=1,nact)
+  print*, 'nact =', nact
+  print*, 'ncirc(1:npfa) =', (ncirc(i),i=1,npfa)
+  print*, 'dircirc(1:npfa) =', (dircirc(i),i=1,npfa)
 
 write(*,*) 'Entering DINA_IMAS, loop_count, tt = ', loop_count, tt
-
 flush(6)
 
 
 ! Greens
 
-vesgreen = em_coupling0%mutual_loops_passive
-vesprobe = em_coupling0%field_probes_passive
+vesgreen(1:kloop,1:npfp) = em_coupling0%mutual_loops_passive(1:kloop,1:npfp)
+vesprobe(1:kprobe,1:npfp) = em_coupling0%field_probes_passive(1:kprobe,1:npfp)
+
+write(*,*) 'vesgreen, vesprobe set OK'
+flush(6)
+
 vesarr = em_coupling0%mutual_grid_passive
-pslgreen = transpose(em_coupling0%mutual_loops_grid)
-bprgreen = transpose(em_coupling0%field_probes_grid)
-pmj = em_coupling0%mutual_passive_passive
+if (associated(em_coupling0%mutual_loops_grid)) pslgreen = transpose(em_coupling0%mutual_loops_grid)
+if (associated(em_coupling0%field_probes_grid)) bprgreen = transpose(em_coupling0%field_probes_grid)
+
+write(*,*) 'pslgreen, bprgreen set OK'
+flush(6)
+
+pmj(:,:) = em_coupling0%mutual_passive_passive(:,:)
 
 
 allocate(pf_turns(npfa))
@@ -350,10 +357,10 @@ enddo
 if (kpr.eq.1) then
   print*, 'pfind'
   do i=1,nact
-    print*, i, pfind(i,i)
+    print*, i, pfind(i,:)
   enddo
 endif
-
+flush(6)
 
 ! Resistances
 pfres(1:nact) = 0.d0
@@ -386,7 +393,7 @@ gridrange(4)=x(nr)
 
 ! Limiter
 if (.NOT.associated(wall0%description_2d)) then
-  print*, 'wall%description_2d is NULL. STOP'
+  print*, 'wall0%description_2d is NULL. STOP'
   stop
 endif
 if (.NOT.associated(wall0%description_2d(1)%limiter%unit)) then

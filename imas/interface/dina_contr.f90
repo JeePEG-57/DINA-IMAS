@@ -41,7 +41,10 @@ data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 21
 
 !real(ids_real) :: dsep, dsep_ref
 
-
+  kpr = 1
+  
+  tpl_dir = -1.d0
+  
   if (loop_count.eq.0) then
     write(*,*) 'Controller parameters initialization...'
     call contr_data_read_imas(pulse_schedule, pulse_schedule_term)
@@ -71,7 +74,11 @@ data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 21
   input_1(14)=ncam
   input_1(15)=0.d0 ! i_wr
 
-
+  
+  ! print*, 'npf, npfa =', npf, npfa
+  ! do i=1,npfa
+    ! print*,' i, pf_active0%coil(i) current', i, pf_active0%coil(i)%current%data(1)
+  ! enddo
 
 
   pf(1:npf) = 0.d0
