@@ -19,8 +19,11 @@
 
 
 	   call dina2(
-     *  c_input1,c_input2,
-     *  c_output1,c_output2,c_output3)
+!     *  c_input1,c_input2,
+!     *  c_output1,c_output2,c_output3)
+
+     *  c_input_1,c_input_2,
+     *  c_output_1,c_output_2,c_output_3)
 
       return
       end subroutine
@@ -181,6 +184,9 @@
 
       apr='--f_tok1-' 
       if(kpr.eq.1)print 71,apr,(f_temp(i),i=1,n) 
+
+      apr='f_pne-' 
+      if(kpr.eq.1)print 71,apr,(pne(i),i=1,n) 
 
       do i=1,n
       tok1(i)=f_temp(i)
@@ -715,6 +721,8 @@ c=================================================
 
       apr='--pd0-' 
       if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n) 
+      apr='--pt0-' 
+      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,n) 
       apr='--qe0-' 
       if(kpr.eq.1)print 71,apr,(qe0(i),i=1,n) 
       apr='--ajb-' 

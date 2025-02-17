@@ -773,13 +773,16 @@ else
   jbut(1:n1) = 0.d0
 endif
 
+apr='--&jbut-' 
+print 71,apr,(jbut(i),i=1,n1) 
+
 if (associated(core_profiles0%profiles_1d(1)%conductivity_parallel)) then
   sigma(1:n1) = core_profiles0%profiles_1d(1)%conductivity_parallel(1:n1)
 else
   sigma(1:n1) = 1480.d0*te0(1:n1)**1.5d0
 endif
 
-apr='--sigma-' 
+apr='--&sigma-' 
 print 71,apr,(sigma(i),i=1,n1) 
 
  !Transp4

@@ -286,9 +286,9 @@
     	c_input2(I)=qdq0(i)
 	end do
 
-      apr='+QDE0-' 
+      apr='+QDE0_tran-' 
       if(kpr.eq.1)print 71,apr,(QDE0(i),i=1,nn2) 
-      apr='+QDQ0-' 
+      apr='+QDQ0_tran-' 
       if(kpr.eq.1)print 71,apr,(QDQ0(i),i=1,nn2) 
       
       end if
@@ -315,9 +315,9 @@
 	TQ0_tran(I)=Tq0(I)
       end do
 
-      apr='+te0-' 
+      apr='+te0_tran-' 
       if(kpr.eq.1)print 71,apr,(te0(i),i=1,nn2) 
-      apr='+tq0-' 
+      apr='+tq0_tran-' 
       if(kpr.eq.1)print 71,apr,(tq0(i),i=1,nn2) 
  
       end if
@@ -331,6 +331,10 @@
 !------------------------------------outputs
      *  c_output1,c_output2,c_output3)
  	
+      apr='+c_output2_tran-' 
+      if(kpr.eq.1)print 71,apr,(c_output2(i),i=1,n) 
+      apr='+c_output3_tran-' 
+      if(kpr.eq.1)print 71,apr,(c_output3(i),i=1,n) 
 
 	do i=1,n
 	
@@ -343,10 +347,12 @@
 	pne_tran(I)=pne(I)
 	
       end do
-      apr='+pd0-' 
-      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,nn2) 
-      apr='+pt0-' 
-      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,nn2) 
+      apr='+pd0_tran-' 
+      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n) 
+      apr='+pt0_tran-' 
+      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,n) 
+      apr='+pne_tran-' 
+      if(kpr.eq.1)print 71,apr,(pne(i),i=1,n) 
 
       end if
       
@@ -368,9 +374,9 @@
 	sigk_tran(I)=sigk(I)
       end do
 
-      apr='+ajb-' 
+      apr='+ajb_tran-' 
       if(kpr.eq.1)print 71,apr,(ajb(i),i=1,nn2) 
-      apr='+sigk-' 
+      apr='+sigk_tran-' 
       if(kpr.eq.1)print 71,apr,(sigk(i),i=1,nn2) 
       end if
 
@@ -1024,7 +1030,7 @@ c-------
 
 	character *20 apr,filename
 
-71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
+71	FORMAT(20X,A20/,(6(1X,1PE10.3)))
 
 !------------------------------------inputs
 
@@ -1037,11 +1043,16 @@ c-------
 
 
       apr='++++pD0-' 
-!      print 71,apr,(PD0(i),i=1,n) 
+      print 71,apr,(PD0(i),i=1,n) 
       apr='++++PT0-' 
-!      print 71,apr,(PT0(i),i=1,n) 
+      print 71,apr,(PT0(i),i=1,n) 
       apr='++++PNE-' 
-!      print 71,apr,(PNE(i),i=1,n) 
+      print 71,apr,(PNE(i),i=1,n) 
+
+      apr='+++c_output2_tran-' 
+      if(kpr.eq.1)print 71,apr,(c_output2(i),i=1,n) 
+      apr='+++c_output3_tran-' 
+      if(kpr.eq.1)print 71,apr,(c_output3(i),i=1,n) 
 
 
 5000  format (50(1pe14.5))
@@ -1390,7 +1401,14 @@ C
       if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n) 
       apr='---sigk-' 
       if(kpr.eq.1)print 71,apr,(sigk(i),i=1,n) 
-
+      apr='---pd0-' 
+      if(kpr.eq.1)print 71,apr,(pd0(i),i=1,n) 
+      apr='---pt0-' 
+      if(kpr.eq.1)print 71,apr,(pt0(i),i=1,n) 
+      apr='---pne-' 
+      if(kpr.eq.1)print 71,apr,(pne(i),i=1,n) 
+      apr='---ajb-' 
+      if(kpr.eq.1)print 71,apr,(ajb(i),i=1,n) 
 
       return
       end

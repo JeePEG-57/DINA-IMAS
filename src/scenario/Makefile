@@ -40,7 +40,7 @@ all: test.exe dina_99.a
 
 test.exe: test.o dina_99.a
 	@echo "   * $^ -> $@"
-	$(FC) -o $@ $^
+	$(FC) -Wl,--no-relax -o $@ $^
 
 dina_99.a: $(DINAOBJ)
 	$(RM) -r $@
