@@ -213,10 +213,10 @@ flush(6)
   
 
 
-em_coupling%mutual_passive_passive = pmj(1:npass,1:npass)
-em_coupling%mutual_grid_passive = vesarr(1:nwnh,1:npass)
-em_coupling%mutual_loops_passive = vesgreen(1:kloop,1:npass)
-em_coupling%field_probes_passive = vesprobe(1:kprobe,1:npass)
+em_coupling%mutual_passive_passive(1:npass,1:npass) = pmj(1:npass,1:npass)
+em_coupling%mutual_grid_passive(1:nwnh,1:npass) = vesarr(1:nwnh,1:npass)
+em_coupling%mutual_loops_passive(1:kloop,1:npass) = vesgreen(1:kloop,1:npass)
+em_coupling%field_probes_passive(1:kprobe,1:npass) = vesprobe(1:kprobe,1:npass)
 do j=1,kloop
   em_coupling%mutual_loops_grid(j,1:nwnh)=pslgreen(1:nwnh,j)
 end do
@@ -239,8 +239,8 @@ do i=1,nact
   enddo
 
   em_coupling%mutual_grid_active(:,i) = fluxarr(1:nwnh,i)*pf_turns(i)
-  em_coupling%mutual_loops_active(:,i) = pfgreen(1:kloop,i)*pf_turns(i)
-  em_coupling%field_probes_active(:,i) = pfprobe(1:kprobe,i)*pf_turns(i)
+  em_coupling%mutual_loops_active(1:kloop,i) = pfgreen(1:kloop,i)*pf_turns(i)
+  em_coupling%field_probes_active(1:kprobe,i) = pfprobe(1:kprobe,i)*pf_turns(i)
   em_coupling%mutual_passive_active(:,i) = pfc(1:npass,i)*pf_turns(i)
 enddo
 

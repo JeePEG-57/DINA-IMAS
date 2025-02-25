@@ -71,7 +71,6 @@ type (ids_pulse_schedule)   :: psch
      
      
      common /v_turn/pf_turns(kf)
-     common /c_scr_data_c1/pf_c1(kf)
 
      common /c_one2d/alf,ro_alf
      common /c_q_test/q_test
@@ -83,11 +82,20 @@ character(len=132), pointer :: buffer(:) => NULL()
 integer :: io_unit = 1
 logical :: errorflag
 character(len=200):: gaps_r_str, gaps_z_str
+character(len=200):: ncircuit_str, dircircuit_str
+
+common /pf_circuit/ ncirc, dircirc
+integer :: ncirc(kf), dircirc(kf)
+
+! ! ITER
+!data ncirc(1:14) /1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12/
+!data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
+
+! ! MAST-U
+! data ncirc(1:25) /1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25/
+! data dircirc(1:25) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1/
 
 
-integer :: ncirc(30), dircirc(30)
-data ncirc(1:14) /1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12/
-data dircirc(1:14) /1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1/
 
 integer :: grid_n
 real*8 :: grid_rho, grid_alpha
@@ -119,6 +127,19 @@ call xml2eg_parse_memory(buffer, doc)
          call xml2eg_get(doc, 'grid_alpha', grid_alpha)
 
 
+      call xml2eg_get(doc, 'tpl_dir', tpl_dir, errorflag)
+if (errorflag) then
+   print*, 'tpl_dir reading error'
+   tpl_dir = 1.d0
+end if
+      
+
+      bt0_dir = -1.d0
+
+
+
+      if(kpr.eq.1)print *,' tpl_dir, bt0_dir ==', tpl_dir, bt0_dir
+
       n=grid_n
       n_c=n
       
@@ -149,9 +170,9 @@ call xml2eg_parse_memory(buffer, doc)
 	!read (49,*)tay_c,rs0_c,key_t11_c,bt0_c
         
 call xml2eg_get(doc, 'tau', tay_c)
-call xml2eg_get(doc, 'rs0', rs0_c)
+!call xml2eg_get(doc, 'rs0', rs0_c)
 call xml2eg_get(doc, 'key_t11', key_t11_c)
-call xml2eg_get(doc, 'bt0', bt0_c)
+!call xml2eg_get(doc, 'bt0', bt0_c)
 
 call xml2eg_get(doc, 'q_swth', q_test, errorflag)
 if (errorflag) then
@@ -182,6 +203,19 @@ call xml2eg_get(doc, 'gaps/gaps_z', gaps_z_str)
   print*, 'x gaps =', (x_gaps_c(i),i=1,n_ga_c)
   print*, 'y gaps =', (y_gaps_c(i),i=1,n_ga_c)
 
+
+call xml2eg_get(doc, 'circuit/ncirc', n_pfa)
+call xml2eg_get(doc, 'circuit/connection', ncircuit_str)
+call xml2eg_get(doc, 'circuit/direction', dircircuit_str)
+   
+   read(ncircuit_str,*)(ncirc(i),i=1,n_pfa)
+   read(dircircuit_str,*)(dircirc(i),i=1,n_pfa)
+   npf = maxval(ncirc)
+
+  print*, 'npf=', npf
+  print*, 'ncirc(i) =', (ncirc(i),i=1,n_pfa)
+  print*, 'dircirc(i) =', (dircirc(i),i=1,n_pfa)
+
 !        open (unit=1,file='tran_times.dat',form='formatted')
         !read (49,*)
         !read (49,*)tt_dina_c
@@ -203,7 +237,7 @@ call xml2eg_get(doc, 'tt_dina', tt_dina_c)
           n_t_c1 = size(psch%pf_active%coil(1)%resistance_additional%reference%time)
           t_t_c1(1:n_t_c1) = psch%pf_active%coil(1)%resistance_additional%reference%time(1:n_t_c1)
 
-          do i=1,npf
+          do i=1,kf
                 pf_t_c1(i,1:n_t_c1) = 0.d0
           enddo
 
@@ -437,20 +471,20 @@ deallocate(buffer)
         
         
 
-        pf(1:npf) = 0.d0
-
-        do i=1,size(psch%pf_active%coil)
-                if (associated(psch%pf_active%coil(i)%current%reference%data)) then
-                        pf(ncirc(i)) = dircirc(i)*psch%pf_active%coil(i)%current%reference%data(1)*tpl_dir*1.d-3*pf_turns(ncirc(i))
-                endif
-        enddo
-
-	do i=1,npf
-
-	  pf0(i)=pf(i)
-          pf_c1(i)=pf(i)
-
-	end do
+!         pf(1:npf) = 0.d0
+! 
+!         do i=1,size(psch%pf_active%coil)
+!                 if (associated(psch%pf_active%coil(i)%current%reference%data)) then
+!                         pf(ncirc(i)) = dircirc(i)*psch%pf_active%coil(i)%current%reference%data(1)*tpl_dir*1.d-3*pf_turns(ncirc(i))
+!                 endif
+!         enddo
+! 
+! 	do i=1,npf
+! 
+! 	  pf0(i)=pf(i)
+!           pf_c1(i)=pf(i)
+! 
+! 	end do
         
         
 2	FORMAT(/,2(2x,1PE10.3))

@@ -1,5 +1,5 @@
-!> equil2 is a subroutine to produce the DINA modeling in one time step
-!> with energy and particle 0D transport modules if time < tt_kavin2
+!> equil2 is a main subroutine to produce the DINA modeling in one time step
+!> with energy and particle 1D transport modules if time > tt_kavin
 
 	subroutine equil2()
 
@@ -185,7 +185,9 @@ c*** tt_rampup - SOF time
       
 !      k_ener_ext=1
       
-      if(kp.eq.1)print *,'k_ener_ext=',k_ener_ext
+      if(kpr.eq.1)print *,'k_ener_ext=',k_ener_ext
+      if(kpr.eq.1)print *,'k_dens_ext=',k_dens_ext
+      if(kpr.eq.1)print *,'k_ajb_ext=',k_ajb_ext
       
 
       	if(i_en2.eq.-1)then	
@@ -1034,6 +1036,8 @@ c	   read(*,*)
       
 2323	continue
 
+       kpr=1
+
 c*** !!!!! *** FROM KAVIN ******
 	   if(ntay.le.next+1)then
 ccc	      tt_h=1.e8
@@ -1574,6 +1578,7 @@ c
       omg_ppx=omg_ppx*0.99
       if(omg_ppx.le.0.5d0)omg_ppx=0.5d0
      
+      ! pprime and ffprime
       call ppx_pffx()
       call ppx_pffx_corr2()
 	   	      
@@ -2109,9 +2114,13 @@ c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 !       call solpsz()
       end if
 	CALL ENERGY(N)
+	if(k_ajb_ext.eq.1)CALL ajb_corr()
 	if(k_ener_ext.eq.1)CALL ENERGY_corr()
       if(k_dens_ext.eq.1)call dens_corr()
 	end if
+	
+	print *,' k_ener k_ener_ext',k_ener,k_ener_ext,k_dens_ext
+	
 
 	if(k_ener.ne.1)call enit(n)
       if(k_ener.eq.0)call prof_astra()
@@ -2275,12 +2284,12 @@ c!!!        call wr_kavin()
 
 	call time_out()
 
-      ttt_stop=50.e3
-!	if(kpr.eq.1)print *,' ttt_stop  tt',ttt_stop,tt
+      ttt_stop=15.5e8
+	if(kpr.eq.1)print *,' ttt_stop  tt',ttt_stop,tt
 
       if(tt.ge.ttt_stop)then
-!      print *,' tt GT ttt_stop',tt,ttt_stop
-!      stop
+      print *,' tt GT ttt_stop',tt,ttt_stop
+      stop
       end if
 
 c	if(tt.lt.t_end)go to 2323
@@ -2723,7 +2732,7 @@ c  calc. flux from plasma to vessel,PF loops and probes...
 
       dimension te0(*),tq0(*),te0_tran(*),tq0_tran(*)
       
-!      print *,' ENERGY_corr='      
+      print *,' FROM ENERGY_corr='      
       
 	do i=1,n
       TE0(I)=TE0_tran(I)
@@ -2750,7 +2759,7 @@ c  calc. flux from plasma to vessel,PF loops and probes...
 
       dimension pd0(*),pt0(*),pne(*),pd0_tran(*),pt0_tran(*),pne_tran(*)
       
-!      print *,' dens_corr='      
+      print *,' FROM dens_corr='      
       
 	do i=1,n
       pd0(I)=pd0_tran(I)
@@ -2779,7 +2788,7 @@ c  calc. flux from plasma to vessel,PF loops and probes...
 
       dimension ajb(*),sigk(*),ajb_tran(*),sigk_tran(*)
       
-!      print *,' ajb_corr='      
+      print *,' FROM ajb_corr='      
       
 	do i=1,n
       ajb(I)=ajb_tran(I)

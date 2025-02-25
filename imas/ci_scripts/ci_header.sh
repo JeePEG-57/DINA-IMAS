@@ -22,14 +22,13 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 
-module load IMAS/3.39.0-4.11.7-2020b
+#AL4
+module load IMAS/3.39.0-4.11.10-foss-2023b
 
-# Fixed memory leak in PyUAL
-#module use -p /home/ITER/hoeneno/public/imas/etc/modulefiles 
-#module load IMAS/3.30.0-4.8.6-1-g11197651
+#AL5
+#module load IMAS/3.39.0-2024.09-foss-2023b
 
-#module load IMAS/3.29.0-4.8.4
-# module load IMAS/3.26.0-4.5.0
+
 
 # KEPLER ENVIRONMENT VARIABLES
 
@@ -57,8 +56,10 @@ module load IMAS/3.39.0-4.11.7-2020b
 #fi
 
 
-module load FC2K
+module load FC2K/4.14.2-Java-11
+#FC2K/4.14.2-Java-21
 
+module load Viz/2.8.0-foss-2023b
 
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 #module load MATLAB/2018a
@@ -71,9 +72,8 @@ export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
 #module switch --force matplotlib/3.5.1-intel-2020b
 #module load Viz/2.7.0-intel-2020b
-module load Viz/2.7.2-intel-2020b 
-
-export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
+#module load Viz/2.7.2-intel-2020b 
+#export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
 # # FOR PYUAL (PYTHON WORKFLOWS)
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
@@ -101,15 +101,17 @@ if [ "$FCOMPILER" == "ifort" ]; then
   echo '$FCOMPILER set to intel'
   #module load intel/12.0.2
   #module load mpich2/3.1.3-intel
-  module load XMLlib/3.3.1-intel-2020b
+  module load XMLlib/3.3.2-intel-compilers-2023.2.1
 else
 # GFORTRAN
   echo '$FCOMPILER set to gfortran'
   #module load mpich2/3.1.3-gnu
-  module load XMLlib/3.3.1-GCC-10.2.0
+  #module load XMLlib/3.3.1-GCC-10.2.0
+  module load XMLlib/3.3.2-GCC-13.2.0
 fi
 
 
-module list -t
+module list
+#-t
 
 

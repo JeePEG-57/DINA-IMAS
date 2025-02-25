@@ -221,6 +221,7 @@ class DINA_Workflow:
       # DINA
       DINA(idslist)
       
+      
       # Magnetic controller
       KMC(idslist)
 

@@ -4,10 +4,10 @@ pyworkspace = ../python_wf/actors
 #kepler = true
 
 
-dina_actors = dinaimas21.xml dina_green.xml dinatransp_energy.xml dinatransp_density.xml dinatransp_bootcond.xml dinatransp_curdrive.xml dinatransp_heatsrc.xml
-contr_actors = kmc.xml kmc_2madiv.xml kmc_pfpo1_1a.xml kmc_pfpo1_1b.xml
-dina_regtest = dinaimas_circ.xml dina_equil.xml
-astra_actors = solps_imas.xml density_control_pellet.xml density_control_valve.xml astra_sources_pellet.xml astra_sources_valve.xml
+dina_actors = dina_imas dina_green dinatransp_energy dinatransp_density dinatransp_bootcond dinatransp_curdrive dinatransp_heatsrc
+contr_actors = kmc kmc_2madiv kmc_pfpo1_1a kmc_pfpo1_1b
+dina_regtest = dinaimas_circ dina_equil
+astra_actors = solps_imas density_control_pellet density_control_valve astra_sources_pellet astra_sources_valve
 
 
 ifdef kepler
@@ -23,46 +23,24 @@ else
 usepy = ""
 endif
 
-
+#ifdef pyworkspace
+#	mkdir -p $(pyworkspace)
+#endif
 
 all: $(dina_actors) $(contr_actors) $(astra_actors) $(dina_regtest)
-ifdef pyworkspace
-	mkdir -p $(pyworkspace)
-endif
-	$$FC2K/bin/fc2k -nocompile dinaimas21.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dina_green.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinatransp_energy.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinatransp_density.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinatransp_density_test.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinatransp_density_test0.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile density_control_pellet.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile density_control_valve.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile astra_sources_pellet.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile astra_sources_valve.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile astra_transp_density.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dina_equil.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinaimas_circ.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinatransp_bootcond.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinatransp_curdrive.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinatransp_heatsrc.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile dinasdn21.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile solps_imas.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile kmc.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile kmc_2madiv.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile kmc_pfpo1_1a.xml $(usekep) $(usepy)
-	$$FC2K/bin/fc2k -nocompile kmc_pfpo1_1b.xml $(usekep) $(usepy)
-
-ifdef kepler
-	cd $(KEPLER)/build-area && ant clean-cache && ant compile && ant make-kars
-endif
 
 fc2k:
 	@echo "This option is obsolete"
 
-
-dinaimas: dinaimas21.xml
+%: %.xml $(pyworkspace)
 	$$FC2K/bin/fc2k -nocompile $< $(usekep) $(usepy)
 
+$(pyworkspace):
+	mkdir -p $(pyworkspace)
+
+ifdef kepler
+	cd $(KEPLER)/build-area && ant clean-cache && ant compile && ant make-kars
+endif
 
 clean:
 	rm -rf $(pyworkspace)/*

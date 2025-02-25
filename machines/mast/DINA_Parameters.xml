@@ -1,13 +1,15 @@
 <?xml version="1.0" ?>
 <parameters>
    <kpr>1</kpr>
-   <tt_kavin>3500.0</tt_kavin>
-   <tau>2.0</tau>
-   <tau_sim>10.0</tau_sim>
-   <tau_dw>5.0</tau_dw>
-   <key_t11>1</key_t11>
+   <tt_kavin>100.0</tt_kavin>
+   <tau>1.0</tau>
+   <tau_sim>1.0</tau_sim>
+   <tau_dw>1.0</tau_dw>
+   <rs0>72.754740</rs0>
+   <bt0>4.8277381</bt0>
+   <tpl_dir>1.0</tpl_dir>
+   <key_t11>0</key_t11>
    <tt_dina>5000000000.0</tt_dina>
-   <tpl_dir>-1.0</tpl_dir>
    <p>0.001</p>
    <T_e>0.002</T_e>
    <T_i>0.002</T_i>
@@ -22,20 +24,20 @@
    <grid_n>50</grid_n>
    <grid_rho>0.5</grid_rho>
    <grid_alpha>0.95</grid_alpha>
-   <tt_rampup>30000</tt_rampup>
+   <tt_rampup>200</tt_rampup>
    <dt_end_sim>0.0</dt_end_sim>
    <dtpl_term_l>28</dtpl_term_l>
-   <cIp_end>1.4</cIp_end>
+   <cIp_end>0.1</cIp_end>
    <Ics1_eob>-29.0</Ics1_eob>
-   <rms_noise>0.6</rms_noise>
+   <rms_noise>0.0</rms_noise>
    <gaps>
       <ngaps>6</ngaps>
       <gaps_r> 424.5  556.5  828.06  750.95  533.15  405.99 </gaps_r>
       <gaps_z> -374.7  -425.4  46.65  299.71  458.04  77.77 </gaps_z>
    </gaps>
    <circuit>
-      <ncirc>14</ncirc>
-      <connection>1 2 3 3 4 5 6 7 8 9 10 11 12 12</connection>
-      <direction>1 1 1 1 1 1 1 1 1 1 1 1 1 -1</direction>
+     <ncirc>25</ncirc>
+     <connection> 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 </connection>
+     <direction> 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </direction>
    </circuit>
 </parameters>

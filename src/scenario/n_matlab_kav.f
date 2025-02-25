@@ -1,9 +1,5 @@
 !> equil is a subroutine to produce the DINA modeling in one time step
-!> with energy and particle 1D transport modules if time > tt_kavin
-
-
-!> equil is the main subroutine to produce the DINA modeling in one time step
-!> if time > tt_kavin
+!> with energy and particle 0D transport modules if time < tt_kavin
 
 
 	subroutine equil()                                                     
