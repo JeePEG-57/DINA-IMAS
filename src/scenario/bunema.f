@@ -1,4 +1,9 @@
 subroutine buneto(psi, nwb, nhb, sia, nwnh)
+    use, intrinsic :: iso_fortran_env, only: real64
+    implicit none
+    real(real64), dimension(:), intent(in) :: psi
+    real(real64), dimension(:), intent(out) :: sia
+    integer, intent(in) :: nwb, nhb, nwnh
     include 'double.inc'
     c**********************************************************************
     c**                                                                  **
@@ -20,7 +25,7 @@ subroutine buneto(psi, nwb, nhb, sia, nwnh)
     c**                                                                  **
     c**                                                                  **
     c**********************************************************************
-    dimension psi(nwnh), sia(nwnh)
+    real(real64), dimension(nwnh) :: psi, sia
     common /bunemn/ m, n, s, shift, dr, dz
 
     c Copy psi into sia row-wise
@@ -40,9 +45,13 @@ subroutine buneto(psi, nwb, nhb, sia, nwnh)
     call copy_sia_to_psi(sia, psi, n, nwb, nhb, m)
 
     return
-end
+end subroutine buneto
 
 subroutine rzpois(q, nwnh)
+    use, intrinsic :: iso_fortran_env, only: real64
+    implicit none
+    real(real64), dimension(:), intent(inout) :: q
+    integer, intent(in) :: nwnh
     c**********************************************************************
     c**                                                                  **
     c**     MAIN PROGRAM:  MHD FITTING CODE                              **
@@ -63,11 +72,8 @@ subroutine rzpois(q, nwnh)
     c**                                                                  **
     c**                                                                  **
     c**********************************************************************
-    implicit real*8 (a-h, o-z)
-
-    common /bunemn/ m, n, s, shift, dr, dz
-    dimension g(300), p(300), c(300), d(300), temp(300)
-    dimension q(nwnh)
+    real(real64), dimension(300) :: g, p, c, d, temp
+    real(real64), dimension(nwnh) :: q
     include 'double_bunema.inc'
 
     c Initialize arrays
@@ -137,13 +143,14 @@ subroutine rzpois(q, nwnh)
     end do
 
     return
-end
+end subroutine rzpois
 
 subroutine copy_psi_to_sia(psi, sia, nwb, nhb)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: nwb, nhb
-    real*8, dimension(:), intent(in) :: psi
-    real*8, dimension(:), intent(out) :: sia
+    real(real64), dimension(:), intent(in) :: psi
+    real(real64), dimension(:), intent(out) :: sia
     integer :: i, j, ii
 
     do i = 1, nwb
@@ -155,10 +162,11 @@ subroutine copy_psi_to_sia(psi, sia, nwb, nhb)
 end subroutine copy_psi_to_sia
 
 subroutine setup_rzpois(sia, ia, ju, nwb, m, shift, dr, s)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: ia, ju, nwb, m
-    real*8, intent(in) :: shift, dr, s
-    real*8, dimension(:), intent(inout) :: sia
+    real(real64), intent(in) :: shift, dr, s
+    real(real64), dimension(:), intent(inout) :: sia
     integer :: i
 
     do i = ia, ju, nwb
@@ -168,10 +176,11 @@ subroutine setup_rzpois(sia, ia, ju, nwb, m, shift, dr, s)
 end subroutine setup_rzpois
 
 subroutine copy_sia_to_psi(sia, psi, n, nwb, nhb, m)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: n, nwb, nhb, m
-    real*8, dimension(:), intent(in) :: sia
-    real*8, dimension(:), intent(out) :: psi
+    real(real64), dimension(:), intent(in) :: sia
+    real(real64), dimension(:), intent(out) :: psi
     integer :: i, j, ii
 
     do i = 2, n
@@ -183,9 +192,10 @@ subroutine copy_sia_to_psi(sia, psi, n, nwb, nhb, m)
 end subroutine copy_sia_to_psi
 
 subroutine initialize_arrays(arr1, arr2, size)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: size
-    real*8, dimension(size), intent(out) :: arr1, arr2
+    real(real64), dimension(size), intent(out) :: arr1, arr2
     integer :: i
 
     do i = 1, size
@@ -195,10 +205,11 @@ subroutine initialize_arrays(arr1, arr2, size)
 end subroutine initialize_arrays
 
 subroutine compute_temp(temp, m, shftdr)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: m
-    real*8, intent(in) :: shftdr
-    real*8, dimension(m), intent(out) :: temp
+    real(real64), intent(in) :: shftdr
+    real(real64), dimension(m), intent(out) :: temp
     integer :: i
 
     do i = 2, m
@@ -207,10 +218,11 @@ subroutine compute_temp(temp, m, shftdr)
 end subroutine compute_temp
 
 subroutine compute_c(c, lo, n, s)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: lo, n
-    real*8, intent(in) :: s
-    real*8, dimension(n), intent(out) :: c
+    real(real64), intent(in) :: s
+    real(real64), dimension(n), intent(out) :: c
     integer :: l
 
     l = lo / 2
@@ -225,10 +237,11 @@ subroutine compute_c(c, lo, n, s)
 end subroutine compute_c
 
 subroutine case_28(q, p, j2, iu, jt, jh, jd)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jt, jh, jd
-    real*8, dimension(:), intent(inout) :: q, p
-    real*8 :: pi
+    real(real64), dimension(:), intent(inout) :: q, p
+    real(real64) :: pi
     integer :: i
 
     do i = j2, iu
@@ -239,9 +252,10 @@ subroutine case_28(q, p, j2, iu, jt, jh, jd)
 end subroutine case_28
 
 subroutine case_26(q, p, j2, iu, jd)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jd
-    real*8, dimension(:), intent(inout) :: q, p
+    real(real64), dimension(:), intent(inout) :: q, p
     integer :: i
 
     do i = j2, iu
@@ -251,9 +265,10 @@ subroutine case_26(q, p, j2, iu, jd)
 end subroutine case_26
 
 subroutine case_24(q, p, j2, iu, jd, jh)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jd, jh
-    real*8, dimension(:), intent(inout) :: q, p
+    real(real64), dimension(:), intent(inout) :: q, p
     integer :: i
 
     do i = j2, iu
@@ -263,9 +278,10 @@ subroutine case_24(q, p, j2, iu, jd, jh)
 end subroutine case_24
 
 subroutine case_20(q, p, j2, iu, jd)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jd
-    real*8, dimension(:), intent(inout) :: q, p
+    real(real64), dimension(:), intent(inout) :: q, p
     integer :: i
 
     do i = j2, iu
@@ -275,13 +291,14 @@ subroutine case_20(q, p, j2, iu, jd)
 end subroutine case_20
 
 subroutine update_arrays(g, p, d, temp, c, lo, n, li, m, s, id)
+    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: lo, n, li, m
-    real*8, intent(in) :: s
-    real*8, dimension(:), intent(inout) :: g, p, d, temp, c
+    real(real64), intent(in) :: s
+    real(real64), dimension(:), intent(inout) :: g, p, d, temp, c
     integer, intent(inout) :: id
     integer :: l, i, ii, io
-    real*8 :: a, as
+    real(real64) :: a, as
 
     do l = lo, n, li
         a = c(l)
