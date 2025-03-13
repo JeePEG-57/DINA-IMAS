@@ -39,8 +39,6 @@ subroutine buneto(psi, nwb, nhb, sia, nwnh)
 
     call rzpois(sia, nwnh)
 
-    nwhbb = nwb * nhb
-
     c Copy sia back into psi column-wise
     call copy_sia_to_psi(sia, psi, n, nwb, nhb, m)
 
@@ -87,13 +85,11 @@ subroutine rzpois(q, nwnh)
 
     ju = (n - 1) * (m + 1)
     n222 = n / 2
-    c(n222) = 0.
+    c(n222) = 0._real64
     lo = n / 2
 
     c Compute c array values
     call compute_c(c, lo, n, s)
-
-    flag = 1.
 
     lo = n / 2
     ko = 2
@@ -170,8 +166,8 @@ subroutine setup_rzpois(sia, ia, ju, nwb, m, shift, dr, s)
     integer :: i
 
     do i = ia, ju, nwb
-        sia(i - m + 1) = sia(i - m + 1) + (.5 + .25 / (1. + shift / dr)) * sia(i - m) / s
-        sia(i - 1) = sia(i - 1) + (.5 - .25 / (m - 1 + shift / dr)) * sia(i) / s
+        sia(i - m + 1) = sia(i - m + 1) + (.5_real64 + .25_real64 / (1._real64 + shift / dr)) * sia(i - m) / s
+        sia(i - 1) = sia(i - 1) + (.5_real64 - .25_real64 / (m - 1 + shift / dr)) * sia(i) / s
     end do
 end subroutine setup_rzpois
 
@@ -199,8 +195,8 @@ subroutine initialize_arrays(arr1, arr2, size)
     integer :: i
 
     do i = 1, size
-        arr1(i) = 0.
-        arr2(i) = 0.
+        arr1(i) = 0._real64
+        arr2(i) = 0._real64
     end do
 end subroutine initialize_arrays
 
@@ -213,7 +209,7 @@ subroutine compute_temp(temp, m, shftdr)
     integer :: i
 
     do i = 2, m
-        temp(i) = 1. - .5 / (i + shftdr - 1.)
+        temp(i) = 1._real64 - .5_real64 / (i + shftdr - 1._real64)
     end do
 end subroutine compute_temp
 
@@ -226,14 +222,14 @@ subroutine compute_c(c, lo, n, s)
     integer :: l
 
     l = lo / 2
-    c(l) = sqrt(2. + c(lo))
+    c(l) = sqrt(2._real64 + c(lo))
     lo = l
     c(n - l) = -c(l)
     l = l + 2 * lo
     if ((2 * l / n) * (2 * lo - 3)) then
         c(l) = (c(l + lo) + c(l - lo)) / c(lo)
     end if
-    c(l - 1) = 1. / (2. + s * (2. - c(l - 1)))
+    c(l - 1) = 1._real64 / (2._real64 + s * (2._real64 - c(l - 1)))
 end subroutine compute_c
 
 subroutine case_28(q, p, j2, iu, jt, jh, jd)
@@ -259,7 +255,7 @@ subroutine case_26(q, p, j2, iu, jd)
     integer :: i
 
     do i = j2, iu
-        p(i - j2) = 2. * q(i)
+        p(i - j2) = 2._real64 * q(i)
         q(i) = q(i + jd) + q(i - jd)
     end do
 end subroutine case_26
@@ -272,7 +268,7 @@ subroutine case_24(q, p, j2, iu, jd, jh)
     integer :: i
 
     do i = j2, iu
-        p(i - j2) = 2. * q(i) + q(i + jd) + q(i - jd)
+        p(i - j2) = 2._real64 * q(i) + q(i + jd) + q(i - jd)
         q(i) = q(i) - q(i + jh) - q(i - jh)
     end do
 end subroutine case_24
@@ -285,8 +281,8 @@ subroutine case_20(q, p, j2, iu, jd)
     integer :: i
 
     do i = j2, iu
-        p(i - j2) = 2. * q(i) + q(i + jd) + q(i - jd)
-        q(i) = 0.
+        p(i - j2) = 2._real64 * q(i) + q(i + jd) + q(i - jd)
+        q(i) = 0._real64
     end do
 end subroutine case_20
 
@@ -306,15 +302,15 @@ subroutine update_arrays(g, p, d, temp, c, lo, n, li, m, s, id)
         do i = 2, m
             p(i) = as * p(i)
             d(i) = a * temp(i)
-            g(i) = 2 * a - d(i)
+            g(i) = 2._real64 * a - d(i)
         end do
-        g(2) = 0.
-        d(m) = 0.
+        g(2) = 0._real64
+        d(m) = 0._real64
 
         ii = 2 * id
         io = ii + 1
         do i = io, m, ii
-            a = 1. / (1. - d(i) * g(i + id) - g(i) * d(i - id))
+            a = 1._real64 / (1._real64 - d(i) * g(i + id) - g(i) * d(i - id))
             p(i) = a * (p(i) + d(i) * p(i + id) + g(i) * p(i - id))
             d(i) = d(i) * d(i + id) * a
             g(i) = g(i) * g(i - id) * a
