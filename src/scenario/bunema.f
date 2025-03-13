@@ -1,9 +1,17 @@
-      subroutine buneto(psi, nwb, nhb, sia, nwnh)
+subroutine buneto(psi, nwb, nhb, sia, nwnh)
       implicit none
       double precision, dimension(:), intent(in) :: psi
       double precision, dimension(:), intent(out) :: sia
       integer, intent(in) :: nwb, nhb, nwnh
       include 'double.inc'
+      integer :: ia, ju
+      interface
+          subroutine rzpois(q, nwnh)
+              implicit none
+              double precision, dimension(:), intent(inout) :: q
+              integer, intent(in) :: nwnh
+          end subroutine rzpois
+      end interface
 c**********************************************************************
 c**                                                                  **
 c**     MAIN PROGRAM:  MHD FITTING CODE                              **
@@ -26,6 +34,8 @@ c**                                                                  **
 c**********************************************************************
       double precision, dimension(nwnh) :: psi, sia
       common /bunemn/ m, n, s, shift, dr, dz
+      integer :: m, n
+      double precision :: s, shift, dr, dz
 
 c Copy psi into sia row-wise
       call copy_psi_to_sia(psi, sia, nwb, nhb)
@@ -48,6 +58,8 @@ c Copy sia back into psi column-wise
       implicit none
       double precision, dimension(:), intent(inout) :: q
       integer, intent(in) :: nwnh
+      integer :: ju, n222, lo, ko, id, li, jd, jh, jt, ji, jo, j2, iu, i, j, k4
+      double precision :: shftdr
 c**********************************************************************
 c**                                                                  **
 c**     MAIN PROGRAM:  MHD FITTING CODE                              **
@@ -73,7 +85,7 @@ c**********************************************************************
       include 'double_bunema.inc'
 
 c Initialize arrays
-      call initialize_arrays(g, p, d, 300)
+      call initialize_arrays(g, p, 300)
       call initialize_arrays(temp, c, 300)
 
       shftdr = shift / dr
