@@ -1,8 +1,7 @@
 subroutine buneto(psi, nwb, nhb, sia, nwnh)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
-    real(real64), dimension(:), intent(in) :: psi
-    real(real64), dimension(:), intent(out) :: sia
+    double precision, dimension(:), intent(in) :: psi
+    double precision, dimension(:), intent(out) :: sia
     integer, intent(in) :: nwb, nhb, nwnh
     include 'double.inc'
     c**********************************************************************
@@ -25,7 +24,7 @@ subroutine buneto(psi, nwb, nhb, sia, nwnh)
     c**                                                                  **
     c**                                                                  **
     c**********************************************************************
-    real(real64), dimension(nwnh) :: psi, sia
+    double precision, dimension(nwnh) :: psi, sia
     common /bunemn/ m, n, s, shift, dr, dz
 
     c Copy psi into sia row-wise
@@ -46,9 +45,8 @@ subroutine buneto(psi, nwb, nhb, sia, nwnh)
 end subroutine buneto
 
 subroutine rzpois(q, nwnh)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
-    real(real64), dimension(:), intent(inout) :: q
+    double precision, dimension(:), intent(inout) :: q
     integer, intent(in) :: nwnh
     c**********************************************************************
     c**                                                                  **
@@ -70,8 +68,8 @@ subroutine rzpois(q, nwnh)
     c**                                                                  **
     c**                                                                  **
     c**********************************************************************
-    real(real64), dimension(300) :: g, p, c, d, temp
-    real(real64), dimension(nwnh) :: q
+    double precision, dimension(300) :: g, p, c, d, temp
+    double precision, dimension(nwnh) :: q
     include 'double_bunema.inc'
 
     c Initialize arrays
@@ -85,7 +83,7 @@ subroutine rzpois(q, nwnh)
 
     ju = (n - 1) * (m + 1)
     n222 = n / 2
-    c(n222) = 0._real64
+    c(n222) = 0.d0
     lo = n / 2
 
     c Compute c array values
@@ -142,11 +140,10 @@ subroutine rzpois(q, nwnh)
 end subroutine rzpois
 
 subroutine copy_psi_to_sia(psi, sia, nwb, nhb)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: nwb, nhb
-    real(real64), dimension(:), intent(in) :: psi
-    real(real64), dimension(:), intent(out) :: sia
+    double precision, dimension(:), intent(in) :: psi
+    double precision, dimension(:), intent(out) :: sia
     integer :: i, j, ii
 
     do i = 1, nwb
@@ -158,25 +155,23 @@ subroutine copy_psi_to_sia(psi, sia, nwb, nhb)
 end subroutine copy_psi_to_sia
 
 subroutine setup_rzpois(sia, ia, ju, nwb, m, shift, dr, s)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: ia, ju, nwb, m
-    real(real64), intent(in) :: shift, dr, s
-    real(real64), dimension(:), intent(inout) :: sia
+    double precision, intent(in) :: shift, dr, s
+    double precision, dimension(:), intent(inout) :: sia
     integer :: i
 
     do i = ia, ju, nwb
-        sia(i - m + 1) = sia(i - m + 1) + (.5_real64 + .25_real64 / (1._real64 + shift / dr)) * sia(i - m) / s
-        sia(i - 1) = sia(i - 1) + (.5_real64 - .25_real64 / (m - 1 + shift / dr)) * sia(i) / s
+        sia(i - m + 1) = sia(i - m + 1) + (.5d0 + .25d0 / (1.d0 + shift / dr)) * sia(i - m) / s
+        sia(i - 1) = sia(i - 1) + (.5d0 - .25d0 / (m - 1 + shift / dr)) * sia(i) / s
     end do
 end subroutine setup_rzpois
 
 subroutine copy_sia_to_psi(sia, psi, n, nwb, nhb, m)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: n, nwb, nhb, m
-    real(real64), dimension(:), intent(in) :: sia
-    real(real64), dimension(:), intent(out) :: psi
+    double precision, dimension(:), intent(in) :: sia
+    double precision, dimension(:), intent(out) :: psi
     integer :: i, j, ii
 
     do i = 2, n
@@ -188,56 +183,52 @@ subroutine copy_sia_to_psi(sia, psi, n, nwb, nhb, m)
 end subroutine copy_sia_to_psi
 
 subroutine initialize_arrays(arr1, arr2, size)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: size
-    real(real64), dimension(size), intent(out) :: arr1, arr2
+    double precision, dimension(size), intent(out) :: arr1, arr2
     integer :: i
 
     do i = 1, size
-        arr1(i) = 0._real64
-        arr2(i) = 0._real64
+        arr1(i) = 0.d0
+        arr2(i) = 0.d0
     end do
 end subroutine initialize_arrays
 
 subroutine compute_temp(temp, m, shftdr)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: m
-    real(real64), intent(in) :: shftdr
-    real(real64), dimension(m), intent(out) :: temp
+    double precision, intent(in) :: shftdr
+    double precision, dimension(m), intent(out) :: temp
     integer :: i
 
     do i = 2, m
-        temp(i) = 1._real64 - .5_real64 / (i + shftdr - 1._real64)
+        temp(i) = 1.d0 - .5d0 / (i + shftdr - 1.d0)
     end do
 end subroutine compute_temp
 
 subroutine compute_c(c, lo, n, s)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: lo, n
-    real(real64), intent(in) :: s
-    real(real64), dimension(n), intent(out) :: c
+    double precision, intent(in) :: s
+    double precision, dimension(n), intent(out) :: c
     integer :: l
 
     l = lo / 2
-    c(l) = sqrt(2._real64 + c(lo))
+    c(l) = sqrt(2.d0 + c(lo))
     lo = l
     c(n - l) = -c(l)
     l = l + 2 * lo
     if ((2 * l / n) * (2 * lo - 3)) then
         c(l) = (c(l + lo) + c(l - lo)) / c(lo)
     end if
-    c(l - 1) = 1._real64 / (2._real64 + s * (2._real64 - c(l - 1)))
+    c(l - 1) = 1.d0 / (2.d0 + s * (2.d0 - c(l - 1)))
 end subroutine compute_c
 
 subroutine case_28(q, p, j2, iu, jt, jh, jd)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jt, jh, jd
-    real(real64), dimension(:), intent(inout) :: q, p
-    real(real64) :: pi
+    double precision, dimension(:), intent(inout) :: q, p
+    double precision :: pi
     integer :: i
 
     do i = j2, iu
@@ -248,53 +239,49 @@ subroutine case_28(q, p, j2, iu, jt, jh, jd)
 end subroutine case_28
 
 subroutine case_26(q, p, j2, iu, jd)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jd
-    real(real64), dimension(:), intent(inout) :: q, p
+    double precision, dimension(:), intent(inout) :: q, p
     integer :: i
 
     do i = j2, iu
-        p(i - j2) = 2._real64 * q(i)
+        p(i - j2) = 2.d0 * q(i)
         q(i) = q(i + jd) + q(i - jd)
     end do
 end subroutine case_26
 
 subroutine case_24(q, p, j2, iu, jd, jh)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jd, jh
-    real(real64), dimension(:), intent(inout) :: q, p
+    double precision, dimension(:), intent(inout) :: q, p
     integer :: i
 
     do i = j2, iu
-        p(i - j2) = 2._real64 * q(i) + q(i + jd) + q(i - jd)
+        p(i - j2) = 2.d0 * q(i) + q(i + jd) + q(i - jd)
         q(i) = q(i) - q(i + jh) - q(i - jh)
     end do
 end subroutine case_24
 
 subroutine case_20(q, p, j2, iu, jd)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: j2, iu, jd
-    real(real64), dimension(:), intent(inout) :: q, p
+    double precision, dimension(:), intent(inout) :: q, p
     integer :: i
 
     do i = j2, iu
-        p(i - j2) = 2._real64 * q(i) + q(i + jd) + q(i - jd)
-        q(i) = 0._real64
+        p(i - j2) = 2.d0 * q(i) + q(i + jd) + q(i - jd)
+        q(i) = 0.d0
     end do
 end subroutine case_20
 
 subroutine update_arrays(g, p, d, temp, c, lo, n, li, m, s, id)
-    use, intrinsic :: iso_fortran_env, only: real64
     implicit none
     integer, intent(in) :: lo, n, li, m
-    real(real64), intent(in) :: s
-    real(real64), dimension(:), intent(inout) :: g, p, d, temp, c
+    double precision, intent(in) :: s
+    double precision, dimension(:), intent(inout) :: g, p, d, temp, c
     integer, intent(inout) :: id
     integer :: l, i, ii, io
-    real(real64) :: a, as
+    double precision :: a, as
 
     do l = lo, n, li
         a = c(l)
@@ -302,15 +289,15 @@ subroutine update_arrays(g, p, d, temp, c, lo, n, li, m, s, id)
         do i = 2, m
             p(i) = as * p(i)
             d(i) = a * temp(i)
-            g(i) = 2._real64 * a - d(i)
+            g(i) = 2.d0 * a - d(i)
         end do
-        g(2) = 0._real64
-        d(m) = 0._real64
+        g(2) = 0.d0
+        d(m) = 0.d0
 
         ii = 2 * id
         io = ii + 1
         do i = io, m, ii
-            a = 1._real64 / (1._real64 - d(i) * g(i + id) - g(i) * d(i - id))
+            a = 1.d0 / (1.d0 - d(i) * g(i + id) - g(i) * d(i - id))
             p(i) = a * (p(i) + d(i) * p(i + id) + g(i) * p(i - id))
             d(i) = d(i) * d(i + id) * a
             g(i) = g(i) * g(i - id) * a
