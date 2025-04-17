@@ -1,5 +1,5 @@
       subroutine buneto(psi,nwb,nhb,sia,nwnh)
-	  include 'double.inc'
+	   include 'double.inc'
 c**********************************************************************
 c**                                                                  **
 c**     MAIN PROGRAM:  MHD FITTING CODE                              **
@@ -20,7 +20,6 @@ c**          05 03/85..........first created                         **
 c**          16 04/25..........refactored (loops improved)            **
 c**                                                                  **
 c**********************************************************************
-      
       dimension   psi(nwnh), sia(nwnh)
       common/bunemn/m,n,s,shift,dr,dz
 
@@ -75,8 +74,7 @@ c**          05 03/85..........first created                         **
 c**          16 04/25..........refactored (goto removed)             **
 c**                                                                  **
 c**********************************************************************
-	implicit real *8 (a-h,o-z)
-
+	   implicit real *8 (a-h,o-z)
       common/bunemn/m,n,s,shift,dr,dz
       dimension g(300),p(300),c(300),d(300),temp(300)
       dimension q(nwnh)
@@ -130,11 +128,11 @@ c     Main computation loop
 
              select case (k4)
                 case (4)
-                    call case_28(q,p,j2,iu,jt,jh,jd,j)   
+                    call case_28(q,p,j2,iu,jt,jh,jd,j)
                 case (3)
-                    call case_26(q,p,j2,iu,jd,j)   
+                    call case_26(q,p,j2,iu,jd,j)
                 case (2)
-                    call case_24(q,p,j2,iu,jh,jd,j) 
+                    call case_24(q,p,j2,iu,jh,jd,j)
                 case (1)
                     call case_20(q,p,j2,iu,jd,j)
             end select
@@ -164,6 +162,7 @@ c           Update arrays
       end
 
       subroutine compute_c(c,lo,n,s)
+         implicit real *8 (a-h,o-z)
          dimension c(300)
 
          i1=1
@@ -193,6 +192,7 @@ c           Update arrays
       end
 
       subroutine case_28(q,p,j2,iu,jt,jh,jd,j)
+         implicit real *8 (a-h,o-z)
          dimension q(300),p(300)
          do i = j2,iu
             pi = q(i)-q(i+jt)-q(i-jt)
@@ -202,6 +202,7 @@ c           Update arrays
       end
 
       subroutine case_26(q,p,j2,iu,jd,j)
+         implicit real *8 (a-h,o-z)
          dimension q(300),p(300)
          do i = j2,iu
             p(i-j) = 2.*q(i)
@@ -210,6 +211,7 @@ c           Update arrays
       end
 
       subroutine case_24(q,p,j2,iu,jh,jd,j)
+         implicit real *8 (a-h,o-z)
          dimension q(300),p(300)
          do i = j2,iu
             p(i-j) = 2.*q(i)+q(i+jd)+q(i-jd)
@@ -218,6 +220,7 @@ c           Update arrays
       end
 
       subroutine case_20(q,p,j2,iu,jd,j)
+         implicit real *8 (a-h,o-z)
          dimension q(300),p(300)
          do i = j2,iu
            p(i-j) = 2.*q(i)+q(i+jd)+q(i-jd)
@@ -226,6 +229,7 @@ c           Update arrays
       end
 
       subroutine update_arrays(g, p, d, temp, c, lo, n, li, m, s, id)
+         implicit real *8 (a-h,o-z)
          dimension g(300),p(300),c(300),d(300),temp(300)
          do l = lo, n, li
            a = c(l)
@@ -260,6 +264,4 @@ c           Update arrays
            end do
          end do
       end subroutine update_arrays
-
-
 
