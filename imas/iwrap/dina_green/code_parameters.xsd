@@ -1,0 +1,50 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   elementFormDefault="qualified">
+   <xs:annotation>
+     <xs:documentation>Code parameters for DINA Green generation actor</xs:documentation>
+   </xs:annotation>
+ 
+    <xs:simpleType name="integer_flag">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="0"/>
+	   <xs:maxInclusive value="1"/>
+     </xs:restriction>
+   </xs:simpleType>
+ 
+   <xs:simpleType name="float_dl">
+     <xs:restriction base="xs:float">
+       <xs:minInclusive value="0.01"/>
+     </xs:restriction>
+   </xs:simpleType>
+
+   <!-- document element -->
+   <xs:element name="parameters">
+     <xs:complexType>
+       <xs:all>
+	     <xs:element ref="kpr" minOccurs="0"/>
+         <xs:element ref="dr" minOccurs="0"/>
+         <xs:element ref="dz" minOccurs="0"/>
+       </xs:all>
+     </xs:complexType>
+   </xs:element>
+ 
+   <xs:element name="kpr" type="integer_flag">
+      <xs:annotation>
+          <xs:documentation>Print diagnostic output to console</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+ 
+   <xs:element name="dr" type="float_dl">
+      <xs:annotation>
+          <xs:documentation>Horizontal size of filaments, m</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+   <xs:element name="dz" type="float_dl">
+      <xs:annotation>
+          <xs:documentation>Vertical size of filaments, m</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+    
+</xs:schema>
+ 

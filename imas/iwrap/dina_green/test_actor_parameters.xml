@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<parameters>
+  <input_equilibrium>
+    <user></user>
+    <database></database>
+  </input_equilibrium>
+  <input_pf_active>
+    <user>public</user>
+    <database>ITER_MD</database>
+    <pulse>111001</pulse>
+    <run>203</run>
+  </input_pf_active>
+  <input_pf_passive>
+    <user>public</user>
+    <database>ITER_MD</database>
+    <pulse>115005</pulse>
+    <run>2</run>
+  </input_pf_passive>
+  <input_magnetics>
+    <user></user>
+    <database></database>
+  </input_magnetics>
+  <output>
+    <user></user>
+    <database>test</database>
+    <pulse>999</pulse> 
+    <run>1</run>
+  </output>
+  <grid>
+    <nr>65</nr>
+	<nz>129</nz>
+    <r1>3.0</r1>
+	<r2>9.0</r2>
+    <z1>-6.0</z1>
+	<z2>6.0</z2>
+  </grid>
+</parameters>
+

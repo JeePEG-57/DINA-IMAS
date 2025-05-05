@@ -1,0 +1,295 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   elementFormDefault="qualified">
+   <xs:annotation>
+     <xs:documentation>Code parameters for DINA-Scenario actor generation</xs:documentation>
+   </xs:annotation>
+ 
+   <xs:simpleType name="integer_flag">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="0"/>
+	   <xs:maxInclusive value="1"/>
+     </xs:restriction>
+   </xs:simpleType>
+ 
+   <xs:simpleType name="integer_general">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="0"/>
+     </xs:restriction>
+   </xs:simpleType>
+ 
+   <xs:simpleType name="float_general">
+     <xs:restriction base="xs:float">
+     </xs:restriction>
+   </xs:simpleType>
+
+   <!-- document element -->
+   <xs:element name="parameters">
+     <xs:complexType>
+       <xs:all>
+	     <xs:element ref="kpr" minOccurs="0"/>
+         <xs:element ref="tt_kavin" minOccurs="0"/>
+		 <xs:element ref="tau" minOccurs="0"/>
+         <xs:element ref="tau_sim" minOccurs="0"/>
+		 <xs:element ref="tau_dw" minOccurs="0"/>
+		 <xs:element ref="key_t11" minOccurs="0"/>
+		 <xs:element ref="tt_dina" minOccurs="0"/>
+		 <xs:element ref="tpl_dir" minOccurs="0"/>
+		 <xs:element ref="p" minOccurs="0"/>
+		 <xs:element ref="T_e" minOccurs="0"/>
+		 <xs:element ref="T_i" minOccurs="0"/>
+		 <xs:element ref="gam" minOccurs="0"/>
+		 <xs:element ref="gain_puff" minOccurs="0"/>
+		 <xs:element ref="bohm_gbohm" minOccurs="0"/>
+		 <xs:element ref="q_swth" minOccurs="0"/>
+		 <xs:element ref="pcchp_end" minOccurs="0"/>
+		 <xs:element ref="ener_ext" minOccurs="0"/>
+		 <xs:element ref="dens_ext" minOccurs="0"/>
+		 <xs:element ref="ajb_ext" minOccurs="0"/>
+		 <xs:element ref="grid_n" minOccurs="0"/>
+		 <xs:element ref="grid_rho" minOccurs="0"/>
+		 <xs:element ref="grid_alpha" minOccurs="0"/>
+		 <xs:element ref="tt_rampup" minOccurs="0"/>
+		 <xs:element ref="dt_end_sim" minOccurs="0"/>
+		 <xs:element ref="dtpl_term_l" minOccurs="0"/>
+		 <xs:element ref="cIp_end" minOccurs="0"/>
+		 <xs:element ref="Ics1_eob" minOccurs="0"/>
+		 <xs:element ref="rms_noise" minOccurs="0"/>
+		 <xs:element ref="gaps" minOccurs="0"/>
+		 <xs:element ref="circuit" minOccurs="0"/>
+       </xs:all>
+     </xs:complexType>
+   </xs:element>
+ 
+   <xs:complexType name="gaps_description">
+	   <xs:all>
+		 <xs:element ref="ngaps" minOccurs="0"/>
+		 <xs:element ref="gaps_r" minOccurs="0"/>
+		 <xs:element ref="gaps_z" minOccurs="0"/>
+	   </xs:all>
+   </xs:complexType>
+   
+   <xs:complexType name="circuit_description">
+       <xs:all>
+	     <xs:element ref="ncirc" minOccurs="0"/>
+         <xs:element ref="connection" minOccurs="0"/>
+		 <xs:element ref="direction" minOccurs="0"/>
+       </xs:all>
+   </xs:complexType>
+ 
+   <xs:element name="ngaps" type="integer_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+ 
+   <xs:element name="gaps_r" type="xs:string">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="gaps_z" type="xs:string">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+ 
+   <xs:element name="ncirc" type="integer_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+   <xs:element name="connection" type="xs:string">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="direction" type="xs:string">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+   <xs:element name="kpr" type="integer_flag">
+      <xs:annotation>
+          <xs:documentation>Print diagnostic output to console</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+ 
+   <xs:element name="tt_kavin" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+   <xs:element name="tau" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="tau_sim" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="tau_dw" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="key_t11" type="integer_flag">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="tt_dina" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="tpl_dir" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="p" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="T_e" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="T_i" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="gam" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="gain_puff" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="bohm_gbohm" type="integer_flag">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="q_swth" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="pcchp_end" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="ener_ext" type="integer_flag">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+    
+   <xs:element name="dens_ext" type="integer_flag">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="ajb_ext" type="integer_flag">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="grid_n" type="integer_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="grid_rho" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="grid_alpha" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="tt_rampup" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="dt_end_sim" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="dtpl_term_l" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="cIp_end" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="Ics1_eob" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="rms_noise" type="float_general">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="gaps" type="gaps_description">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="circuit" type="circuit_description">
+      <xs:annotation>
+          <xs:documentation></xs:documentation>
+      </xs:annotation>
+   </xs:element>
+</xs:schema>
+ 

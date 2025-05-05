@@ -1,0 +1,274 @@
+
+program DINA_GREEN_test
+
+use ids_schemas
+use ids_routines
+
+use f90_file_reader, only: file2buffer
+use xml2eg_mdl, only: xml2eg_parse_memory, xml2eg_get, type_xml2eg_document, xml2eg_free_doc
+
+use dina_green
+
+implicit none
+
+
+
+
+type (ids_em_coupling) :: em_coupling
+type (ids_equilibrium) :: equilibrium
+type (ids_magnetics) :: magnetics
+type (ids_pf_active) :: pf_active
+type (ids_pf_passive) :: pf_passive
+
+
+integer :: ibackend = 12
+
+
+! IDS location data
+character (len=255) :: user_default
+
+character (len=255) :: user_out='', database_out
+integer :: pulse_out=-1, run_out=-1
+
+character (len=255) :: user_pfa='', database_pfa
+integer :: pulse_pfa=-1, run_pfa=-1
+
+character (len=255) :: user_pfp='', database_pfp
+integer :: pulse_pfp=-1, run_pfp=-1
+
+character (len=255) :: user_mag='', database_mag
+integer :: pulse_mag=-1, run_mag=-1
+
+character (len=255) :: user_eq='', database_eq
+integer :: pulse_eq=-1, run_eq=-1
+
+
+
+integer :: i
+integer :: nr, nz
+real (ids_real) :: r1, r2, z1, z2, dr, dz
+
+integer :: idx_a, idx_p, idx_m, idx_e, idx
+integer :: interp_start = 1
+real (ids_real) :: time_start
+
+character(len=30) :: ConfigFile
+type(type_xml2eg_document) :: doc
+character(len=132), pointer :: buffer(:) => NULL()
+integer :: io_unit = 1
+
+! For timing tests
+INTEGER :: clock_start,clock_end,clock_rate
+
+
+ type(ids_parameters_input) :: codeparam
+ integer :: error_flag
+ character(len=:), pointer :: error_message
+
+
+
+nr = 65
+nz = 129
+r1 = 3.d0
+r2 = 9.d0
+z1 = -6.d0
+z2 = 6.d0
+
+
+
+call getenv("USER", user_default)
+
+
+
+if (command_argument_count().eq.0) then
+  print *,'Not enough arguments. First argument must be the name of a workflow config XML file!'
+  stop
+endif
+
+do i = 1, command_argument_count()
+  call get_command_argument(i, ConfigFile)
+end do
+
+
+print *,' Using workflow config file: ', ConfigFile
+
+
+call file2buffer(ConfigFile, io_unit, buffer)
+call xml2eg_parse_memory(buffer, doc)
+  
+  call xml2eg_get(doc, 'input_pf_active/user', user_pfa)
+  call xml2eg_get(doc, 'input_pf_active/database', database_pfa)
+  call xml2eg_get(doc, 'input_pf_active/pulse', pulse_pfa)
+  call xml2eg_get(doc, 'input_pf_active/run', run_pfa)
+
+  call xml2eg_get(doc, 'input_pf_passive/user', user_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/database', database_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/pulse', pulse_pfp)
+  call xml2eg_get(doc, 'input_pf_passive/run', run_pfp)
+
+  call xml2eg_get(doc, 'input_magnetics/user', user_mag)
+  call xml2eg_get(doc, 'input_magnetics/database', database_mag)
+  call xml2eg_get(doc, 'input_magnetics/pulse', pulse_mag)
+  call xml2eg_get(doc, 'input_magnetics/run', run_mag)
+
+  call xml2eg_get(doc, 'input_equilibrium/user', user_eq)
+  call xml2eg_get(doc, 'input_equilibrium/database', database_eq)
+  call xml2eg_get(doc, 'input_equilibrium/pulse', pulse_eq)
+  call xml2eg_get(doc, 'input_equilibrium/run', run_eq)
+
+  call xml2eg_get(doc, 'output/user', user_out)
+  call xml2eg_get(doc, 'output/database', database_out)
+  call xml2eg_get(doc, 'output/pulse', pulse_out)
+  call xml2eg_get(doc, 'output/run', run_out)
+
+  call xml2eg_get(doc, 'grid/nr', nr)
+  call xml2eg_get(doc, 'grid/nz', nz)
+  call xml2eg_get(doc, 'grid/r1', r1)
+  call xml2eg_get(doc, 'grid/r2', r2)
+  call xml2eg_get(doc, 'grid/z1', z1)
+  call xml2eg_get(doc, 'grid/z2', z2)
+
+
+call xml2eg_free_doc(doc)
+deallocate(buffer)
+
+
+if (trim(user_pfa).eq.'') user_pfa = user_default
+if (trim(user_pfp).eq.'') user_pfp = user_default
+if (trim(user_mag).eq.'') user_mag = user_default
+if (trim(user_eq).eq.'') user_eq = user_default
+if (trim(user_out).eq.'') user_out = user_default
+
+
+
+print *,' Equilibrium user, database, pulse, run =', trim(user_eq), trim(database_eq), pulse_eq, run_eq
+
+print *,' PF Active user, database, pulse, run =', trim(user_pfa), trim(database_pfa), pulse_pfa, run_pfa
+print *,' PF Passive user, database, pulse, run =', trim(user_pfp), trim(database_pfp), pulse_pfp, run_pfp
+print *,' Magnetics user, database, pulse, run =', trim(user_mag), trim(database_mag), pulse_mag, run_mag
+
+print *,' Output user =', trim(user_out), trim(database_out), pulse_out, run_out
+
+
+
+print *,' nr, nz =', nr, nz
+print *,' r1, r2 =', r1, r2
+print *,' z1, z2 =', z1, z2
+
+
+
+
+interp_start = 1
+time_start = 0.d0
+
+if (pulse_eq.gt.-1) then
+write(*,*) 'Using grid from equilibrium IDS'
+
+call imas_open_env('ids',pulse_eq,run_eq,idx_e,user_eq,database_eq,'3')
+call ids_get_slice(idx_e,"equilibrium",equilibrium, time_start, interp_start)
+call imas_close(idx_e)
+
+else
+write(*,*) 'No equilibrium IDS, using grid parameters'
+
+equilibrium%ids_properties%homogeneous_time=1
+
+allocate(equilibrium%time(1))
+allocate(equilibrium%time_slice(1))
+equilibrium%time(1) = 0.d0
+allocate(equilibrium%time_slice(1)%profiles_2d(1))
+equilibrium%time_slice(1)%profiles_2d(1)%type%index = 0
+! Grid dimensions
+equilibrium%time_slice(1)%profiles_2d(1)%grid_type%index = 1 ! Rectangular a la eqdsk
+allocate(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(nr))
+allocate(equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(nz))
+
+dr = (r2 - r1)/nr
+dz = (z2 - z1)/nz
+do i=1,nr
+  equilibrium%time_slice(1)%profiles_2d(1)%grid%dim1(i) = r1 + i*dr
+enddo
+do i=1,nz
+  equilibrium%time_slice(1)%profiles_2d(1)%grid%dim2(i) = z1 + i*dz
+enddo
+
+endif
+
+call imas_open_env('ids',pulse_pfa,run_pfa,idx_a,user_pfa,database_pfa,'3')
+call ids_get_slice(idx_a,"pf_active",pf_active, time_start, interp_start)
+call imas_close(idx_a)
+
+call imas_open_env('ids',pulse_pfp,run_pfp,idx_p,user_pfp,database_pfp,'3')
+call ids_get_slice(idx_p,"pf_passive",pf_passive, time_start, interp_start)
+call imas_close(idx_p)
+
+if (pulse_mag.gt.-1) then
+write(*,*) 'Using magnetics IDS'
+
+call imas_open_env('ids',pulse_mag,run_mag,idx_m,user_mag,database_mag,'3')
+call ids_get_slice(idx_m,"magnetics",magnetics, time_start, interp_start)
+call imas_close(idx_m)
+
+else
+write(*,*) 'No magnetics IDS'
+endif
+
+flush(6)
+
+
+! Get code parameters
+call file2buffer('code_parameters.xml', io_unit, codeparam%parameters_value)
+
+call get_em_coupling(pf_active, pf_passive, magnetics, equilibrium, em_coupling, &
+& codeparam, error_flag, error_message)
+
+write(*,*) 'get_em_coupling error_flag =', error_flag
+if (associated(error_message) .and. error_flag.ne.0) then 
+write(*,*) 'get_em_coupling error_message =', error_message
+endif
+
+flush(6)
+
+
+write(*,*) 'em_coupling array sizes:'
+write(*,*) 'active_active: ', size(em_coupling%mutual_active_active,1), size(em_coupling%mutual_active_active,2)
+write(*,*) 'passive_passive: ', size(em_coupling%mutual_passive_passive,1), size(em_coupling%mutual_passive_passive,2)
+write(*,*) 'passive_active: ', size(em_coupling%mutual_passive_active,1), size(em_coupling%mutual_passive_active,2)
+write(*,*) 'grid_active: ', size(em_coupling%mutual_grid_active,1), size(em_coupling%mutual_grid_active,2)
+write(*,*) 'grid_passive: ', size(em_coupling%mutual_grid_passive,1), size(em_coupling%mutual_grid_passive,2)
+
+
+
+  call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
+  write(*,*) 'Output database is created'
+
+
+    write(*,*)  'Put em_coupling'
+    call ids_put(idx,"em_coupling",em_coupling)
+
+    write(*,*)  'Put pf_active'
+    call ids_put(idx,"pf_active",pf_active)
+    
+    write(*,*)  'Put pf_passive'
+    call ids_put(idx,"pf_passive",pf_passive)
+  
+    write(*,*)  'Put equilibrium'
+    call ids_put(idx,"equilibrium",equilibrium)
+  
+    write(*,*)  'Put magnetics'
+    call ids_put(idx,"magnetics",magnetics)
+	
+  call imas_close(idx)
+	
+	
+call ids_deallocate(em_coupling)
+call ids_deallocate(pf_active)
+call ids_deallocate(pf_passive)
+call ids_deallocate(equilibrium)
+call ids_deallocate(magnetics)
+write(*,*) 'IDS deallocated'
+flush(6)
+
+write(*,*) 'DINA_IMAS Exiting cleanly'
+
+end program DINA_GREEN_test

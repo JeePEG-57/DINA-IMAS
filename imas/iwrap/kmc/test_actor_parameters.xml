@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<parameters>
+  <input_scenario>
+    <user>dubrovm</user>
+    <database>test</database>
+    <pulse>170</pulse>
+    <run>41</run>
+	<time_start>100.0</time_start>
+  </input_scenario>
+  <output>
+    <user></user>
+    <database>test</database>
+    <pulse>999</pulse> 
+    <run>1</run>
+  </output>
+</parameters>
+
