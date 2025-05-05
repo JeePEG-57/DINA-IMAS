@@ -109,7 +109,7 @@ print *,' Output user =', trim(user_out), trim(database_out), pulse_out, run_out
 
 
 interp_start = 1
-time_start = 0.d0
+
 
 call imas_open_env('ids',pulse_eq,run_eq,idx_e,user_eq,database_eq,'3')
 call ids_get_slice(idx_e,"equilibrium",equilibrium0, time_start, interp_start)

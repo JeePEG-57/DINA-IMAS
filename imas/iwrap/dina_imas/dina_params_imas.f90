@@ -77,9 +77,9 @@ type(ids_parameters_input) :: codeparam
      common /c_q_test/q_test
 
      
-!character(len=30) :: ConfigFile = 'DINA_Parameters.xml'
+!character(len=30) :: ConfigFile = 'code_parameters.xml'
 type(type_xml2eg_document) :: doc
-!character(len=132), pointer :: buffer(:) => NULL()
+character(len=132), pointer :: buffer(:) => NULL()
 integer :: io_unit = 1
 logical :: errorflag
 character(len=200):: gaps_r_str, gaps_z_str
@@ -120,6 +120,7 @@ real*8 :: grid_rho, grid_alpha
         !open(unit=49,file='dina_data.dat', form='formatted')
      
 !call file2buffer(ConfigFile, io_unit, buffer)
+!call xml2eg_parse_memory(buffer, doc)
 call xml2eg_parse_memory(codeparam%parameters_value, doc)
 
          

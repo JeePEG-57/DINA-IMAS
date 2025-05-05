@@ -16,9 +16,9 @@
    <bohm_gbohm>1</bohm_gbohm>
    <q_swth>0.97</q_swth>
    <pcchp_end>5.0</pcchp_end>
-   <ener_ext>1</ener_ext>
-   <dens_ext>1</dens_ext>
-   <ajb_ext>1</ajb_ext>
+   <ener_ext>0</ener_ext>
+   <dens_ext>0</dens_ext>
+   <ajb_ext>0</ajb_ext>
    <grid_n>50</grid_n>
    <grid_rho>0.5</grid_rho>
    <grid_alpha>0.95</grid_alpha>

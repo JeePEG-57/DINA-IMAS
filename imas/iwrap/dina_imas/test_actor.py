@@ -8,7 +8,8 @@ from imas import imasdef
 import numpy
 import xml.etree.ElementTree as ET
 from dina_imas.actor import dina_imas
-
+from pprint import pprint
+from dina_imas.common.runtime_settings import SandboxMode
 
 
 def get_dbentry(root, user_default):
@@ -52,15 +53,16 @@ IMAS_SCEN.open()
 
 print("Reading input database at t=%f"%(Time_Start))
 
-em_coupling = IMAS_SCEN.get_slice('em_coupling', Time_Start, InterpStart)
-wall = IMAS_SCEN.get_slice('wall', Time_Start, InterpStart)
-pulse_schedule = IMAS_SCEN.get('pulse_schedule')
-pf_active0 = IMAS_SCEN.get_slice('pf_active', Time_Start, InterpStart)
-pf_passive0 = IMAS_SCEN.get_slice('pf_passive', Time_Start, InterpStart)
-magnetics0 = IMAS_SCEN.get_slice('magnetics', Time_Start, InterpStart)
-equilibrium0 = IMAS_SCEN.get_slice('equilibrium', Time_Start, InterpStart)
-core_profiles0 = IMAS_SCEN.get_slice('core_profiles', Time_Start, InterpStart)
-core_sources0 = IMAS_SCEN.get_slice('core_sources', Time_Start, InterpStart)
+if True:
+    em_coupling = IMAS_SCEN.get_slice('em_coupling', Time_Start, InterpStart)
+    wall = IMAS_SCEN.get_slice('wall', Time_Start, InterpStart)
+    pulse_schedule = IMAS_SCEN.get('pulse_schedule')
+    pf_active0 = IMAS_SCEN.get_slice('pf_active', Time_Start, InterpStart)
+    pf_passive0 = IMAS_SCEN.get_slice('pf_passive', Time_Start, InterpStart)
+    magnetics0 = IMAS_SCEN.get_slice('magnetics', Time_Start, InterpStart)
+    equilibrium0 = IMAS_SCEN.get_slice('equilibrium', Time_Start, InterpStart)
+    core_profiles0 = IMAS_SCEN.get_slice('core_profiles', Time_Start, InterpStart)
+    core_sources0 = IMAS_SCEN.get_slice('core_sources', Time_Start, InterpStart)
 
 IMAS_SCEN.close()
 
@@ -74,8 +76,14 @@ IMAS_OUT.create()
 
 # CREATE AND INITIALIZE ACTOR
 dina_imas_actor = dina_imas()
-dina_imas_actor.initialize()
-  
+#dina_imas_actor.initialize()
+
+# Set this directory as sandbox to use imp folder
+runtime_settings = dina_imas_actor.get_runtime_settings()
+runtime_settings.sandbox.mode = SandboxMode.MANUAL
+runtime_settings.sandbox.path = './'
+dina_imas_actor.initialize(runtime_settings=runtime_settings)
+
 # EXECUTE ACTOR
 print('=> Execute physics code')
 try:

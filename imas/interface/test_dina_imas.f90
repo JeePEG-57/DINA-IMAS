@@ -92,6 +92,7 @@ type (ids_dataset_description) :: data_description
 type (ids_summary) :: summary
 type (ids_wall) :: wall
 type (ids_workflow) :: workflow
+integer :: ibackend = 12
 
 
 ! IDS location data
@@ -201,7 +202,7 @@ call xml2eg_parse_memory(buffer, doc)
   call xml2eg_get(doc, 'output/pulse', pulse_out)
   call xml2eg_get(doc, 'output/run', run_out)
   call xml2eg_get(doc, 'output/decimation', idec)
-
+  
   call xml2eg_get(doc, 'input_transp/user', user_transp)
   call xml2eg_get(doc, 'input_transp/database', database_transp)
   call xml2eg_get(doc, 'input_transp/pulse', pulse_transp)
@@ -453,12 +454,19 @@ write(*,*) 'Using prescribed transport'
 
   time_get = summary%time(1)
   
+  !ibackend = 12 ! MDS+
+  !ibackend = 13 ! HDF5
+
+  !call system("export IMAS_AL_DEFAULT_BACKEND=13")
   call imas_open_env('ids',pulse_transp,run_transp,idx0,user_transp,database_transp,'3')
   
   call ids_get_slice(idx0,"core_profiles",core_profiles0, time_get, interp_transp)
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_transp)
   
   call imas_close(idx0)
+  !call system("export IMAS_AL_DEFAULT_BACKEND=12")
+
+
   
 else
 write(*,*) 'Using DINA transport'
