@@ -15,6 +15,8 @@ use xml2eg_mdl, only: xml2eg_parse_memory, xml2eg_get, type_xml2eg_document, xml
 type (ids_pulse_schedule)   :: psch, psch_dw
 type(ids_parameters_input) :: codeparam
 
+integer :: kpr
+  common /ge5/kpr
 
 !character(len=30) :: ConfigFile = 'KMC_Parameters.xml'
 type(type_xml2eg_document) :: doc
@@ -33,7 +35,7 @@ logical :: errorflag
       !call file2buffer(ConfigFile, io_unit, buffer)
       call xml2eg_parse_memory(codeparam%parameters_value, doc)
 
-
+      call xml2eg_get(doc, 'kpr', kpr)
       call xml2eg_get(doc, 'tcont2', tcont2)
       call xml2eg_get(doc, 'dtcont2', dtcont2)
       call xml2eg_get(doc, 'Ip_div', Ip_div)

@@ -37,7 +37,7 @@ OBJS_TEST  = test_actor.o
 
 IWRAP_ACTORS_DIR ?= $(HOME)/IWRAP_ACTORS
 
-TEST=test_$(ACTOR)
+TEST=test_actor
 
 all: lib exe
 
@@ -62,10 +62,10 @@ $(ACTOR).a: $(OBJS_ACTOR)
 	$(F90) $(F90FLAGS) -c $< $(F90INC)
 
 validate:
-	xmllint --noout $(TEST)_parameters.xsd $(TEST)_parameters.xml
-	xmllint --noout --schema $(TEST)_parameters.xsd $(TEST)_parameters.xml
-	xmllint --noout $(ACTOR).xsd $(ACTOR).xml
-	xmllint --noout --schema $(ACTOR).xsd $(ACTOR).xml
+	xmllint --noout test_wf_parameters.xsd test_wf_parameters.xml
+	xmllint --noout --schema test_wf_parameters.xsd test_wf_parameters.xml
+	xmllint --noout code_parameters.xsd code_parameters.xml
+	xmllint --noout --schema code_parameters.xsd code_parameters.xml
 
 clean:
 	rm -rf *.exe *.a *.mod *.o

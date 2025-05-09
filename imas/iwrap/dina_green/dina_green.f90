@@ -261,7 +261,9 @@ enddo
 print *,' em_coupling filled'
 flush(6)	
   
-  
+
+error_flag = 0
+
 return
 end
 

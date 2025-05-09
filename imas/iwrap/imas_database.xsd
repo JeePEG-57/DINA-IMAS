@@ -1,0 +1,89 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   elementFormDefault="qualified">
+
+   <xs:annotation>
+     <xs:documentation>IMAS database coordinates</xs:documentation>
+   </xs:annotation>
+ 
+   <xs:simpleType name="integer_pulse">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="1"/>
+       <xs:maxInclusive value="214748"/>
+     </xs:restriction>
+   </xs:simpleType>
+
+   <xs:simpleType name="integer_run">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="0"/>
+       <xs:maxInclusive value="99999"/>
+     </xs:restriction>
+   </xs:simpleType>
+   
+   <xs:simpleType name="integer_version">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="1"/>
+       <xs:maxInclusive value="4"/>
+     </xs:restriction>
+   </xs:simpleType>
+
+   <xs:simpleType name="string_field">
+     <xs:restriction base="xs:string">
+     </xs:restriction>
+   </xs:simpleType> 
+   
+   <xs:complexType name="imas_database">
+       <xs:all>
+	        <xs:element ref="uri" minOccurs="0"/>
+			<xs:element ref="backend" minOccurs="0"/>
+			<xs:element ref="user" minOccurs="0"/>
+			<xs:element ref="database" minOccurs="0"/>
+			<xs:element ref="pulse" minOccurs="0"/>
+			<xs:element ref="run" minOccurs="0"/>
+			<xs:element ref="version" minOccurs="0"/>
+       </xs:all>
+   </xs:complexType>
+ 
+   <xs:element name="uri" type="string_field">
+      <xs:annotation>
+          <xs:documentation>Input/output shot number</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="backend" type="string_field">
+      <xs:annotation>
+          <xs:documentation>Backend</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+ 
+   <xs:element name="user" type="string_field">
+      <xs:annotation>
+          <xs:documentation>User name</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   
+   <xs:element name="database" type="string_field">
+      <xs:annotation>
+          <xs:documentation>Database name</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+ 
+   <xs:element name="pulse" type="integer_pulse">
+      <xs:annotation>
+          <xs:documentation>Pulse number</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+   <xs:element name="run" type="integer_run">
+      <xs:annotation>
+          <xs:documentation>Run number</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+  
+   <xs:element name="version" type="integer_version">
+      <xs:annotation>
+          <xs:documentation>Version of the access layer</xs:documentation>
+      </xs:annotation>
+   </xs:element>
+  
+</xs:schema>
+ 

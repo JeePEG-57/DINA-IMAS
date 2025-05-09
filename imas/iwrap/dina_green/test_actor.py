@@ -35,7 +35,7 @@ def get_dbentry(root, user_default):
 
 
 
-config = "test_actor_parameters.xml"
+config = "test_wf_parameters.xml"
 
 if (type(config) == str):
     tree = ET.parse(config)

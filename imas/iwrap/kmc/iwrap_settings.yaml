@@ -50,7 +50,7 @@ code_description:
             set_state:
     settings:
         compiler_cmd: gfortran
-        compiler_flags:
+        compiler_flags: -w -freal-4-real-8 -fno-second-underscore -ffree-line-length-none -fPIC
         extra_libraries:
             path_defined:
             - ./kav_mag_contr.a

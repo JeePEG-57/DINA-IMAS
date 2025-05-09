@@ -3,24 +3,6 @@
    <xs:annotation>
      <xs:documentation>Code parameters for DINA-Scenario actor generation</xs:documentation>
    </xs:annotation>
- 
-   <xs:simpleType name="integer_flag">
-     <xs:restriction base="xs:integer">
-       <xs:minInclusive value="0"/>
-	   <xs:maxInclusive value="1"/>
-     </xs:restriction>
-   </xs:simpleType>
- 
-   <xs:simpleType name="integer_general">
-     <xs:restriction base="xs:integer">
-       <xs:minInclusive value="0"/>
-     </xs:restriction>
-   </xs:simpleType>
- 
-   <xs:simpleType name="float_general">
-     <xs:restriction base="xs:float">
-     </xs:restriction>
-   </xs:simpleType>
 
    <!-- document element -->
    <xs:element name="parameters">
@@ -291,5 +273,24 @@
           <xs:documentation></xs:documentation>
       </xs:annotation>
    </xs:element>
+   
+   
+   <xs:simpleType name="integer_flag">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="0"/>
+	   <xs:maxInclusive value="1"/>
+     </xs:restriction>
+   </xs:simpleType>
+ 
+   <xs:simpleType name="integer_general">
+     <xs:restriction base="xs:integer">
+       <xs:minInclusive value="0"/>
+     </xs:restriction>
+   </xs:simpleType>
+ 
+   <xs:simpleType name="float_general">
+     <xs:restriction base="xs:float">
+     </xs:restriction>
+   </xs:simpleType>
 </xs:schema>
  

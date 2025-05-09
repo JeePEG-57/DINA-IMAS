@@ -1,13 +1,13 @@
 <parameters>
 
     <!-- Print diagnostic output to console -->
-    <kpr> 1 </kpr>
+    <kpr>1</kpr>
 
     <!-- Horizontal size of filaments, m -->
-    <dr> 1.5e-2 </dr>
+    <dr>1.5e-2</dr>
 
     <!-- Vertical size of filaments, m -->
-    <dz> 1.5e-2 </dz>
+    <dz>1.5e-2</dz>
 
 </parameters>
 

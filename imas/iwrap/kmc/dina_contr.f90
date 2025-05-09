@@ -141,11 +141,16 @@ data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 21
 
   call kav_contr(input_1,input_2, &
       &  output_1,output_2)
+      
+  
+  print*, 'Native controller code finished'
+  flush(6)
 
 
   call ids_copy(pf_active0, pf_active)
 
-
+  print*, 'pf_active copied'
+  flush(6)
   !pf_active%ids_properties%homogeneous_time = 1
   !if (.NOT.associated(pf_active%time)) allocate(pf_active%time(1))
   !pf_active%time(1) = tt
@@ -156,7 +161,10 @@ data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 21
     pf_active%coil(i)%voltage%data(1) = tpl_dir*vmult(i)*output_2(ncirc(i))*pf_turn(ncirc(i))
   enddo
 
-
+  print*, 'pf_active voltages allocated'
+  flush(6)
+  
+error_flag = 0
 return
 end subroutine
 

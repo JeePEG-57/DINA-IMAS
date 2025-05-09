@@ -4,11 +4,12 @@
 
 # NEEDED MODULES
 import imas,os
+import argparse
 from imas import imasdef
 import numpy
 import xml.etree.ElementTree as ET
+
 from dina_imas.actor import dina_imas
-from pprint import pprint
 from dina_imas.common.runtime_settings import SandboxMode
 
 
@@ -35,8 +36,11 @@ def get_dbentry(root, user_default):
 
 
 
+parser = argparse.ArgumentParser(description='----Test Workflow')
+parser.add_argument('-c','--config',help='Path to a workflow configuration XML', required=True, type=str)
+args = vars(parser.parse_args())
+config = args['config']
 
-config = "test_actor_parameters.xml"
 
 if (type(config) == str):
     tree = ET.parse(config)
@@ -44,7 +48,8 @@ root = tree.getroot()
 
 user_default = os.getenv('USER')
 
-Time_Start = float(root.find('input_scenario').find('time_start').text)
+Time_Start = float(root.find('time_start').text)
+Time_Sim = float(root.find('time_sim').text)
 InterpStart = imasdef.CLOSEST_INTERP
 
 # INPUT/OUTPUT CONFIGURATION
@@ -84,28 +89,45 @@ runtime_settings.sandbox.mode = SandboxMode.MANUAL
 runtime_settings.sandbox.path = './'
 dina_imas_actor.initialize(runtime_settings=runtime_settings)
 
-# EXECUTE ACTOR
-print('=> Execute physics code')
-try:
-    (equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, summary) = dina_imas_actor(em_coupling, equilibrium0, magnetics0, pf_active0, pf_passive0, wall, core_profiles0, core_sources0,
-    bndcond_in, pulse_schedule)
-except Exception as error_message:
-    print('ERROR in run_physics_code',str(error_message))
-    exit(1)
-    
-# SAVE IDS INTO OUTPUT FILE
-print('=> Append IDS slice to local database')
+
 IMAS_OUT.put(em_coupling)
 IMAS_OUT.put(wall)
 IMAS_OUT.put(pulse_schedule)
-IMAS_OUT.put(equilibrium)
-IMAS_OUT.put(magnetics)
-IMAS_OUT.put(pf_active)
-IMAS_OUT.put(pf_passive)
-IMAS_OUT.put(core_profiles)
-IMAS_OUT.put(core_sources)
-IMAS_OUT.put(core_transport)
-IMAS_OUT.put(summary)
+
+
+Time_Stop = Time_Start + Time_Sim
+iloop = 0
+while True:
+  # EXECUTE ACTOR
+  print('=> Execute physics code')
+  try:
+      (equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, summary) = dina_imas_actor(em_coupling, equilibrium0, magnetics0, pf_active0, pf_passive0, wall, core_profiles0, core_sources0,
+      bndcond_in, pulse_schedule)
+  except Exception as error_message:
+      print('ERROR in run_physics_code',str(error_message))
+      exit(1)
+      
+      
+  ip = summary.global_quantities.ip.value[0]
+  time = summary.time[0]
+  print('Workflow step=' + str(iloop) + '; time=' + str(time) + ' s; Ipl=' + str(ip) + ' A', flush=True)
+  
+  # SAVE IDS INTO OUTPUT FILE
+  print('=> Append IDS slice to local database')
+
+  IMAS_OUT.put_slice(equilibrium)
+  IMAS_OUT.put_slice(magnetics)
+  IMAS_OUT.put_slice(pf_active)
+  IMAS_OUT.put_slice(pf_passive)
+  IMAS_OUT.put_slice(core_profiles)
+  IMAS_OUT.put_slice(core_sources)
+  IMAS_OUT.put_slice(core_transport)
+  IMAS_OUT.put_slice(summary)
+  
+  if (time > Time_Stop):
+    break
+    
+  iloop = iloop + 1
     
 
 IMAS_OUT.close()

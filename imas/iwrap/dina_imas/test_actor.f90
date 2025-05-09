@@ -41,13 +41,13 @@ integer :: pulse_eq=-1, run_eq=-1
 
 
 
-integer :: i
+integer :: i, imax = 1000
 
-integer :: idx_a, idx_p, idx_m, idx_e, idx
+integer :: idx_e, idx
 integer :: interp_start = 1
-real (ids_real) :: time_start
+real (ids_real) :: time_start, time_sim, time_get, time_stop
 
-character(len=30) :: ConfigFile
+character(len=50) :: ConfigFile, CodeParamsFile
 type(type_xml2eg_document) :: doc
 character(len=132), pointer :: buffer(:) => NULL()
 integer :: io_unit = 1
@@ -68,16 +68,18 @@ call getenv("USER", user_default)
 
 
 if (command_argument_count().eq.0) then
-  print *,'Not enough arguments. First argument must be the name of a workflow config XML file!'
+  print *,'Two arguments must be provided. First argument must be the name of a workflow config XML file, second argument is a code parameters XML file.'
   stop
 endif
 
-do i = 1, command_argument_count()
-  call get_command_argument(i, ConfigFile)
-end do
+
+  call get_command_argument(1, ConfigFile)
+  call get_command_argument(2, CodeParamsFile)
 
 
 print *,' Using workflow config file: ', ConfigFile
+print *,' Using code parameters file: ', CodeParamsFile
+
 
 
 call file2buffer(ConfigFile, io_unit, buffer)
@@ -87,13 +89,14 @@ call xml2eg_parse_memory(buffer, doc)
   call xml2eg_get(doc, 'input_scenario/database', database_eq)
   call xml2eg_get(doc, 'input_scenario/pulse', pulse_eq)
   call xml2eg_get(doc, 'input_scenario/run', run_eq)
-  call xml2eg_get(doc, 'input_scenario/time_start', time_start)
 
   call xml2eg_get(doc, 'output/user', user_out)
   call xml2eg_get(doc, 'output/database', database_out)
   call xml2eg_get(doc, 'output/pulse', pulse_out)
   call xml2eg_get(doc, 'output/run', run_out)
-
+  
+  call xml2eg_get(doc, 'time_start', time_start)
+  call xml2eg_get(doc, 'time_sim', time_sim)
 
 call xml2eg_free_doc(doc)
 deallocate(buffer)
@@ -112,23 +115,47 @@ interp_start = 1
 
 
 call imas_open_env('ids',pulse_eq,run_eq,idx_e,user_eq,database_eq,'3')
+call ids_get(idx_e,"pulse_schedule",pulse_schedule)
+call ids_get(idx_e,"em_coupling",em_coupling)
+call ids_get(idx_e,"wall",wall)
+
+
 call ids_get_slice(idx_e,"equilibrium",equilibrium0, time_start, interp_start)
 call ids_get_slice(idx_e,"core_profiles",core_profiles0, time_start, interp_start)
 call ids_get_slice(idx_e,"core_sources",core_sources0, time_start, interp_start)
-call ids_get(idx_e,"pulse_schedule",pulse_schedule)
-call ids_get_slice(idx_e,"em_coupling",em_coupling, time_start, interp_start)
 call ids_get_slice(idx_e,"pf_active",pf_active0, time_start, interp_start)
 call ids_get_slice(idx_e,"pf_passive",pf_passive0, time_start, interp_start)
-call ids_get_slice(idx_e,"wall",wall, time_start, interp_start)
 call ids_get_slice(idx_e,"magnetics",magnetics0, time_start, interp_start)
-call imas_close(idx_e)
 
 
+  call imas_close(idx_e)
+  
+
+  call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
+  write(*,*) 'Output database is created'
+  
 flush(6)
+
+    write(*,*)  'Put pulse_schedule'
+    call ids_put(idx,"pulse_schedule",pulse_schedule)
+	
+    write(*,*)  'Put em_coupling'
+    call ids_put(idx,"em_coupling",em_coupling)
+
+    write(*,*)  'Put wall'
+    call ids_put(idx,"wall",wall)
+
 
 
 ! Get code parameters
-call file2buffer('code_parameters.xml', io_unit, codeparam%parameters_value)
+call file2buffer(CodeParamsFile, io_unit, codeparam%parameters_value)
+
+time_stop = time_start + time_sim
+time_get = time_start
+
+do i=1,imax
+
+if (time_get.gt.time_stop) exit
 
 call dina_step( &
  &   em_coupling, equilibrium0, magnetics0, pf_active0, pf_passive0, wall, core_profiles0, core_sources0 &
@@ -147,54 +174,65 @@ endif
 flush(6)
 
 
-
-  call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
-  write(*,*) 'Output database is created'
-
-
-    write(*,*)  'Put em_coupling'
-    call ids_put(idx,"em_coupling",em_coupling)
-
     write(*,*)  'Put pf_active'
-    call ids_put(idx,"pf_active",pf_active)
+    call ids_put_slice(idx,"pf_active",pf_active)
     
     write(*,*)  'Put pf_passive'
-    call ids_put(idx,"pf_passive",pf_passive)
+    call ids_put_slice(idx,"pf_passive",pf_passive)
   
     write(*,*)  'Put equilibrium'
-    call ids_put(idx,"equilibrium",equilibrium)
+    call ids_put_slice(idx,"equilibrium",equilibrium)
   
     write(*,*)  'Put core_profiles'
-    call ids_put(idx,"core_profiles",core_profiles)
+    call ids_put_slice(idx,"core_profiles",core_profiles)
   
     write(*,*)  'Put core_sources'
-    call ids_put(idx,"core_sources",core_sources)
+    call ids_put_slice(idx,"core_sources",core_sources)
   
     write(*,*)  'Put core_transport'
-    call ids_put(idx,"core_transport",core_transport)
+    call ids_put_slice(idx,"core_transport",core_transport)
   
     write(*,*)  'Put summary'
-    call ids_put(idx,"summary",summary)
-  
-    write(*,*)  'Put wall'
-    call ids_put(idx,"wall",wall)
-  
-    write(*,*)  'Put pulse_schedule'
-    call ids_put(idx,"pulse_schedule",pulse_schedule)
+    call ids_put_slice(idx,"summary",summary)
   
     write(*,*)  'Put magnetics'
-    call ids_put(idx,"magnetics",magnetics)
+    call ids_put_slice(idx,"magnetics",magnetics)
 	
-  call imas_close(idx)
-	
-	
-call ids_deallocate(em_coupling)
-call ids_deallocate(wall)
-call ids_deallocate(pulse_schedule)
+
+time_get = pf_active%time(1)
+
+
+call ids_copy(pf_active, pf_active0)
+call ids_copy(pf_passive, pf_passive0)
+call ids_copy(equilibrium, equilibrium0)
+call ids_copy(magnetics, magnetics0)
+
+call ids_copy(core_profiles, core_profiles0)
+call ids_copy(core_sources, core_sources0)
+
+
+
 call ids_deallocate(pf_active)
 call ids_deallocate(pf_passive)
 call ids_deallocate(equilibrium)
 call ids_deallocate(magnetics)
+
+call ids_deallocate(core_profiles)
+call ids_deallocate(core_sources)
+call ids_deallocate(core_transport)
+call ids_deallocate(summary)
+
+enddo
+
+  
+  call imas_close(idx)
+	
+	
+call ids_deallocate(pulse_schedule)
+call ids_deallocate(em_coupling)
+call ids_deallocate(wall)
+
+
 write(*,*) 'IDS deallocated'
 flush(6)
 

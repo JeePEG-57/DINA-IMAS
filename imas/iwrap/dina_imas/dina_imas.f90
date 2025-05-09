@@ -182,6 +182,7 @@ integer, dimension(:), allocatable :: limunits
 integer :: nlim, ju, jdir
 
 print *,'DINA_IMAS Enter'
+call system(" pwd")
 
 
 flush(6)
@@ -203,7 +204,6 @@ call system("rm plasma_start.dat")
 call system(" ls -ll for042 ")
 call system(" ls -ll psi_data ")
 call system(" ls -ll p_data1 ")
-call system(" pwd")
 
 
 
@@ -1913,7 +1913,9 @@ flush(6)
       
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
+
     
+error_flag = 0
 
 return
 end subroutine

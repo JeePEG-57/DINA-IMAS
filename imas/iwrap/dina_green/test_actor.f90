@@ -52,7 +52,7 @@ integer :: idx_a, idx_p, idx_m, idx_e, idx
 integer :: interp_start = 1
 real (ids_real) :: time_start
 
-character(len=30) :: ConfigFile
+character(len=30) :: ConfigFile, CodeParamsFile
 type(type_xml2eg_document) :: doc
 character(len=132), pointer :: buffer(:) => NULL()
 integer :: io_unit = 1
@@ -81,13 +81,13 @@ call getenv("USER", user_default)
 
 
 if (command_argument_count().eq.0) then
-  print *,'Not enough arguments. First argument must be the name of a workflow config XML file!'
+  print *,'Two arguments must be provided. First argument must be the name of a workflow config XML file, second argument is a code parameters XML file.'
   stop
 endif
 
-do i = 1, command_argument_count()
-  call get_command_argument(i, ConfigFile)
-end do
+
+  call get_command_argument(1, ConfigFile)
+  call get_command_argument(2, CodeParamsFile)
 
 
 print *,' Using workflow config file: ', ConfigFile
@@ -217,7 +217,7 @@ flush(6)
 
 
 ! Get code parameters
-call file2buffer('code_parameters.xml', io_unit, codeparam%parameters_value)
+call file2buffer(CodeParamsFile, io_unit, codeparam%parameters_value)
 
 call get_em_coupling(pf_active, pf_passive, magnetics, equilibrium, em_coupling, &
 & codeparam, error_flag, error_message)
