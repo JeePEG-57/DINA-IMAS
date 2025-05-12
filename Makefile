@@ -1,6 +1,6 @@
 # Top-level Makefile for DINA
 
-all: dina controllers interface fc2k
+all: dina controllers interface iwrap
 
 dina:
 	make -C src/green
@@ -13,12 +13,23 @@ controllers:
 	make -C src/controllers/kmc_pfpo1_1b
 
 interface: dina controllers
+	make -C imas/iwrap/dina_green
+	make -C imas/iwrap/dina_imas
+	make -C imas/iwrap/kmc
+  
+iwrap: interface
+	make -C imas/iwrap/dina_green actor
+	make -C imas/iwrap/dina_imas actor
+	make -C imas/iwrap/kmc actor
+	make -C imas/iwrap/wf
+
+interface_fc2k: dina controllers
 	make -C imas/astra_transp
 	make -C imas/eq_test
 	make -C imas/interface
 	make -C imas/circ
 
-fc2k: interface
+fc2k: interface_fc2k
 	make -C imas/fc2k
 
 clean:
@@ -33,3 +44,7 @@ clean:
 	make -C imas/circ clean
 	make -C imas/interface clean
 	make -C imas/fc2k clean
+	make -C imas/iwrap/dina_green clean
+	make -C imas/iwrap/dina_imas clean
+	make -C imas/iwrap/kmc clean
+	make -C imas/iwrap/wf clean

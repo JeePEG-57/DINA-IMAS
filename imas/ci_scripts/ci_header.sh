@@ -58,6 +58,7 @@ module load IMAS/3.39.0-4.11.10-foss-2023b
 
 module load FC2K/4.14.2-Java-11
 #FC2K/4.14.2-Java-21
+module load iWrap
 
 module load Viz/2.8.0-foss-2023b
 
