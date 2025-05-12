@@ -241,7 +241,8 @@ write(*,*) 'grid_passive: ', size(em_coupling%mutual_grid_passive,1), size(em_co
 
   call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
   write(*,*) 'Output database is created'
-
+  !call imas_open_env('ids',pulse_out,run_out,idx,user_out,database_out,'3')
+  !write(*,*) 'Output database is opened'
 
     write(*,*)  'Put em_coupling'
     call ids_put(idx,"em_coupling",em_coupling)

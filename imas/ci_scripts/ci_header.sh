@@ -23,10 +23,10 @@ shopt -s expand_aliases
 module purge 2> /dev/null
 
 #AL4
-module load IMAS/3.39.0-4.11.10-foss-2023b
+#module load IMAS/3.39.0-4.11.10-foss-2023b
 
 #AL5
-#module load IMAS/3.39.0-2024.09-foss-2023b
+module load IMAS/3.39.0-2024.09-foss-2023b
 
 
 

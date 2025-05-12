@@ -64,6 +64,7 @@ if (status == 0):
     IMAS_MAG.close()
 else:
     magnetics = imas.magnetics()
+    magnetics.ids_properties.homogeneous_time=2
 
 IMAS_EQ, status = get_dbentry(root.find('input_equilibrium'), user_default)
 if (status == 0):
@@ -101,7 +102,7 @@ dina_green_actor = dina_green()
 dina_green_actor.initialize()
   
 # EXECUTE ACTOR
-print('=> Execute physics code')
+print('=> Execute physics code', flush=True)
 try:
     em_coupling = dina_green_actor(pf_active, pf_passive, magnetics, equilibrium)
 except Exception as error_message:

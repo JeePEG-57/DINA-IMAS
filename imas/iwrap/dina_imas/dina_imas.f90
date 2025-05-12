@@ -1827,22 +1827,23 @@ allocate(core_sources%source(isrc)%global_quantities(TimeSteps))
 !SOLPS
 write(*,*) 'Allocate core_transport... '
 allocate(core_transport%model(1))
-    allocate(core_transport%model(1)%profiles_1d(TimeSteps))
-    allocate(core_transport%time(TimeSteps))
+  allocate(core_transport%model(1)%profiles_1d(TimeSteps))
+  allocate(core_transport%time(TimeSteps))
 
-    allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%grid_d%rho_tor_norm(n))
+  allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%grid_d%rho_tor_norm(n))
+  allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%grid_flux%rho_tor_norm(n))
     
-allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2))
+  allocate(core_transport%model(1)%profiles_1d(CurTimeStep)%ion(2))
 
 
-    core_transport%ids_properties%homogeneous_time = 1
+  core_transport%ids_properties%homogeneous_time = 1
+  
     
+  core_transport%model(1)%profiles_1d(CurTimeStep)%grid_d%rho_tor_norm(1:n) = ai(1:n)
+  core_transport%model(1)%profiles_1d(CurTimeStep)%grid_flux%rho_tor_norm(1:n) = ai(1:n)
     
-    core_transport%model(1)%profiles_1d(CurTimeStep)%grid_d%rho_tor_norm(1:n) = ai(1:n)
-
-    
-    core_transport%model(1)%profiles_1d(CurTimeStep)%time = tt
-    core_transport%time(CurTimeStep) = tt ![s]
+  core_transport%model(1)%profiles_1d(CurTimeStep)%time = tt
+  core_transport%time(CurTimeStep) = tt ![s]
 
 
 
@@ -1907,7 +1908,7 @@ flush(6)
 !      print 71,apr,(zeff(i),i=1,n) 
        apr='++sigma-' 
 !      print 71,apr,(sigma(i),i=1,n) 
-   flush(6)
+   
     print *,' end dina_imas'
 flush(6)
       

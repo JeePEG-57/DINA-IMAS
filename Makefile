@@ -16,12 +16,12 @@ interface: dina controllers
 	make -C imas/iwrap/dina_green
 	make -C imas/iwrap/dina_imas
 	make -C imas/iwrap/kmc
-  
+	make -C imas/iwrap/wf
+
 iwrap: interface
 	make -C imas/iwrap/dina_green actor
 	make -C imas/iwrap/dina_imas actor
 	make -C imas/iwrap/kmc actor
-	make -C imas/iwrap/wf
 
 interface_fc2k: dina controllers
 	make -C imas/astra_transp

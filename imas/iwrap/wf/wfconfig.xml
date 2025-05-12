@@ -21,9 +21,7 @@
   </input_pf_passive>
   <input_magnetics>
     <user></user>
-    <database>test</database>
-    <pulse>170</pulse>
-    <run>1</run>
+    <database></database>
   </input_magnetics>
   <input_em_coupling>
     <user></user>
@@ -51,8 +49,8 @@
   <input_transp>
     <user>dubrovm</user>
     <database>test</database>
-    <pulse>105033</pulse>
-    <run>1</run>
+    <pulse>170</pulse>
+    <run>41</run>
   </input_transp>
   
   <time_start>0.0</time_start>

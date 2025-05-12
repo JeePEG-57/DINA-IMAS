@@ -2609,7 +2609,9 @@ class ExampleApp(uiclass, baseclass):
         # Create input ids
         psch,psch_dw,equilibrium = self.CreateInputIDS()
         
-        
+        pfa1, pfp1, wall, magnetics = self.TokamakDataToIDS()
+
+
         
         
         # Save input IDS
@@ -2649,7 +2651,7 @@ class ExampleApp(uiclass, baseclass):
         imas_obj.create()
         #imas_obj.put(pfa1)
         #imas_obj.put(pfp1)
-        #imas_obj.put(magnetics)
+        imas_obj.put(magnetics)
         #imas_obj.put(wall)
         imas_obj.put(psch, occurrence = 0)
         imas_obj.put(psch_dw, occurrence = 1)

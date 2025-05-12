@@ -202,6 +202,16 @@ flush(6)
 time_get = pf_active%time(1)
 
 
+call ids_deallocate(pf_active0)
+call ids_deallocate(pf_passive0)
+call ids_deallocate(equilibrium0)
+call ids_deallocate(magnetics0)
+
+call ids_deallocate(core_profiles0)
+call ids_deallocate(core_sources0)
+
+
+
 call ids_copy(pf_active, pf_active0)
 call ids_copy(pf_passive, pf_passive0)
 call ids_copy(equilibrium, equilibrium0)

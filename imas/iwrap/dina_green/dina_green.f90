@@ -255,8 +255,32 @@ do i=1,nact
   em_coupling%mutual_passive_active(:,i) = pfc(1:npass,i)*pf_turns(i)
 enddo
 
+allocate(character(len=132):: em_coupling%active_coils(nact))
+do i=1,nact
+  write(em_coupling%active_coils(i),*) 'coil', i
+  !em_coupling%active_coils(i) = 'coil '
+enddo
 
+allocate(character(len=132):: em_coupling%passive_loops(npass))
+do i=1,npass
+  write(em_coupling%passive_loops(i),*) 'loop', i
+  !em_coupling%passive_loops(i) = 'loop '
+enddo
 
+allocate(character(len=132):: em_coupling%poloidal_probes(kprobe))
+do i=1,kprobe
+  write(em_coupling%poloidal_probes(i),*) 'probe', i
+enddo
+
+allocate(character(len=132):: em_coupling%flux_loops(kloop))
+do i=1,kloop
+  write(em_coupling%flux_loops(i),*) 'loop', i
+enddo
+
+allocate(character(len=132):: em_coupling%grid_points(nwnh))
+do i=1,nwnh
+  write(em_coupling%grid_points(i),*) 'ngrid', i
+enddo
 
 print *,' em_coupling filled'
 flush(6)	

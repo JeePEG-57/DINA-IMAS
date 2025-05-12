@@ -75,7 +75,7 @@ IMAS_OUT.put(pulse_schedule_term, occurrence=1)
 kmc = kav_mag_contr()
 runtime_settings = kmc.get_runtime_settings()
 runtime_settings.sandbox.mode = SandboxMode.MANUAL
-runtime_settings.sandbox.path = './'
+runtime_settings.sandbox.path = os.getcwd()
 kmc.initialize(runtime_settings=runtime_settings)
   
 # EXECUTE ACTOR

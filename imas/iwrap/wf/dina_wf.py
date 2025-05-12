@@ -113,8 +113,8 @@ class DINA_Workflow:
       
       # DINA
       self.DINA()
-      
-      
+
+
       # Magnetic controller
       self.KMC()
 
@@ -152,6 +152,7 @@ class DINA_Workflow:
         self.IMAS_Output.put_slice(idslist['pf_passive'])
         self.IMAS_Output.put_slice(idslist['core_profiles'])
         self.IMAS_Output.put_slice(idslist['core_sources'])
+        print('core_transport homogeneous time = %d'%(idslist['core_transport'].ids_properties.homogeneous_time), flush=True)
         self.IMAS_Output.put_slice(idslist['core_transport'])
         self.IMAS_Output.put_slice(idslist['summary'])
         self.IMAS_Output.put_slice(idslist['transport_solver_numerics'])
@@ -290,8 +291,13 @@ class DINA_Workflow:
       idslist['equilibrium'] = IMAS_InputStart.get_slice('equilibrium', 0.0, 1)
       IMAS_InputStart.close()
       idslist['core_profiles'] = imas.core_profiles()
+      idslist['core_profiles'].ids_properties.homogeneous_time=1
+      
       idslist['core_sources'] = imas.core_sources()
+      idslist['core_sources'].ids_properties.homogeneous_time=1
+      
       idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
+      idslist['transport_solver_numerics'].ids_properties.homogeneous_time=1
 
     
 
@@ -319,6 +325,7 @@ class DINA_Workflow:
       IMAS_MAG.close()
     else:
       idslist['magnetics'] = imas.magnetics()
+      idslist['magnetics'].ids_properties.homogeneous_time=1
 
     IMAS_WLL, status = self.get_dbentry(root.find('input_wall'), user_default)
     IMAS_WLL.open()
@@ -378,7 +385,7 @@ class DINA_Workflow:
     runtime_settings = dina_imas_instance.get_runtime_settings()
     runtime_settings.sandbox.mode = DINA_RTS.SandboxMode.MANUAL
     #runtime_settings.sandbox.life_time = DINA_RTS.SandboxLifeTime.PERSISTENT
-    runtime_settings.sandbox.path = './'
+    runtime_settings.sandbox.path = os.getcwd()
     #dina_imas_actor.initialize(runtime_settings=runtime_settings)
     
     code_parameters = dina_imas_instance.get_code_parameters()
@@ -399,7 +406,7 @@ class DINA_Workflow:
 
     runtime_settings = kmc_actor.get_runtime_settings()
     runtime_settings.sandbox.mode = KMC_RTS.SandboxMode.MANUAL
-    runtime_settings.sandbox.path = './'
+    runtime_settings.sandbox.path = os.getcwd()
     
     code_parameters = kmc_actor.get_code_parameters()
     code_parameters.parameters_path = 'codeparam_kmc.xml'
