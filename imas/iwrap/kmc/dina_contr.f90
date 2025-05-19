@@ -1,3 +1,25 @@
+!> kmc_step simulates one time step of the magnetic controller work. 
+!> The actor calls C-code generated from Simulink and connects inputs/outputs with IMAS IDS
+
+
+
+#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) allocate(ids%code%repository(1)) ; \
+ids%code%repository = GIT_URL ; \
+allocate(ids%code%commit(1)) ; \
+ids%code%commit = GIT_COMMIT_ID ; \
+allocate(ids%code%version(1)) ; \
+ids%code%version = GIT_VERSION ; \
+allocate(ids%code%parameters(size(paramstr))) ; \
+ids%code%parameters = codeparam%parameters_value ; \
+allocate(ids%code%output_flag(1)) ; \
+ids%code%output_flag(1) = error_flag ; \
+allocate(ids%code%name(1)) ; \
+ids%code%name = codename ; \
+allocate(ids%code%description(1)) ; \
+ids%code%description = desc
+
+#define FillCodeParametersKMC(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, "Kavin's ITER Magnetic Controller", 'Simulates ITER magnetic controller work, using C-code generated from Simulink scheme. Originally designed by Andrey Kavin for ITER magnetic control studies.')
+
 
 module kav_mag_contr
 
@@ -165,6 +187,9 @@ data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 21
   flush(6)
   
 error_flag = 0
+
+FillCodeParametersKMC(pf_active)
+
 return
 end subroutine
 

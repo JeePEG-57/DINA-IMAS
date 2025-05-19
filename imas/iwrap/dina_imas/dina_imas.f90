@@ -1,4 +1,4 @@
-!> dina_imas is the main subroutine to connect DINA input-output data with IMAS
+!> dina_step is the main subroutine to cann DINA and connect input-output data with IMAS IDS
 !> As a result of call dina_v96_in the Green Functions are being transmitted to DINA from IDSs
 !> After call dina_input the initial kinetic profiles are being transmitted to DINA from IDSs   
 !> As a result of call dina_0 and then call dina2 the DINA modeling in one time step is being produced
@@ -16,7 +16,27 @@
 #define AllocArr(array, value, size)  if (.NOT.associated(array)) allocate(array(size)) ; \
                                     array(1:size) = value(1:size)
 
-                  
+
+
+#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) allocate(ids%code%repository(1)) ; \
+ids%code%repository = GIT_URL ; \
+allocate(ids%code%commit(1)) ; \
+ids%code%commit = GIT_COMMIT_ID ; \
+allocate(ids%code%version(1)) ; \
+ids%code%version = GIT_VERSION ; \
+allocate(ids%code%parameters(size(paramstr))) ; \
+ids%code%parameters = codeparam%parameters_value ; \
+allocate(ids%code%output_flag(1)) ; \
+ids%code%output_flag(1) = error_flag ; \
+allocate(ids%code%name(1)) ; \
+ids%code%name = codename ; \
+allocate(ids%code%description(1)) ; \
+ids%code%description = desc
+
+#define FillCodeParametersDINA(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'DINA-SCENARIO', 'DINA simulates ccnsistent evolution of non-linear 2D equilibrium, currents in the conducting structures and 1D kinetic profiles.')
+
+
+ 
 module dina_imas
 
 integer :: code_state
@@ -1917,6 +1937,17 @@ flush(6)
 
     
 error_flag = 0
+
+
+
+FillCodeParametersDINA(equilibrium)
+FillCodeParametersDINA(magnetics)
+FillCodeParametersDINA(pf_active)
+FillCodeParametersDINA(pf_passive)
+FillCodeParametersDINA(core_profiles)
+FillCodeParametersDINA(core_transport)
+FillCodeParametersDINA(core_sources)
+FillCodeParametersDINA(summary)
 
 return
 end subroutine

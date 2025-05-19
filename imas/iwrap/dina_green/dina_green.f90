@@ -5,6 +5,25 @@
 !>   em_coupling contains coupling matrices
 !>   equilibrium contains r(nr),z(nz) arrays of used 2D grid
 
+
+#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) allocate(ids%code%repository(1)) ; \
+ids%code%repository = GIT_URL ; \
+allocate(ids%code%commit(1)) ; \
+ids%code%commit = GIT_COMMIT_ID ; \
+allocate(ids%code%version(1)) ; \
+ids%code%version = GIT_VERSION ; \
+allocate(ids%code%parameters(size(paramstr))) ; \
+ids%code%parameters = codeparam%parameters_value ; \
+allocate(ids%code%output_flag(1)) ; \
+ids%code%output_flag(1) = error_flag ; \
+allocate(ids%code%name(1)) ; \
+ids%code%name = codename ; \
+allocate(ids%code%description(1)) ; \
+ids%code%description = desc
+
+#define FillCodeParametersGreen(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'DINA_GREEN', 'DINA actor for calculation of the electromagnetic coupling matrices')
+
+
 module dina_green
 
 integer :: code_state
@@ -26,7 +45,6 @@ include 'double.inc'
  type(ids_parameters_input) :: codeparam
  integer, intent(out) :: error_flag
  character(len=:), pointer, intent(out) :: error_message
-
 
 
 type (ids_pf_active), INTENT(IN)   :: pf_active0
@@ -283,10 +301,11 @@ do i=1,nwnh
 enddo
 
 print *,' em_coupling filled'
-flush(6)	
-  
+flush(6)
 
 error_flag = 0
+
+FillCodeParametersGreen(em_coupling)
 
 return
 end

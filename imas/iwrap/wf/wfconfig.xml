@@ -21,7 +21,9 @@
   </input_pf_passive>
   <input_magnetics>
     <user></user>
-    <database></database>
+    <database>test</database>
+    <pulse>170</pulse>
+    <run>1</run>
   </input_magnetics>
   <input_em_coupling>
     <user></user>

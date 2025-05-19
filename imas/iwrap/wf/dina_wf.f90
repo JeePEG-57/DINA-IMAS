@@ -82,6 +82,9 @@ logical :: errorflag
 ! For timing tests
 INTEGER :: clock_start,clock_end,clock_rate
 
+integer,dimension(8) :: DATETIME
+integer :: hh, mm
+
  type(ids_parameters_input) :: codeparam_green, codeparam_dina, codeparam_kmc
  integer :: error_flag
  character(len=:), pointer :: error_message
@@ -218,13 +221,16 @@ if (restart.eq.1) then
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
 
-
-  write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
+  data_description%simulation%time_restart = equilibrium0%time(1)
+  
+  write(*,*) 'Restart from plasma current, A = ', equilibrium0%time_slice(1)%global_quantities%ip
 
 else
 
   write(*,*) 'Start from t=0'
-
+  
+  data_description%simulation%time_begin = 0.d0
+  
   time_get = 0.d0
   interp_start = 1
 
@@ -294,12 +300,36 @@ call imas_close(idx0)
 
   call ids_put(idx,"wall",wall)
   call ids_put(idx,"em_coupling",em_coupling)
-  !call ids_put(idx,"dataset_description",data_description)
+  
   call ids_put(idx,"pulse_schedule",pulse_schedule)
   call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
   call ids_put(idx,"workflow",workflow)
 
-
+ 
+ data_description%ids_properties%homogeneous_time = 2
+ 
+ 
+ allocate(data_description%data_entry%user(1))
+ data_description%data_entry%user = user_default
+ 
+ 
+ call date_and_time(VALUES=DATETIME)
+ hh = DATETIME(5)
+ mm = DATETIME(6) + DATETIME(4)
+ do while (mm.gt.59)
+   hh=hh+1
+   mm=mm-60
+ end do
+ do while (mm.lt.0)
+   hh=hh-1
+   mm=mm+60
+ end do
+ allocate(data_description%simulation%time_begun(1))
+ write(data_description%simulation%time_begun, '(I4,A,I2,A,I2,A,I2,A,I2,A,I2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
+ &hh, ':', mm, ':', DATETIME(7), 'Z'   
+ 
+ 
+ call ids_put(idx,"dataset_description",data_description)
 
 do iloop=1,imax
 
@@ -443,6 +473,7 @@ do i=1,11
   current_pf_stop = current_pf_stop + dabs(pf_active%coil(i)%current%data(1))
 enddo
 
+data_description%simulation%time_end = summary%time(1)
 if (summary%time(1).gt.time_stop .or. (dabs(summary%global_quantities%ip%value(1)).lt.1.d3 .and. current_pf_stop.lt.1.d3)) exit
 
 
@@ -461,6 +492,27 @@ flush(6)
 
 
 end do
+
+ 
+
+ call date_and_time(VALUES=DATETIME)
+ hh = DATETIME(5)
+ mm = DATETIME(6) + DATETIME(4)
+ do while (mm.gt.59)
+   hh=hh+1
+   mm=mm-60
+ end do
+ do while (mm.lt.0)
+   hh=hh-1
+   mm=mm+60
+ end do
+ allocate(data_description%simulation%time_ended(1))
+ write(data_description%simulation%time_ended, '(I4,A,I2,A,I2,A,I2,A,I2,A,I2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
+ &hh, ':', mm, ':', DATETIME(7), 'Z'
+ 
+ call ids_put(idx,"dataset_description",data_description)
+
+
 
 call imas_close(idx)
 

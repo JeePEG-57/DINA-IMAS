@@ -13,6 +13,10 @@ PACKAGES+=xmllib
 F90LIB=
 F90INC=-I$(INCDIR)
 
+F90DEF=-D'GIT_URL="$(GIT_URL)"'
+F90DEF+=-D'GIT_COMMIT_ID="$(GIT_COMMIT_ID)"'
+F90DEF+=-D'GIT_VERSION="$(GIT_VERSION)"'
+
 # COMPILER-SPECIFIC FLAGS
 ifeq ($(FCOMPILER), ifort)
   F90FLAGS=-fPIC -fpp -g
@@ -23,6 +27,7 @@ else
 endif
 
 F90FLAGS+=-w -freal-4-real-8 -fno-second-underscore -ffree-line-length-none
+F90FLAGS+=$(F90DEF)
 F90FLAGS+=$(DEBUG)
 
 F90=$(FCOMPILER)
