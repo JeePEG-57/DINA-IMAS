@@ -1,14 +1,6 @@
 #!/bin/bash
 
 # SET UP ENVIRONMENT FOR COMPILATION
-#. /usr/share/Modules/init/sh
-# module use /work/imas/etc/attic
-#module use /work/imas/etc/modulefiles
-#module use /work/imas/etc/modules/all
-
-
-
-
 shopt -s expand_aliases
 
 # # THE HOME AND USER ENVIRONMENT VARIABLES DO NOT EXIST IN BAMBOO!!! (NEEDED BY KEPLER)
@@ -28,32 +20,6 @@ module purge 2> /dev/null
 #AL5
 module load IMAS/3.39.0-2024.09-foss-2023b
 
-
-
-# KEPLER ENVIRONMENT VARIABLES
-
-# module load kepler/2.5p2-2.1.3
-# export KEPLER_DIR=~/Keplerdir
-# #module load Keplerdir/my2.5p2-2.1.3
-# # KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
-# # module load $KEPLERMODULE
-# KEPLERMODULE=my2.5p2-2.1.3
-# module load Keplerdir/$KEPLERMODULE
-
-# Using Kepler
-#KEPLERVERSON=Kepler/2.5p4-3.0.6
-#module load $KEPLERVERSON
-
-# module load Keplerdir/$KEPLERMODULE
-
-#KEPLERMODULE=MY2.5p4-3.0.6
-#if kepler_avail 2> /dev/null | grep -q $KEPLERMODULE; then
-#   echo kepler_load $KEPLERMODULE
-#   kepler_load $KEPLERMODULE
-#else
-#   echo "run bash ci_build.sh keplerinstall"
-#   #return
-#fi
 
 
 #module load FC2K/4.14.2-Java-11

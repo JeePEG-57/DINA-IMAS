@@ -1,4 +1,30 @@
 
+#define AllocIfNull(array, size)  if (.NOT.associated(array)) allocate(array(size))
+
+#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) AllocIfNull(ids%code%repository, 1) ; \
+ids%code%repository = GIT_URL ; \
+AllocIfNull(ids%code%commit, 1) ; \
+ids%code%commit = GIT_COMMIT_ID ; \
+AllocIfNull(ids%code%version, 1) ; \
+ids%code%version = GIT_VERSION ; \
+AllocIfNull(ids%code%parameters, size(paramstr)) ; \
+ids%code%parameters = paramstr ; \
+AllocIfNull(ids%code%output_flag, 1) ; \
+ids%code%output_flag(1) = error_flag ; \
+AllocIfNull(ids%code%name, 1) ; \
+ids%code%name = codename ; \
+AllocIfNull(ids%code%description, 1) ; \
+ids%code%description = desc
+
+#define FillCodeParametersWF(ids) FillCodeParameters(ids, error_flag, buffer, 'DINA-Workflow-Fortran', 'Workflow for simulation of ITER scenarios using DINA with feedback magnetic controller.')
+
+
+#define CopyString(str_from, str_to) if (associated(str_from)) then ; \
+  if (associated(str_to)) deallocate(str_to) ; \
+  allocate(str_to(size(str_from))) ; \
+  str_to = str_from ; \
+endif
+
 
 program DINA_SCENARIO
 
@@ -62,7 +88,7 @@ character (len=255) :: user_transp='', database_transp=''
 integer :: pulse_transp=-1, run_transp=-1
 
 ! Workflow parameters
-real (ids_real) :: time_start=0.0, time_stop=10000.0
+real (ids_real) :: pulsetime = 0.0, time_start=0.0, time_stop=10000.0
 integer :: idec, imax
 integer :: ext_transp, restart=0
 
@@ -160,8 +186,6 @@ call xml2eg_parse_memory(buffer, doc)
   call xml2eg_get(doc, 'step_max', imax)
 
 
-call xml2eg_free_doc(doc)
-deallocate(buffer)
 
 
 if (trim(user_pfa).eq.'') user_pfa = user_default
@@ -205,7 +229,7 @@ endif
 write(*,*) 'Reading the prescribed IDS'
  call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
 
- call ids_get(idx0, "workflow", workflow)
+! call ids_get(idx0, "workflow", workflow)
 
 if (restart.eq.1) then
 
@@ -272,6 +296,11 @@ call file2buffer('codeparam_dina.xml', io_unit, codeparam_dina%parameters_value)
 call file2buffer('codeparam_kmc.xml', io_unit, codeparam_kmc%parameters_value)
 
 
+workflow%ids_properties%homogeneous_time = 2
+if (associated(workflow%time_loop%component)) deallocate(workflow%time_loop%component)
+allocate(workflow%time_loop%component(3))
+
+
 call get_em_coupling(pf_active0, pf_passive0, magnetics0, equilibrium0, em_coupling &
 &, codeparam_green, error_flag, error_message)
 
@@ -279,6 +308,15 @@ write(*,*) 'get_em_coupling error_flag =', error_flag
 if (associated(error_message) .and. error_flag.ne.0) then 
 write(*,*) 'get_em_coupling error_message =', error_message
 endif
+
+
+  CopyString(em_coupling%code%name, workflow%time_loop%component(1)%name)
+  CopyString(em_coupling%code%description, workflow%time_loop%component(1)%description)
+  CopyString(em_coupling%code%commit, workflow%time_loop%component(1)%commit)
+  CopyString(em_coupling%code%version, workflow%time_loop%component(1)%version)
+  CopyString(em_coupling%code%repository, workflow%time_loop%component(1)%repository)
+  CopyString(em_coupling%code%parameters, workflow%time_loop%component(1)%parameters)
+
 
 
 
@@ -293,7 +331,11 @@ call imas_close(idx0)
 !print *,'Press any key to begin simulation...'
 !read (*,*)
 
-
+ error_flag = 1
+ FillCodeParametersWF(workflow)
+ 
+  
+  
 
   call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
   write(*,*) 'Pulse file is created'
@@ -305,6 +347,10 @@ call imas_close(idx0)
   call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
   call ids_put(idx,"workflow",workflow)
 
+
+ call xml2eg_free_doc(doc)
+ deallocate(buffer)
+ 
  
  data_description%ids_properties%homogeneous_time = 2
  
@@ -325,7 +371,7 @@ call imas_close(idx0)
    mm=mm+60
  end do
  allocate(data_description%simulation%time_begun(1))
- write(data_description%simulation%time_begun, '(I4,A,I2,A,I2,A,I2,A,I2,A,I2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
+ write(data_description%simulation%time_begun, '(I4.4,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
  &hh, ':', mm, ':', DATETIME(7), 'Z'   
  
  
@@ -372,6 +418,26 @@ write(*,*) 'kmc error_flag =', error_flag
 if (associated(error_message) .and. error_flag.ne.0) then 
 write(*,*) 'kmc error_message =', error_message
 endif
+
+if (iloop.eq.1) then
+
+  CopyString(equilibrium%code%name, workflow%time_loop%component(2)%name)
+  CopyString(equilibrium%code%description, workflow%time_loop%component(2)%description)
+  CopyString(equilibrium%code%commit, workflow%time_loop%component(2)%commit)
+  CopyString(equilibrium%code%version, workflow%time_loop%component(2)%version)
+  CopyString(equilibrium%code%repository, workflow%time_loop%component(2)%repository)
+  CopyString(equilibrium%code%parameters, workflow%time_loop%component(2)%parameters)
+
+  CopyString(pf_active%code%name, workflow%time_loop%component(3)%name)
+  CopyString(pf_active%code%description, workflow%time_loop%component(3)%description)
+  CopyString(pf_active%code%commit, workflow%time_loop%component(3)%commit)
+  CopyString(pf_active%code%version, workflow%time_loop%component(3)%version)
+  CopyString(pf_active%code%repository, workflow%time_loop%component(3)%repository)
+  CopyString(pf_active%code%parameters, workflow%time_loop%component(3)%parameters)
+  
+  call ids_put(idx,"workflow",workflow)
+  
+end if
 
 call ids_deallocate(pf_active1)
 
@@ -464,8 +530,8 @@ write(*,*) 'Using DINA transport'
 endif
 
 
-
-write(*,*) '****** Pulsetime =',summary%time(1),'/',time_stop
+pulsetime = summary%time(1)
+write(*,*) '****** Pulsetime =',pulsetime,'/',time_stop
 flush(6)
 
   current_pf_stop = 0.d0
@@ -473,7 +539,6 @@ do i=1,11
   current_pf_stop = current_pf_stop + dabs(pf_active%coil(i)%current%data(1))
 enddo
 
-data_description%simulation%time_end = summary%time(1)
 if (summary%time(1).gt.time_stop .or. (dabs(summary%global_quantities%ip%value(1)).lt.1.d3 .and. current_pf_stop.lt.1.d3)) exit
 
 
@@ -507,11 +572,18 @@ end do
    mm=mm+60
  end do
  allocate(data_description%simulation%time_ended(1))
- write(data_description%simulation%time_ended, '(I4,A,I2,A,I2,A,I2,A,I2,A,I2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
+ write(data_description%simulation%time_ended, '(I4.4,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
  &hh, ':', mm, ':', DATETIME(7), 'Z'
  
- call ids_put(idx,"dataset_description",data_description)
+ data_description%simulation%time_end = pulsetime
+ 
+ error_flag = 0
+ workflow%code%output_flag(1) = error_flag
 
+ workflow%time_loop%time_end = pulsetime
+
+ call ids_put(idx,"dataset_description",data_description)
+ call ids_put(idx,"workflow",workflow)
 
 
 call imas_close(idx)
@@ -526,6 +598,11 @@ call ids_deallocate(wall)
 call ids_deallocate(pulse_schedule)
 call ids_deallocate(data_description)
 call ids_deallocate(workflow)
+
+deallocate(codeparam_dina%parameters_value)
+deallocate(codeparam_green%parameters_value)
+deallocate(codeparam_kmc%parameters_value)
+
 
 
 write(*,*) 'DINA_IMAS Exiting cleanly'

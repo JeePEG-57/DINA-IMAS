@@ -46,7 +46,7 @@
   <output>
     <database>test</database>
     <pulse>995</pulse> 
-    <run>4</run>
+    <run>10</run>
   </output>
   <input_transp>
     <user>dubrovm</user>

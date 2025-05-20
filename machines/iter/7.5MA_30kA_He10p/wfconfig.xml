@@ -27,8 +27,8 @@
   <input_em_coupling>
     <user></user>
     <database></database>
-    <pulse></pulse>
-    <run></run>
+    <pulse>1</pulse>
+    <run>1</run>
   </input_em_coupling>
   <input_wall>
     <user>public</user>
@@ -41,25 +41,27 @@
     <database>test</database>
     <pulse>173</pulse>
     <run>1</run>
-    <time_start>0.0</time_start>
-    <interp_mode>1</interp_mode>
   </input_start>
   <output>
     <database>test</database>
     <pulse>173</pulse> 
     <run>41</run>
-    <decimation>10</decimation>
   </output>
   <input_transp>
     <user>dubrovm</user>
     <database>test</database>
     <pulse>105033</pulse>
     <run>1</run>
-    <interp_mode>1</interp_mode>
   </input_transp>
+
+  <time_start>0.0</time_start>
+  <start_interp_mode>1</start_interp_mode>
+  <transp_interp_mode>1</transp_interp_mode>
   <time_stop>1000.0</time_stop>
+  <decimation>10</decimation>
   <time_ext>3000.0</time_ext>
   <controller>kmc</controller>
   <step_max>1000000</step_max>
   <use_astra>0</use_astra>
+
 </parameters>

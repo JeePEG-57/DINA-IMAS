@@ -2,23 +2,26 @@
 !> The actor calls C-code generated from Simulink and connects inputs/outputs with IMAS IDS
 
 
+#define AllocIfNull(array, size)  if (.NOT.associated(array)) allocate(array(size))
 
-#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) allocate(ids%code%repository(1)) ; \
+
+
+#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) AllocIfNull(ids%code%repository, 1) ; \
 ids%code%repository = GIT_URL ; \
-allocate(ids%code%commit(1)) ; \
+AllocIfNull(ids%code%commit, 1) ; \
 ids%code%commit = GIT_COMMIT_ID ; \
-allocate(ids%code%version(1)) ; \
+AllocIfNull(ids%code%version, 1) ; \
 ids%code%version = GIT_VERSION ; \
-allocate(ids%code%parameters(size(paramstr))) ; \
-ids%code%parameters = codeparam%parameters_value ; \
-allocate(ids%code%output_flag(1)) ; \
+AllocIfNull(ids%code%parameters, size(paramstr)) ; \
+ids%code%parameters = paramstr ; \
+AllocIfNull(ids%code%output_flag, 1) ; \
 ids%code%output_flag(1) = error_flag ; \
-allocate(ids%code%name(1)) ; \
+AllocIfNull(ids%code%name, 1) ; \
 ids%code%name = codename ; \
-allocate(ids%code%description(1)) ; \
+AllocIfNull(ids%code%description, 1) ; \
 ids%code%description = desc
 
-#define FillCodeParametersKMC(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, "Kavin's ITER Magnetic Controller", 'Simulates ITER magnetic controller work, using C-code generated from Simulink scheme. Originally designed by Andrey Kavin for ITER magnetic control studies.')
+#define FillCodeParametersKMC(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'KMC', 'ITER magnetic controller designed by A.Kavin for the plasma current, shape and vertical stabilisation; working from fully charged central solenoid to the end of poloidal coils discharge, supporting restart.')
 
 
 module kav_mag_contr
