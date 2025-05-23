@@ -21,7 +21,7 @@ ids%code%name = codename ; \
 AllocIfNull(ids%code%description, 1) ; \
 ids%code%description = desc
 
-#define FillCodeParametersKMC(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'KMC', 'ITER magnetic controller designed by A.Kavin for the plasma current, shape and vertical stabilisation; working from fully charged central solenoid to the end of poloidal coils discharge, supporting restart.')
+#define FillCodeParametersKMC(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'kmc_step', 'ITER magnetic controller designed by A.Kavin for the plasma current, shape and vertical stabilisation; working from fully charged central solenoid to the end of poloidal coils discharge, supporting restart.')
 
 
 module kav_mag_contr

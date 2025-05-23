@@ -25,7 +25,7 @@ ids%code%name = codename ; \
 AllocIfNull(ids%code%description, 1) ; \
 ids%code%description = desc
 
-#define FillCodeParametersGreen(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'DINA-Green', 'DINA actor for calculation of the electromagnetic coupling matrices.')
+#define FillCodeParametersGreen(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'get_em_coupling', 'DINA actor for calculation of the electromagnetic coupling matrices.')
 
 
 module dina_green
