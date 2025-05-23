@@ -8,21 +8,21 @@ In the root of the repository execute
 $ make  
 This command:
    1. builds DINA and magnetic controller core libraries in src/;
-   2. builds DINA fortran with IDS interface and Fortran workflow in imas/interface/;
-   3. builds Python actors in imas/fc2k. The python actors will be placed in the imas/python_wf/actors/.
+   2. builds DINA fortran with IDS interface and Fortran workflow in imas/iwrap/wf;
+   3. builds Python actors from imas/iwrap/. The python actors will be placed in iWrap's default directory.
 
 
 # Simulation workflow
 ## Running the workflow
 Having the environment set and libraries built, one needs to:
 1. Create a working directory needed for the workflow.
-2. Put in the working directory XML files with code parameters for DINA actor and Magnetic controller actor - DINA_Parameters.xml and KMC_Parameters.xml.
+2. Put in the working directory XML files with code parameters for DINA actor and Magnetic controller actor - codeparam_dina.xml and codeparam_kmc.xml.
 3. Put in the working directory the workflow configuration file wfconfig.xml with parameters: input and output IMAS databases, simulation start time, etc.
 4. Put in the working directory the machines/imp folder with atomic data.
-5. Create initial IDS's pulse_schedule (with target waveforms for DINA and the magnetic controller) and equilibrium (with defined RZ grid and vacuum toroidal field). The input pf_active, pf_passive, wall IDS's can be used from the Machine Description database.
+5. Create initial IDS's pulse_schedule (with target waveforms for DINA and the magnetic controller) and equilibrium (with defined RZ grid and vacuum toroidal field). If the workflow start time is 0, the input pf_active, pf_passive, wall IDS's can be used from the Machine Description database.
 6. Run Python or Fortran version of the workflow. Navigate to the working directory and from there:
-   * for the Python workflow run the script imas/python_wf/run_test_python.sh
-   * for the Fortran workflow run the script imas/python_wf/run_test_fortran.sh
+   * for the Python workflow run the script imas/iwrap/wf/dina_wf.py
+   * for the Fortran workflow run the executable imas/iwrap/wf/dina_wf.exe
 
 
 ## GUI
@@ -49,17 +49,18 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
 * input_wall - IMAS database with wall IDS. Contains the first wall contour.
 * input_magnetics - IMAS database with magnetics IDS, optional. Contains the loops and probes geometry.
 * input_em_coupling - IMAS database with em_coupling IDS, optional. If provided, is used directly, coupling matrices are not calculated by geometry.
-* input_start - IMAS database with equilibrium and core_profiles IDS's. The core_profiles is required only in case of restart.
-   *-* time_start - time moment to start simulation from. Zero if start from fully charged CS, non-zero means restart mode.
-* output - IMAS database to store the simulation output.
-   * decimation - time decimation of the output, stored in the IMAS database (one slice per this number will be stored).
+* input_start - IMAS database with equilibrium and core_profiles IDS's. The core_profiles is required only in case of restart.   
+* output - IMAS database to store the simulation output. 
 * input_transp - IMAS database with core_profiles and core_sources IDS's, optional. It is provided as input to DINA at each time step, only when external transport is used.
-   * interp_mode - IMAS interpolation mode to read external transport profiles.
-* time_ext - Simulation time, after which the external transport profiles are provided to DINA input
-* time_stop - Simulation maximum time
-* step_max - Simulation maximum time steps
-* controller - Magnetic controller version (name of a subdirectory in src/controllers/), changes apply only in the Python workflow.
-* use_astra - Using ASTRA transport actors instead of IDS's from input_transp section
+   
+* time_start - time moment to start simulation from. Zero if start from fully charged CS, non-zero means restart mode.
+* start_interp_mode - IMAS interpolation mode to read external transport profiles.
+* time_ext - Simulation time, after which the external transport profiles are provided to DINA input.
+* transp_interp_mode - IMAS interpolation mode to read external transport profiles.
+* time_stop - Simulation maximum time.
+* decimation - time decimation of the output, stored in the IMAS database (one slice per this number will be stored).
+* step_max - Simulation maximum time steps.
+* controller - Magnetic controller version (name of a subdirectory in src/controllers/), changes apply only in the Python workflow. The fortran workflow is built with the default controller "kmc".
 
 
 ## Step by step instruction to launch the workflow
@@ -71,12 +72,12 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
 * $ cd tools/GUI
 * $ python main.py
    - Press button “Load *.dat files", then select folder 15MA_40ka/ or 7.5MA_30kA_He10p/.
-   - Press button “Save to work directory”, then ensure the imas/python_wf/ is chosen and press Save.
+   - Press button “Save to work directory”, then choose/create the workflow working directory (imas/python_wf/ is chosen by default) and press Save.
    - The GUI main window can be closed now.
-* $ cd ../../imas/python_wf (Navigate to the working directory).
+* $ cd ../../imas/python_wf (Navigate to the working directory, chosen in the previous step).
    - If needed, change settings of the workflow in the wfconfig.xml.
-* $ source ./run_test_python.sh - to run the Python workflow
-* $ source ./run_test_fortran.sh - to run the Fortran workflow
+* $ python ../iwrap/wf/dina_wf.py -c wfconfig.xml - to run the Python workflow
+* $ ../iwrap/wf/dina_wf.exe wfconfig.xml - to run the Fortran workflow
 
 
 ## The restart mode
@@ -118,19 +119,22 @@ Features:
 * PF voltage inputs allow to study magnetic feedback control during whole scenario.
 
 The DINA actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows.  
-The Fortran subroutine dina_imas is built in imas/interface/dina_imas.a with the interface
+The Fortran subroutine dina_step is built in imas/iwrap/dina_imas/dina_imas.a and has the interface
 ```
-subroutine dina_imas(&  
+module dina_imas
+subroutine dina_step(&  
 &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0, bndcond_in, pulse_schedule, & ! Inputs
 &  equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport, summary & ! Outputs
-& )
+&  codeparam, error_flag, error_message) ! Input code parameters, output error flag and error message
 ```
 To use the Python actor in another workflow:
-1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/dinaimas21
-2. Import dinaimas21.wrapper as dinaimas21
+1. Update the PYTHONPATH environment variable to include the $HOME/IWRAP_ACTORS
+2. ```from dina_imas.actor import dina_imas as dina_imas_actor```
 3. Calling interface:  
 ```
-output = dinaimas21.dinaimas21_actor(
+dina_imas_instance = dina_imas_actor()
+dina_imas_instance.initialize()
+output = dina_imas_instance(
 	idslist['em_coupling'],
 	idslist['equilibrium'],
 	idslist['magnetics'],
@@ -150,16 +154,18 @@ idslist['core_profiles'] = output[4]
 idslist['core_sources'] = output[5]
 idslist['core_transport'] = output[6]
 idslist['summary'] = output[7]
-```  
+``` 
+4. The code parameters should be provided according to iWrap standards. You can check it out in the Python workflow imas/iwrap/wf/dina_wf.py
+
 To run correctly, the DINA actor requires:
-1. The DINA_Parameters.xml file placed in the working directory,
-2. The machines/imp folder copied to the working directory (atomic data),
-3. Input IDS's properly filled.
+1. The machines/imp folder copied to the working directory (atomic data),
+2. Input IDS's properly filled.
 
 
-## Code parameters in DINA_Parameters.xml
-The DINA_Parameters.xml files are stored in scenario folders or can be created using GUI from *.dat files.  
-Description of the parameters in DINA_Parameters.xml:
+## Code parameters of the DINA-Scenario actor
+The imas/iwrap/dina_imas/code_parameters.xml file contains default settings.
+The codeparam_dina.xml files are stored in scenario folders or can be created using GUI from *.dat files.  
+Description of the parameters in the XML:
 * kpr - Key to print debug and diagnostic logs
 * tt_kavin [ms] - Time to switch from 0D transport model to 1D
 * tau [ms] - Time step before switching to 1D transport model
@@ -305,36 +311,43 @@ Control signals from the magnetic controller:
 The Kavin's Magnetic Controller (KMC) was specially designed by Andrey Kavin for PF voltage inputs for ITER feedback magnetic control studies. Supports simulation from fully charged central solenoid, until fully discharged PF system.    
 
 The KMC actor with IMAS interface is built in Fortran and Python languages and can be included in other simulation workflows.  
-The Fortran subroutine dina_contr is built in imas/interface/kmc.a with the interface
+The Fortran subroutine dina_contr is built in imas/iwrap/kmc/kav_mag_contr.a with the interface
 ```
-subroutine dina_contr(&
+module kav_mag_contr
+subroutine kmc_step(&
 & pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, & ! Inputs
 & pf_active & ! Outputs
-& )
+& codeparam, error_flag, error_message) ! Input code parameters, output error flag and error message
 ```
 To use the Python actor in another workflow:
-1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/kmc
-2. import kmc.wrapper as kmc
+1. Update the PYTHONPATH environment variable to include the $HOME/IWRAP_ACTORS
+2. from kav_mag_contr.actor import kav_mag_contr as kmc_actor
 3. Calling interface:  
 ```
-output = kmc.kmc_actor(idslist['pulse_schedule'],
+kmc_instance = kmc_actor()
+kmc_instance.initialize()
+output = kmc_instance(idslist['pulse_schedule'],
 	idslist['pulse_schedule_term'],
 	idslist['equilibrium'],
 	idslist['pf_active'])
 
 idslist['pf_active'] = output
 ```  
+4. The code parameters should be provided according to iWrap standards. You can check it out in the Python workflow imas/iwrap/wf/dina_wf.py
 
 To run correctly, the KMC actor requires:
-1. The KMC_Parameters.xml file placed in the working directory,
-2. Input IDS's properly filled.
-3. To be called in simulation:
+1. Input IDS's properly filled.
+2. To be called in a simulation:
 	* Every 2 ms during initial phase, from fully charged central solenoid until limiter controller switches on (time=tcont2)
 	* Every 10 ms from limiter controller switches on until second divertor controller switches on at the current ramp-down phase (Ip=Ip_rd)
 	* Every 5 ms until the end of simulation.
 
 
-## Code parameters in KMC_Parameters.xml
+## Code parameters of the Kavin's Magnetic Controller actor
+The imas/iwrap/kmc/code_parameters.xml file contains default settings.
+The codeparam_kmc.xml files are stored in scenario folders or can be created using GUI from *.dat files.  
+Description of the parameters in the XML:
+- kpr - Key to print debug and diagnostic logs
 - tcont2 [s] - Time when the limiter controller is switched on
 - dtcont2 [s] - Transition time of the control voltages from the current controller to the limiter controller at the ramp-up phase
 - Ip_div [MA] - Value of plasma current (negative) when the first divertor controller is switched on at the ramp-up phase
@@ -411,19 +424,22 @@ The actor DINA_GREEN does calculations of the coupling matrices between:
 * Magnetic loops
 * Magnetic probes
   
-The Fortran subroutine dina_green is built in imas/interface/dina_green.a with the interface
+The Fortran subroutine dina_green is built in imas/iwrap/dina_green/dina_green.a with the interface
 ```
-subroutine dina_green(&
+module dina_green
+subroutine get_em_coupling(&
 & pf_active0, pf_passive0, magnetics0, equilibrium0, & ! Inputs
 & em_coupling & ! Outputs
 & )
 ```
 To use the Python actor in another workflow:
-1. Update the PYTHONPATH environment variable to include the imas/python_wf/actors/dina_green
-2. import dina_green.wrapper as dina_green
+1. Update the PYTHONPATH environment variable to include the $HOME/IWRAP_ACTORS
+2. from dina_green.actor import dina_green as green_actor
 3. Calling interface:  
 ```
-output = dina_green.dina_green_actor(idslist['pf_active'],
+green_instance = green_actor()
+green_instance.initialize()
+output = green_instance(idslist['pf_active'],
 	idslist['pf_passive'],
 	idslist['magnetics'],
 	idslist['equilibrium'])
@@ -431,6 +447,12 @@ output = dina_green.dina_green_actor(idslist['pf_active'],
 idslist['em_coupling'] = output
 ```  
 To run correctly, the DINA_GREEN actor requires only the input IDS's properly filled.
+
+
+## Code parameters of the DINA_Green actor
+The imas/iwrap/dina_green/code_parameters.xml file contains default settings.
+Description of the parameters in the XML:
+- kpr - Key to print debug and diagnostic logs
 
 
 ## IDS fields required for the DINA_GREEN actor
