@@ -5,6 +5,7 @@ from imas import imasdef
 import numpy as np
 import matplotlib as mpl 
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 import argparse
 import xml.etree.ElementTree as ET
@@ -87,6 +88,17 @@ class DINA_Workflow:
     if (idslist['em_coupling'] == None):
       self.GREEN()
     
+    workflow = idslist['workflow']
+    em_coupling = idslist['em_coupling']
+    workflow.time_loop.component[0].name = em_coupling.code.name
+    workflow.time_loop.component[0].description = em_coupling.code.description
+    workflow.time_loop.component[0].commit = em_coupling.code.commit
+    workflow.time_loop.component[0].version = em_coupling.code.version
+    workflow.time_loop.component[0].repository = em_coupling.code.repository
+    workflow.time_loop.component[0].parameters = em_coupling.code.parameters
+    
+    idslist['dataset_description'].simulation.time_begun = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+    
     
     #print('Time_Start = ' + str(idslist['equilibrium'].time_slice[0].time), flush=True)
     
@@ -94,13 +106,13 @@ class DINA_Workflow:
     
     self.IMAS_Output.create()
     
-    
-    #self.IMAS_Output.put(idslist["dataset_description"])
     self.IMAS_Output.put(idslist["pulse_schedule"])
     self.IMAS_Output.put(idslist["pulse_schedule_term"], occurrence = 1)
     self.IMAS_Output.put(idslist['em_coupling'])
     self.IMAS_Output.put(idslist['wall'])
+    
     self.IMAS_Output.put(idslist['workflow'])
+    self.IMAS_Output.put(idslist['dataset_description'])
     
     
     # The main loop
@@ -142,7 +154,27 @@ class DINA_Workflow:
     
       #te0 = core_profiles.profiles_1d[0].electrons.temperature[0:n1-1]
       #tq0 = core_profiles.profiles_1d[0].t_i_average[0:n1-1]
-      
+      if (iloop == iloop_start):
+        workflow = idslist['workflow']
+        equilibrium = idslist['equilibrium']
+        pf_active = idslist['pf_active']
+        
+        workflow.time_loop.component[1].name = equilibrium.code.name
+        workflow.time_loop.component[1].description = equilibrium.code.description
+        workflow.time_loop.component[1].commit = equilibrium.code.commit
+        workflow.time_loop.component[1].version = equilibrium.code.version
+        workflow.time_loop.component[1].repository = equilibrium.code.repository
+        workflow.time_loop.component[1].parameters = equilibrium.code.parameters
+        
+        workflow.time_loop.component[2].name = pf_active.code.name
+        workflow.time_loop.component[2].description = pf_active.code.description
+        workflow.time_loop.component[2].commit = pf_active.code.commit
+        workflow.time_loop.component[2].version = pf_active.code.version
+        workflow.time_loop.component[2].repository = pf_active.code.repository
+        workflow.time_loop.component[2].parameters = pf_active.code.parameters
+        
+        self.IMAS_Output.put(workflow)
+        
       
       # Put this slice to the database 
       if (iloop%self.Decimation == 0 or iloop == iloop_start):
@@ -178,6 +210,14 @@ class DINA_Workflow:
       iloop = iloop + 1
     
     
+    idslist['dataset_description'].simulation.time_ended = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+    idslist['dataset_description'].simulation.time_end = time
+    
+    idslist['workflow'].time_loop.time_end = time
+    
+    self.IMAS_Output.put(idslist['dataset_description'])
+    self.IMAS_Output.put(idslist['workflow'])
+        
     self.IMAS_Output.close()
     
     print('Finished successfully after ' + str(iloop) + ' steps')
@@ -250,9 +290,11 @@ class DINA_Workflow:
 
     #-------------
     # Reading config file
+    
+    with open(config) as f:
+      configstr = f.read()
 
-    if (type(config) == str):
-      tree = ET.parse(config)
+    tree = ET.ElementTree(ET.fromstring(configstr))
     root = tree.getroot()
     
     user_default = os.getenv('USER')
@@ -266,10 +308,14 @@ class DINA_Workflow:
     
     IMAS_PulseSchedule, status = self.get_dbentry(root.find('pulse_schedule'), user_default)
 
-
-    IMAS_InputStart.open()
-    idslist['workflow'] = IMAS_InputStart.get('workflow')
-    IMAS_InputStart.close()
+    dataset_description = imas.dataset_description()
+    idslist['dataset_description'] = dataset_description
+    dataset_description.ids_properties.homogeneous_time = 2
+    dataset_description.data_entry.user = user_default
+    
+    #IMAS_InputStart.open()
+    #idslist['workflow'] = IMAS_InputStart.get('workflow')
+    #IMAS_InputStart.close()
     
     
     if (self.Time_Start > 0.0):
@@ -283,6 +329,8 @@ class DINA_Workflow:
       idslist['core_sources'] = IMAS_InputStart.get_slice('core_sources', TimeGet, interp)
       idslist['transport_solver_numerics'] = IMAS_InputStart.get_slice('transport_solver_numerics', TimeGet, interp)
       IMAS_InputStart.close()
+      
+      dataset_description.simulation.time_restart = equilibrium0.time[0]
 
     else:
       print('Start from t = 0') 
@@ -298,6 +346,8 @@ class DINA_Workflow:
       
       idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
       idslist['transport_solver_numerics'].ids_properties.homogeneous_time=1
+      
+      dataset_description.simulation.time_restart = 0.0
 
     
 
@@ -360,17 +410,6 @@ class DINA_Workflow:
     
     input_transp = root.find('input_transp')
     if (input_transp != None):
-      # usernode = input_transp.find('user')
-      # if (usernode != None):
-      #   username = usernode.text
-      # else:
-      #   username = None
-      # if (username == None or username == ""):
-      #   username = user_default
-      # database = input_transp.find('database').text
-      # pulse = int(input_transp.find('pulse').text)
-      # run = int(input_transp.find('run').text)
-
       self.IMAS_Transp, status = self.get_dbentry(input_transp, user_default)
       if (status == 0):
         print('External transport profiles are located')
@@ -414,6 +453,20 @@ class DINA_Workflow:
     kmc_actor.initialize(runtime_settings=runtime_settings, code_parameters=code_parameters)
     self.kmc_actor = kmc_actor
     
+    
+    workflow = imas.workflow()
+    idslist['workflow'] = workflow
+    
+    workflow.ids_properties.homogeneous_time = 2
+    workflow.time_loop.component.resize(3)
+    
+    workflow.code.repository = os.getenv('GIT_URL') 
+    workflow.code.commit = os.getenv('GIT_COMMIT_ID') 
+    workflow.code.version = os.getenv('GIT_VERSION') 
+    workflow.code.parameters = configstr
+    workflow.code.name = "DINA-Workflow-Python" 
+    workflow.code.description = 'Workflow for simulation of ITER scenarios using DINA with feedback magnetic controller.' 
+
 
 
 def main():
