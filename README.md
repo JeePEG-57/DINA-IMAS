@@ -129,7 +129,8 @@ subroutine dina_step(&
 ```
 To use the Python actor in another workflow:
 1. Update the PYTHONPATH environment variable to include the $HOME/IWRAP_ACTORS
-2. ```from dina_imas.actor import dina_imas as dina_imas_actor```
+2. Import actor module
+```from dina_imas.actor import dina_imas as dina_imas_actor```
 3. Calling interface:  
 ```
 dina_imas_instance = dina_imas_actor()
@@ -321,7 +322,8 @@ subroutine kmc_step(&
 ```
 To use the Python actor in another workflow:
 1. Update the PYTHONPATH environment variable to include the $HOME/IWRAP_ACTORS
-2. from kav_mag_contr.actor import kav_mag_contr as kmc_actor
+2. Import actor module
+```from kav_mag_contr.actor import kav_mag_contr as kmc_actor```
 3. Calling interface:  
 ```
 kmc_instance = kmc_actor()
@@ -434,7 +436,8 @@ subroutine get_em_coupling(&
 ```
 To use the Python actor in another workflow:
 1. Update the PYTHONPATH environment variable to include the $HOME/IWRAP_ACTORS
-2. from dina_green.actor import dina_green as green_actor
+2. Import actor module
+```from dina_green.actor import dina_green as green_actor```
 3. Calling interface:  
 ```
 green_instance = green_actor()
