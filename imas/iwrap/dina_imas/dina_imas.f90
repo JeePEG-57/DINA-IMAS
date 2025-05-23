@@ -41,7 +41,7 @@ ids%code%name = codename ; \
 ReAlloc(ids%code%description, 1) ; \
 ids%code%description = desc
 
-#define FillCodeParametersDINA(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'dina_step', 'DINA simulates ccnsistent evolution of non-linear 2D equilibrium, currents in the conducting structures and 1D kinetic profiles.')
+#define FillCodeParametersDINA(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'dina_step', 'DINA simulates consistent evolution of non-linear 2D equilibrium, currents in the conducting structures and 1D kinetic profiles.')
 
 
  

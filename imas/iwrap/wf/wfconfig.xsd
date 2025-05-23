@@ -36,7 +36,6 @@
   <xs:element name="controller" type="xs:string"/>
   <xs:element name="step_max" type="xs:integer"/>
   <xs:element name="decimation" type="integer_decimation"/>
-  <xs:element name="use_astra" type="integer_flag"/>
   <xs:element name="start_interp_mode" type="imas_interp"/>
   <xs:element name="transp_interp_mode" type="imas_interp"/>
   

@@ -45,8 +45,8 @@
   </input_start>
   <output>
     <database>test</database>
-    <pulse>995</pulse> 
-    <run>10</run>
+    <pulse>999</pulse> 
+    <run>4</run>
   </output>
   <input_transp>
     <user>dubrovm</user>
@@ -63,6 +63,5 @@
   <time_ext>3000.0</time_ext>
   <controller>kmc</controller>
   <step_max>1000000</step_max>
-  <use_astra>0</use_astra>
   
 </parameters>
