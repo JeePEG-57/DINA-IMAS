@@ -347,7 +347,7 @@ class DINA_Workflow:
       idslist['transport_solver_numerics'] = imas.transport_solver_numerics()
       idslist['transport_solver_numerics'].ids_properties.homogeneous_time=1
       
-      dataset_description.simulation.time_restart = 0.0
+      dataset_description.simulation.time_begin = 0.0
 
     
 

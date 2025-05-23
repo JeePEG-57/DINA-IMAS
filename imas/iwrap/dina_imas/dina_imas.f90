@@ -17,20 +17,28 @@
                                     array(1:size) = value(1:size)
 
 
+#define ReAlloc(array, length)  if (.NOT.associated(array)) then ; \
+  allocate(array(length)) ; \
+  else ; \
+  if (size(array).ne.length) then ; \
+  deallocate(array) ; \
+  allocate(array(length)) ; \
+  end if ; \
+  end if
 
-#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) AllocIfNull(ids%code%repository, 1) ; \
+#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) ReAlloc(ids%code%repository, 1) ; \
 ids%code%repository = GIT_URL ; \
-AllocIfNull(ids%code%commit, 1) ; \
+ReAlloc(ids%code%commit, 1) ; \
 ids%code%commit = GIT_COMMIT_ID ; \
-AllocIfNull(ids%code%version, 1) ; \
+ReAlloc(ids%code%version, 1) ; \
 ids%code%version = GIT_VERSION ; \
-AllocIfNull(ids%code%parameters, size(paramstr)) ; \
+ReAlloc(ids%code%parameters, size(paramstr)) ; \
 ids%code%parameters = paramstr ; \
-AllocIfNull(ids%code%output_flag, 1) ; \
+ReAlloc(ids%code%output_flag, 1) ; \
 ids%code%output_flag(1) = error_flag ; \
-AllocIfNull(ids%code%name, 1) ; \
+ReAlloc(ids%code%name, 1) ; \
 ids%code%name = codename ; \
-AllocIfNull(ids%code%description, 1) ; \
+ReAlloc(ids%code%description, 1) ; \
 ids%code%description = desc
 
 #define FillCodeParametersDINA(ids) FillCodeParameters(ids, error_flag, codeparam%parameters_value, 'dina_step', 'DINA simulates ccnsistent evolution of non-linear 2D equilibrium, currents in the conducting structures and 1D kinetic profiles.')
