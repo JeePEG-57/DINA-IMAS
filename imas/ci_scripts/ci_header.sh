@@ -33,7 +33,7 @@ module load Viz/2.8.0-foss-2023b
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 #module load MATLAB/2018a
 
-imasdb test
+#imasdb test
 
 #module load TotalView
 
