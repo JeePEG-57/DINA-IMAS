@@ -2439,10 +2439,12 @@ class ExampleApp(uiclass, baseclass):
         
         
         
-        fname = self.directorySave + '/tokamak_config.dat'
-        f = open(fname, 'w')
-        self.SaveTokamakConfig(f, self.TokamakData)
-        f.close()
+        #fname = self.directorySave + '/tokamak_config.dat'
+        #f = open(fname, 'w')
+        #self.SaveTokamakConfig(f, self.TokamakData)
+        #f.close()
+        
+        
         #self.SaveDataToFile(self.externalData, self.directorySave + '/external_data.dat')
         #self.SaveDataToFile(self.controlData, self.directorySave + '/control_init.dat')
         #self.SaveDataToFile(self.DINAData, self.directorySave + '/dina_data.dat')
@@ -2502,12 +2504,33 @@ class ExampleApp(uiclass, baseclass):
         wf.code.repository = repourl
         
         
-        wf.time_loop.component.resize(2)
-        compDINA = wf.time_loop.component[0]
-        compKMC = wf.time_loop.component[1]
+        wf.time_loop.component.resize(3)
+        compGREEN = wf.time_loop.component[0]
+        compDINA = wf.time_loop.component[1]
+        compKMC = wf.time_loop.component[2]
         
         
-        fname = self.directorySave + '/DINA_Parameters.xml'
+        
+        fname = self.directorySave + '/codeparam_green.xml'
+        
+        root = ET.Element("parameters")
+        params = {}
+        params['kpr'] = 1
+        params['dr'] = 1.5e-2
+        params['dz'] = 1.5e-2
+        
+        for key in params:
+          element = ET.SubElement(root, key)
+          element.text = str(params[key])
+        
+        xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="   ")
+        f = open(fname, 'w')
+        f.write(xmlstr)
+        f.close()
+        
+        
+        
+        fname = self.directorySave + '/codeparam_dina.xml'
         
         params = self.DINAData.copy()
         keys = ["tt_rampup", "dt_end_sim", "dtpl_term_l", "cIp_end", "Ics1_eob", "rms_noise"]
@@ -2564,7 +2587,7 @@ class ExampleApp(uiclass, baseclass):
         
         
         
-        fname = self.directorySave + '/KMC_Parameters.xml'
+        fname = self.directorySave + '/codeparam_kmc.xml'
         root = ET.Element("parameters")
         for key in self.controlData:
           element = ET.SubElement(root, key)
@@ -2609,7 +2632,9 @@ class ExampleApp(uiclass, baseclass):
         # Create input ids
         psch,psch_dw,equilibrium = self.CreateInputIDS()
         
-        
+        pfa1, pfp1, wall, magnetics = self.TokamakDataToIDS()
+
+
         
         
         # Save input IDS
@@ -2649,7 +2674,7 @@ class ExampleApp(uiclass, baseclass):
         imas_obj.create()
         #imas_obj.put(pfa1)
         #imas_obj.put(pfp1)
-        #imas_obj.put(magnetics)
+        imas_obj.put(magnetics)
         #imas_obj.put(wall)
         imas_obj.put(psch, occurrence = 0)
         imas_obj.put(psch_dw, occurrence = 1)

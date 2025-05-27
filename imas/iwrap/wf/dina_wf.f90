@@ -1,8 +1,32 @@
-! main test
-! test the DINA_IMAS
-! Jo Lister, August 2013
 
-program DINA_Workflow
+#define AllocIfNull(array, size)  if (.NOT.associated(array)) allocate(array(size))
+
+#define FillCodeParameters(ids, error_flag, paramstr, codename, desc) AllocIfNull(ids%code%repository, 1) ; \
+ids%code%repository = GIT_URL ; \
+AllocIfNull(ids%code%commit, 1) ; \
+ids%code%commit = GIT_COMMIT_ID ; \
+AllocIfNull(ids%code%version, 1) ; \
+ids%code%version = GIT_VERSION ; \
+AllocIfNull(ids%code%parameters, size(paramstr)) ; \
+ids%code%parameters = paramstr ; \
+AllocIfNull(ids%code%output_flag, 1) ; \
+ids%code%output_flag(1) = error_flag ; \
+AllocIfNull(ids%code%name, 1) ; \
+ids%code%name = codename ; \
+AllocIfNull(ids%code%description, 1) ; \
+ids%code%description = desc
+
+#define FillCodeParametersWF(ids) FillCodeParameters(ids, error_flag, buffer, 'DINA-Workflow-Fortran', 'Workflow for simulation of ITER scenarios using DINA with feedback magnetic controller.')
+
+
+#define CopyString(str_from, str_to) if (associated(str_from)) then ; \
+  if (associated(str_to)) deallocate(str_to) ; \
+  allocate(str_to(size(str_from))) ; \
+  str_to = str_from ; \
+endif
+
+
+program DINA_SCENARIO
 
 use ids_schemas
 use ids_routines
@@ -10,72 +34,13 @@ use ids_routines
 use f90_file_reader, only: file2buffer
 use xml2eg_mdl, only: xml2eg_parse_memory, xml2eg_get, type_xml2eg_document, xml2eg_free_doc
 
+use dina_green
+use dina_imas
+use kav_mag_contr
+
 implicit none
 
 
-
-interface
-  subroutine dina_green(&
-    & pf_active0, pf_passive0, magnetics0, equilibrium0, &
-    & em_coupling)
-
-    use ids_schemas
-
-    type (ids_pf_active), INTENT(IN)   :: pf_active0
-    type (ids_pf_passive), INTENT(IN)  :: pf_passive0
-    type (ids_magnetics), INTENT(IN)   :: magnetics0
-    type (ids_equilibrium), INTENT(IN) :: equilibrium0
-    type (ids_em_coupling), INTENT(OUT) :: em_coupling
-
-  end subroutine
-
-
-  subroutine dina_imas(&
-    &  em_coupling0, equilibrium0, magnetics0, pf_active0, pf_passive0, wall0, core_profiles0, core_sources0 &
-    & ,bndcond_in &
-    & ,pulse_schedule &
-    & ,equilibrium, magnetics, pf_active, pf_passive, core_profiles, core_sources, core_transport &
-    & ,summary)
-    
-    use ids_schemas
-
-    type (ids_em_coupling), INTENT(IN)  :: em_coupling0
-    type (ids_equilibrium), INTENT(IN) :: equilibrium0
-    type (ids_magnetics), INTENT(IN)   :: magnetics0
-    type (ids_pf_active), INTENT(IN)   :: pf_active0
-    type (ids_pf_passive), INTENT(IN)   :: pf_passive0
-    type (ids_wall), INTENT(IN) :: wall0
-    type (ids_core_profiles), INTENT(IN)   :: core_profiles0
-    type (ids_core_sources), INTENT(IN)   :: core_sources0
-    type (ids_transport_solver_numerics), INTENT(IN) :: bndcond_in
-    type (ids_pulse_schedule), INTENT(IN)   :: pulse_schedule
-
-
-    type (ids_equilibrium), INTENT(OUT) :: equilibrium
-    type (ids_magnetics), INTENT(OUT)   :: magnetics
-    type (ids_pf_active), INTENT(OUT)   :: pf_active
-    type (ids_pf_passive), INTENT(OUT)   :: pf_passive
-    type (ids_core_profiles), INTENT(OUT)   :: core_profiles
-    type (ids_core_transport), INTENT(OUT)   :: core_transport
-    type (ids_core_sources), INTENT(OUT)   :: core_sources
-    type (ids_summary), INTENT(OUT) :: summary
-
-  end subroutine
-    
-
-
-  subroutine dina_contr(pulse_schedule, pulse_schedule_term, equilibrium0, pf_active0, pf_active)
-    
-    use ids_schemas
-
-    type (ids_pulse_schedule), intent(IN) :: pulse_schedule, pulse_schedule_term
-    type (ids_equilibrium), intent(IN) :: equilibrium0
-    type (ids_pf_active), intent(IN) :: pf_active0
-    type (ids_pf_active), intent(OUT) :: pf_active
-    
-
-  end subroutine
-end interface
 
 
 type (ids_em_coupling) :: em_coupling
@@ -123,7 +88,7 @@ character (len=255) :: user_transp='', database_transp=''
 integer :: pulse_transp=-1, run_transp=-1
 
 ! Workflow parameters
-real (ids_real) :: time_start=0.0, time_stop=10000.0
+real (ids_real) :: pulsetime = 0.0, time_start=0.0, time_stop=10000.0
 integer :: idec, imax
 integer :: ext_transp, restart=0
 
@@ -143,7 +108,13 @@ logical :: errorflag
 ! For timing tests
 INTEGER :: clock_start,clock_end,clock_rate
 
+integer,dimension(8) :: DATETIME
+integer :: hh, mm
 
+ type(ids_parameters_input) :: codeparam_green, codeparam_dina, codeparam_kmc
+ integer :: error_flag
+ character(len=:), pointer :: error_message
+ 
 call getenv("USER", user_default)
 
 
@@ -194,28 +165,27 @@ call xml2eg_parse_memory(buffer, doc)
   call xml2eg_get(doc, 'input_start/database', database_prs)
   call xml2eg_get(doc, 'input_start/pulse', pulse_prs)
   call xml2eg_get(doc, 'input_start/run', run_prs)
-  call xml2eg_get(doc, 'input_start/time_start', time_start)
-  call xml2eg_get(doc, 'input_start/interp_mode', interp_start)
-
-  call xml2eg_get(doc, 'output/user', user_out)
-  call xml2eg_get(doc, 'output/database', database_out)
-  call xml2eg_get(doc, 'output/pulse', pulse_out)
-  call xml2eg_get(doc, 'output/run', run_out)
-  call xml2eg_get(doc, 'output/decimation', idec)
   
   call xml2eg_get(doc, 'input_transp/user', user_transp)
   call xml2eg_get(doc, 'input_transp/database', database_transp)
   call xml2eg_get(doc, 'input_transp/pulse', pulse_transp)
   call xml2eg_get(doc, 'input_transp/run', run_transp)
-  call xml2eg_get(doc, 'input_transp/interp_mode', interp_transp)
-
+  
+  call xml2eg_get(doc, 'output/user', user_out)
+  call xml2eg_get(doc, 'output/database', database_out)
+  call xml2eg_get(doc, 'output/pulse', pulse_out)
+  call xml2eg_get(doc, 'output/run', run_out)
+  
+  
+  call xml2eg_get(doc, 'time_start', time_start)
+  call xml2eg_get(doc, 'start_interp_mode', interp_start)
+  call xml2eg_get(doc, 'transp_interp_mode', interp_transp)
   call xml2eg_get(doc, 'time_stop', time_stop)
+  call xml2eg_get(doc, 'decimation', idec)
   call xml2eg_get(doc, 'time_ext', time_ext)
   call xml2eg_get(doc, 'step_max', imax)
 
 
-call xml2eg_free_doc(doc)
-deallocate(buffer)
 
 
 if (trim(user_pfa).eq.'') user_pfa = user_default
@@ -259,7 +229,7 @@ endif
 write(*,*) 'Reading the prescribed IDS'
  call imas_open_env('ids',pulse_prs,run_prs,idx0,user_prs,database_prs,'3')
 
- call ids_get(idx0, "workflow", workflow)
+! call ids_get(idx0, "workflow", workflow)
 
 if (restart.eq.1) then
 
@@ -275,13 +245,16 @@ if (restart.eq.1) then
   call ids_get_slice(idx0,"core_sources",core_sources0, time_get, interp_start)
   call ids_get_slice(idx0,"transport_solver_numerics",bndcond, time_get, interp_start)
 
-
-  write(*,*) 'Restart from plasma current, A = ', core_profiles0%global_quantities%ip
+  data_description%simulation%time_restart = equilibrium0%time(1)
+  
+  write(*,*) 'Restart from plasma current, A = ', equilibrium0%time_slice(1)%global_quantities%ip
 
 else
 
   write(*,*) 'Start from t=0'
-
+  
+  data_description%simulation%time_begin = 0.d0
+  
   time_get = 0.d0
   interp_start = 1
 
@@ -318,8 +291,32 @@ call imas_close(idx0)
 
 
 
+call file2buffer('codeparam_green.xml', io_unit, codeparam_green%parameters_value)
+call file2buffer('codeparam_dina.xml', io_unit, codeparam_dina%parameters_value)
+call file2buffer('codeparam_kmc.xml', io_unit, codeparam_kmc%parameters_value)
 
-call dina_green(pf_active0, pf_passive0, magnetics0, equilibrium0, em_coupling)
+
+workflow%ids_properties%homogeneous_time = 2
+if (associated(workflow%time_loop%component)) deallocate(workflow%time_loop%component)
+allocate(workflow%time_loop%component(3))
+
+
+call get_em_coupling(pf_active0, pf_passive0, magnetics0, equilibrium0, em_coupling &
+&, codeparam_green, error_flag, error_message)
+
+write(*,*) 'get_em_coupling error_flag =', error_flag
+if (associated(error_message) .and. error_flag.ne.0) then 
+write(*,*) 'get_em_coupling error_message =', error_message
+endif
+
+
+  CopyString(em_coupling%code%name, workflow%time_loop%component(1)%name)
+  CopyString(em_coupling%code%description, workflow%time_loop%component(1)%description)
+  CopyString(em_coupling%code%commit, workflow%time_loop%component(1)%commit)
+  CopyString(em_coupling%code%version, workflow%time_loop%component(1)%version)
+  CopyString(em_coupling%code%repository, workflow%time_loop%component(1)%repository)
+  CopyString(em_coupling%code%parameters, workflow%time_loop%component(1)%parameters)
+
 
 
 
@@ -334,19 +331,51 @@ call imas_close(idx0)
 !print *,'Press any key to begin simulation...'
 !read (*,*)
 
-
+ error_flag = 1
+ FillCodeParametersWF(workflow)
+ 
+  
+  
 
   call imas_create_env('ids',pulse_out,run_out,1,1,idx,user_out,database_out,'3')
   write(*,*) 'Pulse file is created'
 
   call ids_put(idx,"wall",wall)
   call ids_put(idx,"em_coupling",em_coupling)
-  !call ids_put(idx,"dataset_description",data_description)
+  
   call ids_put(idx,"pulse_schedule",pulse_schedule)
   call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
   call ids_put(idx,"workflow",workflow)
 
 
+ call xml2eg_free_doc(doc)
+ deallocate(buffer)
+ 
+ 
+ data_description%ids_properties%homogeneous_time = 2
+ 
+ 
+ allocate(data_description%data_entry%user(1))
+ data_description%data_entry%user = user_default
+ 
+ 
+ call date_and_time(VALUES=DATETIME)
+ hh = DATETIME(5)
+ mm = DATETIME(6) + DATETIME(4)
+ do while (mm.gt.59)
+   hh=hh+1
+   mm=mm-60
+ end do
+ do while (mm.lt.0)
+   hh=hh-1
+   mm=mm+60
+ end do
+ allocate(data_description%simulation%time_begun(1))
+ write(data_description%simulation%time_begun, '(I4.4,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
+ &hh, ':', mm, ':', DATETIME(7), 'Z'   
+ 
+ 
+ call ids_put(idx,"dataset_description",data_description)
 
 do iloop=1,imax
 
@@ -354,14 +383,20 @@ write(*,*) 'call DINA_IMAS i =',iloop
 flush(6)
 
 
-call dina_imas( &
+call dina_step( &
  &   em_coupling, equilibrium0, magnetics0, pf_active0, pf_passive0, wall, core_profiles0, core_sources0 &
  & , bndcond &
  & , pulse_schedule &
  & , equilibrium, magnetics, pf_active1, pf_passive, core_profiles, core_sources, core_transport &
- & , summary)
+ & , summary &
+ & , codeparam_dina, error_flag, error_message)
 
- 
+write(*,*) 'dina_step error_flag =', error_flag
+if (associated(error_message) .and. error_flag.ne.0) then 
+write(*,*) 'dina_step error_message =', error_message
+endif
+
+
 write(*,*) "DINA_IMAS finished"
 flush(6)
 
@@ -376,7 +411,33 @@ write(*,*) "DINA_IMAS inputs deallocated"
 flush(6)
 
 
-call dina_contr(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active)
+call kmc_step(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active &
+ & , codeparam_kmc, error_flag, error_message)
+
+write(*,*) 'kmc error_flag =', error_flag
+if (associated(error_message) .and. error_flag.ne.0) then 
+write(*,*) 'kmc error_message =', error_message
+endif
+
+if (iloop.eq.1) then
+
+  CopyString(equilibrium%code%name, workflow%time_loop%component(2)%name)
+  CopyString(equilibrium%code%description, workflow%time_loop%component(2)%description)
+  CopyString(equilibrium%code%commit, workflow%time_loop%component(2)%commit)
+  CopyString(equilibrium%code%version, workflow%time_loop%component(2)%version)
+  CopyString(equilibrium%code%repository, workflow%time_loop%component(2)%repository)
+  CopyString(equilibrium%code%parameters, workflow%time_loop%component(2)%parameters)
+
+  CopyString(pf_active%code%name, workflow%time_loop%component(3)%name)
+  CopyString(pf_active%code%description, workflow%time_loop%component(3)%description)
+  CopyString(pf_active%code%commit, workflow%time_loop%component(3)%commit)
+  CopyString(pf_active%code%version, workflow%time_loop%component(3)%version)
+  CopyString(pf_active%code%repository, workflow%time_loop%component(3)%repository)
+  CopyString(pf_active%code%parameters, workflow%time_loop%component(3)%parameters)
+  
+  call ids_put(idx,"workflow",workflow)
+  
+end if
 
 call ids_deallocate(pf_active1)
 
@@ -384,19 +445,12 @@ call ids_deallocate(pf_active1)
 write(*,*) "Controller finished"
 flush(6)
 
-!call dina_transp1(equilibrium0, core_profiles0, core_sources0, core_profiles, core_sources)
-!call dina_transp2(equilibrium0, core_profiles0, core_profiles)
-!call dina_transp3(equilibrium0, core_profiles0, core_profiles)
-!call dina_transp4(equilibrium0, core_profiles0, core_profiles)
-!call dina_transp5(equilibrium0, core_sources0, core_sources)
+
 
 call ids_deallocate(bndcond)
-call solps_imas(equilibrium, core_transport, bndcond)
-
-write(*,*) "SOLPS finished"
-flush(6)
 
   call ids_put_slice(idx,"pf_active",pf_active)
+  call ids_put_slice(idx,"pf_passive",pf_passive)
   call ids_put_slice(idx,"summary",summary)
 
   if (mod(iloop,idec).eq.0 .or. iloop.eq.1) then
@@ -407,9 +461,6 @@ flush(6)
     write(*,*)  'Put magnetics'
     call ids_put_slice(idx,"magnetics",magnetics)
     
-    write(*,*)  'Put pf_passive'
-    call ids_put_slice(idx,"pf_passive",pf_passive)
-  
     write(*,*)  'Put equilibrium'
     call ids_put_slice(idx,"equilibrium",equilibrium)
   
@@ -479,8 +530,8 @@ write(*,*) 'Using DINA transport'
 endif
 
 
-
-write(*,*) '****** Pulsetime =',summary%time(1),'/',time_stop
+pulsetime = summary%time(1)
+write(*,*) '****** Pulsetime =',pulsetime,'/',time_stop
 flush(6)
 
   current_pf_stop = 0.d0
@@ -507,6 +558,34 @@ flush(6)
 
 end do
 
+ 
+
+ call date_and_time(VALUES=DATETIME)
+ hh = DATETIME(5)
+ mm = DATETIME(6) + DATETIME(4)
+ do while (mm.gt.59)
+   hh=hh+1
+   mm=mm-60
+ end do
+ do while (mm.lt.0)
+   hh=hh-1
+   mm=mm+60
+ end do
+ allocate(data_description%simulation%time_ended(1))
+ write(data_description%simulation%time_ended, '(I4.4,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A,I2.2,A)') DATETIME(1), '-', DATETIME(2), '-', DATETIME(3) , 'T', &
+ &hh, ':', mm, ':', DATETIME(7), 'Z'
+ 
+ data_description%simulation%time_end = pulsetime
+ 
+ error_flag = 0
+ workflow%code%output_flag(1) = error_flag
+
+ workflow%time_loop%time_end = pulsetime
+
+ call ids_put(idx,"dataset_description",data_description)
+ call ids_put(idx,"workflow",workflow)
+
+
 call imas_close(idx)
 
 !>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -520,7 +599,12 @@ call ids_deallocate(pulse_schedule)
 call ids_deallocate(data_description)
 call ids_deallocate(workflow)
 
+deallocate(codeparam_dina%parameters_value)
+deallocate(codeparam_green%parameters_value)
+deallocate(codeparam_kmc%parameters_value)
+
+
 
 write(*,*) 'DINA_IMAS Exiting cleanly'
 
-end program DINA_Workflow
+end program DINA_SCENARIO

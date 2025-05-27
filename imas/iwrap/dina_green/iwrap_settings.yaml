@@ -1,0 +1,61 @@
+# Saved with iWrap 1.0.0
+---
+actor_description:
+    actor_name: dina_green
+    actor_type: python
+    data_type: legacy
+code_description:
+    documentation: DINA algorithm for calculation of the magnetic coupling matrices
+    implementation:
+        code_parameters:
+            format: legacy-xml
+            parameters: ./code_parameters.xml
+            schema: ./code_parameters.xsd
+        code_path: ./dina_green.a
+        data_dictionary_compliant: 3.39.0
+        data_type: legacy
+        include_path: ./dina_green.mod
+        programming_language: fortran
+        root_dir: .
+        subroutines:
+            finalize:
+                arguments:
+                name:
+                need_code_parameters: false
+            get_state: get_status
+            get_timestamp:
+            init:
+                arguments:
+                name:
+                need_code_parameters: false
+            main:
+                arguments:
+                -   intent: IN
+                    name: pf_active0
+                    type: pf_active
+                -   intent: IN
+                    name: pf_passive0
+                    type: pf_passive
+                -   intent: IN
+                    name: magnetics0
+                    type: magnetics
+                -   intent: IN
+                    name: equilibrium0
+                    type: equilibrium
+                -   intent: OUT
+                    name: em_coupling
+                    type: em_coupling
+                name: get_em_coupling
+                need_code_parameters: true
+            set_state:
+    settings:
+        compiler_cmd: gfortran
+        compiler_flags:
+        extra_libraries:
+            path_defined:
+            - ./dina_green.a
+            pkg_config_defined:
+            - libxml-2.0
+            - xmllib
+        mpi_compiler_cmd:
+...

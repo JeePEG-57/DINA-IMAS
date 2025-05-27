@@ -1,14 +1,6 @@
 #!/bin/bash
 
 # SET UP ENVIRONMENT FOR COMPILATION
-#. /usr/share/Modules/init/sh
-# module use /work/imas/etc/attic
-#module use /work/imas/etc/modulefiles
-#module use /work/imas/etc/modules/all
-
-
-
-
 shopt -s expand_aliases
 
 # # THE HOME AND USER ENVIRONMENT VARIABLES DO NOT EXIST IN BAMBOO!!! (NEEDED BY KEPLER)
@@ -23,52 +15,29 @@ shopt -s expand_aliases
 module purge 2> /dev/null
 
 #AL4
-module load IMAS/3.39.0-4.11.10-foss-2023b
+#module load IMAS/3.39.0-4.11.10-foss-2023b
 
 #AL5
-#module load IMAS/3.39.0-2024.09-foss-2023b
+module load IMAS/3.39.0-2024.09-foss-2023b
 
 
 
-# KEPLER ENVIRONMENT VARIABLES
-
-# module load kepler/2.5p2-2.1.3
-# export KEPLER_DIR=~/Keplerdir
-# #module load Keplerdir/my2.5p2-2.1.3
-# # KEPLERMODULE=Keplerdir/my2.5p2-2.1.3
-# # module load $KEPLERMODULE
-# KEPLERMODULE=my2.5p2-2.1.3
-# module load Keplerdir/$KEPLERMODULE
-
-# Using Kepler
-#KEPLERVERSON=Kepler/2.5p4-3.0.6
-#module load $KEPLERVERSON
-
-# module load Keplerdir/$KEPLERMODULE
-
-#KEPLERMODULE=MY2.5p4-3.0.6
-#if kepler_avail 2> /dev/null | grep -q $KEPLERMODULE; then
-#   echo kepler_load $KEPLERMODULE
-#   kepler_load $KEPLERMODULE
-#else
-#   echo "run bash ci_build.sh keplerinstall"
-#   #return
-#fi
-
-
-module load FC2K/4.14.2-Java-11
+#module load FC2K/4.14.2-Java-11
 #FC2K/4.14.2-Java-21
+module load iWrap
+export PYTHONPATH=${HOME}/IWRAP_ACTORS:${PYTHONPATH}
+
 
 module load Viz/2.8.0-foss-2023b
 
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 #module load MATLAB/2018a
 
-imasdb test
+#imasdb test
 
 #module load TotalView
 
-export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
+#export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
 #module switch --force matplotlib/3.5.1-intel-2020b
 #module load Viz/2.7.0-intel-2020b
@@ -110,6 +79,16 @@ else
   module load XMLlib/3.3.2-GCC-13.2.0
 fi
 
+export DINA_ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd)
+export GIT_URL=$(git remote get-url origin)
+export GIT_COMMIT_ID=$(git rev-parse --verify HEAD)
+export GIT_VERSION=$(git describe --tags --abbrev=0)
+
+
+echo $DINA_ROOT
+echo $GIT_URL
+echo $GIT_COMMIT_ID
+echo $GIT_VERSION
 
 module list
 #-t
