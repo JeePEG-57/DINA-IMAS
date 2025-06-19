@@ -17,7 +17,7 @@ F90DEF+=-D'GIT_VERSION="$(GIT_VERSION)"'
 
 # COMPILER-SPECIFIC FLAGS
 ifeq ($(FCOMPILER), ifort)
-  F90FLAGS=-fPIC -fpp -g
+  F90FLAGS=-fPIC -fpp
 else ifeq ($(FCOMPILER), gfortran)
   F90FLAGS=-fPIC -cpp
 else

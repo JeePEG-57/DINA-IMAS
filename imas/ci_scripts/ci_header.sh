@@ -14,11 +14,42 @@ shopt -s expand_aliases
 
 module purge 2> /dev/null
 
-#AL4
-#module load IMAS/3.39.0-4.11.10-foss-2023b
 
-#AL5
-module load IMAS/3.39.0-2024.09-foss-2023b
+export FCOMPILER=ifort
+export CC=icx
+#export FCOMPILER=ifort
+#export CC=icc
+
+
+if [ "$FCOMPILER" == "ifort" ]; then
+# INTEL
+  echo '$FCOMPILER set to intel'
+  
+  #AL4
+  #module load IMAS/3.39.0-4.11.10-foss-2023b
+
+  #AL5
+  module load IMAS/3.39.0-intel-2023b
+  
+  #module load intel/12.0.2
+  #module load mpich2/3.1.3-intel
+  module load XMLlib/3.3.2-intel-compilers-2023.2.1
+else
+# GFORTRAN
+  echo '$FCOMPILER set to gfortran'
+  
+  #AL4
+  #module load IMAS/3.39.0-4.11.10-foss-2023b
+
+  #AL5
+  module load IMAS/3.39.0-foss-2023b
+
+  echo '$FCOMPILER set to gfortran'
+  #module load mpich2/3.1.3-gnu
+  #module load XMLlib/3.3.1-GCC-10.2.0
+  module load XMLlib/3.3.2-GCC-13.2.0
+fi
+
 
 
 
@@ -47,10 +78,6 @@ imasdb test
 # # FOR PYUAL (PYTHON WORKFLOWS)
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
 
-export FCOMPILER=gfortran
-export CC=gcc
-#export FCOMPILER=ifort
-#export CC=icc
 
 # # CHOOSE THE COMPILER 0=GFORTRAN (DEFAULT IF VARIABLE IS NOT SET), 1=INTEL
 # if [ -z "$FCOMPILER" ]; then
@@ -65,19 +92,7 @@ export CC=gcc
 #     fi
 # fi
 
-if [ "$FCOMPILER" == "ifort" ]; then
-# INTEL
-  echo '$FCOMPILER set to intel'
-  #module load intel/12.0.2
-  #module load mpich2/3.1.3-intel
-  module load XMLlib/3.3.2-intel-compilers-2023.2.1
-else
-# GFORTRAN
-  echo '$FCOMPILER set to gfortran'
-  #module load mpich2/3.1.3-gnu
-  #module load XMLlib/3.3.1-GCC-10.2.0
-  module load XMLlib/3.3.2-GCC-13.2.0
-fi
+
 
 export DINA_ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd)
 export GIT_URL=$(git remote get-url origin)

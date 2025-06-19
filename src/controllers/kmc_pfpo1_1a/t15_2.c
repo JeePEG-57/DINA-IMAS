@@ -32,9 +32,9 @@
 #include "t15_2.h"
 #include "t15_2_private.h"
 
-int kpr1, kpr =0;
+int kpr1=1, kpr =0;
 
-kpr1=1;
+//kpr1=1;
 
 /* Block signals (auto storage) */
 BlockIO_t15_2 t15_2_B;

@@ -88,7 +88,7 @@ code_description:
                 need_code_parameters: true
             set_state:
     settings:
-        compiler_cmd: gfortran
+        compiler_cmd: $FCOMPILER
         compiler_flags:
         extra_libraries:
             path_defined:

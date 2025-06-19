@@ -38,10 +38,11 @@ FILE*f;
 //FILE*f2;
 
 
-int kpr1, kpr =1;
+int kpr1=1;
+int kpr =1;
 
-kpr1=1;
-
+//kpr1=1;
+//kpr=1;
 
 /* Block signals (auto storage) */
 BlockIO_t15_2 t15_2_B;

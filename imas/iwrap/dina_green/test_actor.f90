@@ -257,7 +257,7 @@ write(*,*) 'grid_passive: ', size(em_coupling%mutual_grid_passive,1), size(em_co
     call ids_put(idx,"equilibrium",equilibrium)
   
     write(*,*)  'Put magnetics'
-    call ids_put(idx,"magnetics",magnetics)
+    !call ids_put(idx,"magnetics",magnetics)
 	
   call imas_close(idx)
 	
