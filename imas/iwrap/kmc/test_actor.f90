@@ -127,7 +127,7 @@ call file2buffer(CodeParamsFile, io_unit, codeparam%parameters_value)
     call ids_put(idx,"pulse_schedule",pulse_schedule)
 	
     write(*,*)  'Put pulse_schedule_term'
-    call ids_put(idx,"pulse_schedule",pulse_schedule_term)
+    call ids_put(idx,"pulse_schedule/1",pulse_schedule_term)
 	
 
 time_stop = time_start + time_sim

@@ -15,16 +15,19 @@ shopt -s expand_aliases
 module purge 2> /dev/null
 
 
-export FCOMPILER=ifort
-export CC=icx
-#export FCOMPILER=ifort
-#export CC=icc
+export TOOLCHAIN=foss
+#export TOOLCHAIN=intel
 
 
-if [ "$FCOMPILER" == "ifort" ]; then
+
+if [ "$TOOLCHAIN" == "intel" ]; then
 # INTEL
   echo '$FCOMPILER set to intel'
   
+  export FCOMPILER=ifort
+  #export CC=icx
+  export CC=icc
+
   #AL4
   #module load IMAS/3.39.0-4.11.10-foss-2023b
 
@@ -38,13 +41,15 @@ else
 # GFORTRAN
   echo '$FCOMPILER set to gfortran'
   
+  export FCOMPILER=gfortran
+  export CC=gcc
+
   #AL4
   #module load IMAS/3.39.0-4.11.10-foss-2023b
 
   #AL5
   module load IMAS/3.39.0-foss-2023b
 
-  echo '$FCOMPILER set to gfortran'
   #module load mpich2/3.1.3-gnu
   #module load XMLlib/3.3.1-GCC-10.2.0
   module load XMLlib/3.3.2-GCC-13.2.0
@@ -55,42 +60,26 @@ fi
 
 #module load FC2K/4.14.2-Java-11
 #FC2K/4.14.2-Java-21
+
 module load iWrap
 export PYTHONPATH=${HOME}/IWRAP_ACTORS:${PYTHONPATH}
 
 
-module load Viz/2.8.0-foss-2023b
-
 # export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 #module load MATLAB/2018a
 
-imasdb test
+#imasdb test
 
 #module load TotalView
-
-#export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
 
 #module switch --force matplotlib/3.5.1-intel-2020b
 #module load Viz/2.7.0-intel-2020b
 #module load Viz/2.7.2-intel-2020b 
+module load Viz/2.8.0-foss-2023b
 #export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
 # # FOR PYUAL (PYTHON WORKFLOWS)
 # export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
-
-
-# # CHOOSE THE COMPILER 0=GFORTRAN (DEFAULT IF VARIABLE IS NOT SET), 1=INTEL
-# if [ -z "$FCOMPILER" ]; then
-#     echo 'FCOMPILER not set'
-#     echo '=> Use gfortran as default'
-#     export FCOMPILER=gfortran
-# else
-#    if [ "$FCOMPILER" == "ifort" ]; then
-#       echo '$FCOMPILER set to intel'
-#     else
-#       echo '$FCOMPILER set to gfortran'
-#     fi
-# fi
 
 
 
@@ -100,12 +89,13 @@ export GIT_COMMIT_ID=$(git rev-parse --verify HEAD)
 export GIT_VERSION=$(git describe --tags --abbrev=0)
 
 
-echo $DINA_ROOT
-echo $GIT_URL
-echo $GIT_COMMIT_ID
-echo $GIT_VERSION
+
 
 module list
 #-t
 
-
+echo $TOOLCHAIN
+echo $DINA_ROOT
+echo $GIT_URL
+echo $GIT_COMMIT_ID
+echo $GIT_VERSION

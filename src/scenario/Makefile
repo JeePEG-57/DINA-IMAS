@@ -8,9 +8,20 @@ INCDIR=../include
 
 DEBUG = -g -O0
 
-FFLAGS ?= -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC -freal-4-real-8
-FFLAGS += -I$(INCDIR)
-FFLAGS += $(DEBUG)
+
+FCFLAGS=-fPIC -w
+# COMPILER-SPECIFIC FLAGS
+ifeq ($(FCOMPILER), ifort)
+  FCFLAGS+=-extend-source -real-size 64 -save -assume no2underscores
+else ifeq ($(FCOMPILER), gfortran)
+  FCFLAGS+=-ffixed-line-length-none -fd-lines-as-comments -fno-automatic -freal-4-real-8
+else
+  $(error Unsupported Fortran compiler)
+endif
+
+
+FCFLAGS += -I$(INCDIR)
+FCFLAGS += $(DEBUG)
 
 
 DINASRC = \
@@ -47,7 +58,7 @@ dina_99.a: $(DINAOBJ)
 	$(AR) $(ARFLAGS) $@ $(DINAOBJ)
 
 %.o: %.f
-	$(FC) $(FFLAGS) -c $<
+	$(FC) $(FCFLAGS) -c $<
 
 clean:
 	-rm -f *.o

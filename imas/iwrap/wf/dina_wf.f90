@@ -473,8 +473,8 @@ call ids_deallocate(bndcond)
     write(*,*)  'Put core_transport'
     call ids_put_slice(idx,"core_transport",core_transport)
   
-    write(*,*)  'Put transport_solver_numerics'
-    call ids_put_slice(idx,"transport_solver_numerics",bndcond)
+    !write(*,*)  'Put transport_solver_numerics'
+    !call ids_put_slice(idx,"transport_solver_numerics",bndcond)
   
   endif
 

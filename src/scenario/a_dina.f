@@ -28,6 +28,8 @@
 	character *30 apr,filename
 	character *70 apr2
 
+      integer, save :: i_en=0
+
 	dimension a_print(200)
 
 	common /c_data_in_time2/i_c_data,i_c_data1       

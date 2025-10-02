@@ -23,6 +23,8 @@
       real *8 a_in(200),a_out(100)
       !real *8 EqTime,SimStep
 
+      integer,save :: i_en=0
+
       i_en=i_en+1
 
 !	print * ,' T15--initi'
