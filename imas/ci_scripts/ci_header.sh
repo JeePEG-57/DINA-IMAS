@@ -15,14 +15,14 @@ shopt -s expand_aliases
 module purge 2> /dev/null
 
 
-export TOOLCHAIN=foss
-#export TOOLCHAIN=intel
+#export TOOLCHAIN=foss
+export TOOLCHAIN=intel
 
 
 
 if [ "$TOOLCHAIN" == "intel" ]; then
 # INTEL
-  echo '$FCOMPILER set to intel'
+  echo 'Using toolchain INTEL'
   
   export FCOMPILER=ifort
   #export CC=icx
@@ -39,7 +39,7 @@ if [ "$TOOLCHAIN" == "intel" ]; then
   module load XMLlib/3.3.2-intel-compilers-2023.2.1
 else
 # GFORTRAN
-  echo '$FCOMPILER set to gfortran'
+  echo 'Using toolchain FOSS'
   
   export FCOMPILER=gfortran
   export CC=gcc

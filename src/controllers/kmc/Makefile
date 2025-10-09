@@ -4,7 +4,8 @@ AR ?= ar
 ARFLAGS ?= -ru
 
 CC ?= cc
-CFLAGS ?= -fpic -w
+CFLAGS ?= -fPIC -w
+CFLAGS += -diag-disable=10441
 
 
 CONTROLSRC = t15_2.c t15_2_data.c pf_lookup3.c pf_lookup3_wrapper.c read_pf.c \

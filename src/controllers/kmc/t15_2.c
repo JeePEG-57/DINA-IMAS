@@ -11285,7 +11285,7 @@ void t15_2_terminate(void)
  *
  * [EOF]
  */
-void t15_2_output(int  nbrInputArgs, double* input,
+void t15_2_output(int *nbrInputArgs, double* input,
 int *nbrOutputArgs, double* output) 
 {
 	 int i, k, ki;
@@ -11295,7 +11295,7 @@ int *nbrOutputArgs, double* output)
 	  if( kpr == 1){
 	  printf("Enter t15_2_output "
          " and ki "
-		 " .  %d %d  \n",nbrInputArgs,ki);}
+		 " .  %d %d  \n",*nbrInputArgs,ki);}
 
   /* external inputs */
 	k=0;
@@ -11319,7 +11319,14 @@ if( kpr == 1){
 
 	  printf("nbrInputArgs "
          " and ki "
-		 " .  %d %d  \n",nbrInputArgs,ki);}
+		 " .  %d %d  \n",*nbrInputArgs,ki);
+     
+           for (i = 0; i < ki; i++) 
+	  { 	  printf("i, input[i] "
+         " . %d %g  \n",i,input[i]);
+      }
+     
+     }
 /*
 	  printf("test1_step() "
          "getControllerOutput. "
@@ -11366,6 +11373,20 @@ if( kpr == 1){
 //	  output[i+ki]=t15_2_B.wz[i] ;
 	  output[i+ki]=0.0 ;
 
+
+
+  	  k=0;
+
+      for (i = 0; i < 38; i++) 
+	  { output[i]=t15_2_Y.to_DINA[i] ;
+	  k=k+1;
+      }
+	  
+	  ki=k;
+
+
+
+
 	  ki=k;
 
 	  nbrOutputArgs=&ki;
@@ -11378,9 +11399,8 @@ if( kpr == 1){
 	
 
       for (i = 0; i < ki; i++) 
-	  { 	  printf("output "
-         " and i "
-         " .  %g %d  \n",output[i],i);
+	  { 	  printf("i, output[i] "
+         " .  %d %g \n",i,output[i]);
       }
       
 	  

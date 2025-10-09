@@ -12,7 +12,7 @@ DEBUG = -g -O0
 FCFLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
 ifeq ($(FCOMPILER), ifort)
-  FCFLAGS+=-extend-source -real-size 64 -save -assume no2underscores
+  FCFLAGS+=-extend-source -nod-lines -save -init=zero -real-size 64
 else ifeq ($(FCOMPILER), gfortran)
   FCFLAGS+=-ffixed-line-length-none -fd-lines-as-comments -fno-automatic -freal-4-real-8
 else

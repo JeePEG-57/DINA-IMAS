@@ -36,6 +36,9 @@
 	!SimStep=1.
 
       if(i_en.eq.1)then
+
+            print *, 'Control scheme initialization'
+
 !       call t15_2_initialize(aa2)
        call t15_2_initialize()
 !       call t15_2_initialize(EqTime,SimStep)

@@ -21,7 +21,7 @@ F90FLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
 ifeq ($(FCOMPILER), ifort)
   F90FLAGS+=-fpp
-  F90FLAGS+=-real-size 64 -save -assume no2underscores
+  F90FLAGS+=-real-size 64 -assume no2underscores -extend_source
 else ifeq ($(FCOMPILER), gfortran)
   F90FLAGS+=-cpp
   F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none

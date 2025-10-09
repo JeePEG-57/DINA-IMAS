@@ -156,17 +156,17 @@ data pf_turn(1:12) /554., 554., 554. ,554., 554. ,248.6, 115.2, 185.9, 169.9, 21
 
 
 
-  if (kpr.eq.1) then
-    write(*,*) 'kav_contr n_input1 n_input2 = ',n_input1,n_input2
-    print*, 'i  input_1(i)'
-    do i=1,n_input1
-      print*, i, input_1(i)
-    enddo
-    print*, 'i  input_2(i)'
-    do i=1,n_input2
-      print*, i, input_2(i)
-    enddo
-  endif
+  ! if (kpr.eq.1) then
+  !   write(*,*) 'kav_contr n_input1 n_input2 = ',n_input1,n_input2
+  !   print*, 'i  input_1(i)'
+  !   do i=1,n_input1
+  !     print*, i, input_1(i)
+  !   enddo
+  !   print*, 'i  input_2(i)'
+  !   do i=1,n_input2
+  !     print*, i, input_2(i)
+  !   enddo
+  ! endif
 
 
   call kav_contr(input_1,input_2, &

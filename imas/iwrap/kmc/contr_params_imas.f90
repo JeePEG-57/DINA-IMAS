@@ -45,7 +45,7 @@ logical :: errorflag
       call xml2eg_get(doc, 'max_VS_lim', max_VS_lim)
       call xml2eg_get(doc, 'c_a_tpl2_lim', c_a_tpl2_lim)
       call xml2eg_get(doc, 'time_stop', time_stop)
-      write (49,*) 'tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'c_a_tpl2_lim', 'time_stop'
+      write (49,'(20(1X,A))') 'tcont2', 'dtcont2', 'Ip_div', 'ref_ramp', 'Ip_rd', 'trd_ref', 'max_VS_lim', 'c_a_tpl2_lim', 'time_stop'
       write (49,*) tcont2, dtcont2, Ip_div, ref_ramp, Ip_rd, trd_ref, max_VS_lim, c_a_tpl2_lim, time_stop
 
 
@@ -56,7 +56,7 @@ logical :: errorflag
       call xml2eg_get(doc, 'y0', y0)
       call xml2eg_get(doc, 'c1_y0', c1_y0)
       call xml2eg_get(doc, 'c2_y0', c2_y0)
-      write (49,*) 'c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0'
+      write (49,'(20(1X,A))') 'c_a_tpl1', 'c_a_tpl1_eob', 'c_a_tpl2', 'c_a_tpl_min', 'y0', 'c1_y0', 'c2_y0'
       write (49,*) c_a_tpl1, c_a_tpl1_eob, c_a_tpl2, c_a_tpl_min, y0, c1_y0, c2_y0
 
 

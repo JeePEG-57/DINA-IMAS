@@ -22,7 +22,7 @@ FCFLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
 ifeq ($(FCOMPILER), ifort)
   F90FLAGS+=-fpp
-  F90FLAGS+=-real-size 64 -save -assume no2underscores
+  F90FLAGS+=-real-size 64 -assume no2underscores -no-wrap-margin
   FCFLAGS+=-extend-source
 else ifeq ($(FCOMPILER), gfortran)
   F90FLAGS+=-cpp
