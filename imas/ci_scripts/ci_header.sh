@@ -70,7 +70,6 @@ export PYTHONPATH=${HOME}/IWRAP_ACTORS:${PYTHONPATH}
 
 
 module load Viz/2.8.0-foss-2023b
-#export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
 #module load TotalView
 

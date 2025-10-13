@@ -59,11 +59,11 @@ lib: $(ACTOR).a
 exe: $(TEST).exe
 
 actor : lib ## Builds the IWrap actor
-	iwrap -a $(ACTOR) -f iwrap_settings.yaml
-	
+	iwrap -a $(ACTOR) -f iwrap_settings.yaml -i $(IWRAP_ACTORS_DIR)
+
 actor-gui : lib ## Opens IWrap GUI 
-	iwrap-gui -a $(ACTOR) -f iwrap_settings.yaml
-	
+	iwrap-gui -a $(ACTOR) -f iwrap_settings.yaml -i $(IWRAP_ACTORS_DIR)
+
 $(TEST).exe: $(OBJS_TEST) $(ACTOR).a
 	$(F90) $(F90FLAGS) -o $@ $^ $(F90LIB)
 
