@@ -15,8 +15,16 @@ shopt -s expand_aliases
 module purge 2> /dev/null
 
 
-#export TOOLCHAIN=foss
-export TOOLCHAIN=intel
+if [ -z "$TOOLCHAIN" ]; then
+  export TOOLCHAIN=foss
+  #export TOOLCHAIN=intel
+fi
+
+
+if [ -z "$TARGET" ]; then
+  #export TARGET=RELEASE
+  export TARGET=DEBUG
+fi
 
 
 
@@ -34,7 +42,6 @@ if [ "$TOOLCHAIN" == "intel" ]; then
   #AL5
   module load IMAS/3.39.0-intel-2023b
   
-  #module load intel/12.0.2
   #module load mpich2/3.1.3-intel
   module load XMLlib/3.3.2-intel-compilers-2023.2.1
 else
@@ -51,11 +58,8 @@ else
   module load IMAS/3.39.0-foss-2023b
 
   #module load mpich2/3.1.3-gnu
-  #module load XMLlib/3.3.1-GCC-10.2.0
   module load XMLlib/3.3.2-GCC-13.2.0
 fi
-
-
 
 
 #module load FC2K/4.14.2-Java-11
@@ -65,22 +69,10 @@ module load iWrap
 export PYTHONPATH=${HOME}/IWRAP_ACTORS:${PYTHONPATH}
 
 
-# export _JAVA_OPTIONS="-Xss20m -Xms1g -Xmx4g" #stack size
-#module load MATLAB/2018a
-
-#imasdb test
-
-#module load TotalView
-
-#module switch --force matplotlib/3.5.1-intel-2020b
-#module load Viz/2.7.0-intel-2020b
-#module load Viz/2.7.2-intel-2020b 
 module load Viz/2.8.0-foss-2023b
 #export PYTHONPATH=${VIZ_HOME}:${PYTHONPATH}
 
-# # FOR PYUAL (PYTHON WORKFLOWS)
-# export PYTHONPATH=/work/imas/core/pyual:$PYTHONPATH
-
+#module load TotalView
 
 
 export DINA_ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd)
@@ -94,8 +86,9 @@ export GIT_VERSION=$(git describe --tags --abbrev=0)
 module list
 #-t
 
-echo $TOOLCHAIN
-echo $DINA_ROOT
-echo $GIT_URL
-echo $GIT_COMMIT_ID
-echo $GIT_VERSION
+echo TOOLCHAIN=$TOOLCHAIN
+echo TARGET=$TARGET
+echo DINA_ROOT=$DINA_ROOT
+echo REPO_URL=$GIT_URL
+echo COMMIT=$GIT_COMMIT_ID
+echo VERSION=$GIT_VERSION

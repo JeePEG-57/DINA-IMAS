@@ -6,7 +6,6 @@ FC = $(FCOMPILER)
 
 INCDIR=../include
 
-DEBUG = -g -O0
 
 
 FCFLAGS=-fPIC -w
@@ -20,8 +19,14 @@ else
 endif
 
 
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  FCFLAGS += $(DEBUG)
+endif
+
+
 FCFLAGS += -I$(INCDIR)
-FCFLAGS += $(DEBUG)
+
 
 
 DINASRC = \

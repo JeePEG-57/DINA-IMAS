@@ -7,6 +7,11 @@ CC ?= cc
 CFLAGS ?= -fPIC -w
 CFLAGS += -diag-disable=10441
 
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  CFLAGS += $(DEBUG)
+endif
+
 
 CONTROLSRC = t15_2.c t15_2_data.c pf_lookup3.c pf_lookup3_wrapper.c read_pf.c \
 read_gaps.c  read_gaps_wrapper.c read_gaps_term.c  read_gaps_term_wrapper.c \

@@ -1,7 +1,7 @@
 .PHONY: validate test_dina.exe
 
 FCOMPILER?=gfortran
-DEBUG=-g -O0
+
 
 PACKAGES=
 #PACKAGES+=imas-$(FCOMPILER)
@@ -27,8 +27,11 @@ else
   $(error Unsupported Fortran compiler)
 endif
 
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  F90FLAGS += $(DEBUG)
+endif
 
-F90FLAGS+=$(DEBUG)
 F90FLAGS+=`pkg-config $(PACKAGES) --cflags`
 F90FLAGS+=$(F90DEF)
 

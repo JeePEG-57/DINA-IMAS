@@ -2,7 +2,6 @@ FCOMPILER?=gfortran
 ACTOR=dina_imas
 INCDIR:=../../../src/include
 
-DEBUG=-g -O0
 
 PACKAGES=
 #PACKAGES+=imas-$(FCOMPILER)
@@ -29,8 +28,12 @@ else
   $(error Unsupported Fortran compiler)
 endif
 
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  F90FLAGS += $(DEBUG)
+endif
+
 F90FLAGS+=$(F90DEF)
-F90FLAGS+=$(DEBUG)
 
 F90=$(FCOMPILER)
 

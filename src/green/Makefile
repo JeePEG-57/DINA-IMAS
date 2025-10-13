@@ -6,8 +6,6 @@ FC = $(FCOMPILER)
 
 INCDIR=../include
 
-DEBUG = -g -O0
-
 
 FCFLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
@@ -20,9 +18,12 @@ else
 endif
 
 
-FCFLAGS += -I$(INCDIR)
-FCFLAGS += $(DEBUG)
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  FCFLAGS += $(DEBUG)
+endif
 
+FCFLAGS += -I$(INCDIR)
 
 
 DINASRC = green_imas.f pers2.f green_br_N.f params_dat.f svd0m.f pet.f bunema.f svd2.f

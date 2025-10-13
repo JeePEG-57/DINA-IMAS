@@ -2,7 +2,6 @@ FCOMPILER?=gfortran
 ACTOR=dina_green
 INCDIR:=../../../src/include
 
-DEBUG=-g -O0
 
 PACKAGES=
 #PACKAGES+=imas-$(FCOMPILER)
@@ -31,8 +30,13 @@ else
 endif
 
 
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  F90FLAGS += $(DEBUG)
+endif
+
+
 F90FLAGS+=$(F90DEF)
-F90FLAGS+=$(DEBUG)
 
 F90=$(FCOMPILER)
 

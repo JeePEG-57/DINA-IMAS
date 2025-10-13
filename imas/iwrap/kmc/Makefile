@@ -2,7 +2,6 @@ FCOMPILER?=gfortran
 ACTOR=kav_mag_contr
 INCDIR:=../../../src/include
 
-DEBUG=-g -O0
 
 PACKAGES=
 #PACKAGES+=imas-$(FCOMPILER)
@@ -23,21 +22,28 @@ FCFLAGS=-fPIC -w
 ifeq ($(FCOMPILER), ifort)
   F90FLAGS+=-fpp
   F90FLAGS+=-real-size 64 -assume no2underscores -no-wrap-margin
-  FCFLAGS+=-extend-source
+  FCFLAGS+=-real-size 64 -extend-source
 else ifeq ($(FCOMPILER), gfortran)
   F90FLAGS+=-cpp
   F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none
-  FCFLAGS+=-ffixed-line-length-none -fno-automatic
+  FCFLAGS+=-freal-4-real-8 -ffixed-line-length-none
 else
   $(error Unsupported Fortran compiler)
 endif
 
+
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  F90FLAGS += $(DEBUG)
+  FCFLAGS += $(DEBUG)
+endif
+
+
 F90FLAGS+=$(F90DEF)
-F90FLAGS+=$(DEBUG)
 
 F90=$(FCOMPILER)
 
-FC = $(FCOMPILER) $(FCFLAGS) -I$(INCDIR) -fd-lines-as-comments 
+FC = $(FCOMPILER) $(FCFLAGS) -I$(INCDIR)
 
 # FLAGS OF PACKAGES
 F90LIB+=`pkg-config $(PACKAGES) --libs`
