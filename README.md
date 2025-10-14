@@ -2,6 +2,12 @@
 ## Setup the environment variables
 Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:  
 $ source imas/ci_scripts/ci_header.sh
+By default FOSS toolchain is used and target build is set to Debug. Debug target switches off compiler optimizations and includes debug symbols.
+To choose INTEL toolchain or build target Release, before run the ci_header.sh, set corresponding environment variable.
+To use INTEL toolchain:
+$ export TOOLCHAIN=INTEL
+To set build target Release:
+$ export TARGET=RELEASE
 
 ## Build libraries actors and executables  
 In the root of the repository execute  
@@ -9,7 +15,7 @@ $ make
 This command:
    1. builds DINA and magnetic controller core libraries in src/;
    2. builds DINA fortran with IDS interface and Fortran workflow in imas/iwrap/wf;
-   3. builds Python actors from imas/iwrap/. The python actors will be placed in iWrap's default directory.
+   3. builds Python actors from imas/iwrap/. The python actors will be placed in iWrap's default directory, normally $HOME/IWRAP_ACTORS/.
 
 
 # Simulation workflow
