@@ -5,7 +5,11 @@ ARFLAGS ?= -ru
 
 CC ?= cc
 CFLAGS ?= -fPIC -w
-CFLAGS += -diag-disable=10441
+
+# Disable advertisement of icx
+ifeq ($(CC), icc)
+  CFLAGS += -diag-disable=10441
+endif
 
 DEBUG = -g -O0
 ifeq ($(TARGET), DEBUG)
