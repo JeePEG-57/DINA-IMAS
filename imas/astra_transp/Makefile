@@ -1,17 +1,64 @@
 
-PACKAGES =
-PACKAGES += imas-$(FCOMPILER)
+PACKAGES=
+#PACKAGES+=imas-$(FCOMPILER)
+PACKAGES+=al-fortran
+#PACKAGES+=libxml-2.0
+PACKAGES+=xmllib
+
+F90LIB=
+F90INC=
+
+F90DEF=-D'GIT_URL="$(GIT_URL)"'
+F90DEF+=-D'GIT_COMMIT_ID="$(GIT_COMMIT_ID)"'
+F90DEF+=-D'GIT_VERSION="$(GIT_VERSION)"'
+
+F90FLAGS=-fPIC -w
+# COMPILER-SPECIFIC FLAGS
+ifeq ($(FCOMPILER), ifort)
+  F90FLAGS+=-fpp
+  F90FLAGS+=-real-size 64 -assume no2underscores -extend_source
+else ifeq ($(FCOMPILER), gfortran)
+  F90FLAGS+=-cpp
+  F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none
+else
+  $(error Unsupported Fortran compiler)
+endif
+
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  F90FLAGS += $(DEBUG)
+endif
+
+F90FLAGS+=$(F90DEF)
 
 F90=$(FCOMPILER)
-FFLAGS ?= -w -fdefault-real-8 -fPIC -fno-second-underscore -ffree-line-length-none
-FFLAGS += `pkg-config $(PACKAGES) --cflags`  
-LDFLAGS = `pkg-config $(PACKAGES) --libs`
 
-#XLIB= /usr/X11R6/lib
+# FLAGS OF PACKAGES
+F90LIB+=`pkg-config $(PACKAGES) --libs`
+F90INC+=`pkg-config $(PACKAGES) --cflags`
+
+F90FLAGS+=$(F90INC)
+
+
+FCFLAGS=-fPIC -w
+# COMPILER-SPECIFIC FLAGS
+ifeq ($(FCOMPILER), ifort)
+  FCFLAGS+=-extend-source -save -init=zero
+else ifeq ($(FCOMPILER), gfortran)
+  FCFLAGS+=-ffixed-line-length-none -fno-automatic
+else
+  $(error Unsupported Fortran compiler)
+endif
+
+
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  FCFLAGS += $(DEBUG)
+endif
+
 
 #FC= g77 -ff2c -fno-automatic
-FC= $(FCOMPILER) -w -ffixed-line-length-none -fno-automatic -fPIC
-
+FC= $(FCOMPILER) $(FCFLAGS)
 
 S=./
 V=$(S)
@@ -58,57 +105,57 @@ astra_sources_valve.a: astra_sources_valve.o $(os_s_puff)
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
-	$(F90) $(FFLAGS) -c -o $@ $^
+	$(F90) $(F90FLAGS) -c -o $@ $^
 
 p_4dina:	$(os_d)
-		$(F90) -o $@ $^ $(LDFLAGS)
+		$(FC) -o p_4dina $(os_d) -lm -L$(XLIB) -lX11
 
 
 a_main_dina.o:	$(S)a_main_dina.f
-		$(FC) -c   -w   $(S)a_main_dina.f
+		$(F90) $(F90FLAGS) -c -w $(S)a_main_dina.f
 
 a_dina.o:	$(S)a_dina.f
-		$(FC) -c   -w   $(S)a_dina.f
+		$(F90) $(F90FLAGS) -c -w $(S)a_dina.f
 
 
 add_dll.o:	$(S)add_dll.f
-		$(FC) -c   -w    $(S)add_dll.f
+		$(F90) $(F90FLAGS) -c -w  $(S)add_dll.f
 
 feed_pel.o:	$(S)feed_pel.f
-		$(FC) -c   -w    $(S)feed_pel.f
+		$(F90) $(F90FLAGS) -c -w  $(S)feed_pel.f
 
 feed_src.o:	$(S)feed_src.f
-		$(FC) -c   -w    $(S)feed_src.f
+		$(F90) $(F90FLAGS) -c -w  $(S)feed_src.f
 
 tran6.o:	$(S)tran6.f
-		$(FC) -c   -w    $(S)tran6.f
+		$(F90) $(F90FLAGS) -c -w  $(S)tran6.f
 
 tran_pel.o:	$(S)tran_pel.f
-		$(FC) -c   -w    $(S)tran_pel.f
+		$(F90) $(F90FLAGS) -c -w  $(S)tran_pel.f
 
 tran_neut.o:	$(S)tran_neut.f
-		$(FC) -c   -w    $(S)tran_neut.f
+		$(F90) $(F90FLAGS) -c -w  $(S)tran_neut.f
 
 main_astra.o:	$(S)main_astra.f
-		$(FC) -c   -w    $(S)main_astra.f
+		$(F90) $(F90FLAGS) -c -w  $(S)main_astra.f
 mainp_astra.o:	$(S)mainp_astra.f
-		$(FC) -c   -w    $(S)mainp_astra.f
+		$(F90) $(F90FLAGS) -c -w  $(S)mainp_astra.f
 
 solsrs_IMAS.o:	$(S)solsrs_IMAS.f
-		$(FC) -c   -w    $(S)solsrs_IMAS.f
+		$(F90) $(F90FLAGS) -c -w  $(S)solsrs_IMAS.f
 solsrsP_IMAS.o:	$(S)solsrsP_IMAS.f
-		$(FC) -c   -w    $(S)solsrsP_IMAS.f
+		$(F90) $(F90FLAGS) -c -w  $(S)solsrsP_IMAS.f
 
 neutex_IMAS.o:	$(S)neutex_IMAS.f
-		$(FC) -c   -w    $(S)neutex_IMAS.f
+		$(F90) $(F90FLAGS) -c -w  $(S)neutex_IMAS.f
 
 pelsrs1_IMAS.o:	$(S)pelsrs1_IMAS.f
-		$(FC) -c   -w    $(S)pelsrs1_IMAS.f
+		$(F90) $(F90FLAGS) -c -w  $(S)pelsrs1_IMAS.f
 
 solpsz3.o:	$(S)solpsz3.f
-		$(FC) -c   -w    $(S)solpsz3.f
+		$(F90) $(F90FLAGS) -c -w  $(S)solpsz3.f
 nbicomR_IMAS.o:	$(S)nbicomR_IMAS.f
-		$(FC) -c   -w    $(S)nbicomR_IMAS.f
+		$(F90) $(F90FLAGS) -c -w  $(S)nbicomR_IMAS.f
 
 clean:
 	rm -f *.o

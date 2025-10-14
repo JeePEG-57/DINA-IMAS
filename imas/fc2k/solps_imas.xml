@@ -66,7 +66,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/solps_imas</actorFolder>
   <semantic>ITER</semantic>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

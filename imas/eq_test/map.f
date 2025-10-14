@@ -481,7 +481,7 @@ c	end if
 c	call boxd_pp(re,ze,fint)
 
 	if(ix.le.-3)then
-	if(kpr.eq.1)print *,' i psi psval pdd1 pdd2 ',i,fint,psval(1),pdd(2),pdd(3)
+	if(kpr.eq.1) print *,' i psi psval pdd1 pdd2 ',i,fint,psval(1),pdd(2),pdd(3)
 	end if
 
 

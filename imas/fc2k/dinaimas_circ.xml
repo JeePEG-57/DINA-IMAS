@@ -207,7 +207,7 @@
   <actorFolder>org/iter/imas/dina/dinaimas_circ</actorFolder>
   <semantic>ITER</semantic>
   <pythonActorDir>../python_wf/actors</pythonActorDir>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

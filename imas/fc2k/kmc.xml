@@ -90,7 +90,7 @@
   <actorFolder>org/iter/imas/kmc</actorFolder>
   <semantic>ITER</semantic>
   <pythonActorDir>$ITMWORK/PYTHON_ACTORS</pythonActorDir>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries>
     <string>xmllib</string>

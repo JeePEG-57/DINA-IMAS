@@ -75,7 +75,7 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/astra_sources_valve</actorFolder>
   <semantic>ITER</semantic>
-  <compiler>gfortran</compiler>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

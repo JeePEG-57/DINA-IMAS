@@ -89,8 +89,8 @@
   <actorDoc></actorDoc>
   <actorFolder>org/iter/imas/dina_green</actorFolder>
   <semantic>ITER</semantic>
-  <pythonActorDir>../python_wf/PYTHON_DINA_ACTORS</pythonActorDir>
-  <compiler>gfortran</compiler>
+  <pythonActorDir>$ITMWORK/PYTHON_ACTORS</pythonActorDir>
+  <compiler>ifort</compiler>
   <libraries/>
   <systemLibraries/>
   <lang>fortran</lang>

@@ -4,27 +4,55 @@ GREENDIR := ../../src/green
 CONTROLDIR := ../../src/controllers
 ASTRADIR := ../astra_transp
 
+FCOMPILER?=gfortran
 
-PACKAGES =
-PACKAGES += imas-$(FCOMPILER)
-#PACKAGES += al-fortran
-PACKAGES += libxml-2.0
-PACKAGES += xmllib
+PACKAGES=
+#PACKAGES+=imas-$(FCOMPILER)
+PACKAGES+=al-fortran
+#PACKAGES+=libxml-2.0
+PACKAGES+=xmllib
+
+
+F90LIB=
+F90INC=-I$(INCDIR)
+
+F90DEF=-D'GIT_URL="$(GIT_URL)"'
+F90DEF+=-D'GIT_COMMIT_ID="$(GIT_COMMIT_ID)"'
+F90DEF+=-D'GIT_VERSION="$(GIT_VERSION)"'
+
+F90FLAGS=-fPIC -w
+# COMPILER-SPECIFIC FLAGS
+ifeq ($(FCOMPILER), ifort)
+  F90FLAGS+=-fpp
+  F90FLAGS+=-real-size 64 -assume no2underscores -extend_source
+else ifeq ($(FCOMPILER), gfortran)
+  F90FLAGS+=-cpp
+  F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none
+else
+  $(error Unsupported Fortran compiler)
+endif
+
 DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  F90FLAGS += $(DEBUG)
+endif
+
+F90FLAGS+=$(F90DEF)
 
 F90=$(FCOMPILER)
-FFLAGS ?= -w -freal-4-real-8 -cpp -fPIC -fno-second-underscore -ffree-line-length-none
-FFLAGS += -I$(INCDIR)
-FFLAGS += $(DEBUG)
-#FFLAGS += -fpp -mcmodel=medium
-FFLAGS += `pkg-config $(PACKAGES) --cflags`
-#FFLAGS += -traceback -check-all -fp-stack-check
-LDFLAGS = `pkg-config $(PACKAGES) --libs` -mcmodel=large -Wl,--no-relax
+
+# FLAGS OF PACKAGES
+F90LIB+=`pkg-config $(PACKAGES) --libs`
+F90INC+=`pkg-config $(PACKAGES) --cflags`
 
 
-FC = $(FCOMPILER) -I$(INCDIR) -w -ffixed-line-length-none -fd-lines-as-comments -fno-automatic -fPIC
-#FC += $(DEBUG)
-#FC += -traceback -check all -fp-stack-check
+DEBUG = -g -O0
+ifeq ($(TARGET), DEBUG)
+  F90FLAGS += $(DEBUG)
+endif
+
+F90=$(FCOMPILER)
+F90FLAGS+=$(F90INC)
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 
@@ -45,31 +73,31 @@ all: $(TARGETS)
 
 test_dina: test_dina_imas.o dina_green.a dina_imas.a kmc.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 test_mast: test_mast.o dina_green.a dina_imas.a
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 test_dina_pfpo1a: test_dina_imas.o dina_green.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 test_dina_pfpo1b: test_dina_imas.o dina_green.a dina_imas.a kmc_pfpo1_1b.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 test_dina_pfpo1c: test_dina_imas.o dina_green.a dina_imas.a kmc_pfpo1_1a.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 test_dina_2madiv: test_dina_imas.o dina_green.a dina_imas.a kmc_2madiv.a solps_imas.a
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 test_dina_astra: test_dina_imas_astra.o dina_green.a dina_imas.a kmc.a solps_imas.a astra_transp_density.a
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 astra_transp_density.a: $(ASTRADIR)/astra_transp_density.a
 	@echo "   * $^ -> $@"
@@ -77,20 +105,20 @@ astra_transp_density.a: $(ASTRADIR)/astra_transp_density.a
 
 test_dina_to_imas: test_dina_to_imas.o n_dina_imas4.o dina_to_imas.o
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(F90) -o $@ $^ $(F90LIB)
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
-	$(F90) $(FFLAGS) -c -o $@ $^
-
-%.o: %.f
-	@echo "   * $^ -> $@"
-	$(FC) -c $<
+	$(F90) $(F90FLAGS) -c -o $@ $^
 
 dina_green.a: $(GREENDIR)/green.a dina_green.o tokamak_green.o
 	@echo "   * $^ -> $@"
 	@cp $< $@
 	ar -rcs $@ dina_green.o tokamak_green.o
+
+%.o: %.f
+	@echo "   * $^ -> $@"
+	$(F90) $(F90FLAGS) -c $<
 
 dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"
