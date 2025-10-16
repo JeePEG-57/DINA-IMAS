@@ -16,6 +16,6 @@ source "${SCRIPT_DIR}/st00_header.sh"
 cd "${DINA_ROOT}"
 
 echo "Building IMAS interface..."
-make imas
+make interface
 
 echo "IMAS interface build completed successfully!"

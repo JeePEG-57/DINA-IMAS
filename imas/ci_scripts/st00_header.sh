@@ -32,10 +32,8 @@ MODULES=(${MODULES[@]}
     Viz/2.8.0-foss-2023b
     XMLlib/3.3.2-GCC-13.2.0
 )
-CMAKE_ARGS=(${CMAKE_ARGS[@]}
-    -DCMAKE_C_COMPILER=${CC:-gcc}
-    -DCMAKE_CXX_COMPILER=${CXX:-g++}
-)
+export FCOMPILER=gfortran
+export CC=gcc
   ;;&
   *intel-2023b)
 echo "... intel-2023b"
@@ -44,10 +42,8 @@ MODULES=(${MODULES[@]}
     Viz/2.8.0-intel-2023b
     XMLlib/3.3.2-intel-compilers-2023.2.1
 )
-CMAKE_ARGS=(${CMAKE_ARGS[@]}
-    -DCMAKE_C_COMPILER=${CC:-icx}
-    -DCMAKE_CXX_COMPILER=${CXX:-icpx}
-)
+export FCOMPILER=ifort
+export CC=icx
   ;;
 esac
 echo "${MODULES[@]}" | tr " " "\n"
@@ -58,8 +54,7 @@ echo "Done loading modules"
 
 
 export PYTHONPATH=${HOME}/IWRAP_ACTORS:${PYTHONPATH}
-export FCOMPILER=gfortran
-export CC=gcc
+
 export DINA_ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd)
 export GIT_URL=$(git remote get-url origin)
 export GIT_COMMIT_ID=$(git rev-parse --verify HEAD)
