@@ -1,57 +1,70 @@
 #!/bin/bash
-# Bamboo CI script to build 
 #
-# This script expects to be run from the repository root directory
+# MODULE LOADER SCRIPT FOR CI/CD
+# ===============================
+#
+# This script loads environment modules based on the selected toolchain.
+# Module versions can be configured via environment variables for easy CI integration.
+#
+# USAGE:
+#   ./st00_header.sh
+#
+# ENVIRONMENT VARIABLES:
+#   TOOLCHAIN        - Toolchain to use (default: foss-2023b)
+#   COMMON_MODULES   - Common modules for all toolchains (comma-separated)
+#   FOSS_MODULES     - FOSS-specific modules (comma-separated)  
+#   INTEL_MODULES    - Intel-specific modules (comma-separated)
+#
+set -e -o pipefail
 
-# set -e -o pipefail
 echo "Loading modules..."
 
-# Set up environment such that module files can be loaded
-if test -f /etc/profile.d/modules.sh ;then
-. /etc/profile.d/modules.sh
+if test -f /etc/profile.d/modules.sh; then
+    . /etc/profile.d/modules.sh
 else
-. /usr/share/Modules/init/sh
+    . /usr/share/Modules/init/sh
 fi
 module purge
 
-# Check for TOOLCHAIN
 TOOLCHAIN=${TOOLCHAIN:-foss-2023b}
-# Load modules that correspond to toolchain
+
+DEFAULT_COMMON_MODULES="iWrap/1.0.0-GCCcore-13.2.0"
+DEFAULT_FOSS_MODULES="IMAS/3.39.0-2024.09-foss-2023b,Viz/2.8.0-foss-2023b,XMLlib/3.3.2-GCC-13.2.0"
+DEFAULT_INTEL_MODULES="IMAS/3.39.0-2024.09-intel-2023b,Viz/2.8.0-intel-2023b,XMLlib/3.3.2-intel-compilers-2023.2.1"
+
+COMMON_MODULES_LIST="${COMMON_MODULES:-$DEFAULT_COMMON_MODULES}"
+FOSS_MODULES_LIST="${FOSS_MODULES:-$DEFAULT_FOSS_MODULES}"
+INTEL_MODULES_LIST="${INTEL_MODULES:-$DEFAULT_INTEL_MODULES}"
+
+IFS=',' read -ra COMMON_MODULES <<< "$COMMON_MODULES_LIST"
+IFS=',' read -ra FOSS_MODULES <<< "$FOSS_MODULES_LIST"
+IFS=',' read -ra INTEL_MODULES <<< "$INTEL_MODULES_LIST"
+
 case "$TOOLCHAIN" in
-  *-2023b)
-echo "... 2023b"
-module load "${MODULES[@]}"
-MODULES=(
-    iWrap/1.0.0-GCCcore-13.2.0
-)
-  ;;&
-  *foss-2023b)
-echo "... foss-2023b"
-MODULES=(${MODULES[@]}
-    IMAS/3.39.0-2024.09-foss-2023b
-    Viz/2.8.0-foss-2023b
-    XMLlib/3.3.2-GCC-13.2.0
-)
-export FCOMPILER=gfortran
-export CC=gcc
-  ;;&
-  *intel-2023b)
-echo "... intel-2023b"
-MODULES=(${MODULES[@]}
-    IMAS/3.39.0-2024.09-intel-2023b
-    Viz/2.8.0-intel-2023b
-    XMLlib/3.3.2-intel-compilers-2023.2.1
-)
-export FCOMPILER=ifort
-export CC=icx
-  ;;
+    *-2023b)
+        echo "... 2023b"
+        module load "${MODULES[@]}"
+        MODULES=("${COMMON_MODULES[@]}")
+        ;;&
+    *foss-2023b)
+        echo "... foss-2023b"
+        MODULES+=("${FOSS_MODULES[@]}")
+        export FCOMPILER=gfortran
+        export CC=gcc
+        ;;&
+    *intel-2023b)
+        echo "... intel-2023b"
+        MODULES+=("${INTEL_MODULES[@]}")
+        export FCOMPILER=ifort
+        export CC=icx
+        ;;
 esac
+
+echo "Modules to load:"
 echo "${MODULES[@]}" | tr " " "\n"
 
 module load "${MODULES[@]}"
-
 echo "Done loading modules"
-
 
 export PYTHONPATH=${HOME}/IWRAP_ACTORS:${PYTHONPATH}
 

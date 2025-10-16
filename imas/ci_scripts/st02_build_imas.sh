@@ -1,21 +1,29 @@
 #!/bin/bash
-# Build script for  IMAS interface
 #
-# This script loads the environment and builds IMAS interface
+# IMAS INTERFACE BUILD SCRIPT FOR CI/CD
+# ======================================
+#
+# This script sets up the environment and builds the IMAS interface component.
+# It automatically sources the module configuration and executes the interface build.
+#
+# USAGE:
+#   ./st02_build_imas.sh
+#
+# PREREQUISITES:
+#   - st00_header.sh must be in the same directory
+#   - Valid Makefile with 'interface' target in repository root
+#   - Proper IMAS module environment setup
+#
 
 set -e -o pipefail
 
-# Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-# Source the header script to set up environment
 echo "Sourcing environment setup..."
 source "${SCRIPT_DIR}/st00_header.sh"
 
-# Change to the repository root directory
 cd "${DINA_ROOT}"
 
 echo "Building IMAS interface..."
 make interface
-
 echo "IMAS interface build completed successfully!"
