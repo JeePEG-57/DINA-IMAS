@@ -10,7 +10,7 @@
 #   ./st00_header.sh
 #
 # ENVIRONMENT VARIABLES:
-#   TOOLCHAIN        - Toolchain to use (default: foss-2023b)
+#   TOOLCHAIN        - Toolchain to use (default: foss)
 #   COMMON_MODULES   - Common modules for all toolchains (comma-separated)
 #   FOSS_MODULES     - FOSS-specific modules (comma-separated)  
 #   INTEL_MODULES    - Intel-specific modules (comma-separated)
@@ -26,11 +26,11 @@ else
 fi
 module purge
 
-TOOLCHAIN=${TOOLCHAIN:-foss-2023b}
+TOOLCHAIN=${TOOLCHAIN:-foss}
 
 DEFAULT_COMMON_MODULES="iWrap/1.0.0-GCCcore-13.2.0"
-DEFAULT_FOSS_MODULES="IMAS/3.39.0-2024.09-foss-2023b,Viz/2.8.0-foss-2023b,XMLlib/3.3.2-GCC-13.2.0"
-DEFAULT_INTEL_MODULES="IMAS/3.39.0-2024.09-intel-2023b,Viz/2.8.0-intel-2023b,XMLlib/3.3.2-intel-compilers-2023.2.1"
+DEFAULT_FOSS_MODULES="IMAS/3.39.0-foss-2023b,Viz/2.8.0-foss-2023b,XMLlib/3.3.2-GCC-13.2.0"
+DEFAULT_INTEL_MODULES="IMAS/3.39.0-intel-2023b,Viz/2.8.0-intel-2023b,XMLlib/3.3.2-intel-compilers-2023.2.1"
 
 COMMON_MODULES_LIST="${COMMON_MODULES:-$DEFAULT_COMMON_MODULES}"
 FOSS_MODULES_LIST="${FOSS_MODULES:-$DEFAULT_FOSS_MODULES}"
@@ -41,22 +41,26 @@ IFS=',' read -ra FOSS_MODULES <<< "$FOSS_MODULES_LIST"
 IFS=',' read -ra INTEL_MODULES <<< "$INTEL_MODULES_LIST"
 
 case "$TOOLCHAIN" in
-    *-2023b)
-        echo "... 2023b"
-        module load "${MODULES[@]}"
+    *foss*)
+        echo "... foss toolchain"
         MODULES=("${COMMON_MODULES[@]}")
-        ;;&
-    *foss-2023b)
-        echo "... foss-2023b"
         MODULES+=("${FOSS_MODULES[@]}")
         export FCOMPILER=gfortran
         export CC=gcc
-        ;;&
-    *intel-2023b)
-        echo "... intel-2023b"
+        ;;
+    *intel*)
+        echo "... intel toolchain"
+        MODULES=("${COMMON_MODULES[@]}")
         MODULES+=("${INTEL_MODULES[@]}")
         export FCOMPILER=ifort
-        export CC=icx
+        export CC=icc
+        ;;
+    *)
+        echo "... default toolchain"
+        MODULES=("${COMMON_MODULES[@]}")
+        MODULES+=("${FOSS_MODULES[@]}")
+        export FCOMPILER=gfortran
+        export CC=gcc
         ;;
 esac
 
@@ -66,6 +70,7 @@ echo "${MODULES[@]}" | tr " " "\n"
 module load "${MODULES[@]}"
 echo "Done loading modules"
 
+export TARGET="${TARGET:-DEBUG}"
 export PYTHONPATH=${HOME}/IWRAP_ACTORS:${PYTHONPATH}
 
 export DINA_ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/../.." &> /dev/null && pwd)
@@ -73,8 +78,10 @@ export GIT_URL=$(git remote get-url origin)
 export GIT_COMMIT_ID=$(git rev-parse --verify HEAD)
 export GIT_VERSION=$(git describe --tags --abbrev=0)
 
-echo $DINA_ROOT
-echo $GIT_URL
-echo $GIT_COMMIT_ID
-echo $GIT_VERSION
+echo "TOOLCHAIN: $TOOLCHAIN"
+echo "TARGET: $TARGET"
+echo "DINA_ROOT: $DINA_ROOT"
+echo "GIT_URL: $GIT_URL"
+echo "GIT_COMMIT_ID: $GIT_COMMIT_ID"
+echo "GIT_VERSION: $GIT_VERSION"
 
