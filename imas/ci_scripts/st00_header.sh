@@ -10,6 +10,7 @@
 #   ./st00_header.sh
 #
 # ENVIRONMENT VARIABLES:
+#   TARGET           - Target to use DEBUG or RELEASE
 #   TOOLCHAIN        - Toolchain to use (default: foss)
 #   COMMON_MODULES   - Common modules for all toolchains (comma-separated)
 #   FOSS_MODULES     - FOSS-specific modules (comma-separated)  
