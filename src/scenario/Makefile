@@ -1,8 +1,8 @@
 # Makefile for compilation of DINA components
 
-AR ?= ar
-ARFLAGS ?= -ru
-FC = $(FCOMPILER)
+AR?=ar
+ARFLAGS?=-ru
+FC?=gfortran
 
 INCDIR=../include
 
@@ -10,9 +10,9 @@ INCDIR=../include
 
 FCFLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
-ifeq ($(FCOMPILER), ifort)
+ifeq ($(FC), ifort)
   FCFLAGS+=-extend-source -nod-lines -save -init=zero -real-size 64
-else ifeq ($(FCOMPILER), gfortran)
+else ifeq ($(FC), gfortran)
   FCFLAGS+=-ffixed-line-length-none -fd-lines-as-comments -fno-automatic -freal-4-real-8
 else
   $(error Unsupported Fortran compiler)

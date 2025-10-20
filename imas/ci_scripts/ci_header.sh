@@ -32,7 +32,7 @@ if [ "$TOOLCHAIN" == "intel" ]; then
 # INTEL
   echo 'Using toolchain INTEL'
   
-  export FCOMPILER=ifort
+  export FC=ifort
   #export CC=icx
   export CC=icc
 
@@ -48,7 +48,7 @@ else
 # GFORTRAN
   echo 'Using toolchain FOSS'
   
-  export FCOMPILER=gfortran
+  export FC=gfortran
   export CC=gcc
 
   #AL4

@@ -46,21 +46,21 @@ case "$TOOLCHAIN" in
         echo "... foss toolchain"
         MODULES=("${COMMON_MODULES[@]}")
         MODULES+=("${FOSS_MODULES[@]}")
-        export FCOMPILER=gfortran
+        export FC=gfortran
         export CC=gcc
         ;;
     *intel*)
         echo "... intel toolchain"
         MODULES=("${COMMON_MODULES[@]}")
         MODULES+=("${INTEL_MODULES[@]}")
-        export FCOMPILER=ifort
+        export FC=ifort
         export CC=icc
         ;;
     *)
         echo "... default toolchain"
         MODULES=("${COMMON_MODULES[@]}")
         MODULES+=("${FOSS_MODULES[@]}")
-        export FCOMPILER=gfortran
+        export FC=gfortran
         export CC=gcc
         ;;
 esac

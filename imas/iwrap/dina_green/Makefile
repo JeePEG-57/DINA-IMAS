@@ -1,10 +1,10 @@
-FCOMPILER?=gfortran
+FC?=gfortran
 ACTOR=dina_green
 INCDIR:=../../../src/include
 
 
 PACKAGES=
-#PACKAGES+=imas-$(FCOMPILER)
+#PACKAGES+=imas-$(FC)
 PACKAGES+=al-fortran
 #PACKAGES+=libxml-2.0
 PACKAGES+=xmllib
@@ -19,10 +19,10 @@ F90DEF+=-D'GIT_VERSION="$(GIT_VERSION)"'
 
 F90FLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
-ifeq ($(FCOMPILER), ifort)
+ifeq ($(FC), ifort)
   F90FLAGS+=-fpp
   F90FLAGS+=-real-size 64 -assume no2underscores -extend_source
-else ifeq ($(FCOMPILER), gfortran)
+else ifeq ($(FC), gfortran)
   F90FLAGS+=-cpp
   F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none
 else
@@ -37,8 +37,6 @@ endif
 
 
 F90FLAGS+=$(F90DEF)
-
-F90=$(FCOMPILER)
 
 # FLAGS OF PACKAGES
 F90LIB+=`pkg-config $(PACKAGES) --libs`
@@ -65,14 +63,14 @@ actor-gui : lib ## Opens IWrap GUI
 	iwrap-gui -a $(ACTOR) -f iwrap_settings.yaml -i $(IWRAP_ACTORS_DIR)
 
 $(TEST).exe: $(OBJS_TEST) $(ACTOR).a
-	$(F90) $(F90FLAGS) -o $@ $^ $(F90LIB)
+	$(FC) $(F90FLAGS) -o $@ $^ $(F90LIB)
 
 $(ACTOR).a: $(OBJS_ACTOR)
 	@cp $< $@
 	ar -rcs $@ $^
 
 %.o:%.f90
-	$(F90) $(F90FLAGS) -c $< $(F90INC)
+	$(FC) $(F90FLAGS) -c $< $(F90INC)
 
 validate:
 	xmllint --noout test_wf_parameters.xsd test_wf_parameters.xml

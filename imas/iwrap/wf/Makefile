@@ -1,15 +1,14 @@
 .PHONY: validate test_dina.exe
 
-FCOMPILER?=gfortran
+FC?=gfortran
 
 
 PACKAGES=
-#PACKAGES+=imas-$(FCOMPILER)
+#PACKAGES+=imas-$(FC)
 PACKAGES+=al-fortran
 #PACKAGES+=libxml-2.0
 PACKAGES+=xmllib
 
-F90=$(FCOMPILER)
 
 F90DEF=-D'GIT_URL="$(GIT_URL)"'
 F90DEF+=-D'GIT_COMMIT_ID="$(GIT_COMMIT_ID)"'
@@ -17,10 +16,10 @@ F90DEF+=-D'GIT_VERSION="$(GIT_VERSION)"'
 
 F90FLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
-ifeq ($(FCOMPILER), ifort)
+ifeq ($(FC), ifort)
   F90FLAGS+=-fpp
   F90FLAGS+=-real-size 64 -assume no2underscores -extend_source
-else ifeq ($(FCOMPILER), gfortran)
+else ifeq ($(FC), gfortran)
   F90FLAGS+=-cpp
   F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none
 else
@@ -49,11 +48,11 @@ all: dina_wf.exe
 
 dina_wf.exe: dina_wf.o $(DINA_LIBS)
 	@echo "   * $^ -> $@"
-	$(F90) -o $@ $^ $(LDFLAGS)
+	$(FC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.f90
 	@echo "   * $^ -> $@"
-	$(F90) $(F90FLAGS) $(F90INC) -c -o $@ $^
+	$(FC) $(F90FLAGS) $(F90INC) -c -o $@ $^
 
 validate: ## Test the consistency of the XML and XSD files for input parameters
 	xmllint --noout wfconfig.xsd wfconfig.xml
