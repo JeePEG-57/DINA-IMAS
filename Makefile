@@ -23,15 +23,6 @@ iwrap: interface
 	make -C imas/iwrap/dina_imas actor
 	make -C imas/iwrap/kmc actor
 
-interface_fc2k: dina controllers
-	make -C imas/astra_transp
-	make -C imas/eq_test
-	make -C imas/interface
-	make -C imas/circ
-
-fc2k: interface_fc2k
-	make -C imas/fc2k
-
 clean:
 	make -C src/scenario clean
 	make -C src/green clean
@@ -43,7 +34,6 @@ clean:
 	make -C imas/eq_test clean
 	make -C imas/circ clean
 	make -C imas/interface clean
-	make -C imas/fc2k clean
 	make -C imas/iwrap/dina_green clean
 	make -C imas/iwrap/dina_imas clean
 	make -C imas/iwrap/kmc clean

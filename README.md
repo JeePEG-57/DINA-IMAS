@@ -22,13 +22,16 @@ This command:
 ## Running the workflow
 Having the environment set and libraries built, one needs to:
 1. Create a working directory needed for the workflow.
-2. Put in the working directory XML files with code parameters for DINA actor and Magnetic controller actor - codeparam_dina.xml and codeparam_kmc.xml.
+2. Put in the working directory XML files with code parameters for GREEN actor, DINA actor and Magnetic controller actor - codeparam_green.xml, codeparam_dina.xml and codeparam_kmc.xml.
 3. Put in the working directory the workflow configuration file wfconfig.xml with parameters: input and output IMAS databases, simulation start time, etc.
 4. Put in the working directory the machines/imp folder with atomic data.
 5. Create initial IDS's pulse_schedule (with target waveforms for DINA and the magnetic controller) and equilibrium (with defined RZ grid and vacuum toroidal field). If the workflow start time is 0, the input pf_active, pf_passive, wall IDS's can be used from the Machine Description database.
 6. Run Python or Fortran version of the workflow. Navigate to the working directory and from there:
    * for the Python workflow run the script imas/iwrap/wf/dina_wf.py
-   * for the Fortran workflow run the executable imas/iwrap/wf/dina_wf.exe
+$ python $DINA_ROOT/imas/iwrap/wf/dina_wf.py -c wfconfig.xml
+   * for the Fortran workflow run the executable 
+$ . $DINA_ROOT/imas/iwrap/wf/dina_wf.exe wfconfig.xml
+The environment variable $DINA_ROOT is exported by environment setup script and points to the root of the repository.
 
 
 ## GUI
@@ -82,8 +85,8 @@ To modify workflow parameters, one has to edit the wfconfig.xml file in the work
    - The GUI main window can be closed now.
 * $ cd ../../imas/python_wf (Navigate to the working directory, chosen in the previous step).
    - If needed, change settings of the workflow in the wfconfig.xml.
-* $ python ../iwrap/wf/dina_wf.py -c wfconfig.xml - to run the Python workflow
-* $ ../iwrap/wf/dina_wf.exe wfconfig.xml - to run the Fortran workflow
+* $ python $DINA_ROOT/iwrap/wf/dina_wf.py -c wfconfig.xml - to run the Python workflow
+* $ . $DINA_ROOT/iwrap/wf/dina_wf.exe wfconfig.xml - to run the Fortran workflow
 
 
 ## The restart mode
