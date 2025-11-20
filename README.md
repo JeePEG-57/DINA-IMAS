@@ -1,3 +1,8 @@
+# Background
+The DINA code is a sophisticated simulation tool that has been extensively used for modelling of tokamak plasma scenarios, including those of ITER.  It is a free-boundary equilibrium evolution code designed to simulate the magnetic equilibrium and poloidal field circuit of tokamak plasmas consistently with plasma parameters evolution in tokamak scenarios. Recently, DINA has been coupled with the JINTRAC suite of tools to create a High-Fidelity Plasma Simulator (HFPS) within the ITER Organization’s Integrated Modelling & Analysis Suite (IMAS).
+
+In order to lower the barrier to developing, validating and applying the DINA software across the ITER Members in preparation for ITER operations, the Plasma Simulation Center (PSC) has given permission for the DINA plasma simulation software to be released under the LGPL 3.0 open-source licence.
+
 # Environment and build
 ## Setup the environment variables
 Preferably, the IMAS environment setup is to be done by running a specially prepared script in imas/ci_scripts folder:  
