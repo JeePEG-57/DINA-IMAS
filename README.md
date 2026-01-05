@@ -1,7 +1,31 @@
 # Background
-The DINA code is a sophisticated simulation tool that has been extensively used for modelling of tokamak plasma scenarios, including those of ITER.  It is a free-boundary equilibrium evolution code designed to simulate the magnetic equilibrium and poloidal field circuit of tokamak plasmas consistently with plasma parameters evolution in tokamak scenarios. Recently, DINA has been coupled with the JINTRAC suite of tools to create a High-Fidelity Plasma Simulator (HFPS) within the ITER Organization’s Integrated Modelling & Analysis Suite (IMAS).
+The DINA code is a sophisticated simulation tool that has been extensively used for modelling of tokamak plasma scenarios, including those of ITER. It is a free-boundary equilibrium evolution code designed to simulate the magnetic equilibrium and poloidal field circuit of tokamak plasmas consistently with plasma parameters evolution in tokamak scenarios.
 
-In order to lower the barrier to developing, validating and applying the DINA software across the ITER Members in preparation for ITER operations, the Plasma Simulation Center (PSC) has given permission for the DINA plasma simulation software to be released under the LGPL 3.0 open-source licence.
+Recently, the DINA-PS module has been developed providing a coupling of a part of the DINA software with the JINTRAC suite of tools to create a High-Fidelity Plasma Simulator (HFPS) within the ITER Organization’s Integrated Modelling & Analysis Suite (IMAS). DINA-PS module is hosted in the repository https://github.com/iterorganization/DINA-IMAS.git.
+
+In order to lower the barrier to developing, validating and applying the DINA-PS module across the ITER Members in preparation for ITER operations, Plasma Simulation Center (PSC) is giving permission to the ITER Organization for the DINA-PS module to be released under the LGPL 3.0 open-source license.
+
+# Authors and provenance
+## Authors / Original developers
+* Rustam Khayrutdinov - Plasma Simulation Center
+* Victor Lukash - Plasma Simulation Center
+* Eduard Khairutdinov — Next Step Fusion S.a.r.l., Plasma Simulation Center
+
+# Acknowledgements
+DINA-PS development and validation involved contributions from PSC and collaborating institutions (ITER Members). Please refer to AUTHORS for details.
+
+# Contacts
+## Project contacts (questions, bug reports, scientific/technical discussion)
+* Victor Lukash -  lukash08@yandex.ru
+* Eduard Khairutdinov - ekh@nextfusion.org / eduard@khayrutdinov.ru
+
+# Support & development
+For training, user support, feature development, integration work, and collaboration proposals, contact:
+* Victor Lukash -  lukash08@yandex.ru
+* Eduard Khairutdinov - ekh@nextfusion.org / eduard@khayrutdinov.ru
+
+# Collaboration
+We welcome contributions and collaboration proposals. Please contact the maintainers via the addresses above.
 
 # Environment and build
 ## Setup the environment variables
