@@ -853,7 +853,7 @@ c        read(*,*)
 
 ccc!!!!!!!       if(ksepa.eq.1)then 
         call  min_dist(dist_min_xx,Rdist_min_xx,Zdist_min_xx)
-        call min_dist_pfw(dNB_xx)
+!         call min_dist_pfw(dNB_xx)
 c!!!!!!!!!        end if
 
 	igr=1
