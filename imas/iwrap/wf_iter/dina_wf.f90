@@ -438,6 +438,9 @@ call ids_deallocate(core_sources0)
 write(*,*) "DINA_IMAS inputs deallocated"
 flush(6)
 
+write(*,*) '!!!!!!!!!!!!!!!!   IT WAS JUST TO TEST    !!!!!!!!!!!!!!!'
+exit 
+
 
  
  
