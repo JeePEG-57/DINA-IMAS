@@ -45,6 +45,12 @@ c
 	nnj(3)=0
 	nnj(4)=1
 
+c 	deal with edge cases: 
+	if(jval.eq.1) jval=2
+	if(ival.eq.1) ival=2
+	if(jval.eq.nz) jval=nz-1
+	if(ival.eq.nr) ival=nr-1
+	
 	do ii=1,4
 
 	i=ival+nni(ii)
