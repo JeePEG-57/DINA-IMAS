@@ -18,8 +18,10 @@ interface: dina controllers
 	make -C imas/iwrap/dina_imas
 	make -C imas/iwrap/kmc
 	make -C imas/iwrap/kmc_contr_4
+	make -C imas/iwrap/tcv_controller
 	make -C imas/iwrap/wf_iter
 	make -C imas/iwrap/wf_vde
+	make -C imas/iwrap/wf_tcv
 
 iwrap: interface
 	make -C imas/iwrap/dina_green actor
@@ -47,6 +49,12 @@ clean:
 	make -C imas/iwrap/dina_green clean
 	make -C imas/iwrap/dina_imas clean
 	make -C imas/iwrap/kmc clean
+<<<<<<< HEAD
 	make -C imas/iwrap/kmc_contr_4 clean
 	make -C imas/iwrap/wf_iter clean
 	make -C imas/iwrap/wf_vde clean
+=======
+	make -C imas/iwrap/tcv_controller clean
+	make -C imas/iwrap/wf clean
+	make -C imas/iwrap/wf_tcv clean
+>>>>>>> 557a866 (Separate TCV workflow file)
