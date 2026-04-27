@@ -11,7 +11,7 @@ ifeq ($(CC), icc)
   CFLAGS += -diag-disable=10441
 endif
 
-DEBUG = -g -O0
+DEBUG = -g -O0 -ffixed-form -fno-inline
 ifeq ($(TARGET), DEBUG)
   CFLAGS += $(DEBUG)
 endif

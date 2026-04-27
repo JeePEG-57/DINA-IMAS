@@ -32,7 +32,7 @@ else
 endif
 
 
-DEBUG = -g -O0
+DEBUG = -g -O0 -ffixed-form -fno-inline
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
   FCFLAGS += $(DEBUG)
