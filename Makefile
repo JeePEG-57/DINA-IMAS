@@ -16,7 +16,9 @@ interface: dina controllers
 	make -C imas/iwrap/dina_green
 	make -C imas/iwrap/dina_imas
 	make -C imas/iwrap/kmc
+	make -C imas/iwrap/tcv_controller
 	make -C imas/iwrap/wf
+	make -C imas/iwrap/wf_tcv
 
 iwrap: interface
 	make -C imas/iwrap/dina_green actor
@@ -37,4 +39,6 @@ clean:
 	make -C imas/iwrap/dina_green clean
 	make -C imas/iwrap/dina_imas clean
 	make -C imas/iwrap/kmc clean
+	make -C imas/iwrap/tcv_controller clean
 	make -C imas/iwrap/wf clean
+	make -C imas/iwrap/wf_tcv clean
