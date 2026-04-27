@@ -1,4 +1,0 @@
-C peion [10#19m#3/s]: The formula is a fit to ionization rate by electron impact
-C			(POLEVOY 25-08-2013)
-	peion	=qexith(TE(J))*(NNCL+NNWM)*NN(J)*4.E-5*NE(J)
-

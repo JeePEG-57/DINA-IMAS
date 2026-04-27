@@ -1,8 +1,0 @@
-C This formula is for DT plasmas with 1 MeV NBI suprathermal D only
-C				Polevoy		06-JUL-99
-	include 'fml/svdt'
-	include 'fml/sd1bt'
-	PDTF = 
-     .	5.632*(NDEUT(J)-NIBM(j))*NTRIT(J)*SVDT + PBEAM(J)*sd1bt
-
-

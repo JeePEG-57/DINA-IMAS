@@ -1,7 +1,0 @@
-C PDHE3a [10#19m#3/s]:	The formula is a fit to D-3He reaction rate
-C	according to Golovin (Preprint IAE-4885/8 1989)
-C	D+3He=alpha(3.671MeV)+p(14.683MeV)
-C	Use:	Palpha=Nd*N3He*SVDHe*18354./625. [MW/m#3]
-C	Ti<100 KeV		(Polevoy 18-MAY-90)
-	include 'fml/svdhe'
-	pdhe3a=NDEUT(j)*NHE3(j)*SVDHE*5.8736d0

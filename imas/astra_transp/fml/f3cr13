@@ -1,8 +1,0 @@
-C F3CR13 []:	smooth CAR13 to 3 points
-	if(j.le.NA1-2) then
-     	F3CR13=(CAR13(j+2)+CAR13(j+1)+CAR13(j))/3.d0
-	elseif (j.eq.NA1-1) then
-	F3CR13=(CAR13(j+1)+CAR13(j))/2.d0
-	else
-	F3CR13=CAR13(j)
-	endif

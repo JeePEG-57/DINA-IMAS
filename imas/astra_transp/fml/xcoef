@@ -1,5 +1,0 @@
-C	[s] Bracco G and Thomsen K, NF 37 (1997) 759 
-C				 Polevoi (19.06.06)
-	xcoef=10.d0*IPL/GP/ABC**2
-	xcoef=NECHR(.01d0)/(xcoef+.0001d0)
-	xcoef=(1.+0.64*BTOR*RTOR/(RTOR+SHIFT)*(ELONG*xcoef)**2)

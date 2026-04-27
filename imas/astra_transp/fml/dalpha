@@ -1,5 +1,0 @@
-C DALPHA [norm to D_HE]:	Anomalous Diffusion of ALPHA particles
-C usage DF_j = DHE*DALPHA
-cla			25.07.08
-      DALPHA=TE(J)/3500
-      DALPHA=0.02+4.5*DALPHA+8*DALPHA**2+350*DALPHA**3

@@ -1,7 +1,0 @@
-C BeTfusion:	Total Beta toroidal for fusion
-C		Polevoi		corrected 14-NOV-09
-C	betfus=betth+betalp+betfast if WFAL(pfast)
-C
-	BETFU	=.268*625*(WTOTR(ROC)+
-     .		WFSTR(ROC)+WBR(ROC))/VOLUME/
-     .  (RTOR*BTOR/(RTOR+SHIFT))**2

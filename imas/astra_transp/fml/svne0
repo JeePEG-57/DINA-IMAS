@@ -1,8 +1,0 @@
-C SVne0 [m#3/s] :	Ionization rate of Ne0 by electron impact
-C			SVNe0=<sigma*v>*1.E19
-C	G.S. Voronov //Atomic Data and Nuclear data Tables 65, 1-35 (1997)
-C					Polevoy 29-MAR-11
-	
-	svne0=21.6e-3/Te(j)
-	svne0=1.5d5*(1+sqrt(svne0))/(0.0329+svne0)*svne0**.43*exp(-svne0)
-

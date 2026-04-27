@@ -1,5 +1,0 @@
-C PLHHE [MW]		P L-H thresould for He
-C	 by F Ryter PPCF, 44, (2002) A415-A421
-C			 Polevoi (01-SEP-05)
-	PLHHe	= 0.049d0*BTOR**.8*(SLAT(NA1))**.94*
-     *	(NECHR(.01d0)*.1d0)**.72*1.4

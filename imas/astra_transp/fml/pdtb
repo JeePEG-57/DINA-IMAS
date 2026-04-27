@@ -1,8 +1,0 @@
-C PDTb	[MW/m#3]   D-T	Fusion power for thermal DT 
-C	with D NBI and nDth=NDEUT-NIBM
-C	S.V.Putvinskij//VANT,v.2,1988,p.3
-C	Corrected by S.V.Putvinskij 22.11.89
-C				Polevoy		22.11.89
-	INCLUDE 'fml/svdt'
-	PDTb = 5.632*(NDEUT(J)-NIBM(j))*NTRIT(J)*SVDT
-

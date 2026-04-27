@@ -1,7 +1,0 @@
-C SHRHO [1/m]: Shear 
-C                       1   dq
-C          defined as | --- ---- |	Polevoi 13-11-08
-C                       q   dRho
-	SHRHO=0.
-	if (j .le. NA.and.j.gt.na/2)
-     >	   SHRHO =abs(-1./MU(j)*(MU(j+1)-MU(j))/(RHO(j+1)-RHO(j)))

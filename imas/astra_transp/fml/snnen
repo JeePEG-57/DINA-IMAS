@@ -1,9 +1,0 @@
-C SNNEn [1/s]:	S/Ne=<sigE*v>*Nn+<sigI*v>*Nn*Ni/Ne-<sigRC*v>*Ne
-C	particle Source due to Neutral ionization by Electron and Ion impact
-C		SNN=SNNEU			(Pereverzev 22-MARCH-91)
-C						Notations changed 11-FEB-09
-! ionization normalized to snnen
-	include	'fml/svie'
-	include	'fml/svii'
-	include	'fml/svrec'
-	SNNEn = (SVIE+SVII*NI(J)/NE(J))*NN(J)*NE(j)

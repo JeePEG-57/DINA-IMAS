@@ -1,7 +1,0 @@
-Central heating Palhha-Prad
-	pac0 = TI(1) ** (-0.33333333)
-      pac0 = 8.972*EXP(-19.9826*pac0)*pac0*pac0*
-     *((TI(1)+1.0134)/(1.+6.386E-3*(TI(1)+1.0134)**2)+
-     +1.877*EXP(-.16176*TI(1)*SQRT(TI(1))))	
-	Pac0=5.632*NDEUT(1)*NTRIT(1)*Pac0-PRAD(1)
-	

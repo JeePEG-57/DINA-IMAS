@@ -1,3 +1,0 @@
-C EPAR [V/m]: Parallel (longitudinal) electic field
-C			(Pereverzev  23-October-97)
-	EPAR=ULON(J)/(GP2*(RTOR+SHIF(J)))

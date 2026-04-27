@@ -1,3 +1,0 @@
-C pfst[keV 10^19m-3]:	for fast ion pressure ! For Pavel
-C
-	if(cf5.gt.0.) pblon(j)=pblon(j)+2.*car10(j)

@@ -1,7 +1,0 @@
-C PRWLF [MW*m#3] Wolfram radiation power (due to excitation by H,D,T thermal ions)
-C       ABRAMOV V.A. Private communication 15 keV -> 13.853 keV to smooth transition
-C				(Polevoy 12-02-96)
-C	Usage:		PI=...-PRWLF*(NDEUT+NTRIT+NHYDR)*NIZ1
-        IF(TI(J).LE.1.)                PRWLF=0.
-        IF(1..LE.TI(J).AND.TI(J).LE.13.853)   PRWLF=7.E-3*TI(J)**2.5
-	IF(TI(J).GT.13.853)		PRWLF=5.

@@ -1,7 +1,0 @@
-C PSYN = PSYN1/TE/NE [MW/m#3]: Electron synchrotron radiation (Rwall=0.6)
-C			Trubnikov V.T.Pl.,v.7
-C			(Leonov 10-12-94)
-C How to use in the model: PET= -PSYN*NE
-	PSYN=1.3E-7*TEAVR(ROC)**1.5*BTOR**2.5*SQRT((.4/ABC
-     .	 +18.1/(RTOR*SQRT(TEAVR(ROC))+.0001))/(NEAVR(ROC)+.0001))
-     

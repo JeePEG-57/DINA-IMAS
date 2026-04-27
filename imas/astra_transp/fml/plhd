@@ -1,8 +1,0 @@
-C PLHd [MW]		P L-H thresould for He
-C	 by Martin Y R, Takizuka T, Journ. of Physics: Conf. Series 123 (2008)
-C         012033
-C			 Polevoi (30-NOV-08)
-C in D plasmas PLH=PLHD*(<ne>20)**.717
-	PLHd	= 0.0488e0*(BTOR*RTOR/(RTOR+SHIFT))**.803*(SLAT(NA1))**.941
-!*
-!     *	(NECHR(.01d0)*.1e0)**.717*(2./AMAIN(1))
