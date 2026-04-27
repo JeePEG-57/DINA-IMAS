@@ -42,7 +42,7 @@ F90INC+=`pkg-config $(PACKAGES) --cflags`
 F90FLAGS+=$(F90INC)
 FFLAGS = $(F90FLAGS)
 
-DEBUG = -g -O0
+DEBUG = -g -O0 -ffixed-form -fno-inline
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
   FFLAGS += $(DEBUG) -ffixed-form -fno-inline
