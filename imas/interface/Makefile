@@ -46,9 +46,10 @@ F90LIB+=`pkg-config $(PACKAGES) --libs`
 F90INC+=`pkg-config $(PACKAGES) --cflags`
 
 
-DEBUG = -g -O0 -ffixed-form -fno-inline
+DEBUG = -g -O0
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
+  FFLAGS += $(DEBUG) -ffixed-form -fno-inline
 endif
 
 F90=$(FCOMPILER)
