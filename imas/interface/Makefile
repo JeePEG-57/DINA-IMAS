@@ -32,11 +32,6 @@ else
   $(error Unsupported Fortran compiler)
 endif
 
-DEBUG = -g -O0 -ffixed-form -fno-inline
-ifeq ($(TARGET), DEBUG)
-  F90FLAGS += $(DEBUG)
-endif
-
 F90FLAGS+=$(F90DEF)
 
 F90=$(FCOMPILER)
@@ -119,7 +114,7 @@ dina_green.a: $(GREENDIR)/green.a dina_green.o tokamak_green.o
 
 %.o: %.f
 	@echo "   * $^ -> $@"
-	$(F90) $(F90FLAGS) -c $<
+	$(F90) $(FFLAGS) -c $<
 
 dina_imas.a: $(DINADIR)/dina_99.a $(LIB_SOURCEDINA)
 	@echo "   * $^ -> $@"
