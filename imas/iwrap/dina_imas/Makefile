@@ -28,11 +28,12 @@ else
   $(error Unsupported Fortran compiler)
 endif
 
-DEBUG = -g -O0 -fno-inline
+DEBUG = -g -O0 -fbacktrace 
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
+else ifeq ($(TARGET), OPTI)
+  F90FLAGS += -O2 -g -march=native -funroll-loops -fno-inline -fbacktrace
 endif
-
 F90FLAGS+=$(F90DEF)
 
 # FLAGS OF PACKAGES
