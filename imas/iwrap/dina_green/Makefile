@@ -23,12 +23,12 @@ ifeq ($(FC), ifort)
   F90FLAGS+=-real-size 64 -assume no2underscores -extend_source
 else ifeq ($(FC), gfortran)
   F90FLAGS+=-cpp
-  F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none 
+  F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none
 else
   $(error Unsupported Fortran compiler)
 endif
 
-DEBUG = -g -O0 -fno-inline
+DEBUG = -g -O0
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
 endif
