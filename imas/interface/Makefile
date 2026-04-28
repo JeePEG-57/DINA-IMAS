@@ -27,7 +27,7 @@ ifeq ($(FCOMPILER), ifort)
   F90FLAGS+=-real-size 64 -assume no2underscores -extend_source
 else ifeq ($(FCOMPILER), gfortran)
   F90FLAGS+=-cpp
-  F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none
+  F90FLAGS+=-freal-4-real-8 -fno-second-underscore -ffree-line-length-none -Wl,--no-relax
 else
   $(error Unsupported Fortran compiler)
 endif
@@ -45,10 +45,14 @@ DEBUG = -g -O0
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
   FFLAGS += $(DEBUG) -ffixed-form -fno-inline
+else ifeq ($(TARGET), OPTI)
+  F90FLAGS += -O2 -march=native -funroll-loops -fno-inline -fbacktrace
+  FFLAGS += -O2 -march=native -funroll-loops -ffixed-form -fno-inline -fbacktrace
 endif
 
 F90=$(FCOMPILER)
 F90FLAGS+=$(F90INC)
+FFLAGS+=$(F90INC)
 
 DINATRANSP = dina_transp1.o tran1.o dina_transp2.o tran2.o dina_transp3.o tran3.o dina_transp4.o tran4.o dina_transp5.o tran5.o
 

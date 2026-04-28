@@ -19,11 +19,11 @@ else
 endif
 
 
-DEBUG = -g -O0 -ffixed-form -fno-inline
+DEBUG = -g -O0 -fbacktrace -ffixed-form -fno-inline 
 ifeq ($(TARGET), DEBUG)
   FCFLAGS += $(DEBUG)
 else ifeq ($(TARGET), OPTI)
-  FCFLAGS += -O2 -march=native -funroll-loops -ffixed-form -fno-inline
+  FCFLAGS += -O2 -g -march=native -funroll-loops -ffixed-form -fno-inline -fbacktrace
 endif
 
 

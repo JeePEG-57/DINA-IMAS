@@ -12,8 +12,7 @@ CODEGEN_DIR := ./codegen_dina
 
 
 
-DEBUG ?= -g -O0
-
+DEBUG = -g -O0 -fno-inline -fbacktrace
 # ----------------------------
 # Packages
 # ----------------------------
