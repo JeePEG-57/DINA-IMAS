@@ -295,8 +295,8 @@ if(kprobe.ne.kprobe2)then
 end if
 
 
-if(npfp.gt.mu)then
-  print*, 'npfp.gt.mu', npfp, mu
+if(npfp+npfa.gt.mu)then
+  print*, 'npfp+npfa.gt.mu', npfp, npfa, mu
   stop
 end if
 if(kloop.gt.nloop)then
@@ -309,13 +309,8 @@ if(kprobe.gt.nprobe)then
 end if
 
 
-
-
-
  call vic_turn()
- !call dina_data_read()
- call dina_data_read_imas(pulse_schedule, codeparam)
- !call general_data_read()
+ call dina_data_read_imas(pulse_schedule, pf_active0, codeparam)
 
 
 nact = npf
@@ -392,6 +387,7 @@ do i=1,npfa
 enddo
 
 
+print*, 'kpr =', kpr
 if (kpr.eq.1) then
   print*, 'pfind'
   do i=1,nact
@@ -565,6 +561,8 @@ call write_cputime(0.d0, 0.d0, 1)
 100 format (2I5, 4x,2I5, 4x, 2I5, 4x,2I5)
 
 
+     
+
 
      call  dina_v96_in(npfp,nact,kloop,kprobe,&
 & 	gridrange,nact,npfp,&
@@ -580,32 +578,10 @@ call write_cputime(0.d0, 0.d0, 1)
   flush(6)
   
   
-  
-!    kpr=1
-! 		 open (unit=41,file='k_jetto.dat',form='formatted') 
-! 		 open (unit=49,file='dina_data.dat',form='formatted') 
-!          read (49,*) 
-!          read (49,*)ih_imas
-          ih_imas=ih_imas_c
- !        close (49)
-         
-        print *,'from k_jetto.dat  ih_imas =',ih_imas
 
-! 		 open (unit=40,file='time_eq.dat',form='formatted') 
-!          read (49,*) 
-!          read (49,*)time_eq
-          time_eq=time_eq_c
-!         close (41)
-         
-        print *,'from time_eq.dat  time_eq =',time_eq
+  !call dina_data_read()
+  !call dina_data_read_imas(pulse_schedule, codeparam)
 
-!    ih_imas=1
-!    if (ih_imas.eq.1) then
-!	call ids_prof_jetto()
-!	call equil_data()
-!   end if
-!stop
-  
   
   
      CurTimeStep = 1
