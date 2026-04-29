@@ -66,3 +66,4 @@ run_dir/cputime_dinaimas
 run_dir/*.bin
 run_dir/*.xml
 run_dir/codeparam_dina.xml
+run_dir/
