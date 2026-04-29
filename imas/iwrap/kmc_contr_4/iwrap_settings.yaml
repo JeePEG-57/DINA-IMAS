@@ -49,7 +49,7 @@ code_description:
                 need_code_parameters: true
             set_state:
     settings:
-        compiler_cmd: $FCOMPILER
+        compiler_cmd: $FC
         compiler_flags: -w -freal-4-real-8 -fno-second-underscore -ffree-line-length-none -fPIC
         extra_libraries:
             path_defined:
