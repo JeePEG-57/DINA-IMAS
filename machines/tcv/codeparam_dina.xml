@@ -25,7 +25,7 @@
    <tt_rampup>75000</tt_rampup>
    <dt_end_sim>50</dt_end_sim>
    <dtpl_term_l>70</dtpl_term_l>
-   <cIp_end>1.5</cIp_end>
+   <cIp_end>0.001</cIp_end>
    <Ics1_eob>-44.0</Ics1_eob>
    <rms_noise>0.6</rms_noise>
    <gaps>

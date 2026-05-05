@@ -15,6 +15,9 @@ machines/**/psi_data
 machines/**/for042
 machines/**/psi_data_imas0
 machines/**/tran_times.dat
+machines/**/plasma.dat
+machines/**/na_ramp
+machines/**/error.txt
 tools/IDS_Coordinates.mat
 tools/mexutilids.mod
 tools/mexLoadIDS.mex*
@@ -43,4 +46,6 @@ __pycache__/
 */temp
 *.directory
 
+# TCV specific files 
 imas/iwrap/tcv_controller/*.bin
+machines/tcv/*.bin
