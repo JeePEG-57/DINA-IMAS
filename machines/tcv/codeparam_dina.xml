@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <parameters>
    <kpr>1</kpr>
-   <tt_kavin>0.001</tt_kavin>
-   <tau>0.1</tau>
-   <tau_sim>0.1</tau_sim>
-   <tau_dw>0.1</tau_dw>
+   <tt_kavin>0.0001</tt_kavin>
+   <tau>0.0001</tau>
+   <tau_sim>0.0001</tau_sim>
+   <tau_dw>0.0001</tau_dw>
    <key_t11>1</key_t11>
-   <tt_dina>0.002</tt_dina>
+   <tt_dina>0.0002</tt_dina>
    <tpl_dir>-1.0</tpl_dir>
    <p>0.001</p>
    <T_e>0.002</T_e>
@@ -14,7 +14,7 @@
    <gam>0.05</gam>
    <gain_puff>50.0</gain_puff>
    <bohm_gbohm>1</bohm_gbohm>
-   <q_swth>0.001</q_swth>
+   <q_swth>0.97</q_swth>
    <pcchp_end>5.0</pcchp_end>
    <ener_ext>1</ener_ext>
    <dens_ext>1</dens_ext>
@@ -22,11 +22,11 @@
    <grid_n>50</grid_n>
    <grid_rho>0.5</grid_rho>
    <grid_alpha>0.95</grid_alpha>
-   <tt_rampup>75000</tt_rampup>
-   <dt_end_sim>50</dt_end_sim>
-   <dtpl_term_l>70</dtpl_term_l>
-   <cIp_end>0.001</cIp_end>
-   <Ics1_eob>-44.0</Ics1_eob>
+   <tt_rampup>75</tt_rampup>
+   <dt_end_sim>0.5</dt_end_sim>
+   <dtpl_term_l>0.5</dtpl_term_l>
+   <cIp_end>10000</cIp_end>
+   <Ics1_eob>1000000</Ics1_eob>
    <rms_noise>0.6</rms_noise>
    <gaps>
       <ngaps>1</ngaps>
