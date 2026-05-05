@@ -21,49 +21,48 @@ program TCV_controller_test
     integer :: ibackend = 13
     integer  :: kpr
     common kpr
-    character (len=255) :: user_default
-    character (len=255) :: user_in='', database_in
-    integer :: pulse_in=-1, run_in=-1
-    character (len=255) :: user_out='', database_out
-    integer :: pulse_out=-1, run_out=-1
+    ! IDS inputs - outputs
+    character (len=255) :: uri_in, uri_out
     integer :: interp_start = 1
-    ! Input files
-    character(len=30) :: ConfigFile, CodeParamsFile
+    integer :: error_flag
+    integer :: idx_in, idx_out
+    character(len=:), pointer :: error_message
+    ! Workflow config file
+    character(len=30) :: ConfigFile
     type(type_xml2eg_document) :: doc
     character(len=132), pointer :: buffer(:) => NULL()
     integer :: io_unit = 1
     ! Integers
     integer :: i, imax = 100
-    integer :: idx_in, idx_out
+    
     ! Timing 
     real (ids_real) :: time_start, time_sim, time_get, time_stop, time_increment
 
 
 
     ! ----------------- READ INPUTS ---------------
-    if (.not.(command_argument_count().eq.2)) then
-        print *,'Two arguments must be provided. First argument must be the name of a workflow config XML file, second argument is a code parameters XML file.'
+    if (.not.(command_argument_count().eq.1)) then
+        print *,'One argument must be provided. The argument must be the name of a workflow config XML file.'
         stop
     endif
     call get_command_argument(1, ConfigFile)
-    call get_command_argument(2, CodeParamsFile)
     print *,' Using workflow config file: ', ConfigFile
     
     ! ----------------- INITIALISATION ---------------
-    call getenv("USER", user_default)
     ! Open XML config file 
     call file2buffer(ConfigFile, io_unit, buffer)
     call xml2eg_parse_memory(buffer, doc)
+
     ! Read input DB location
-    call xml2eg_get(doc, 'input_scenario/user', user_in)
-    call xml2eg_get(doc, 'input_scenario/database', database_in)
-    call xml2eg_get(doc, 'input_scenario/pulse', pulse_in)
-    call xml2eg_get(doc, 'input_scenario/run', run_in)
+    call xml2eg_get(doc, 'input_scenario/uri', uri_in)
+    uri_in = trim(uri_in) ! remove trailing spaces
+    print *, 'Input DB URI: ', uri_in
+
     ! Read output DB location
-    call xml2eg_get(doc, 'output/user', user_out)
-    call xml2eg_get(doc, 'output/database', database_out)
-    call xml2eg_get(doc, 'output/pulse', pulse_out)
-    call xml2eg_get(doc, 'output/run', run_out)
+    call xml2eg_get(doc, 'output/uri', uri_out)
+    uri_out = trim(uri_out) ! remove trailing spaces
+    print *, 'Output DB URI: ', uri_out
+
     ! Read simulation start time 
     call xml2eg_get(doc, 'time_start', time_start)
     call xml2eg_get(doc, 'time_sim', time_sim)
@@ -77,26 +76,23 @@ program TCV_controller_test
     time_stop = time_start + time_sim
     time_get = time_start    
     print *, 'Simulation start, end and increment in [s]: ', time_start, time_stop, time_increment
-    ! Set IDS DB variables 
-    if (trim(user_in).eq.'') user_in = user_default
-    if (trim(user_out).eq.'') user_out = user_default
-    print *,' Input:  user, database, pulse, run =', trim(user_in), trim(database_in), pulse_in, run_in
-    print *,' Output: user, database, pulse, run =', trim(user_out), trim(database_out), pulse_out, run_out
-    ! Set IMAS backend to HDF5
-    status = putenv("IMAS_AL_DEFAULT_BACKEND=13"//C_NULL_CHAR) ! 13 for HDF5 backend
+
 
 
 
     ! ----------------- PREPARE OUTPUT DB ---------------
-    call imas_create_env('ids',pulse_out,run_out,1,1,idx_out,user_out,database_out,'3')
+    call imas_open(uri_out, CREATE_PULSE, idx_out, error_flag)
     print *, 'Output database is created'
-
-
-
+    
     ! ----------------- OPEN INPUT DB ---------------
     ! Open DB
-    call imas_open_env('ids',pulse_in,run_in,idx_in,user_in,database_in,'3')
-
+    call imas_open(uri_in, OPEN_PULSE, idx_in, error_flag)
+    if (error_flag.eq.0) then
+        print *, 'Input database is created'
+    else
+        print *, 'Error creating input database: ', error_message
+        stop
+    end if
 
 
     ! ----------------- DO SIMULATION ---------------
@@ -113,7 +109,9 @@ program TCV_controller_test
         ! Store output
         print *,  'Put pf_active'
         call ids_put_slice(idx_out,"pf_active",pf_active)
+        print *,  'Put pf_active/1'
         call ids_put_slice(idx_out,"pf_active/1",pf_active0)
+        print *,  'Put magnetics/1'
         call ids_put_slice(idx_out,"magnetics/1",magnetics0)
         ! Update time 
         time_get = time_get + time_increment ! advance by 1 ms

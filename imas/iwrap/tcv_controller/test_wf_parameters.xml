@@ -1,16 +1,10 @@
 <?xml version="1.0"?>
 <parameters>
   <input_scenario>
-    <user>svantnj</user>
-    <database>tcv</database>
-    <pulse>66441</pulse>
-    <run>2</run>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/tcv/3/66441/2</uri>
   </input_scenario>
   <output>
-    <user>svantnj</user>
-    <database>tcv_test</database>
-    <pulse>66441</pulse> 
-    <run>11</run>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/tcv_test/3/66441/11</uri>
   </output>
   <time_start>0.5</time_start>
   <time_sim>0.1</time_sim>
