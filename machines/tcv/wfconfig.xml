@@ -30,7 +30,7 @@
     <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/tcv/3/66441/2</uri>
   </input_transp>
 
-  <time_start>0.3</time_start>
+  <time_start>0.1</time_start>
   <start_interp_mode>1</start_interp_mode>
   <transp_interp_mode>1</transp_interp_mode>
   <time_stop>1.1</time_stop>

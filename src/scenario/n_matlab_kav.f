@@ -2552,9 +2552,7 @@ c	if(dabs(delzmag).ge.3.)then
 	t_dop=5.d0
 
 !	read (49,*)
-	r0=88.d0
-! 	 r0=588.d0 ! original value
-
+	r0=588.d0
 	z0=0.d0
 	zref=0.d0
 
@@ -2610,11 +2608,8 @@ c	if(dabs(delzmag).ge.3.)then
 	
 !	read (49,*)
 	tpl=1.d0
-	bt0=14.0d0
-!	 bt0=53.0d0 ! original value
-	eu=25.d0
-!    eu=160.d0 ! original value
-	
+	bt0=53.0d0
+	eu=160.d0
 	eksk=1.d0
 	
 !	read (49,*)
