@@ -28,6 +28,8 @@ endif
 DEBUG = -g -O0 
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
+else ifeq ($(TARGET), RELEASE)
+  F90FLAGS += -O2 -g -march=native -funroll-loops -fno-inline -fbacktrace
 endif
 
 F90FLAGS+=$(F90DEF)

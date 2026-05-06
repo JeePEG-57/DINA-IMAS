@@ -21,7 +21,7 @@ endif
 DEBUG = -g -O0 -fbacktrace -ffixed-form -fno-inline  
 ifeq ($(TARGET), DEBUG)
   FCFLAGS += $(DEBUG)
-else ifeq ($(TARGET), OPTI)
+else ifeq ($(TARGET), RELEASE)
   FCFLAGS += -O2 -g -march=native -funroll-loops -ffixed-form -fno-inline -fbacktrace
 endif
 

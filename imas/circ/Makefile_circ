@@ -18,8 +18,8 @@ endif
 DEBUG = -g -O0 
 ifeq ($(TARGET), DEBUG)
   FCFLAGS += $(DEBUG)
-else ifeq ($(TARGET), OPTI)
-  FCFLAGS += -O2 -march=native -funroll-loops 
+else ifeq ($(TARGET), RELEASE)
+  FCFLAGS += -O2 -g -march=native -funroll-loops -fno-inline -fbacktrace
 endif
 
 

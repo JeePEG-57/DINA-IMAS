@@ -46,7 +46,7 @@ DEBUG = -g -O0
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
   FFLAGS += $(DEBUG) -ffixed-form -fno-inline
-else ifeq ($(TARGET), OPTI)
+else ifeq ($(TARGET), RELEASE)
   F90FLAGS += -O2 -march=native -funroll-loops -fno-inline -fbacktrace
   FFLAGS += -O2 -march=native -funroll-loops -ffixed-form -fno-inline -fbacktrace
 endif
