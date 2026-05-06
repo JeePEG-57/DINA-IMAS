@@ -25,7 +25,7 @@ else
   $(error Unsupported Fortran compiler)
 endif
 
-DEBUG = -g -O0 -ffixed-form -fno-inline
+DEBUG = -g -O0
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
 endif
@@ -50,7 +50,7 @@ else
 endif
 
 
-DEBUG = -g -O0 -ffixed-form -fno-inline
+DEBUG = -g -O0
 ifeq ($(TARGET), DEBUG)
   FCFLAGS += $(DEBUG)
 endif
