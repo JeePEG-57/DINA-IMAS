@@ -101,7 +101,6 @@ c     &  -225.7,-265.2,-295./
       zp2=0.
       d2=rp2
 
-!       To check limiter unit(2) divertor outter leg ??
       R2=5.5642e2
       Z2= -3.924e2
       R1=5.5642e2
@@ -192,7 +191,7 @@ c      print*,'!!!ind_p2',ind_p
       end if ! ind_p =0
 
         
-!       to check limiter unit(2), divertor inner leg??
+
       R2=4.4745e2     
       Z2=-3.2775e2
       R1=4.1624e2
