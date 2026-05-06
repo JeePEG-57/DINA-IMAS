@@ -6999,7 +6999,6 @@ c	print *,' rsep2 zsep2 psep2 ksep',
 	include 'double.inc'
 
 	include 'parf0'
-	include 'parf7'
 	
 	dimension pdd(6)
 c                                                                       
@@ -7007,8 +7006,7 @@ c
      *  /ge1/pi                                                         
      *  /ge5/kpr                                                        
 
-      parameter ( nn=mu_l*10)
-c   parameter ( nn=2000) ! value before
+      parameter ( nn=2000)
       
 	common /c_separ2_lim/r_lim(100),z_lim(100),n_lim
 
@@ -7043,8 +7041,8 @@ c   parameter ( nn=2000) ! value before
 
 !      print *,' ke1 ke===========',ke1,ke
             
-      if(ke.gt.(nn-1))then      
-     	print *,' ke gt nn',ke,nn
+      if(ke.gt.1999)then      
+!      print *,' ke gt 2000',ke
       stop
       end if
             
