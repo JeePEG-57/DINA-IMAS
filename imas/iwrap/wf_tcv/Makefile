@@ -38,12 +38,11 @@ LDFLAGS=`pkg-config $(PACKAGES) --libs` -mcmodel=large -Wl,--no-relax
 
 F90INC+=-I../dina_green
 F90INC+=-I../dina_imas
-F90INC+=-I../kmc
 F90INC+=-I../tcv_controller
 
 
-DINA_LIBS =  ../dina_imas/dina_imas.a ../kmc/kav_mag_contr.a \
-	     ../dina_green/dina_green.a ../tcv_controller/tcv_controller.a
+DINA_LIBS =  ../dina_imas/dina_imas.a ../dina_green/dina_green.a\
+	      	 ../tcv_controller/tcv_controller.a
 MATLAB_LIB = ../tcv_controller/codegen_dina/hybctrl_step_IDS.a
 		 
 all: dina_wf.exe
