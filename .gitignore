@@ -45,7 +45,3 @@ __pycache__/
 *cputime*
 */temp
 *.directory
-
-# TCV specific files 
-imas/iwrap/tcv_controller/*.bin
-machines/tcv/*.bin
