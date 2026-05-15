@@ -324,6 +324,13 @@ Impurity content
 - core_profiles%profiles_1d(1)%grid%rho_tor_norm(:)
 - core_profiles%profiles_1d(1)%grid%psi(:)
 
+- core_profiles%profiles_1d(1)%electrons%temperature(:)
+- core_profiles%profiles_1d(1)%t_i_average(:)
+
+- core_profiles%profiles_1d(1)%electrons%density(:)
+- core_profiles%profiles_1d(1)%ion(1)%density(:)
+- core_profiles%profiles_1d(1)%ion(2)%density(:)
+
 
 ## IDS inputs to DINA, required at each time step
 The transport profiles:
