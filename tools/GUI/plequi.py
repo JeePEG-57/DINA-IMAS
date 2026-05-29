@@ -189,6 +189,9 @@ class Second_window(QtWidgets.QWidget, eq_win4.Ui_Form_eq): #QtGui.QWidget
         
         ax = self.ax_j_profile
         ax.cla()
+        print("current iteration:")
+        print(it)
+        print(f"plotting it = {it}")
         x = idslist['core_profiles'].profiles_1d[it].grid.rho_tor_norm
         y = idslist['core_profiles'].profiles_1d[it].j_tor
         y1 = idslist['core_profiles'].profiles_1d[it].j_bootstrap

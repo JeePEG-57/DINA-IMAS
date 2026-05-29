@@ -1,38 +1,41 @@
 # Top-level Makefile for DINA
 
-all: dina controllers interface iwrap
+# all: dina controllers interface iwrap
+all: dina interface
 
 dina:
 	make -C src/green
 	make -C src/scenario
 
-controllers:
-	make -C src/controllers/kmc
-	make -C src/controllers/kmc_contr_4
-	make -C src/controllers/kmc_2madiv
-	make -C src/controllers/kmc_pfpo1_1a
-	make -C src/controllers/kmc_pfpo1_1b
+# controllers:
+# 	make -C src/controllers/kmc
+# 	make -C src/controllers/kmc_contr_4
+# 	make -C src/controllers/kmc_2madiv
+# 	make -C src/controllers/kmc_pfpo1_1a
+# 	make -C src/controllers/kmc_pfpo1_1b
 
-interface: dina controllers
+# interface: dina controllers
+interface: dina 
 	make -C imas/iwrap/dina_green
 	make -C imas/iwrap/dina_imas
-	make -C imas/iwrap/kmc
-	make -C imas/iwrap/kmc_contr_4
+# 	make -C imas/iwrap/kmc
+# 	make -C imas/iwrap/kmc_contr_4
 	make -C imas/iwrap/tcv_controller
-	make -C imas/iwrap/wf_iter
-	make -C imas/iwrap/wf_vde
+# 	make -C imas/iwrap/wf_iter
+# 	make -C imas/iwrap/wf_vde
 	make -C imas/iwrap/wf_tcv
+	make -C imas/iwrap/wf_vns
 
-iwrap: interface
-	make -C imas/iwrap/dina_green actor
-	make -C imas/iwrap/dina_imas actor
-	make -C imas/iwrap/kmc actor
-	make -C imas/iwrap/kmc_contr_4 actor
+# iwrap: interface
+# 	make -C imas/iwrap/dina_green actor
+# 	make -C imas/iwrap/dina_imas actor
+# 	make -C imas/iwrap/kmc actor
+# 	make -C imas/iwrap/kmc_contr_4 actor
 
-interface_fc2k: dina controllers
-	make -C imas/astra_transp
-	make -C imas/eq_test
-	make -C imas/circ
+# interface_fc2k: dina controllers
+# 	make -C imas/astra_transp
+# 	make -C imas/eq_test
+# 	make -C imas/circ
 
 clean:
 	make -C src/scenario clean

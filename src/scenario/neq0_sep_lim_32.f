@@ -121,6 +121,15 @@ c for fluxcont.r0 and z0 used in (subr. sort)
 	r0=um
 	z0=vm
 	delaval=pmag-psep
+
+c  Sanity check: if O-point flux <= separatrix flux, equilibrium is
+c  inverted (plasma lost confinement - VDE/disruption). Exit gracefully.
+	if(delaval.le.0.d0) then
+	   print *,' EQUILIBRIUM LOST: pmag<=psep, pmag=',pmag,
+     *  ' psep=',psep,' (VDE/disruption detected, stopping)'
+	   call write_surf()
+	   stop 'plasma lost - VDE'
+	end if
 c	e_sep=5.e-3
 
       if(ksepa.eq.1)then
@@ -2754,6 +2763,31 @@ c        end if
 	ksep=-1
 	call spoint(ksep,xw,yw,fint,rmag,zmag,pmag,
      *  rsep,zsep,psep,rsep1,zsep1,psep1)
+
+c  Check that spoint found a true O-point (extremum), not a saddle/X-point
+c  Hessian determinant: d2psi/dR2 * d2psi/dZ2 - (d2psi/dRdZ)^2
+c  > 0 => extremum (O-point), < 0 => saddle (X-point)
+	call boxd(rmag,zmag,pdd,ier)
+	hess_det=pdd(4)*pdd(6)-pdd(5)**2
+	if(hess_det.lt.0.d0) then
+	   if(kpr.eq.1)print *,' spoint saddle/X-pt, reverting to um vm',
+     *     um,vm,hess_det
+c  Also check if um/vm themselves are a saddle (already drifted to X-point)
+	   call boxd(um,vm,pdd,ier)
+	   hess_det2=pdd(4)*pdd(6)-pdd(5)**2
+	   if(hess_det2.lt.0.d0) then
+c  um/vm are also a saddle - fall back to geometric axis rs0, zmag=0
+	      if(kpr.eq.1)print *,' um/vm also saddle, falling back to rs0'
+	      rmag=rs0
+	      zmag=0.d0
+	      call mag_ax(rmag,zmag,pmag)
+	   else
+	      rmag=um
+	      zmag=vm
+	      call boxd(rmag,zmag,pdd,ier)
+	      pmag=pdd(1)
+	   end if
+	end if
 
 	dist=sqrt( (rmag-um)**2+(zmag-vm)**2)
 

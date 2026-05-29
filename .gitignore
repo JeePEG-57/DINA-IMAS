@@ -49,3 +49,6 @@ __pycache__/
 # TCV specific files 
 imas/iwrap/tcv_controller/*.bin
 machines/tcv/*.bin
+imas/iwrap/tcv_controller/codegen_dina/codedescriptor.dmr
+imas/iwrap/tcv_controller/codegen_dina/html/
+machines/tcv/imp/

@@ -684,6 +684,8 @@ C*****************
       Sech=2.56*TQ0(I)**(-2./3.)*
      *(1.+7.*TETI**(3./4.))/(1.+242.*TETI**
      *(13./4.))**0.5*EXP(-200./TQ0(I)**(1./3.))
+
+      if (TQ0(I).le.1.d0) SEch=0.d0
 c------> alfa particle source SAL
       SAL(I)=SEch*PD0(I)*PT0(I)
 	pnal(i)=(sal(i)+pnaln(i)/tay)/(1./tay+1./talfa2(i))

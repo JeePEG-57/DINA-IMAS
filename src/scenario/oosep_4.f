@@ -51,10 +51,12 @@ c--------     pds(5)=(dfdr)dr
 c--------     pds(6)=(dfdz)dz
 c______________________________________________
 c
+c		print *,'jj r z',jj,rwant,zwant
 	call boxd(rwant,zwant,pds,ier)
 c
 c	if(kpr.eq.1)print *,'jj r z',jj,rwant,zwant
 c
+c		print *,' jj pds ',jj,pds(1),pds(2),pds(3),pds(4),pds(5),pds(6)
 	det=pds(5)*pds(6)-pds(4)*pds(4)
 	if(abs(det).lt.1.e-15)go to 1305
 c
@@ -71,7 +73,7 @@ c
 c
 	rwant=rwant+0.5*(xerr+xerr0)
 	zwant=zwant+0.5*(yerr+yerr0)
-
+c	print *,' jj rwant zwant',jj,rwant,zwant
 c	rwant=rwant+xerr
 c	zwant=zwant+yerr
 

@@ -482,7 +482,7 @@ call xml2eg_get(doc, 'gain_puff', g_gain_c6)
         
 
 
-
+           print *, "impurity Z values: ", nz_imp_c4, nz_imp1_c9, nz_imp2_c5, nz_imp3_c10, nz_imp4_c11
 !                 open (unit=41,file='bohm_gbohm.dat',form='formatted')
                 !read (49,*)
                 !read (49,*) k_Bohm_c12

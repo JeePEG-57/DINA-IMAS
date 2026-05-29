@@ -367,6 +367,7 @@ call imas_close(idx0)
   
   call imas_open(uri_out, CREATE_PULSE, idx, error_flag)
   write(*,*) 'Pulse file is created'
+  print *, "error_flag", error_flag
 
   call ids_put(idx,"wall",wall)
   call ids_put(idx,"em_coupling",em_coupling)
@@ -441,13 +442,19 @@ flush(6)
 
  
  
-call kmc_step(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active &
- & , codeparam_kmc, error_flag, error_message)
+! call kmc_step(pulse_schedule, pulse_schedule_term, equilibrium, pf_active1, pf_active &
+!  & , codeparam_kmc, error_flag, error_message)
 
-write(*,*) 'kmc error_flag =', error_flag
-if (associated(error_message) .and. error_flag.ne.0) then 
-write(*,*) 'kmc error_message =', error_message
-endif
+! write(*,*) 'kmc error_flag =', error_flag
+! if (associated(error_message) .and. error_flag.ne.0) then 
+! write(*,*) 'kmc error_message =', error_message
+! endif
+call ids_copy(pf_active1, pf_active)
+
+do i = 1, size(pf_active%coil)
+  if (.NOT.associated(pf_active%coil(i)%voltage%data)) allocate(pf_active%coil(i)%voltage%data(1))
+  pf_active%coil(i)%voltage%data(1) = 0 
+end do
 
 if (iloop.eq.1) then
 
@@ -469,7 +476,7 @@ if (iloop.eq.1) then
   
 end if
 
-call ids_deallocate(pf_active1)
+! call ids_deallocate(pf_active1)
 
 
 write(*,*) "Controller finished"

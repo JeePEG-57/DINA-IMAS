@@ -82,6 +82,9 @@ c
       DS=0.25*(UA*VT-VA*UT)
       UC=0.25*(U1+U2+U3+U4)
 c
+c  Skip degenerate cell (zero area): two adjacent theta points collapsed
+      if(dabs(DS).lt.1.d-10*UC*UC) goto 40
+c
       si=si+ds
       vi=vi+ds*uc
       DBSI=DBSI+DS/UC**2
@@ -283,6 +286,18 @@ c-------------------------
       DS=0.25*(UA*VT-VA*UT)
       UC=0.25*(U1+U2+U3+U4)
       VC=0.25*(V1+V2+V3+V4)
+c
+c  Skip degenerate cell (zero area): two adjacent theta points collapsed
+      if (dabs(DS).lt.1.d-10*UC*UC) then 
+            print *, "***********************"
+            print *, "DS ", DS 
+            print *, "VA, VT, VT_1, VT_2", VA, VT, VT_1, VT_2
+            print *, "UA, UT, UT_1, UT_2", UA, UT, UT_1, UT_2
+            print *, "V1, V2, V3, V4", V1, V2, V3, V4
+            print *, "U1, U2, U3, U4", U1, U2, U3, U4
+            print *, "i, j", i, j
+            goto 40
+      end if
 c
       GG=UC*DS
       S(I)=S(I)+DS

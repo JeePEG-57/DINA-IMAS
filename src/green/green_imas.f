@@ -756,6 +756,12 @@ c       implicit real*8 (a-h,o-z)
 
       PSF1(X,y)=4.d0*PI/10.d0*X*(dlog(8.d0*X/y)-1.5d0)
 
+c     Mutual inductance is zero when either loop is at the axis (R=0)
+      if(R1.eq.0.d0.or.R.eq.0.d0)then
+        FP=0.d0
+        return
+      end if
+
 	r_d=r
 	r1_d=r1
 	z_d=z

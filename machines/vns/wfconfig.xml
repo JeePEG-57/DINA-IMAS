@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<parameters>
+
+
+  <pulse_schedule>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </pulse_schedule>
+  <input_pf_active>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </input_pf_active>
+  <input_pf_passive>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </input_pf_passive>
+  <input_magnetics>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </input_magnetics>
+  <input_em_coupling>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </input_em_coupling>
+  <input_wall>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </input_wall>
+  <input_start>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </input_start>
+  <output>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/39101</uri>
+  </output>
+  <input_transp>
+    <uri>imas:hdf5?path=/home/ITER/svantnj/public/imasdb/vns/3/1/391</uri>
+  </input_transp>
+
+  <time_start>39</time_start>
+  <start_interp_mode>1</start_interp_mode>
+  <transp_interp_mode>1</transp_interp_mode>
+  <time_stop>40</time_stop>
+  <decimation>1</decimation>
+  <time_ext>1000</time_ext>
+  <controller>kmc</controller>
+  <step_max>100</step_max>
+  <use_astra>0</use_astra>
+
+</parameters>
