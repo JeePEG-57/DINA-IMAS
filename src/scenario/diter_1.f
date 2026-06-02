@@ -131,11 +131,24 @@ c   btor in gaus
       P2C=P2C+PC*SI
       TKP=TKP+PPC*VI
       TKF=TKF+PFFC*DBVI
-	BPBOUND1=BPBOUND1/dl_b
+c  Guard against zero arc length (degenerate flux surface)
+	if(dl_b.gt.0.d0) then
+	   BPBOUND1=BPBOUND1/dl_b
+	else
+	   BPBOUND1=0.d0
+	end if
 	bp_0(i)=bpbound1
    30 CONTINUE
-	bz2_av=bz2_av/s
-	bz_av=bz_av/s
+c  Guard against zero area (all cells degenerate - VDE end-state)
+	if(s.gt.0.d0) then
+	   bz2_av=bz2_av/s
+	   bz_av=bz_av/s
+	else
+	   print *,' WARNING: BTA s=0 (all cells degenerate), '//
+     *    'bz2_av/bz_av set to 0'
+	   bz2_av=0.d0
+	   bz_av=0.d0
+	end if
 	if(kpr.eq.1)
      *   print *,' b_p(a)= bz2_av=bz_av',bpbound1*1.e-3,bz2_av,bz_av
 	bpbound=bpbound1*1.e-3
