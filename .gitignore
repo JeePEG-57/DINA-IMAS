@@ -52,3 +52,9 @@ machines/tcv/*.bin
 imas/iwrap/tcv_controller/codegen_dina/codedescriptor.dmr
 imas/iwrap/tcv_controller/codegen_dina/html/
 machines/tcv/imp/
+machines/vns/imp/
+machines/vns/figures
+machines/vns/convergence_*
+machines/vns/*.ipynb
+machines/vns/*.svg
+CONVERGENCE_LOOPS.md
