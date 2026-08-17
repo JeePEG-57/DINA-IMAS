@@ -122,15 +122,7 @@ c for fluxcont.r0 and z0 used in (subr. sort)
 	z0=vm
 	delaval=pmag-psep
 
-c  Sanity check: if O-point flux <= separatrix flux, equilibrium is
-c  inverted (plasma lost confinement - VDE/disruption). Exit gracefully.
-	if(delaval.le.0.d0) then
-	   print *,' EQUILIBRIUM LOST: pmag<=psep, pmag=',pmag,
-     *  ' psep=',psep,' (VDE/disruption detected, stopping)'
-	   call write_surf()
-	   stop 'plasma lost - VDE'
-	end if
-c	e_sep=5.e-3
+
 
       if(ksepa.eq.1)then
 	pbound=psep+e_sep*delaval
