@@ -67,6 +67,8 @@ c----------
 	dimension pspl_temp(nwnh)                                      
 
 	dimension pptab(*),fptab(*)
+	logical logfirst
+	data logfirst /.true./
 
 	delta0=1.2*sqrt(dx**2+dy**2)
 	COEF=10./(4.*PI)
@@ -209,6 +211,45 @@ c
 	fptab(i)=fptab(i)*al1
 
 	end do
+	
+	 
+
+ 
+	if (logfirst) then
+	   open(unit=91,file='p_prime.log', status='replace',
+     *          form='formatted')
+	   open(unit=92,file='ff_prime.log',status='replace',
+     *          form='formatted')
+	   write(91,'(A)') '# DINA p'' profile log -- one row per '//
+     *          'equilibrium Picard iteration (every ptoke1_c call)'
+	   write(91,'(A,I6)') '# n = ',n
+	   write(91,'(A,400(1x,1pe14.6))') '# grid_a',(poa(i),i=1,n)
+	   write(91,'(A)') '# columns: iter ntay tt al1 errm '//
+     *          'ppx_1 ... ppx_n'
+	   write(92,'(A)') '# DINA FF'' profile log -- one row per '//
+     *          'equilibrium Picard iteration (every ptoke1_c call)'
+	   write(92,'(A,I6)') '# n = ',n
+	   write(92,'(A,400(1x,1pe14.6))') '# grid_a',(poa(i),i=1,n)
+	   write(92,'(A)') '# columns: iter ntay tt al1 errm '//
+     *          'pffx_1 ... pffx_n'
+	   logfirst=.false.
+	end if
+ 
+	write(91,'(I8,1x,I8,1x,1pe14.6,1x,1pe14.6,1x,1pe14.6,
+     *          400(1x,1pe14.6))')
+     *          i_bound,ntay,tt,al1,errm,(ppx(i),i=1,n)
+	write(92,'(I8,1x,I8,1x,1pe14.6,1x,1pe14.6,1x,1pe14.6,
+     *          400(1x,1pe14.6))')
+     *          i_bound,ntay,tt,al1,errm,(pffx(i),i=1,n)
+ 
+	flush(91)
+	flush(92)
+ 
+c=====================================================================
+c  END OF DIAGNOSTIC PATCH
+c=====================================================================
+
+
 
 c        fdd_1=fdd
 c	fdd=2.*pi*psval(n)-pll*tpl
@@ -6999,17 +7040,19 @@ c	print *,' rsep2 zsep2 psep2 ksep',
 	include 'double.inc'
 
 	include 'parf0'
+	include 'parf7'
 	
 	dimension pdd(6)
 c                                                                       
 	common                                                                 
      *  /ge1/pi                                                         
      *  /ge5/kpr                                                        
-
-      parameter ( nn=2000)
+	  
+	  parameter (n_k=10)
+      parameter ( nn=mu_l*n_k)
       
 	common /c_separ2_lim/r_lim(100),z_lim(100),n_lim
-
+	  
 	dimension x_sep2(*),y_sep2(*),xu1(*),yu1(*),xue(*),yue(*),
      * xu(nn),yu(nn),psi_lim(nn)
                                                                                
@@ -7019,7 +7062,6 @@ c
       
       if(i_en.eq.1)then
             
-	n_k=10
 	kk=0
 	xu(1)=xu1(1)
 	yu(1)=yu1(1)
@@ -7035,15 +7077,14 @@ c
 !	xu(i)=xu1(i)
 !	yu(i)=yu1(i)
 	end do
-
 	ke=kk
 !	ke=ke1
 
 !      print *,' ke1 ke===========',ke1,ke
             
-      if(ke.gt.1999)then      
-!      print *,' ke gt 2000',ke
-      stop
+      if(ke.gt.nn-1)then      
+		print *,' ke gt nn',ke, nn 
+      	stop
       end if
             
 	do i=1,ke
