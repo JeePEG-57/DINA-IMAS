@@ -9,7 +9,7 @@
      *  turn_ves(nmax,mu)
      *  /ves7/n_div
 
-      kpr=0
+      kpr=1
 
 	arg=1.d0
 
@@ -2309,7 +2309,7 @@ c	implicit real*8 (a-h,o-z)
 !	close (40)
 !    	open(unit=41,status='old',file=tmp,form='formatted')
 
-      kpr=0
+      kpr=1
 
 !     	open(unit=49,file='dina_data.dat',
 !!!     	open(unit=41,file='tokamak_config.dat',

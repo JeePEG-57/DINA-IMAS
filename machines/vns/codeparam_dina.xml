@@ -2,11 +2,11 @@
 <parameters>
    <kpr>1</kpr>
    <tt_kavin>0.001</tt_kavin>
-   <tau>2.0e-4</tau>
-   <tau_sim>3.0e-4</tau_sim>
-   <tau_dw>3.0e-4</tau_dw>
+   <tau>1e-3</tau>
+   <tau_sim>1e-3</tau_sim>
+   <tau_dw>1e-3</tau_dw>
    <key_t11>1</key_t11>
-   <tt_dina>10000</tt_dina>
+   <tt_dina>1</tt_dina>
    <tpl_dir>1.0</tpl_dir>
    <p>0.001</p>
    <T_e>0.002</T_e>
@@ -16,12 +16,12 @@
    <bohm_gbohm>1</bohm_gbohm>
    <q_swth>0.97</q_swth>
    <pcchp_end>5.0e19</pcchp_end>
-   <ener_ext>0</ener_ext>
-   <dens_ext>0</dens_ext>
-   <ajb_ext>0</ajb_ext>
+   <ener_ext>1</ener_ext>
+   <dens_ext>1</dens_ext>
+   <ajb_ext>1</ajb_ext>
    <grid_n>50</grid_n>
    <grid_rho>0.5</grid_rho>
-   <grid_alpha>0.95</grid_alpha>
+   <grid_alpha>0.90</grid_alpha>
    <coef_p_lh>1.0</coef_p_lh>
    <tt_rampup>0.2</tt_rampup>
    <dt_end_sim>50</dt_end_sim>

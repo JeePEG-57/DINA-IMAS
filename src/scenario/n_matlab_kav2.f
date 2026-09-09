@@ -2165,6 +2165,7 @@ c-----------------------
 	k_zyb=0
 
 	if(i_oldd.eq.1.and.ntay.gt.10)then
+		q_test=0
 	if(q_min.le.q_test)then
 	if(kpr.eq.1)print *,' q_min==== q_test ntay',q_min,q_test,ntay
 	if(kpr.eq.1)print *,' call zyb'

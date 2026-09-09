@@ -427,6 +427,7 @@
         
         
         n1 = n+1
+        print *, 'i, psix, aval, dm0(i) = '
 	do i=1,n
 	   psiax_xx = dm0(1)
            psibnd_xx = dm0(n)
@@ -440,6 +441,7 @@
            call linear2(n,a,aval,dm0,psix)
            
            a_xx(i) = aval
+           print *, i, psix, aval, dm0(i)
            
            call linear2(n,dfmax,phi_xx(i),a,aval)
            call linear2(n,te0,te0_xx(i),a,aval)
@@ -464,7 +466,7 @@
            !press_xx(i) = p(i)
            
         enddo
-        
+
         sigk_xx(1) = sigk(1)
         sigk_xx(n) = sigk(n+1)
         
@@ -2078,10 +2080,14 @@ c----------------------------
        
 !       dmn(i) = psi_tr_xx(i)
 !       call linear2(n_eq_xx,psi_xx,dmn(i),a_xx,a(i))
-       call linear2(n_tr_xx,psi_tr_xx,dmn(i),a_tr_xx,a(i))
+!       call linear2(n_tr_xx,psi_tr_xx,dmn(i),a_tr_xx,a(i))
+
+       dmn(i) = psix
+       print *, i, a(i), psix, dmn(i)*tpl_dir*1.d5   ! compare last two columns directly
 
        end do
       
+       print *, 'ntay, dmn(1), dmn(2), dmn(n-1), dmn(n):', ntay, dmn(1), dmn(2), dmn(n-1), dmn(n)
       
       coef_ppx = 1.d10/(rs0*8.d0*pi**2)
       coef_pffx = rs0/(40.d0*pi)

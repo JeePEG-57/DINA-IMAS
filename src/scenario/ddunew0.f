@@ -89,7 +89,11 @@ c
         if(kpr.eq.1)print *,' key_sig_coef coef_sigk==',
      *  key_sig_coef,coef_sigk
       
-
+            
+            print *, 'ntay = ', ntay
+            print *,'FIRST_DM0_CHECK -- dm0(1), dm0(2), dm0(n-1), dm0(n):', dm0(1), dm0(2), dm0(n-1), dm0(n)
+            print *,'FIRST_DMN_CHECK -- dmn(1), dmn(2), dmn(n-1), dmn(n):', dmn(1), dmn(2), dmn(n-1), dmn(n)
+            
         if(key_sig_coef.eq.1)then
 c********
 !	  open (unit=40,file='coef_sigk.dat',form='formatted') 

@@ -379,7 +379,7 @@ c
 	udd_ex=-(fdd-fdd0)/(tay*100.)
 
         udd=udd_ex
-
+		if(kpr.eq.1) print *,'DBG_UDD',ntay,i_en,fdd,fdd0,tay,udd_ex
 c###
 
 !	if(ntay.le.ndisrup.and.kmaj.eq.1)udd=0.
@@ -417,6 +417,8 @@ c	udd=udd-udd_tor
         if(kpr.eq.1)print *,'  tpl tpl0',tpl,tpl0
 	UDM=4.*PI/( 10.*PLL*f(n) )
 	ZDM=UDM*(-DMN(n)+pll0*tpl0+udd*tay*100. )
+		if(kpr.eq.1) print *,'DBG_ZDM',ntay,i_en,pll,pll0,tpl0,
+     *  dmn(n),udm,zdm
         if(kpr.eq.1)print *,'  udm zdm l3',udm,zdm,l3
 	end if
 
@@ -2091,10 +2093,39 @@ c	pause 'pp_calc'
 	common
      *  /pol2/Qx(npo),ANUx(npo),Px(npo),Fx(npo),
      *   PPxx(npo),PFFxx(npo)
-
+	common 
+     *  /ge2/ntay,tay,tt
+	
+	logical logfirst_pff
+	integer call_idx_pff
+	save logfirst_pff, call_idx_pff
+	data logfirst_pff /.true./
+	data call_idx_pff /0/
 	character *20 apr
 
 	CALL TOKK(N,RS0)
+
+		call_idx_pff = call_idx_pff + 1
+ 
+	if (logfirst_pff) then
+	   open(unit=93,file='ff_prime_difmf1.log', status='replace',
+     *          form='formatted')
+	   write(93,'(A)') '# DINA FF'' (DIFMF_1/TOKK output) log -- '//
+     *          'one row per pff_calc call (roughly once per outer '//
+     *          'diffusion/GS pass, NOT per ptoke1 Picard iteration)'
+	   write(93,'(A,I6)') '# n = ',n
+	   write(93,'(A,400(1x,1pe14.6))') '# grid_a',(a(i),i=1,n)
+	   write(93,'(A)') '# columns: iter ntay tt al1 errm '//
+     *          'pff_1 ... pff_n  (al1,errm are unused placeholders '//
+     *          '(always 0.0) -- pff_calc has no equivalent quantity)'
+	   logfirst_pff=.false.
+	end if
+
+	write(93,'(I8,1x,I8,1x,1pe14.6,1x,1pe14.6,1x,1pe14.6,400(1x,1pe14.6))')
+     *          call_idx_pff,ntay,tt,0.d0,0.d0,(pff(i),i=1,n)
+ 
+	flush(93)
+
 c
 	tok=0.
 	z_cur=0.
@@ -3726,7 +3757,8 @@ c
 c	alf=0.9                                                               
                                                                         
 c	alf=1.d0                                                                
-
+	  	apr='a(i)'                                                             
+		if(kpr.eq.1)print 71,apr,(a(i),i=1,n) 	
       if(kpr.eq.1)print *,'++alf ro_alf ',alf,ro_alf
                                                                         
 	do i=2,n                                                               
@@ -3749,7 +3781,7 @@ c	end do
 c                                                                       
       A(N)=1.                                                           
 	apr='a(i)'                                                             
-!	if(kpr.eq.1)print 71,apr,(a(i),i=1,n)                                 
+	if(kpr.eq.1)print 71,apr,(a(i),i=1,n)                                 
 c                                                                       
       DO 1 I=2,N                                                        
 	a0(i)=a(i-1)                                                           

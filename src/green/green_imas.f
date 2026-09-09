@@ -9,7 +9,7 @@
      *  turn_ves(nmax,mu)
      *  /ves7/n_div
 
-      kpr=0
+      kpr=1
 
 	arg=1.d0
 

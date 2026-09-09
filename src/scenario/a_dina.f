@@ -425,7 +425,8 @@
       k_ener=k_ener_h
  	end if
  	if(k_jetto.eq.1)k_ener=0
- 	omega=0.33d0
+c 	omega=0.33d0
+      omega=0.05d0
  	call equil2()
  	end if
 

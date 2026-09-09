@@ -76,7 +76,7 @@ c**                                                                  **
 c**********************************************************************
 	   implicit real *8 (a-h,o-z)
       common/bunemn/m,n,s,shift,dr,dz
-      dimension g(300),p(300),c(300),d(300),temp(300)
+      dimension g(401),p(401),c(401),d(401),temp(401)
       dimension q(nwnh)
       include 'double_bunema.inc'
 
@@ -163,7 +163,7 @@ c           Update arrays
 
       subroutine compute_c(c,lo,n,s)
          implicit real *8 (a-h,o-z)
-         dimension c(300)
+         dimension c(401)
 
          i1=1
          do while(i1>=0)
@@ -193,7 +193,7 @@ c           Update arrays
 
       subroutine case_28(q,p,j2,iu,jt,jh,jd,j)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(401),p(401)
          do i = j2,iu
             pi = q(i)-q(i+jt)-q(i-jt)
             q(i) = q(i)-q(i+jh)-q(i-jh)+q(i+jd)+q(i-jd)
@@ -203,7 +203,7 @@ c           Update arrays
 
       subroutine case_26(q,p,j2,iu,jd,j)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(401),p(401)
          do i = j2,iu
             p(i-j) = 2.*q(i)
             q(i) = q(i+jd)+q(i-jd)
@@ -212,7 +212,7 @@ c           Update arrays
 
       subroutine case_24(q,p,j2,iu,jh,jd,j)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(401),p(401)
          do i = j2,iu
             p(i-j) = 2.*q(i)+q(i+jd)+q(i-jd)
             q(i) = q(i)-q(i+jh)-q(i-jh)
@@ -221,7 +221,7 @@ c           Update arrays
 
       subroutine case_20(q,p,j2,iu,jd,j)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(401),p(401)
          do i = j2,iu
            p(i-j) = 2.*q(i)+q(i+jd)+q(i-jd)
            q(i) = 0.
@@ -230,7 +230,7 @@ c           Update arrays
 
       subroutine update_arrays(g, p, d, temp, c, lo, n, li, m, s, id)
          implicit real *8 (a-h,o-z)
-         dimension g(300),p(300),c(300),d(300),temp(300)
+         dimension g(401),p(401),c(401),d(401),temp(401)
          do l = lo, n, li
            a = c(l)
            as = a * s
