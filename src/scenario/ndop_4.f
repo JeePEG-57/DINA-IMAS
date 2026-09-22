@@ -339,7 +339,8 @@ c
 	include 'double.inc'
 c       implicit real *8 (a-h,o-z)
 c	parameter (mu1=400)
-	parameter (mu1=800)
+c	parameter (mu1=800)
+	parameter (mu1=2000)
 	dimension xp(mu1),yp(mu1),xp1(50,mu1),yp1(50,mu1),
      *	ind1(50),ind(mu1)
         common

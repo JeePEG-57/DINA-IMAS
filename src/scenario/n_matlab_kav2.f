@@ -1578,6 +1578,7 @@ c
 
 !	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.20)then
 	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.2)then
+!	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.1000)then
 
       omg_ppx=omg_ppx*0.99
       if(omg_ppx.le.0.5d0)omg_ppx=0.5d0
@@ -1897,7 +1898,8 @@ c!!! so transport does not know about time evolution of surfaces
         fdd0=fdd
         end if
 
-      if(ntay.le.9.and.k_ener.eq.0)then
+!      if(ntay.le.9.and.k_ener.eq.0)then
+	   if(ntay.le.9)then
       pll0=pll
       fdd0=fdd
       

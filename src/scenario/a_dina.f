@@ -30,7 +30,7 @@
 
       integer, save :: i_en=0
 
-	dimension a_print(200)
+	dimension a_print(kint)
 
 	common /c_data_in_time2/i_c_data,i_c_data1       
 
@@ -418,6 +418,7 @@
  	call equil()
  	else
       if(ih_imas.eq.4.and.i_en.eq.1)then
+!      k_ener=0
       k_ener_h=k_ener
 !      k_ener=0
  	omega=0.5d0
@@ -425,6 +426,7 @@
       k_ener=k_ener_h
  	end if
  	if(k_jetto.eq.1)k_ener=0
+!      k_ener=0
  	omega=0.33d0
  	call equil2()
  	end if

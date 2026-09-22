@@ -128,13 +128,13 @@ c     Main computation loop
 
              select case (k4)
                 case (4)
-                    call case_28(q,p,j2,iu,jt,jh,jd,j)
+                    call case_28(q,p,j2,iu,jt,jh,jd,j,nwnh)
                 case (3)
-                    call case_26(q,p,j2,iu,jd,j)
+                    call case_26(q,p,j2,iu,jd,j,nwnh)
                 case (2)
-                    call case_24(q,p,j2,iu,jh,jd,j)
+                    call case_24(q,p,j2,iu,jh,jd,j,nwnh)
                 case (1)
-                    call case_20(q,p,j2,iu,jd,j)
+                    call case_20(q,p,j2,iu,jd,j,nwnh)
             end select
 
 c           Update arrays
@@ -191,9 +191,9 @@ c           Update arrays
 
       end
 
-      subroutine case_28(q,p,j2,iu,jt,jh,jd,j)
+      subroutine case_28(q,p,j2,iu,jt,jh,jd,j,nwnh)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(nwnh),p(300)
          do i = j2,iu
             pi = q(i)-q(i+jt)-q(i-jt)
             q(i) = q(i)-q(i+jh)-q(i-jh)+q(i+jd)+q(i-jd)
@@ -201,27 +201,27 @@ c           Update arrays
          end do
       end
 
-      subroutine case_26(q,p,j2,iu,jd,j)
+      subroutine case_26(q,p,j2,iu,jd,j,nwnh)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(nwnh),p(300)
          do i = j2,iu
             p(i-j) = 2.*q(i)
             q(i) = q(i+jd)+q(i-jd)
          end do
       end
 
-      subroutine case_24(q,p,j2,iu,jh,jd,j)
+      subroutine case_24(q,p,j2,iu,jh,jd,j,nwnh)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(nwnh),p(300)
          do i = j2,iu
             p(i-j) = 2.*q(i)+q(i+jd)+q(i-jd)
             q(i) = q(i)-q(i+jh)-q(i-jh)
          end do
       end
 
-      subroutine case_20(q,p,j2,iu,jd,j)
+      subroutine case_20(q,p,j2,iu,jd,j,nwnh)
          implicit real *8 (a-h,o-z)
-         dimension q(300),p(300)
+         dimension q(nwnh),p(300)
          do i = j2,iu
            p(i-j) = 2.*q(i)+q(i+jd)+q(i-jd)
            q(i) = 0.

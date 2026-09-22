@@ -353,6 +353,13 @@ c
         common
      *  /pf1/npf,pf(kf),pf0(kf)
 
+	
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	logical logfirst_bc
+	integer i_regime_bc
+	save logfirst_bc
+	data logfirst_bc /.true./
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	dimension a_print(200)
 	character *30 apr                                                      
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
@@ -404,7 +411,7 @@ c	udd=udd_ex+udd_psval
 
 	udd_tor=-(dfmax(n)-dfmax0(n))/(q(n)*100.*tay)
 
-c	udd=udd-udd_tor
+
 
 	if(kpr.eq.1)print *,' udd udd_tor==',udd,udd_tor
 
@@ -420,6 +427,41 @@ c	udd=udd-udd_tor
         if(kpr.eq.1)print *,'  udm zdm l3',udm,zdm,l3
 	end if
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	if (logfirst_bc) then
+	   open(unit=95,file='tpl_cal_bc.log',status='replace',
+     *          form='formatted')
+	   write(95,'(A)') '# DINA CDE boundary-condition log '//
+     *          '-- one row per tpl_cal_c call'
+	   write(95,'(A)') '# columns: ntay tt regime fdd fdd0 udd '//
+     *          'pll pll0 tpl tpl0 DMN_n DM0_n PSI_n F_n UDM ZDM udd_drive '//
+     *          'pll0_tpl0 mismatch tpl_tor'
+	   logfirst_bc = .false.
+	end if
+
+	if (ntay.gt.next) then
+	   i_regime_bc = 1
+	else
+	   i_regime_bc = 0
+	end if
+
+	write(95,'(I8,1x,1pe14.6,1x,I2,1x,17(1x,1pe14.6))')
+     *      ntay, tt, i_regime_bc,
+     *      fdd, fdd0, udd,
+     *      pll, pll0, tpl, tpl0,
+     *      dmn(n), dm0(n), psi(n),
+     *      f(n), udm, zdm,
+     *      udd*tay*100.d0,	 
+     *      pll0*tpl0,
+     *      pll0*tpl0 - dmn(n),
+     *      -c2(n)*psi(n)*10.d0/(4.d0*pi)  ! tpl_tor = self-consistent Ip
+
+
+	flush(95)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
+
+
+	
 !	CALL DIFMF_1(n)
 	CALL DIFMF_1()
 	if(kpr.eq.1)print *,' dmn dm0',dmn(n),dm0(n)
@@ -2474,7 +2516,10 @@ c	read (*,*)
 	dimension gra1help(npo),gra2help(npo)
 
 	character *12 apr
-
+c ===== SANITY MARKER =====
+        write(*,'(A,I8)') '>>>>> TRANSF_DATA_NEW CALLED, ntay= ', ntay
+        call flush(6)
+c =========================
 	apr='  ---- kcchp'
 	if(kpr.eq.1)print *,apr,kcchp
 
@@ -2598,15 +2643,62 @@ c	   tq0(i)=al2*p(I)/((pd0(I)+pt0(I))*2.e-4)
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 
 	end if
+	
+	
+	
+	print *, "--- BEFORE changing dmn ---"
+	print *, "dmn(1) = ", dmn(1)
+	print *, "dmn(2) = ", dmn(2) 
+	print *, "dmn(3) = ", dmn(3)
+	print *, "dmn(n-1) = ", dmn(n-1)
+	print *, "dmn(n) = ", dmn(n)
+
+	print *, "--- WHILE dm0 is: ---"
+	print *, "dm0(1) = ", dm0(1)
+	print *, "dm0(2) = ", dm0(2) 
+	print *, "dm0(3) = ", dm0(3)
+	print *, "dm0(n-1) = ", dm0(n-1)
+	print *, "dm0(n) = ", dm0(n)
+
 
 c
-	dm0(1)=2.d0*pi*psval(1)
+	write(*,'(A,I8,3(1x,1pe14.6))') 
+     *   '>>> transf_data_new pre-reseed: ntay=',ntay,
+     *   dmn(1),dmn(2),dmn(n)
+	write(*,'(A,3(1x,1pe14.6))')
+     *   '    psval(1),2*pi*psval(1),ha(2)=',
+     *   psval(1),2.d0*pi*psval(1),ha(2)
+	call flush(6)
 
-	do i=2,n
-	dm0(i)=dm0(i-1)+psi(i)*ha(i)
-	dmn(i)=dm0(i)
-	end do
+c ---- SKIP the reseed at ntay=0 if we have IDS data
+c      Original block reseeds unconditionally, which destroys the
+c      IDS-supplied dmn.  Restart mode: keep dmn from dina_input2.
+	if(ntay.eq.0 .and. tay.le.0) then
+	   dm0(1)=2.d0*pi*psval(1)
+	   do i=2,n
+	      dm0(i)=dm0(i-1)+psi(i)*ha(i)
+	      dmn(i)=dm0(i)
+	   end do
+	else
+c ---- restart-from-IDS: dmn(1..n) already holds the IDS profile;
+c      just copy it into dm0 as the initial condition for DIFMF_1.
+	   do i=1,n
+	      dm0(i)=dmn(i)
+	   end do
+	end if
 
+	write(*,'(A,3(1x,1pe14.6))')
+     *   '    post: dm0(1),dm0(2),dm0(n)=',dm0(1),dm0(2),dm0(n)
+	call flush(6)
+
+
+
+	print *, "--- AFTER updating dm0 is: ---"
+	print *, "dm0(1) = ", dm0(1)
+	print *, "dm0(2) = ", dm0(2) 
+	print *, "dm0(3) = ", dm0(3)
+	print *, "dm0(n-1) = ", dm0(n-1)
+	print *, "dm0(n) = ", dm0(n)	
 
 	apr='-psi-'                                                            
 !	print 71,apr,(psi(i),i=1,6)
@@ -2672,6 +2764,10 @@ c
 	dimension gra1help(npo),gra2help(npo)
 
 	character *12 apr
+c ===== SANITY MARKER =====
+        write(*,'(A,I8)') '>>>>> TRANSF_DATA CALLED, ntay= ', ntay
+        call flush(6)
+c =========================
 
 	spov(1)=0.
 	vol(1)=0.
@@ -2924,7 +3020,23 @@ c
 	call feeti(n,qz,p(i),poa,a(i))
 	end do
 c
-	if(ntay.eq.0)dmn(1)=0.
+c	if(ntay.eq.0)dmn(1)=0.
+
+
+	print *, "--- BEFORE changing dmn ---"
+	print *, "dmn(1) = ", dmn(1)
+	print *, "dmn(2) = ", dmn(2) 
+	print *, "dmn(3) = ", dmn(3)
+	print *, "dmn(n-1) = ", dmn(n-1)
+	print *, "dmn(n) = ", dmn(n)
+
+	print *, "--- WHILE dm0 is: ---"
+	print *, "dm0(1) = ", dm0(1)
+	print *, "dm0(2) = ", dm0(2) 
+	print *, "dm0(3) = ", dm0(3)
+	print *, "dm0(n-1) = ", dm0(n-1)
+	print *, "dm0(n) = ", dm0(n)
+
 
 	dm0(1)=dmn(1)
 	dfmax(1)=0.
@@ -2937,12 +3049,22 @@ c
 	c2(i)=-pcur(i)/(psi(i)*coef)
 	c3(i)=pfi(i)/(2.*pi*rs0*f(i))
 
-	if(ntay.eq.0)then
+!	if(ntay.eq.0)then
+	if(ntay.eq.0.and.tay.le.0)then
+
 	dm0(i)=dm0(i-1)+psi(i)*ha(i)
 	dmn(i)=dm0(i)
 	end if
 c
 	end do
+
+	print *, "--- AFTER updating dm0 is: ---"
+	print *, "dm0(1) = ", dm0(1)
+	print *, "dm0(2) = ", dm0(2) 
+	print *, "dm0(3) = ", dm0(3)
+	print *, "dm0(n-1) = ", dm0(n-1)
+	print *, "dm0(n) = ", dm0(n)
+
 
 	do i=2,n
 	gra1(i)=gra1help(i)/vi(i)

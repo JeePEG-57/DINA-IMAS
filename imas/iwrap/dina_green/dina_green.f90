@@ -186,13 +186,12 @@ flush(6)
   
   
     
-  
-  write(*,*) "fluxarr(1:3)=",fluxarr(1,1:3)
-  write(*,*) "vesarr(1:3)=",vesarr(1,1:3)
-  write(*,*) "pslgreen(1:3)=",pslgreen(1,1:3)
-  write(*,*) "bprgreen(1:3)=",bprgreen(1,1:3)
-  write(*,*) "pfres(1:3)=",pfres(1:3)
-  write(*,*) "rcam(1:3)=",rcam(1:3)
+  if(nact.ge.3) write(*,*) "fluxarr(1:3)=",fluxarr(1,1:3)
+  if(npass.ge.3) write(*,*) "vesarr(1:3)=",vesarr(1,1:3)
+  if(kloop.ge.3) write(*,*) "pslgreen(1:3)=",pslgreen(1,1:3)
+  if(kprobe.ge.3) write(*,*) "bprgreen(1:3)=",bprgreen(1,1:3)
+  if(nact.ge.3) write(*,*) "pfres(1:3)=",pfres(1:3)
+  if(npass.ge.3) write(*,*) "rcam(1:3)=",rcam(1:3)
 
 gridrange(1)=y(1)
 gridrange(2)=y(nz)

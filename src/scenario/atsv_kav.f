@@ -117,7 +117,7 @@ c     jm - maximum total number of atom/ion facility.
 	subroutine SPREAD(NF,LM,SPSV,TEM,EI,i20)
       implicit none      
       integer NF,LM,i20   ,I,J,K,IY
-      real EI(*),TEM(*),SPSV(LM,6,1)
+      real EI(*),TEM(*),SPSV(LM,6,*)
                   character*8 NFILE
       if(NF.ge.10) WRITE(NFILE,'(A2,I2,A4)')'sp', NF,'.dat'
       if(NF.lt.10)write(NFILE,'(A2,I1,A4)')'sp', NF,'.dat'

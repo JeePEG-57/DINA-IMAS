@@ -32,7 +32,7 @@ DEBUG = -g -O0 -fbacktrace
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
 else ifeq ($(TARGET), RELEASE)
-  F90FLAGS += -O2 -g -march=native -funroll-loops -fno-inline -fbacktrace
+  F90FLAGS += -O2 -g -march=native -funroll-loops -fno-inline -fbacktrace -fcheck=all
 endif
 F90FLAGS+=$(F90DEF)
 
