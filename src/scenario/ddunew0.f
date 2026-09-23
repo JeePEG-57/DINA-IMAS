@@ -160,14 +160,6 @@ c
 c       f(i)=0.5*(fx(i)+fx(i-1))
 	end do
 
-c --- axis-point fix: f(1)/pfi(1) are never assigned by the loop above
-c     (it starts at i=2), so they retain stale/uninitialized values from
-c     the common block (0 on the very first ntay=0 call). This matches
-c     the "copy neighbor to axis" convention used elsewhere in the code
-c     for axis-singular quantities (e.g. fx(1)=fx(2) in map.f,
-c     ndop1_new2_400.f; pffx(1)=pffx(2) in add.f, map.f, ndop_4.f).
-	f(1)=f(2)
-	pfi(1)=pfi(2)
 
 	mps='dmn'
 !        if(kpr.eq.1)print 71,mps,(dmn(i),i=1,n)
@@ -183,10 +175,6 @@ c     ndop1_new2_400.f; pffx(1)=pffx(2) in add.f, map.f, ndop_4.f).
         if(abs(sigk(i)).le.1.e-3)sigk(i)=1./zeff(i)
         end do
 
-c --- axis-point fix: psi(1)/q(1) are likewise never assigned by the
-c     DO loop above (starts at i=2), so patch them the same way.
-        psi(1)=psi(2)
-        q(1)=q(2)
 
         ! --- Diagnostic dump of CDE ENTRY state: q/psi computed
         ! directly from the INCOMING dm0 (pre-solve), to check whether

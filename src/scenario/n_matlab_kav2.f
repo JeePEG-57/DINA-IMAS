@@ -148,7 +148,11 @@
 
 	character *30 apr
 	dimension a_print(200)
-
+	
+	
+	common /pol6/ppx(npo),pffx(npo)
+	dimension ppx_old(npo),pffx_old(npo)
+	REAL*8 w_sw
 
 !!! Ics1_eob=-30e-3*ntur(3); t_eob2=25; c_eob=0.9999; 
 !!! cIp_end=1.5; dt_end=dtpl_term_l*cIp_end/7.5;
@@ -1579,16 +1583,26 @@ c
 
 !	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.20)then
 	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.2)then
-!	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.1000)then
-
-      omg_ppx=omg_ppx*0.99
-      if(omg_ppx.le.0.5d0)omg_ppx=0.5d0
-     
-      ! pprime and ffprime
-      call ppx_pffx()
-      call ppx_pffx_corr2()
-	   	      
+        if(int_2000.eq.1)then
+			do i=1,n
+			ppx_old(i)=ppx(i)
+			pffx_old(i)=pffx(i)
+			end do
+		end if
+	call ppx_pffx()
+	call ppx_pffx_corr2()
+	w_sw=min(1.d0,0.05d0*dble(ntay-2))
+	do i=1,n
+		ppx(i)=ppx_old(i)+w_sw*(ppx(i)-ppx_old(i))
+		pffx(i)=pffx_old(i)+w_sw*(pffx(i)-pffx_old(i))
+	end do
 	end if
+	
+	print *, 'ntay int_2000 w_sw',ntay,int_2000,w_sw
+	print *, 'ppx_old(1:n)', (ppx_old(i),i=1,n)
+	print *, 'pffx_old(1:n)', (pffx_old(i),i=1,n)
+	print *, 'ppx(1:n)', (ppx(i),i=1,n)
+	print *, 'pffx(1:n)', (pffx(i),i=1,n)
 
 	zvel_0=zvel
 
