@@ -837,6 +837,27 @@ c	if(kpr.eq.1)print *,'   f9a f9af----',f9a,f9af
 	k_map=0                                                            
                                                                         
           poax(n)=1.d0
+
+        ! --- Diagnostic: check psval monotonicity/sign before computing
+        ! psix=sqrt(...) below. If psval(n)==psval(1) (division by
+        ! zero) or psval(i) < psval(1) for some i (negative ratio ->
+        ! NaN after sqrt), fit_pp_pff's int(1+psix*n1) blows up to a
+        ! garbage index (e.g. -2147483647) and crashes with an
+        ! out-of-bounds array access on ppm/pffm.
+        if (kpr.eq.1 .or. .true.) then
+           print *,'map_ps_c: psval(1) psval(n) =',psval(1),psval(n)
+           if (abs(psval(n)-psval(1)).lt.1.d-12) then
+              print *,'map_ps_c: WARNING psval(n)-psval(1) ~ 0 -- ',
+     *        'division by (near-)zero ahead'
+           end if
+           do i=2,n
+              ratio_chk=(psval(i)-psval(1))/(psval(n)-psval(1))
+              if (ratio_chk.lt.0.d0) then
+                 print *,'map_ps_c: WARNING negative ratio at i=',i,
+     *           ' psval(i)=',psval(i),' ratio=',ratio_chk
+              end if
+           end do
+        end if
                                                                         
          do i=2,n                                                       
                                                                         

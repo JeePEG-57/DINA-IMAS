@@ -312,10 +312,18 @@ c*** Input of PF turns - must be consistent with 'koor' file!
 
 	call map_tor()
 	call eq_res_ps()
-      
+	  print *, 'BEFORE fix of ~pi offset?'
+	  print *, 'before, we had dm0(i) = dmn(i)'
+	  print *,' dmn(1) dmn(n) ',dmn(1),dmn(n)
+      print *,' dmn(1:n) ',(dmn(i),i=1,n)
+	  print *, 'now we try flipped, dmn(i) = dm0(i)'
+
       do i=1,n
-      dm0(i)=dmn(i)
+      dmn(i)=dm0(i)
       end do
+	  print *, 'and we get'
+	  print *,' dmn(1) dmn(n) ',dmn(1),dmn(n)
+      print *,' dmn(1:n) ',(dmn(i),i=1,n)
       
       do i=2,n
       psi(i)=(dm0(i)-dm0(i-1))/ha(i)
@@ -326,6 +334,12 @@ c*** Input of PF turns - must be consistent with 'koor' file!
            if(kpr.eq.1)print 71,apr,(psi(i),i=1,n) 
            apr='-dm0-'
            if(kpr.eq.1)print 71,apr,(dm0(i),i=1,n) 
+
+        ! --- Diagnostic dump: dm0/psi right after the dmn->dm0 handoff
+        ! (before map_ps/BTA/pp_calc/gen/etc. run), to bracket where the
+        ! CDE-entry stair-step in psi/q is actually introduced relative
+        ! to this known-smooth dm0=dmn assignment.
+        call dina_dump_handoff(n,dm0,psi)
 
 	call transf_b_tor()
       CALL BTA(n,mp,RS0)

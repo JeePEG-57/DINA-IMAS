@@ -2085,6 +2085,12 @@ c----------------------------
 !       call linear2(n_eq_xx,psi_xx,dmn(i),a_xx,a(i))
        call linear2(n_tr_xx,psi_tr_xx,dmn(i),a_tr_xx,a(i))
 
+       ! --- moved AFTER the linear2 call above: the previous print was
+       ! logging the stale/uninitialized dmn(i) value BEFORE it was
+       ! ever computed by linear2, which made every logged value read
+       ! as 0.0 and was misleading during diagnosis. ---
+       print *, 'i, psi_tr_xx, dmn = ', i, psi_tr_xx(i), dmn(i)
+
        end do
       
       

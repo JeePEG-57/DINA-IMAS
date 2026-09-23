@@ -5742,6 +5742,28 @@ c	implicit real*8 (a-h,o-z)
 	y=1.+x*n1
 	ie=int(y)
 
+        ! --- Defensive clamp: x is expected in [0,1] (normalized
+        ! sqrt(psi) coordinate). If upstream produces NaN/out-of-range
+        ! x (e.g. from sqrt of a negative ratio in map_ps_c when psval
+        ! is non-monotonic), ie can become a huge garbage integer
+        ! (e.g. -2147483647 from a NaN->int conversion) and crash on
+        ! the ppm(ie+1)/pffm(ie+1) access below. Clamp to valid range
+        ! and report so the run continues and the anomaly is visible.
+        if (ie.lt.1 .or. ie.gt.np-1 .or. x.ne.x) then
+           print *,'fit_pp_pff: WARNING out-of-range/NaN x=',x,
+     *     ' y=',y,' ie=',ie,' -- clamping'
+           if (x.ne.x) then
+              ie=1
+              y=1.d0
+           else if (ie.lt.1) then
+              ie=1
+              y=1.d0
+           else
+              ie=np-1
+              y=dble(np)
+           end if
+        end if
+
 c	if(ie+1.gt.np)then
 c	   if(kpr.eq.1)print *,' x y n1 ie np####',x,y,n1,ie,np
 c	end if
