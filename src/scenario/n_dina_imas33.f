@@ -424,7 +424,12 @@
         q(n+1)=val
         
         f(n+1)=bt0
-        
+
+        ! --- Diagnostic dump of raw internal DINA arrays (pre-remap) ---
+        ! Written to raw_profiles.dat, one row per grid index per call.
+        ! Columns: tt i a ai dm0 p ppx pffx tok1 q f
+        call dina_dump_raw_profiles(tt,n,a,ai,dm0,p,ppx,pffx,
+     *  tok1,q,f)
         
         n1 = n+1
 	do i=1,n
@@ -2141,6 +2146,44 @@ c----------------------------
       
       return
       end
+
+
+!> dina_dump_raw_profiles writes DINA's raw internal (pre-remap) profiles
+!> to a plain-text file 'raw_profiles.dat', one row per grid index,
+!> for later parsing/plotting (e.g. from a Python notebook with pandas).
+!> Columns: tt i a ai dm0 p ppx pffx tok1 q f
+	subroutine dina_dump_raw_profiles(tt,n,a,ai,dm0,p,ppx,pffx,
+     *  tok1,q,f)
+        include 'double.inc'
+
+        dimension a(*),ai(*),dm0(*),p(*),ppx(*),pffx(*)
+        dimension tok1(*),q(*),f(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=95,file='raw_profiles.dat',status='replace',
+     *     form='formatted')
+           write(95,'(A)') 'tt i a ai dm0 p ppx pffx tok1 q f'
+           first_call = .false.
+        else
+           open(unit=95,file='raw_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+           write(95,101) tt,i,a(i),ai(i),dm0(i),p(i),ppx(i),
+     *     pffx(i),tok1(i),q(i),f(i)
+        end do
+
+  101   format(1x,1pe15.7,1x,i5,9(1x,1pe15.7))
+
+        close(95)
+
+        return
+        end
 
 
 !> Linear interpolation

@@ -877,7 +877,8 @@ c**** pcchp calculations with regards Greenwald limit
 
 c*** Here we are doing te0(n)=tq0(n)=g_edge*tec !!!
 !!!        call vic_t_edge()
-
+	print *, 'imap is: ',i_map
+	print *, 'and ntay= ',ntay
 	if(i_map.eq.0)then
 	call transf_data()
 	else

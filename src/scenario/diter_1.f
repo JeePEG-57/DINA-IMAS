@@ -346,6 +346,13 @@ c==========================
       GRA1(I)=GRA1(I)/VI(I)
       C3(I)=c3(i)/(ha(i)*2.*PI)
    30 CONTINUE
+
+        ! --- Diagnostic dump of MIDC geometry/metric coefficients
+        ! (c2,c3,vi,s,ha,a), computed from the 2D equilibrium each
+        ! timestep, feeding both TOKK and DIFMF_1_c (CDE). Checks
+        ! whether corruption is already present in the flux-surface
+        ! geometry before TOKK/CDE even run.
+        call dina_dump_midc(n,ai,a,ha,c2,c3,vi,s,f)
    
         s_bound=s_surf(n)
    
@@ -425,6 +432,10 @@ c	if(kpr.eq.1)print *,' -- n pi',n,pi
 	end do
 c       tok1(2)=dkof*c20(2)/(0.5*s(2)*ha(2))
 	tok1(1)=tok1(2)
+
+        ! --- Diagnostic dump of TOKK internals: tok1 build from
+        ! c20 (=-c2*psi) via quadratic interp coefficients aak/bbk/cck.
+        call dina_dump_tokk(n,ai,a,psi,c2,c20,aak,bbk,cck,s,tok1)
 c
 	tok=0.
 	do i=2,n
@@ -504,3 +515,85 @@ c       implicit real*8 (a-h,o-z)
 
 
 c
+
+!> dina_dump_tokk writes TOKK's internal tok1-build data
+!> (c20=-c2*psi, quadratic-interp coefficients aak/bbk/cck, s) to
+!> 'tokk_profiles.dat', one row per grid index, for later parsing
+!> and plotting (e.g. from a Python notebook with pandas).
+!> Columns: tt i a ai psi c2 c20 aak bbk cck s tok1
+	subroutine dina_dump_tokk(n,ai,a,psi,c2,c20,aak,bbk,cck,s,tok1)
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        dimension ai(*),a(*),psi(*),c2(*),c20(*)
+        dimension aak(*),bbk(*),cck(*),s(*),tok1(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=96,file='tokk_profiles.dat',status='replace',
+     *     form='formatted')
+           write(96,'(A)')
+     *     'tt i a ai psi c2 c20 aak bbk cck s tok1'
+           first_call = .false.
+        else
+           open(unit=96,file='tokk_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+           write(96,101) tt,i,a(i),ai(i),psi(i),c2(i),c20(i),
+     *     aak(i),bbk(i),cck(i),s(i),tok1(i)
+        end do
+
+  101   format(1x,1pe15.7,1x,i5,10(1x,1pe15.7))
+
+        close(96)
+
+        return
+        end
+
+
+!> dina_dump_midc writes MIDC's geometry/metric coefficients
+!> (c2, c3, vi/volume-metric, s/area-metric, ha grid spacing, f) to
+!> 'midc_profiles.dat', one row per grid index, for later parsing
+!> and plotting (e.g. from a Python notebook with pandas).
+!> These are computed from the 2D equilibrium each timestep and feed
+!> BOTH TOKK (tok1) and DIFMF_1_c (CDE q/psi), so this checks whether
+!> corruption is already present in the flux-surface geometry itself.
+!> Columns: tt i a ai ha c2 c3 vi s f
+	subroutine dina_dump_midc(n,ai,a,ha,c2,c3,vi,s,f)
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        dimension ai(*),a(*),ha(*),c2(*),c3(*),vi(*),s(*),f(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=98,file='midc_profiles.dat',status='replace',
+     *     form='formatted')
+           write(98,'(A)') 'tt i a ai ha c2 c3 vi s f'
+           first_call = .false.
+        else
+           open(unit=98,file='midc_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+           write(98,101) tt,i,a(i),ai(i),ha(i),c2(i),c3(i),
+     *     vi(i),s(i),f(i)
+        end do
+
+  101   format(1x,1pe15.7,1x,i5,8(1x,1pe15.7))
+
+        close(98)
+
+        return
+        end

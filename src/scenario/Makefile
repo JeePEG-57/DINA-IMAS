@@ -8,7 +8,7 @@ INCDIR=../include
 
 
 
-FCFLAGS=-fPIC -w
+FCFLAGS=-fPIC -w -mcmodel=medium -fno-pie
 # COMPILER-SPECIFIC FLAGS
 ifeq ($(FC), ifort)
   FCFLAGS+=-extend-source -nod-lines -save -init=zero -real-size 64
@@ -58,7 +58,7 @@ all: test.exe dina_99.a
 
 test.exe: test.o dina_99.a
 	@echo "   * $^ -> $@"
-	$(FC) -Wl,--no-relax -o $@ $^
+	$(FC) -mcmodel=medium -fno-pie -no-pie -Wl,--no-relax -o $@ $^
 
 dina_99.a: $(DINAOBJ)
 	$(RM) -r $@

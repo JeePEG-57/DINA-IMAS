@@ -1989,12 +1989,26 @@ c *** to do PTOKE
 
  	teta=1.d0
         call inter_h0(pp,aiz,n,teta,val)
-	pp(n+1)=0.d0
 
  	teta=1.d0
         call inter_h0(pff,aiz,n,teta,val)
-	pff(n+1)=0.d0
 	aiz(n+1)=1.d0
+
+c  Extrapolate pp,pff at the boundary (aiz=1) from the last two
+c  real solved grid points instead of forcing an arbitrary zero,
+c  which was causing an unphysical edge spike/oscillation in the
+c  quadratic (feet_p) interpolation used below when the actual
+c  solved edge p'/FF' were far from zero (e.g. imported eqdsk edge
+c  profiles with non-zero edge gradients).
+	if(abs(aiz(n)-aiz(n-1)).gt.1.d-12)then
+	slope_pp=(pp(n)-pp(n-1))/(aiz(n)-aiz(n-1))
+	slope_pff=(pff(n)-pff(n-1))/(aiz(n)-aiz(n-1))
+	pp(n+1)=pp(n)+slope_pp*(aiz(n+1)-aiz(n))
+	pff(n+1)=pff(n)+slope_pff*(aiz(n+1)-aiz(n))
+	else
+	pp(n+1)=pp(n)
+	pff(n+1)=pff(n)
+	end if
 
 	apr='ppz'
 c	if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nrad)
