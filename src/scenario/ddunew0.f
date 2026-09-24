@@ -174,6 +174,12 @@ c       f(i)=0.5*(fx(i)+fx(i-1))
         if(abs(sigk(i)).le.1.e-3)sigk(i)=1./zeff(i)
         end do
         
+! --- Diagnostic dump of CDE ENTRY state: q/psi computed
+! directly from the INCOMING dm0 (pre-solve), to check whether
+! the corruption is already present in dm0/pfi/c3/f before the
+! CDE tridiagonal solve even runs.
+        call dina_dump_cde_entry(n,ai,a1,dm0,psi,q,pfi,c3,f,ha)
+        
         	mps='q'
 !        if(kpr.eq.1)print 71,mps,(q(i),i=1,n)
 
@@ -412,6 +418,12 @@ c
         psi(i)=WDM0(I)/GK(I)
 	dm(i)=(dm0(i)-dm0(i-1))/ha(i)
    88 Q(I)=-PFI(I)/PSI(I)
+
+! --- Diagnostic dump of CDE (DIFMF_1_c) internals: q/psi/dm0
+! build, including the advective dfma term and its inputs.
+        call dina_dump_cde(n,ai,a1,dm0,dmn,psi,q,gk,dfma,
+     *  dfmax,dfmax0,fji,tok1,f,ptor)
+            
 	do i=2,n-1
 	aje(i)=+ALFA*(fz(I)*GG(I)*dh2(i)+fz(I+1)*
      *GG(I+1)*dh1(i))/TAY*( dm0(i)-dmn(I) )
@@ -1296,3 +1308,92 @@ c	if(kpr.eq.3)call out42(n_pr,a_print,num,apr)
       return
       end
 
+!> dina_dump_cde_entry writes CDE's ENTRY-state q/psi, computed
+!> directly from the INCOMING dm0 (before the tridiagonal CDE solve
+!> runs), together with the geometry/flux inputs pfi/c3/f/ha that feed
+!> it. Written to 'cde_entry_profiles.dat', one row per grid index,
+!> for later parsing/plotting (e.g. Python notebook + pandas).
+!> Purpose: check whether q/psi corruption is ALREADY present in the
+!> incoming dm0/geometry, before DIFMF_1_c's own solve even runs
+!> (would implicate the equilibrium/restart data, not the CDE solver).
+!> Columns: tt ntay i ai a dm0 psi q pfi c3 f ha
+	subroutine dina_dump_cde_entry(n,ai,a,dm0,psi,q,pfi,c3,f,ha)
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        dimension ai(*),a(*),dm0(*),psi(*),q(*),pfi(*),c3(*)
+        dimension f(*),ha(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=99,file='cde_entry_profiles.dat',
+     *     status='replace',form='formatted')
+           write(99,'(A)')
+     *     'tt ntay i ai a dm0 psi q pfi c3 f ha'
+           first_call = .false.
+        else
+           open(unit=99,file='cde_entry_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+           write(99,101) tt,ntay,i,ai(i),a(i),dm0(i),psi(i),
+     *     q(i),pfi(i),c3(i),f(i),ha(i)
+        end do
+
+  101   format(1x,1pe15.7,1x,i6,1x,i5,9(1x,1pe15.7))
+
+        close(99)
+
+        return
+        end
+
+
+
+!> dina_dump_cde writes CDE (DIFMF_1_c) internal q/psi/dm0 build data,
+!> including the moving-mesh advective term dfma and its inputs
+!> (dfmax, dfmax0, fji current-drive source, tok1, f), to
+!> 'cde_profiles.dat', one row per grid index, for later parsing
+!> and plotting (e.g. from a Python notebook with pandas).
+!> Columns: tt ntay i ai a dm0 dmn psi q gk dfma dfmax dfmax0 fji tok1 f ptor
+	subroutine dina_dump_cde(n,ai,a,dm0,dmn,psi,q,gk,dfma,
+     *  dfmax,dfmax0,fji,tok1,f,ptor)
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        dimension ai(*),a(*),dm0(*),dmn(*),psi(*),q(*),gk(*)
+        dimension dfma(*),dfmax(*),dfmax0(*),fji(*),tok1(*),f(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=97,file='cde_profiles.dat',status='replace',
+     *     form='formatted')
+           write(97,'(A)')
+     *     'tt ntay i ai a dm0 dmn psi q gk dfma '//
+     *     'dfmax dfmax0 fji tok1 f ptor'
+           first_call = .false.
+        else
+           open(unit=97,file='cde_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+           write(97,101) tt,ntay,i,ai(i),a(i),dm0(i),dmn(i),
+     *     psi(i),q(i),gk(i),dfma(i),dfmax(i),dfmax0(i),
+     *     fji(i),tok1(i),f(i),ptor
+        end do
+
+  101   format(1x,1pe15.7,1x,i6,1x,i5,13(1x,1pe15.7))
+
+        close(97)
+
+        return
+        end

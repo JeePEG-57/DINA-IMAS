@@ -322,6 +322,11 @@ c*** Input of PF turns - must be consistent with 'koor' file!
       end do
       psi(1)=psi(2)
 
+! --- Diagnostic dump right after the dm0=dmn handoff, before
+! map_ps/BTA/pp_calc run. Confirms whether dm0/psi are still
+! smooth at this bracket point (before anything else touches them).
+        call dina_dump_handoff(n,dm0,psi)
+
            apr='-psi-'
            if(kpr.eq.1)print 71,apr,(psi(i),i=1,n) 
            apr='-dm0-'
@@ -946,3 +951,47 @@ c	if(tt.lt.t_vde)go to 3323
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 	return
 	end
+
+
+
+!> dina_dump_handoff writes dm0/psi right after the dmn->dm0 handoff in
+!> n_matlab_kav3.f (equil3_c), BEFORE map_ps/BTA/pp_calc/gen/etc. run
+!> and well before DIFMF_1_c's own ntay=0 call. This is used to bracket
+!> exactly where the CDE-entry psi/q stair-step is introduced: dm0 here
+!> is a direct copy of dmn (confirmed smooth via dina_input2's
+!> psi_tr_xx/dmn print), so if psi/dm0 are ALREADY stair-stepped here,
+!> the corruption is introduced between dina_input2 and this point (or
+!> in this file's own psi computation); if they are still smooth here,
+!> the corruption must appear somewhere between here and DIFMF_1_c.
+!> Written to 'handoff_profiles.dat'. Columns: tt ntay i dm0 psi
+	subroutine dina_dump_handoff(n,dm0,psi)
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        dimension dm0(*),psi(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=98,file='handoff_profiles.dat',
+     *     status='replace',form='formatted')
+           write(98,'(A)') 'tt ntay i dm0 psi'
+           first_call = .false.
+        else
+           open(unit=98,file='handoff_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+           write(98,101) tt,ntay,i,dm0(i),psi(i)
+        end do
+
+  101   format(1x,1pe15.7,1x,i6,1x,i5,2(1x,1pe15.7))
+
+        close(98)
+
+        return
+        end
