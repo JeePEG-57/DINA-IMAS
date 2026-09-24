@@ -153,6 +153,8 @@
 	common /pol6/ppx(npo),pffx(npo)
 	dimension ppx_old(npo),pffx_old(npo)
 	REAL*8 w_sw
+	REAL*8 w_fix
+	integer i_ppx_pffx_first
 
 !!! Ics1_eob=-30e-3*ntur(3); t_eob2=25; c_eob=0.9999; 
 !!! cIp_end=1.5; dt_end=dtpl_term_l*cIp_end/7.5;
@@ -1583,27 +1585,38 @@ c
 
 !	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.20)then
 	if(ntay.eq.ngra2*(ntay/ngra2).and.ntay.gt.2)then
-        if(int_2000.eq.1)then
-			do i=1,n
-			ppx_old(i)=ppx(i)
-			pffx_old(i)=pffx(i)
-			end do
-		end if
+c       Fixed (non-ramped) under-relaxation test: blend a constant
+c       fraction of old/new ppx,pffx on EVERY call, starting from the
+c       very first activation of this gate (whatever ntay that is),
+c       instead of ramping the blend weight up over time. This
+c       directly tests whether the oscillation is an unrelaxed
+c       Picard loop-gain instability (in which case a fixed blend
+c       from the first step should suppress it regardless of which
+c       ntay the gate fires at) as opposed to a stale-history/BC
+c       mismatch (in which case relaxation would not help).
+        if(int_2000.eq.1.and.i_ppx_pffx_first.eq.0)then
+c          First-ever activation: no "old" value yet, seed it with
+c          the about-to-be-computed new value so w_fix has no effect
+c          on this very first call.
+           i_ppx_pffx_first=1
+        end if
 	call ppx_pffx()
 	call ppx_pffx_corr2()
-	w_sw=min(1.d0,0.05d0*dble(ntay-2))
+	w_fix=0.5d0
+	if(i_ppx_pffx_first.eq.1)then
+		do i=1,n
+		ppx(i)=ppx_old(i)+w_fix*(ppx(i)-ppx_old(i))
+		pffx(i)=pffx_old(i)+w_fix*(pffx(i)-pffx_old(i))
+		end do
+	end if
+	i_ppx_pffx_first=1
 	do i=1,n
-		ppx(i)=ppx_old(i)+w_sw*(ppx(i)-ppx_old(i))
-		pffx(i)=pffx_old(i)+w_sw*(pffx(i)-pffx_old(i))
+	ppx_old(i)=ppx(i)
+	pffx_old(i)=pffx(i)
 	end do
 	end if
 	
-	print *, 'ntay int_2000 w_sw',ntay,int_2000,w_sw
-	print *, 'ppx_old(1:n)', (ppx_old(i),i=1,n)
-	print *, 'pffx_old(1:n)', (pffx_old(i),i=1,n)
-	print *, 'ppx(1:n)', (ppx(i),i=1,n)
-	print *, 'pffx(1:n)', (pffx(i),i=1,n)
-
+	
 	zvel_0=zvel
 
 	eps2=eps20
@@ -1914,9 +1927,10 @@ c!!! so transport does not know about time evolution of surfaces
         end if
 
 !      if(ntay.le.9.and.k_ener.eq.0)then
-	   if(ntay.le.9)then
+	   if(ntay.le.2)then
       pll0=pll
       fdd0=fdd
+	  tpl0=tpl
       
             if(kpr.eq.1)print *,' pll pll0=',pll,pll0
 
