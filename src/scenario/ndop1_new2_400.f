@@ -418,7 +418,13 @@ c	udd=udd-udd_tor
 	UDM=4.*PI/( 10.*PLL*f(n) )
 	ZDM=UDM*(-DMN(n)+pll0*tpl0+udd*tay*100. )
         if(kpr.eq.1)print *,'  udm zdm l3',udm,zdm,l3
+	i_bc_regime=1
+	else
+	i_bc_regime=0
 	end if
+
+	call dina_dump_bc(n,i_bc_regime,fdd,fdd0,udd,pll,pll0,tpl,
+     *    tpl0,dmn,dm0,psi,f,udm,zdm)
 
 !	CALL DIFMF_1(n)
 	CALL DIFMF_1()
@@ -524,6 +530,55 @@ c
 
 	return
 	end
+
+!> dina_dump_bc writes the Robin BC internals computed each call to
+!> tpl_cal_c -- the pll/pll0/tpl/tpl0/udd history terms and the
+!> resulting UDM/ZDM coefficients fed into PROGP -- to
+!> 'tpl_cal_bc.log', one row per call (i.e. per ntay). Written using
+!> the same first-call-replace / subsequent-call-append pattern as
+!> dina_dump_cde/dina_dump_cde_entry (ddunew0.f).
+!> Columns: ntay tt regime fdd fdd0 udd pll pll0 tpl tpl0 DMN_n DM0_n
+!>          PSI_n F_n UDM ZDM udd_drive pll0_tpl0 mismatch tpl_tor
+	subroutine dina_dump_bc(n,regime,fdd,fdd0,udd,pll,pll0,tpl,
+     *  tpl0,dmn,dm0,psi,f,udm,zdm)
+        include 'double.inc'
+	common
+     *  /ge2/NTAY,TAY,TT
+        integer n,regime
+        dimension dmn(*),dm0(*),psi(*),f(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        udd_drive=udd*tay*100.
+        pll0_tpl0=pll0*tpl0
+        mismatch=pll0_tpl0-dmn(n)
+        tpl_tor=tpl
+
+        if (first_call) then
+           open(unit=100,file='tpl_cal_bc.log',status='replace',
+     *     form='formatted')
+           write(100,'(A)')
+     *     '# ntay tt regime fdd fdd0 udd pll pll0 tpl tpl0 '//
+     *     'DMN_n DM0_n PSI_n F_n UDM ZDM udd_drive pll0_tpl0 '//
+     *     'mismatch tpl_tor'
+           first_call = .false.
+        else
+           open(unit=100,file='tpl_cal_bc.log',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        write(100,101) ntay,tt,regime,fdd,fdd0,udd,pll,pll0,tpl,
+     *  tpl0,dmn(n),dm0(n),psi(n),f(n),udm,zdm,udd_drive,
+     *  pll0_tpl0,mismatch,tpl_tor
+
+  101   format(1x,i6,1x,1pe15.7,1x,i3,17(1x,1pe15.7))
+
+        close(100)
+
+        return
+        end
 
 	subroutine hel()
       include 'double.inc'
