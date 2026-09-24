@@ -271,8 +271,8 @@ tt_dina_c = tt_dina_c*1.d3
         enddo
         
         do i=1,n_t_c1
-          print*, 'time =', t_t_c1(i)
-          print*, 'pfres+pfres_add ', pf_t_c1(:,i)
+!          print*, 'time =', t_t_c1(i)
+!          print*, 'pfres+pfres_add ', pf_t_c1(:,i)
         enddo
         
 !           do k=1,npf_c1

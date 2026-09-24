@@ -564,7 +564,7 @@ c	 print *,' tay1 tay2 ',tay_ee1,tay_ee2
       if(q_b.ge.q_10-d_q.and.q_b.le.q_10+d_q)then 
 !!!      fbq=5.5d0-0.5d0*q_b
 
-!!!    f2(q) = (q0 + dq – q)/2/dq ;
+!!!    f2(q) = (q0 + dq ï¿½ q)/2/dq ;
       fbq=(q_10+d_q-q_b)/2.d0/d_q
 
       tay_ee=(1.d0-fbq)/tay_ee1+fbq/tay_ee2
@@ -2930,7 +2930,7 @@ c-------
            read (41,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
-           
+           kpr=0
            do i=1,n_t 
               read (41,*)t_t(i),zeff_a_t(i),zeff_b_t(i)
               t_t(i)=t_t(i)*1000. 
@@ -2944,7 +2944,7 @@ c-------
 
            apr='-zeff_b_t-' 
            if(kpr.eq.1)print 71,apr,(zeff_b_t(i),i=1,n_t) 
-
+           kpr=1
            close (unit=41) 
         end if
 
@@ -3002,7 +3002,7 @@ c-------
            do i=1,n_t 
               read (49,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
-           if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
+!           if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
            
            apr='-t_t-' 
@@ -3092,14 +3092,14 @@ c-------
 !!!              t_t(i)=t_t(i)*1000. 
            if(kpr.eq.1)print *,' i t_t n_d_t==',i,t_t(i),pn_d_t(i)
            end do 
-           
+           kpr = 0 
            apr='-t_t-' 
            if(kpr.eq.1)print 71,apr,(t_t(i),i=1,n_t) 
 
            apr='-n_d_t-' 
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
-
+           kpr=1
 !           close (unit=41) 
         end if
 

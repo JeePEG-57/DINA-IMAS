@@ -1517,7 +1517,7 @@ c-------
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp1===',
      *  tay,tt,n_t,nz_imp1 
-           
+           kpr=0
            do i=1,n_t 
 !              read (49,*)t_t(i),pn_d_t(i)
               t_t(i)=t_t_c9(i)
@@ -1532,7 +1532,7 @@ c-------
            apr='-n_d_t-' 
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
-
+           kpr=1
 !           close (unit=41) 
         end if
 
@@ -1602,7 +1602,7 @@ c-------
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp2===',
      *  tay,tt,n_t,nz_imp2
-           
+           kpr=0
            do i=1,n_t 
 !              read (49,*)t_t(i),pn_d_t(i)
               t_t(i)=t_t_c5(i)
@@ -1617,7 +1617,7 @@ c-------
            apr='-n_d_t-' 
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
-
+           kpr=1
 !           close (unit=41) 
         end if
 
@@ -1676,7 +1676,7 @@ c-------
            
            if(kpr.eq.1)print *,' tay tt n_t nz_imp3===',
      *  tay,tt,n_t,nz_imp3
-           
+           kpr=0
            do i=1,n_t 
 !              read (49,*)t_t(i),pn_d_t(i)
               t_t(i)=t_t_c10(i)
@@ -1691,7 +1691,7 @@ c-------
            apr='-n_d_t-' 
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
-
+           kpr=1
 !           close (unit=41) 
         end if
 
@@ -1749,7 +1749,7 @@ c-------
            
            if(kpr.eq.1)print *,' tay tt n_t  nz_imp4===',
      *  tay,tt,n_t,nz_imp4
-           
+           kpr=0
            do i=1,n_t 
 !              read (49,*)t_t(i),pn_d_t(i)
               t_t(i)=t_t_c11(i)
@@ -1764,7 +1764,7 @@ c-------
            apr='-n_d_t-' 
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
-
+            kpr=1
 !           close (unit=41) 
         end if
 
@@ -1828,7 +1828,7 @@ c-------
            read (41,*) 
            
            if(kpr.eq.1)print *,' tay tt n_t===',tay,tt,n_t 
-           
+           kpr=0
            do i=1,n_t 
               read (41,*)t_t(i),pn_d_t(i)
 !!!              t_t(i)=t_t(i)*1000. 
@@ -1841,7 +1841,7 @@ c-------
            apr='-n_d_t-' 
            if(kpr.eq.1)print 71,apr,(pn_d_t(i),i=1,n_t) 
 
-
+             kpr=1
            close (unit=41) 
         end if
 
