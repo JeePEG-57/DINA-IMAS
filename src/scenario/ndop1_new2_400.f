@@ -545,6 +545,7 @@ c
 	common
      *  /ge2/NTAY,TAY,TT
         integer n,regime
+        real*8 mismatch
         dimension dmn(*),dm0(*),psi(*),f(*)
 
         logical first_call
@@ -576,6 +577,59 @@ c
   101   format(1x,i6,1x,1pe15.7,1x,i3,17(1x,1pe15.7))
 
         close(100)
+
+        return
+        end
+
+        subroutine dina_dump_dfmax(n,a,ai,pfi,ha,dfmaxc,dfmax_help,
+     *  psi,q,it_int,err,errp)
+c       Dumps the per-grid-index INGREDIENTS that go into building
+c       dfmax(i)=dfmaxc(i) (the converged/final value, NOT the smooth
+c       a(i)^2*fmax first-guess), one row per (ntay, i):
+c         pfi(i)    -- poloidal current function, integrand of dfmaxc
+c         ha(i)     -- grid spacing
+c         dfmaxc(i) -- cumulative integral sum_{k<=i} pfi(k)*ha(k)
+c         dfmax_help(i) -- previous-iteration dfmaxc snapshot (for
+c                          the it_int convergence loop, NOT the
+c                          time-previous dfmax0)
+c         psi(i),q(i) -- for cross-reference
+c         it_int,err,errp -- convergence diagnostics for this call
+c       This isolates whether jaggedness in dfmax/dfma comes from
+c       pfi(i) itself (already known to be rough) getting propagated/
+c       amplified through the cumulative sum, as opposed to any
+c       grid-regridding artifact.
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+        integer n
+        dimension a(*),ai(*),pfi(*),ha(*),dfmaxc(*),dfmax_help(*)
+        dimension psi(*),q(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=101,file='dfmax_profiles.dat',status='replace',
+     *     form='formatted')
+           write(101,'(A)')
+     *     '# tt ntay i a ai pfi ha dfmaxc dfmax_help psi q '//
+     *     'it_int err errp'
+           first_call = .false.
+        else
+           open(unit=101,file='dfmax_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+        write(101,102) tt,ntay,i,a(i),ai(i),pfi(i),ha(i),
+     *  dfmaxc(i),dfmax_help(i),psi(i),q(i),it_int,err,errp
+        end do
+
+  102   format(1x,1pe15.7,1x,i6,1x,i6,8(1x,1pe15.7),1x,i4,
+     *  2(1x,1pe15.7))
+
+        close(101)
 
         return
         end
@@ -4351,6 +4405,9 @@ c	print 71,apr,(dfmaxc(i),i=1,n)
 	dfmax(i)=dfmaxc(i)  
 	q(i)=-pfi(i)/psi(i)
 	end do
+
+	call dina_dump_dfmax(n,a,ai,pfi,ha,dfmaxc,dfmax_help,psi,q,
+     *  it_int,err,errp)
 
 
 	tok=0.                                                                 
