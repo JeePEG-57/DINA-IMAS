@@ -14,9 +14,10 @@ interface: dina
 	make -C imas/iwrap/tcv_controller
 	make -C imas/iwrap/wf_iter
 	make -C imas/iwrap/wf_tcv
+	make -C imas/iwrap/wf_vns
 
 clean:
-	make -C src/scenario clean
+	make -C src/scenario clean1
 	make -C src/green clean
 	make -C src/controllers/kmc clean
 	make -C src/controllers/kmc_contr_4 clean
@@ -35,3 +36,4 @@ clean:
 	make -C imas/iwrap/wf_vde clean
 	make -C imas/iwrap/tcv_controller clean
 	make -C imas/iwrap/wf_tcv clean
+	make -C imas/iwrap/wf_vns clean
