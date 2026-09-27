@@ -12,7 +12,6 @@ interface: dina
 	make -C imas/iwrap/dina_green
 	make -C imas/iwrap/dina_imas
 	make -C imas/iwrap/tcv_controller
-	make -C imas/iwrap/wf_iter
 	make -C imas/iwrap/wf_tcv
 	make -C imas/iwrap/wf_vns
 
