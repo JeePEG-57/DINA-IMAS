@@ -645,7 +645,7 @@ call write_cputime(0.d0, 0.d0, 1)
   
   tt = 0.d0
   call dina_input0(tt,pf,tcam,rs0,bt0)
-  call ONE2()
+  call ONE2d()
   
   
 if (associated(equilibrium0%time_slice)) then

@@ -314,7 +314,8 @@ c*** Input of PF turns - must be consistent with 'koor' file!
 	call eq_res_ps()
       
       do i=1,n
-      dm0(i)=dmn(i)
+!      dm0(i)=dmn(i) ! Before
+	   dmn(i)=dm0(i) ! After
       end do
       
       do i=2,n
