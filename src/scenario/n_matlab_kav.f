@@ -2613,8 +2613,9 @@ c	if(dabs(delzmag).ge.3.)then
 	eksk=1.d0
 	
 !	read (49,*)
-	e_sep=5.d-3
-	
+!	e_sep=5.d-3      ! original (LCFS at 0.5% inside separatrix)
+	e_sep=5.d-2      ! 10x further inside separatrix - test X-point sensitivity
+
 !	read (49,*)
 	i_beta=0
 	i_gap5=0

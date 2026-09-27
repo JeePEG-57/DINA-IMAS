@@ -61,10 +61,14 @@
      *  /ef_0/key_ef
      *  /cont4/ZPP,RPP,WVSPIP,ZXP,ELP,SHAPE,GAPINP,
      *  DFZP, DFZP0
+	common
+     *  /mid1/C1(npo),C2(npo),C3(npo)
+	common
+     *  /DFM2/PSI8(npo),PFI(npo),DM0(npo),DMN(npo)
 
 c----------
 	dimension f(nwnh)
-	dimension pspl_temp(nwnh)                                      
+	dimension pspl_temp(nwnh)
 
 	dimension pptab(*),fptab(*)
 
@@ -222,7 +226,7 @@ c     *  call bound_h2()
 
       	call psi_pl_test(f,pspl)
 
-	   do i=1,nwnh   
+	   do i=1,nwnh
 	      pspl(i)=0.5d0*(pspl_temp(i)+pspl(i))
          end do
 
@@ -235,7 +239,23 @@ c     *  call bound_h2()
 	end do
 	end do
 
-
+	! --- Diagnostic dump of per-Picard-iteration geometry state:
+	! ksepa, X-point / limiter-contact point, LCFS trace, boundary flux
+	! integral, self-inductance-like pll, edge metrics C2(n)/C3(n),
+	! magnetic axis (um,vm). One row per ptoke1_c call = one row per
+	! outer Picard iteration in equil2. Purpose: expose whether the
+	! X-point / traced LCFS is jittering iteration-to-iteration in
+	! the diverted VNS case, which would explain the fpl x3 growth
+	! seen in tpl_cal_bc.log at ntay=3.
+	bound_len_pol=0.d0
+	do j=2,jbound
+	bound_len_pol=bound_len_pol
+     *  +sqrt((xbound(j)-xbound(j-1))**2+(ybound(j)-ybound(j-1))**2)
+	end do
+	fpl_reconstructed=pll*tpl/(2.d0*pi)
+	call dina_dump_ptoke1_geom(i_bound,ksepa,psep,pmag,pbound,delaval,
+     *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl_reconstructed,
+     *  pll,tpl,fdd,fdd0,c2(n),c3(n),psval(n),dm0(n),e_sep)
 
 
 71	format(20x,a6/,(6(1pe10.3)))
@@ -7271,5 +7291,55 @@ c
 
 
 	  return
+        end
+
+
+!> dina_dump_ptoke1_geom writes per-Picard-iteration geometry state,
+!> one row per ptoke1_c call, to 'ptoke1_geom.log'.
+!> Purpose: expose whether the X-point / traced LCFS / boundary flux
+!> integral / edge metrics jitter iteration-to-iteration in the diverted
+!> case (VNS ntay=3 crash). If ksepa=1 and psep/rsep/zsep move noticeably
+!> between calls with the same ntay, the free-boundary X-point search
+!> is amplifying the ppx/pffx feedback. If jbound / bound_len_pol change
+!> significantly, the LCFS trace at pbound=psep+e_sep*(pmag-psep) is
+!> stretching near-separatrix in a way that grows fpl.
+!> Columns:
+!>   tt ntay i_bound ksepa psep pmag pbound delaval
+!>   rsep zsep um vm jbound bound_len_pol fpl
+!>   pll tpl fdd fdd0 c2_n c3_n psval_n dm0_n e_sep
+	subroutine dina_dump_ptoke1_geom(i_bound,ksepa,psep,pmag,pbound,
+     *  delaval,rsep,zsep,um,vm,jbound,bound_len_pol,fpl,
+     *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep)
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=88,file='ptoke1_geom.log',status='replace',
+     *     form='formatted')
+           write(88,'(A)')
+     *     '# tt ntay i_bound ksepa psep pmag pbound delaval '//
+     *     'rsep zsep um vm jbound bound_len_pol fpl '//
+     *     'pll tpl fdd fdd0 c2_n c3_n psval_n dm0_n e_sep'
+           first_call = .false.
+        else
+           open(unit=88,file='ptoke1_geom.log',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        write(88,101) tt,ntay,i_bound,ksepa,psep,pmag,pbound,delaval,
+     *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl,
+     *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep
+
+  101   format(1x,1pe15.7,1x,i6,1x,i6,1x,i4,
+     *  8(1x,1pe15.7),1x,i5,10(1x,1pe15.7))
+
+        close(88)
+
+        return
         end
 
