@@ -7331,7 +7331,7 @@ c
 
         if (first_call) then
            open(unit=88,file='ptoke1_geom.log',status='replace',
-     *     form='formatted')
+     *     form='formatted',recl=2048)
            write(88,'(A)')
      *     '# tt ntay i_bound ksepa psep pmag pbound delaval '//
      *     'rsep zsep um vm jbound bound_len_pol fpl '//
@@ -7340,16 +7340,16 @@ c
            first_call = .false.
         else
            open(unit=88,file='ptoke1_geom.log',status='old',
-     *     position='append',form='formatted')
+     *     position='append',form='formatted',recl=2048)
         endif
 
-        write(88,101) tt,ntay,i_bound,ksepa,psep,pmag,pbound,delaval,
+c   List-directed write: robust to any Fortran compiler's default
+c   record length and to width overflows.  Produces one space between
+c   every field, one logical record per call.
+        write(88,*) tt,ntay,i_bound,ksepa,psep,pmag,pbound,delaval,
      *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl,
      *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep,
      *  al1,errm,tok_plus_tokg,it1
-
-  101   format(1x,1pe15.7,1x,i6,1x,i6,1x,i4,
-     *  8(1x,1pe15.7),1x,i5,11(1x,1pe15.7),3(1x,1pe15.7),1x,i4)
 
         close(88)
 
