@@ -2195,11 +2195,14 @@ c	pause 'pp_calc'
 	common
      *	/ge1/pi
      *	/ge1e/rs0,tpl
+     *	/ge2/NTAY,TAY,TT
      *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)
      *  /ge5/kpr
 	common
      *  /pol2/Qx(npo),ANUx(npo),Px(npo),Fx(npo),
      *   PPxx(npo),PFFxx(npo)
+
+	dimension fhelp_dump(npo),fsqrt_dump(npo),f_before_avg(npo)
 
 	character *20 apr
 
@@ -2219,30 +2222,44 @@ c
 	
 	
 	f(n)=bt0
-                                                                        
-	fsqrt0=f(n)**2                                                         
-c                                                                       
 
-	do i0=2,n                                                              
-	i=n-i0+2                                                               
-	fprime=-pff(i)                                                         
-	fhelp=fprime*(psi(i)/(2.*pi*rs0))                                      
-	fsqrt=fsqrt0-fhelp*ha(i)                                               
-	fsqrt0=fsqrt                                                           
-	f(i-1)=sqrt(fsqrt)                                                     
-	end do                                                                 
-                                                                        
-	do i=2,n                                                               
-	fx(i)=0.5*(f(i)+f(i-1))                                                
-	end do                                                                 
-	fx(1)=fx(2)                                                            
-                                                                        
-	do i=1,n                                                               
-	f(i)=fx(i)                                                             
-	end do                                                                 
+	fsqrt0=f(n)**2
+	fsqrt_dump(n)=fsqrt0
+	fhelp_dump(n)=0.d0
+	f_before_avg(n)=f(n)
+c
+
+	do i0=2,n
+	i=n-i0+2
+	fprime=-pff(i)
+	fhelp=fprime*(psi(i)/(2.*pi*rs0))
+	fsqrt=fsqrt0-fhelp*ha(i)
+	fsqrt0=fsqrt
+	f(i-1)=sqrt(fsqrt)
+	fhelp_dump(i)=fhelp
+	fsqrt_dump(i-1)=fsqrt
+	f_before_avg(i-1)=f(i-1)
+	end do
+
+        ! --- Diagnostic dump of pff_calc backward F-integration:
+        ! captures pff (from TOKK), psi (dpsi/da from CDE), fhelp (integrand),
+        ! fsqrt (running F**2), and f BEFORE the face-averaging that
+        ! follows. Purpose: localize whether f(i) inherits knot-scale
+        ! noise from pff, or whether the backward sum smooths it.
+        call dina_dump_pff_f(n,ai,a,pff,psi,fhelp_dump,fsqrt_dump,
+     *  f_before_avg,ha)
+
+	do i=2,n
+	fx(i)=0.5*(f(i)+f(i-1))
+	end do
+	fx(1)=fx(2)
+
+	do i=1,n
+	f(i)=fx(i)
+	end do
 
 
-	
+
 71	FORMAT(20X,A8/,(6(1X,1PE10.3)))
 	return
 	end
@@ -4868,4 +4885,54 @@ c	 implicit real *8 (a-h,o-z)
 	return
 	end
 
+
+!> dina_dump_pff_f writes the ingredients and result of pff_calc's
+!> backward F(a) integration to 'pff_f_profiles.dat', one row per grid
+!> index per call.
+!> Loop (see ndop1_new2_400.f, pff_calc):
+!>   f(n) = bt0;  fsqrt = f(n)**2
+!>   for i = n..2:   fhelp = -pff(i)*psi(i)/(2*pi*rs0)
+!>                    fsqrt = fsqrt - fhelp*ha(i)
+!>                    f(i-1) = sqrt(fsqrt)
+!> We dump f BEFORE the face-averaging fx(i)=0.5*(f(i)+f(i-1)) that
+!> follows in pff_calc, so this is the raw backward-integration output.
+!> Purpose: if pff (from TOKK) is smooth but f_before_avg roughens,
+!> the cumulative sum is the source; if pff is already knot-jaggy, the
+!> problem is upstream (TOKK or the pffx interpolation feeding TOKK).
+!> Columns: tt ntay i ai a pff psi fhelp fsqrt f_before_avg ha
+	subroutine dina_dump_pff_f(n,ai,a,pff,psi,fhelp,fsqrt,
+     *  f_before_avg,ha)
+        include 'double.inc'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        dimension ai(*),a(*),pff(*),psi(*),fhelp(*),fsqrt(*)
+        dimension f_before_avg(*),ha(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=90,file='pff_f_profiles.dat',status='replace',
+     *     form='formatted')
+           write(90,'(A)')
+     *     '# tt ntay i ai a pff psi fhelp fsqrt f_before_avg ha'
+           first_call = .false.
+        else
+           open(unit=90,file='pff_f_profiles.dat',status='old',
+     *     position='append',form='formatted')
+        endif
+
+        do i=1,n
+           write(90,101) tt,ntay,i,ai(i),a(i),pff(i),psi(i),
+     *     fhelp(i),fsqrt(i),f_before_avg(i),ha(i)
+        end do
+
+  101   format(1x,1pe15.7,1x,i6,1x,i5,9(1x,1pe15.7))
+
+        close(90)
+
+        return
+        end
 
