@@ -536,9 +536,21 @@ c	if(kpr.eq.1)print*,'x y',x,y
 	end
 c
 	subroutine separatrix1 (i1,i2,i3,m,uk,vk,um,vm,pom,
-     *  sinus,cosin,pocoef,psep,rsep,zsep,isep,ksep,kc)
+     *  sinus,cosin,pocoef,psep,rsep,zsep,isep,ksep,kc,
+     *  rsep_hint,zsep_hint,use_hint,i_bias_result)
 c---------------------------------------------------------
 c  calculate separatrix or limiter fluxes and  their coordinates
+c
+c  Option B (2026-09-28): hint-based biasing.
+c  If use_hint /= 0 and (rsep_hint,zsep_hint) is a valid previous
+c  X-point location, the ray sweep is restricted to a window around
+c  the angular direction of the hint from the magnetic axis. If no
+c  interior extremum (ksep=1) is found in the window, the search
+c  falls back to the full-ray scan so legitimate topology changes
+c  are still detected. i_bias_result on return:
+c    0 = no hint used (use_hint==0, or hint norm too small)
+c    1 = biased search succeeded (interior extremum found in window)
+c    2 = biased search failed, fell back to full scan
 c-------------------------------------------------------------------
 c
 	include 'double.inc'
@@ -547,11 +559,56 @@ c
 	dimension uk(m),vk(m),pom(m),sinus(m),cosin(m)
 	dimension pdd(6)
 c
+c   Option-B init.  We keep p_min running across both passes so the
+c   fallback can only replace the biased result if it finds something
+c   with strictly higher psi outside the window (which is the
+c   "topology change" case that must not be masked).
+	i_bias_result=0
+	i_use_hint_local=0
+	i_hint=i1
+	n_bias=0
 	p_min=psep
+c
+c   Compute i_hint (angular ray closest to the hint direction) and the
+c   half-window n_bias.  We keep the hint dormant when the hint norm is
+c   below 1 cm (uninitialised or reset state).
+	if(use_hint.ne.0) then
+	   dr_h=rsep_hint-um
+	   dz_h=zsep_hint-vm
+	   hint_norm=sqrt(dr_h**2+dz_h**2)
+	   if(hint_norm.gt.1.d0) then
+	      dr_h=dr_h/hint_norm
+	      dz_h=dz_h/hint_norm
+	      dot_max=-2.d0
+	      do i=i1,i2
+	         dot_val=cosin(i)*dr_h+sinus(i)*dz_h
+	         if(dot_val.gt.dot_max) then
+	            dot_max=dot_val
+	            i_hint=i
+	         end if
+	      end do
+c   ~20% of the angular range on each side of i_hint (min 2 rays).
+	      n_bias=(i2-i1+1)/5
+	      if(n_bias.lt.2) n_bias=2
+	      i_use_hint_local=1
+	   end if
+	end if
+c
+2000	continue
 c
 	do  900 i0=i1,i2
 	i=i0+i3-i1
 	if(i.gt.i2)i=i-i2+1
+c
+c   Bias filter: skip rays whose angular index is outside the window
+c   around i_hint.  Wrap around handled through n_span.
+	if(i_use_hint_local.eq.1) then
+	   n_span=i2-i1+1
+	   id_ang=i-i_hint
+	   if(id_ang.gt.n_span/2) id_ang=id_ang-n_span
+	   if(id_ang.lt.-n_span/2) id_ang=id_ang+n_span
+	   if(iabs(id_ang).gt.n_bias) go to 900
+	end if
 c
 	ps=1.e19
 c
@@ -609,6 +666,17 @@ c
 	psep=p_min
 	end if
 900	continue
+c
+c   Fallback: biased pass finished without an interior extremum -->
+c   redo with a full-ray scan so a legitimate topology change is not
+c   masked.
+	if(i_use_hint_local.eq.1.and.ksep.lt.1) then
+	   i_bias_result=2
+	   i_use_hint_local=0
+	   go to 2000
+	end if
+	if(i_use_hint_local.eq.1) i_bias_result=1
+c
 	return
 	end
 

@@ -65,6 +65,8 @@
      *  /mid1/C1(npo),C2(npo),C3(npo)
 	common
      *  /DFM2/PSI8(npo),PFI(npo),DM0(npo),DMN(npo)
+	common
+     *  /c_xhint/rsep_prev,zsep_prev,ntay_last,i_bias_last
 
 c----------
 	dimension f(nwnh)
@@ -259,7 +261,7 @@ c	tok_plus_tokg = tpl/al1  (from cur_dens: al1=tpl/(tok+tok_g))
 	call dina_dump_ptoke1_geom(i_bound,ksepa,psep,pmag,pbound,delaval,
      *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl_reconstructed,
      *  pll,tpl,fdd,fdd0,c2(n),c3(n),psval(n),dm0(n),e_sep,
-     *  al1,errm,tok_plus_tokg,it1)
+     *  al1,errm,tok_plus_tokg,it1,i_bias_last)
 
 
 71	format(20x,a6/,(6(1pe10.3)))
@@ -3107,11 +3109,23 @@ c	pspl0(kk)=pspl(kk)+psext(kk)
 	common
      *  /pol4/ UM,VM,UK(ntet),VK(ntet)
 	common
+     *  /ge2/NTAY,TAY,TT
      *  /ge5/kpr
      *  /ge7/eu,rout,zout,elong
 
 	common
      *	/fluxc2/delta0,pom(ntet)
+
+c   Shared X-point-hint state (Option B).
+c     rsep_prev, zsep_prev : X-point / limiter contact of the previous
+c                            ptoke1 call (used to bias separatrix1).
+c     ntay_last            : last ntay we ran; when ntay changes to 0
+c                            or we haven't run yet, hint is disabled.
+c     i_bias_last          : outcome of the last biased search
+c                            (0=no hint, 1=success, 2=fallback).
+c   Written here, read by ptoke1_c for the geometry-dump.
+	common
+     *  /c_xhint/rsep_prev,zsep_prev,ntay_last,i_bias_last
 
 	dimension pdd(6)
 	dimension  vkref(ntet),ukref(ntet)
@@ -3146,9 +3160,27 @@ c	i3=2
 c-----------------------------------------------
 c PSEPA(from separatrix1) - max psi in limiter
 c RSEPA,ZSEPA - coordinates of this point
-
+c
+c   Decide whether to use the hint. Disable it whenever ntay changes
+c   (each timestep gets a fresh search on the first ptoke1 call).
+c   /c_xhint/ is initialised to zero by the -init=zero / -fno-automatic
+c   compile flags, which is what we want (hint dormant on first run).
+	if(ntay.ne.ntay_last) then
+	   i_use_hint=0
+	else
+	   i_use_hint=1
+	end if
 	call separatrix1 (i1,i2,i3,m,ukref,vkref,um,vm,pom,
-     *  sinus,cosin,pocoef,psepa,rsepa,zsepa,isep,ksepa,kc)
+     *  sinus,cosin,pocoef,psepa,rsepa,zsepa,isep,ksepa,kc,
+     *  rsep_prev,zsep_prev,i_use_hint,i_bias_result)
+c   Publish bias result for the dump.
+	i_bias_last=i_bias_result
+c   Save the found X-point / contact as the hint for the next call.
+c   ntay_last is updated at the end of psi_b so the very next call
+c   within the same ntay picks up this hint.
+	rsep_prev=rsepa
+	zsep_prev=zsepa
+	ntay_last=ntay
 	if(kpr.eq.1)print *,'psepa***=',psepa
 	if(kpr.eq.1)print *,'zsepa rsepa',zsepa,rsepa
 	posepa=sqrt( (rsepa-um)**2+(zsepa-vm)**2 )
@@ -7312,15 +7344,19 @@ c
 !>   errm = max plasma-flux residual from psi_pl (equilibrium convergence)
 !>   tok_plus_tokg = plasma+halo current before al1 rescale (= tpl/al1)
 !>   it1  = 0 if psi_pl already converged (errm <= eps2), 1 otherwise
+!>   i_bias_result = X-point hint outcome (Option B):
+!>                    0 = no hint used (first call after ntay change)
+!>                    1 = biased search succeeded (interior extremum found)
+!>                    2 = biased search failed, fell back to full scan
 !> Columns:
 !>   tt ntay i_bound ksepa psep pmag pbound delaval
 !>   rsep zsep um vm jbound bound_len_pol fpl
 !>   pll tpl fdd fdd0 c2_n c3_n psval_n dm0_n e_sep
-!>   al1 errm tok_plus_tokg it1
+!>   al1 errm tok_plus_tokg it1 i_bias_result
 	subroutine dina_dump_ptoke1_geom(i_bound,ksepa,psep,pmag,pbound,
      *  delaval,rsep,zsep,um,vm,jbound,bound_len_pol,fpl,
      *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep,
-     *  al1,errm,tok_plus_tokg,it1)
+     *  al1,errm,tok_plus_tokg,it1,i_bias_result)
         include 'double.inc'
         common
      *  /ge2/NTAY,TAY,TT
@@ -7336,7 +7372,7 @@ c
      *     '# tt ntay i_bound ksepa psep pmag pbound delaval '//
      *     'rsep zsep um vm jbound bound_len_pol fpl '//
      *     'pll tpl fdd fdd0 c2_n c3_n psval_n dm0_n e_sep '//
-     *     'al1 errm tok_plus_tokg it1'
+     *     'al1 errm tok_plus_tokg it1 i_bias_result'
            first_call = .false.
         else
            open(unit=88,file='ptoke1_geom.log',status='old',
@@ -7349,7 +7385,7 @@ c   every field, one logical record per call.
         write(88,*) tt,ntay,i_bound,ksepa,psep,pmag,pbound,delaval,
      *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl,
      *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep,
-     *  al1,errm,tok_plus_tokg,it1
+     *  al1,errm,tok_plus_tokg,it1,i_bias_result
 
         close(88)
 
