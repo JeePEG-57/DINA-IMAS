@@ -17,7 +17,7 @@ interface: dina
 	make -C imas/iwrap/wf_vns
 
 clean:
-	make -C src/scenario clean1
+	make -C src/scenario clean
 	make -C src/green clean
 	make -C src/controllers/kmc clean
 	make -C src/controllers/kmc_contr_4 clean
