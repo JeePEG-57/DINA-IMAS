@@ -2117,7 +2117,7 @@ c----------------------------
  	apr='dmn'
 	if(kpr.eq.1)print 71,apr,(dmn(j),j=1,nutab)
      
- 
+       print *, '** psi_tr_xx(1), psi_tr_xx(n_tr_xx), psi_xx(1), psi_xx(n_eq_xx), tpl_dir', psi_tr_xx(1), psi_tr_xx(n_tr_xx), psi_xx(1), psi_xx(n_eq_xx), tpl_dir
       do i=1,nutab
         
 !        pptab(i) = pptab_xx(i)*tpl_dir 
