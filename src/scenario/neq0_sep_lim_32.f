@@ -253,9 +253,13 @@ c     *  call bound_h2()
      *  +sqrt((xbound(j)-xbound(j-1))**2+(ybound(j)-ybound(j-1))**2)
 	end do
 	fpl_reconstructed=pll*tpl/(2.d0*pi)
+c	tok_plus_tokg = tpl/al1  (from cur_dens: al1=tpl/(tok+tok_g))
+	tok_plus_tokg=0.d0
+	if(abs(al1).gt.1.d-30)tok_plus_tokg=tpl/al1
 	call dina_dump_ptoke1_geom(i_bound,ksepa,psep,pmag,pbound,delaval,
      *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl_reconstructed,
-     *  pll,tpl,fdd,fdd0,c2(n),c3(n),psval(n),dm0(n),e_sep)
+     *  pll,tpl,fdd,fdd0,c2(n),c3(n),psval(n),dm0(n),e_sep,
+     *  al1,errm,tok_plus_tokg,it1)
 
 
 71	format(20x,a6/,(6(1pe10.3)))
@@ -7303,13 +7307,20 @@ c
 !> is amplifying the ppx/pffx feedback. If jbound / bound_len_pol change
 !> significantly, the LCFS trace at pbound=psep+e_sep*(pmag-psep) is
 !> stretching near-separatrix in a way that grows fpl.
+!> Extra columns:
+!>   al1  = tpl/(tok+tok_g) from cur_dens (staircase-mask current rescale)
+!>   errm = max plasma-flux residual from psi_pl (equilibrium convergence)
+!>   tok_plus_tokg = plasma+halo current before al1 rescale (= tpl/al1)
+!>   it1  = 0 if psi_pl already converged (errm <= eps2), 1 otherwise
 !> Columns:
 !>   tt ntay i_bound ksepa psep pmag pbound delaval
 !>   rsep zsep um vm jbound bound_len_pol fpl
 !>   pll tpl fdd fdd0 c2_n c3_n psval_n dm0_n e_sep
+!>   al1 errm tok_plus_tokg it1
 	subroutine dina_dump_ptoke1_geom(i_bound,ksepa,psep,pmag,pbound,
      *  delaval,rsep,zsep,um,vm,jbound,bound_len_pol,fpl,
-     *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep)
+     *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep,
+     *  al1,errm,tok_plus_tokg,it1)
         include 'double.inc'
         common
      *  /ge2/NTAY,TAY,TT
@@ -7324,7 +7335,8 @@ c
            write(88,'(A)')
      *     '# tt ntay i_bound ksepa psep pmag pbound delaval '//
      *     'rsep zsep um vm jbound bound_len_pol fpl '//
-     *     'pll tpl fdd fdd0 c2_n c3_n psval_n dm0_n e_sep'
+     *     'pll tpl fdd fdd0 c2_n c3_n psval_n dm0_n e_sep '//
+     *     'al1 errm tok_plus_tokg it1'
            first_call = .false.
         else
            open(unit=88,file='ptoke1_geom.log',status='old',
@@ -7333,10 +7345,11 @@ c
 
         write(88,101) tt,ntay,i_bound,ksepa,psep,pmag,pbound,delaval,
      *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl,
-     *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep
+     *  pll,tpl,fdd,fdd0,c2_n,c3_n,psval_n,dm0_n,e_sep,
+     *  al1,errm,tok_plus_tokg,it1
 
   101   format(1x,1pe15.7,1x,i6,1x,i6,1x,i4,
-     *  8(1x,1pe15.7),1x,i5,10(1x,1pe15.7))
+     *  8(1x,1pe15.7),1x,i5,11(1x,1pe15.7),3(1x,1pe15.7),1x,i4)
 
         close(88)
 
