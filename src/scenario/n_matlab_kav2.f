@@ -1586,6 +1586,7 @@ c
       ! pprime and ffprime
       call ppx_pffx()
       call ppx_pffx_corr2()
+	  call ppx_pffx_corr()
 	   	      
 	end if
 
