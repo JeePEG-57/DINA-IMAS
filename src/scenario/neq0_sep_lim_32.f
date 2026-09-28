@@ -66,6 +66,8 @@
 	common
      *  /DFM2/PSI8(npo),PFI(npo),DM0(npo),DMN(npo)
 	common
+     *  /eq4/xpl(npo,ntet),ypl(npo,ntet)
+	common
      *  /c_xhint/rsep_prev,zsep_prev,ntay_last,i_bias_last
 
 c----------
@@ -262,6 +264,13 @@ c	tok_plus_tokg = tpl/al1  (from cur_dens: al1=tpl/(tok+tok_g))
      *  rsep,zsep,um,vm,jbound,bound_len_pol,fpl_reconstructed,
      *  pll,tpl,fdd,fdd0,c2(n),c3(n),psval(n),dm0(n),e_sep,
      *  al1,errm,tok_plus_tokg,it1,i_bias_last)
+
+	! --- Grid-aliasing diagnostic: for i = n-4..n, measure the physical
+	! (R,Z) distance between adjacent flux surfaces at every theta ray
+	! and compare against the 2-D grid cell size dx.  If min(delta_s) <
+	! dx, the transport grid out-resolves the equilibrium grid at that
+	! radius and the CDE's psi=(dm0-dm0)/ha will be numerically noisy.
+	call dina_dump_grid_alias(n,mp,xpl,ypl,psval,ha,dx,dy,i_bound)
 
 
 71	format(20x,a6/,(6(1pe10.3)))
@@ -7388,6 +7397,85 @@ c   every field, one logical record per call.
      *  al1,errm,tok_plus_tokg,it1,i_bias_result
 
         close(88)
+
+        return
+        end
+
+
+!> dina_dump_grid_alias -- diagnostic for the 2-D/1-D grid mismatch.
+!> For each Picard iteration (one row per (i_bound, i)), measure the
+!> physical (R,Z) distance ds between two adjacent flux surfaces at
+!> every theta ray, and report:
+!>   ds_min, ds_max, ds_avg  -- distribution across the mp rays
+!>   n_alias   -- number of rays where ds < dx (2-D grid cell)
+!>   ha_i      -- the transport-grid spacing at that i
+!>   dpsi_ds   -- local grad(psi) computed as (psval(i)-psval(i-1))/ds_min
+!>   dx, dy    -- 2-D grid cell sizes (in R and Z)
+!> Written for i = n-4 .. n (edge nodes) to 'grid_alias.log'.
+!> Purpose: if ds_min < dx at any edge node, the transport grid is
+!> out-resolving the equilibrium grid and psi = (dm0(i)-dm0(i-1))/ha
+!> will pick up sub-cell aliasing noise from the bilinear boxd sampler.
+	subroutine dina_dump_grid_alias(n,mp,xpl,ypl,psval,ha,
+     *  dx,dy,i_bound)
+        include 'double.inc'
+        include 'parf0'
+        common
+     *  /ge2/NTAY,TAY,TT
+
+        dimension xpl(npo,ntet),ypl(npo,ntet),psval(*),ha(*)
+
+        logical first_call
+        save first_call
+        data first_call /.true./
+
+        if (first_call) then
+           open(unit=89,file='grid_alias.log',status='replace',
+     *     form='formatted',recl=2048)
+           write(89,'(A)')
+     *     '# tt ntay i_bound i ha_i dx dy ds_min ds_max '//
+     *     'ds_avg n_alias psval_i psval_im1 dpsi_ds'
+           first_call = .false.
+        else
+           open(unit=89,file='grid_alias.log',status='old',
+     *     position='append',form='formatted',recl=2048)
+        endif
+
+c   Loop over the last 5 edge nodes: i = n-4, n-3, n-2, n-1, n
+        do i_edge=0,4
+           i=n-i_edge
+           if (i.ge.2) then
+              ds_min=1.d30
+              ds_max=0.d0
+              ds_sum=0.d0
+              n_alias=0
+              n_theta=0
+              do j=2,mp-1
+                 dr_ds=xpl(i,j)-xpl(i-1,j)
+                 dz_ds=ypl(i,j)-ypl(i-1,j)
+                 ds=sqrt(dr_ds*dr_ds+dz_ds*dz_ds)
+                 if (ds.lt.ds_min) ds_min=ds
+                 if (ds.gt.ds_max) ds_max=ds
+                 ds_sum=ds_sum+ds
+                 n_theta=n_theta+1
+                 if (ds.lt.dx) n_alias=n_alias+1
+              end do
+              if (n_theta.gt.0) then
+                 ds_avg=ds_sum/n_theta
+              else
+                 ds_avg=0.d0
+              end if
+              if (ds_min.gt.1.d-12) then
+                 dpsi_ds=(psval(i)-psval(i-1))/ds_min
+              else
+                 dpsi_ds=0.d0
+              end if
+              write(89,*) tt,ntay,i_bound,i,ha(i),dx,dy,
+     *        ds_min,ds_max,ds_avg,n_alias,psval(i),psval(i-1),
+     *        dpsi_ds
+           end if
+        end do
+
+        close(89)
 
         return
         end
