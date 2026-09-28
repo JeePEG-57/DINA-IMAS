@@ -1511,11 +1511,8 @@ write(*,*) 'Allocate core_profiles... '
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%zeff, zeff, n)
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%pressure_thermal, press, n)
 
-    ! Parallel E-field from the CDE loop-voltage profile.
-    ! <E.B>/B0 [V/m], on rho_tor_norm.  Computed in dina_outp_eq from
-    ! /en9e/volt (see ddunew0.f).
-    AllocArr(core_profiles%profiles_1d(CurTimeStep)%e_field%parallel, &
-             e_field_par_1d, n)
+
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%e_field%parallel, e_field_par_1d, n)
 
 
 
