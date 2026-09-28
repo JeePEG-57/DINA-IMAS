@@ -819,7 +819,7 @@ c	if(kpr.eq.1)PRINT 71,apr,(pffx(i),i=1,n)
 	pffx(i)=pffx_w(i)
 	end do
 
-		print *, '** 2*pi*psval(1), 2*pi*psval(n)', 2*pi*psval(1), 2*pi*psval(n)
+
 
 71 	FORMAT(20X,A6/,(12E10.3))
 

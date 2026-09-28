@@ -2613,9 +2613,8 @@ c	if(dabs(delzmag).ge.3.)then
 	eksk=1.d0
 	
 !	read (49,*)
-!	e_sep=5.d-3      ! original (LCFS at 0.5% inside separatrix)
-	e_sep=5.d-2      ! 10x further inside separatrix - test X-point sensitivity
-
+	e_sep=5.d-3
+	
 !	read (49,*)
 	i_beta=0
 	i_gap5=0
@@ -2932,11 +2931,8 @@ c-----------------------------------------------
 c PSEPA(from separatrix1) - max psi in limiter
 c RSEPA,ZSEPA - coordinates of this point
 
-c   psi_b_fil is not on the IMAS-restart path; pass use_hint=0 to keep
-c   the historical behavior (no bias). i_bias_dummy is unused here.
 	call separatrix1 (i1,i2,i3,m,ukref,vkref,um,vm,pom,
-     *  sinus,cosin,pocoef,psepa,rsepa,zsepa,isep,ksepa,kc,
-     *  0.d0,0.d0,0,i_bias_dummy)
+     *  sinus,cosin,pocoef,psepa,rsepa,zsepa,isep,ksepa,kc)
 	if(kpr.eq.1)print *,'psepa***=',psepa
 	if(kpr.eq.1)print *,'zsepa rsepa',zsepa,rsepa
 	posepa=sqrt( (rsepa-um)**2+(zsepa-vm)**2 )
