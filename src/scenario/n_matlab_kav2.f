@@ -87,6 +87,8 @@
 	common
      *  /DFM2/PSI(npo),PFI(npo),DM0(npo),DMN(npo)
 	common
+     *  /ge3/AI(npo),A0(npo),HA2(npo),a1(npo),ha(npo)
+	common
      *  /mid2/vi(npo),spo(npo)
      *  /mid3/GRA1(npo),GRA2(npo)
 	common
