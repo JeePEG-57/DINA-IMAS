@@ -451,6 +451,7 @@ c
  	ateta=1.
         call inter_h0(volt,a1,n-1,ateta,val)
 	volt(n)=val
+	volt(1)=volt(2)
 c	pause
 	tokel=0.
 	tokfi=0.

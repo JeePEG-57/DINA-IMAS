@@ -167,6 +167,7 @@ real(ids_real) :: wr_imas(150)
 real(ids_real) :: bprobe(nprobe), psloop(nloop)
 
 real(ids_real) :: surface_1d(npo),volume_1d(npo),area_1d(npo)
+real(ids_real) :: e_field_par_1d(npo)
 
 
 integer :: TimeSteps = 1, CurTimeStep = 1
@@ -877,7 +878,8 @@ write(*,*) '!!!dina_outp enter'
      & n_sep,x_sep,y_sep,&
      & n_sep2,x_sep2,y_sep2,&
      & n_gaps,gaps,&
-     & betap,betat)
+     & betap,betat,&
+     & e_field_par_1d)
      
 
   call dina_wr_output(wr_imas)
@@ -1505,9 +1507,15 @@ write(*,*) 'Allocate core_profiles... '
 
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%j_tor, tok1, n) ![A/m2]
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%q, q, n)
-    
+
     AllocArr(core_profiles%profiles_1d(CurTimeStep)%zeff, zeff, n)
-    AllocArr(core_profiles%profiles_1d(CurTimeStep)%pressure_thermal, press, n) 
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%pressure_thermal, press, n)
+
+    ! Parallel E-field from the CDE loop-voltage profile.
+    ! <E.B>/B0 [V/m], on rho_tor_norm.  Computed in dina_outp_eq from
+    ! /en9e/volt (see ddunew0.f).
+    AllocArr(core_profiles%profiles_1d(CurTimeStep)%e_field%parallel, &
+             e_field_par_1d, n)
 
 
 

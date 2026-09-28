@@ -317,7 +317,8 @@
      * n_sep_xx,x_sep_xx,y_sep_xx,
      * n_sep2_xx,x_sep2_xx,y_sep2_xx,
      * n_ga_xx,gaps_xx,
-     * betap_xx,betat_xx)
+     * betap_xx,betat_xx,
+     * e_field_par_xx)
 
 
 	include 'double.inc'
@@ -342,6 +343,7 @@
         dimension xbound_xx(*),ybound_xx(*)
         dimension x_sep_xx(*),y_sep_xx(*),x_sep2_xx(*),y_sep2_xx(*)
         dimension gaps_xx(*)
+        dimension e_field_par_xx(*)
         
         
         dimension sigk_xx(npo), te0_xx(npo)
@@ -503,7 +505,18 @@
            surface_1d_xx(i) = surface_1d_xx(i)*1.d-4
 	   volume_1d_xx(i) = 2.d0*pi*volume_1d_xx(i)*1.d-6
            area_1d_xx(i) = area_1d_xx(i)*1.d-4
-        
+
+c   Parallel E-field for IMAS: <E.B>/B0 in [V/m].
+c   DINA's volt(i) is the local loop voltage per turn [V], = -dPsi/dt
+c   at flux surface i.  For a tokamak dominated by B_tor:
+c     E_par = V_loop / (2*pi*R0)
+c   rs0 is in cm (rs0/100 = R0 in m).  tpl_dir handles COCOS-11 sign.
+c   NOTE: this is on DINA's own transport grid (rho_tor_norm = a), so
+c   no interpolation is needed.  volt(1) is patched to volt(2) in
+c   DIFMF_1_c so the axis point is not stale.
+           e_field_par_xx(i) = tpl_dir*volt(i)
+     *                       / (2.d0*pi*rs0*1.d-2)
+
 	enddo
 	
 
