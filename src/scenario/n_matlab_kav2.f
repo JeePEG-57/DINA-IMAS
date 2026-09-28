@@ -1899,16 +1899,43 @@ c!!! so transport does not know about time evolution of surfaces
         fdd0=fdd
         end if
 
-      if(ntay.le.9)then
+c  Warm-up damper: on the FIRST outer Picard iteration of each ntay
+c  (int_2000==1), snap the Robin-BC history terms (pll0, tpl0, fdd0)
+c  to the current ptoke1 values.  On subsequent outer iterations at
+c  the same ntay, LEAVE them alone -- this is fix (C) 2026-09-28.
+c  Otherwise the Robin BC forcing pll0*tpl0 - DMN(n) tracks whatever
+c  pll wanders to inside the outer loop, and DM0(n) runs away.
+      if(ntay.le.9 .and. int_2000.eq.1)then
       pll0=pll
       fdd0=fdd
-	  tpl0=tpl 
-      
-            if(kpr.eq.1)print *,' pll pll0=',pll,pll0
+	  tpl0=tpl
+
+            if(kpr.eq.1)print *,
+     *      ' warmup damper (int_2000=1): pll0=',pll0,' tpl0=',tpl0
 
       end if
-      
+
 	call tpl_cal()
+
+c  Fix (A) 2026-09-28: rate-limit dm0(n) between outer Picard iterations
+c  at the same ntay.  In VNS the Robin BC drives dm0(n) toward pll0*tpl0
+c  - DMN(n), and when ppx_pffx feeds a slightly different source at each
+c  outer iteration, pll bounces and dm0(n) runs away (365k -> 739k in 5
+c  outer iterations, breaking dm0 monotonicity and everything downstream).
+c  Blend current dm0(n) with previous outer iteration's value.  First
+c  outer iteration of each ntay: no limit (dm0(n) is the free response to
+c  the BC).  Subsequent iterations: 30% new, 70% previous.
+	if(int_2000.gt.1)then
+	   dm0(n)=0.3d0*dm0(n)+0.7d0*dm0_n_prev_outer
+c        Recompute psi(n) so the boundary gradient is consistent with the
+c        rate-limited dm0(n).  Everything else downstream (pp_calc, TOKK,
+c        ppx_pffx) uses psi via /DFM2/.
+	   psi(n)=(dm0(n)-dm0(n-1))/ha(n)
+	   if(kpr.eq.1)print *,' rate-limit dm0(n) int_2000=',int_2000,
+     *     ' new dm0(n)=',dm0(n)
+	end if
+	dm0_n_prev_outer=dm0(n)
+
       tpl_o=tpl
 
       i_filter=0
