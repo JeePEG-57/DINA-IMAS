@@ -457,6 +457,9 @@ c	if(kpr.eq.1)print *,' before -- n pi',n,pi
      *  (TOK1(I)/dkof+PP(I)*VI(I)/(RS0*S(I)))
 c        TOK2(I)=-dkof*( PP(I)*VI(I)/(RS0*S(I)) +
 c     *  0.5*PFF(I)*RS0*2.*PI*c3(i)/S(I))
+      if (i.ge.n-5) print *, 'edge pff:', i, s(i), c3(i), tok1(i), 
+     *    pp(i), vi(i), PFF(I)
+
    33   CONTINUE
 c	if(kpr.eq.1)print *,' after  -- n pi',n,pi
 c

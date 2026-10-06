@@ -564,7 +564,7 @@ c	 print *,' tay1 tay2 ',tay_ee1,tay_ee2
       if(q_b.ge.q_10-d_q.and.q_b.le.q_10+d_q)then 
 !!!      fbq=5.5d0-0.5d0*q_b
 
-!!!    f2(q) = (q0 + dq – q)/2/dq ;
+!!!    f2(q) = (q0 + dq q)/2/dq ;
       fbq=(q_10+d_q-q_b)/2.d0/d_q
 
       tay_ee=(1.d0-fbq)/tay_ee1+fbq/tay_ee2

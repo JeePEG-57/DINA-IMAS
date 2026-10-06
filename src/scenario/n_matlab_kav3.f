@@ -136,6 +136,10 @@
 
       common /c_tt_kavin2_c1/tt_rampup_c1,dt_end_sim_c1,
      * dtpl_term_l_c1,cIp_end_c1,CS1_eob_c1,rms_noise_c1
+	 
+	 common /mid1/c1(npo),c2(npo),c3(npo)
+	
+	 real*8 coef_ip, Ip_A, Ip_B
 
 	dimension tcam(*),tcam0(*),ind(kf),pfhelp(kf)
 
@@ -312,10 +316,33 @@ c*** Input of PF turns - must be consistent with 'koor' file!
 
 	call map_tor()
 	call eq_res_ps()
-      
+c --- Ip mismatch check (physics: Ampere's law at the edge) --------
+c   A = Ip implied by DINA's own equilibrium (dm0 from map_tor)
+c   B = Ip implied by the IDS-loaded flux profile (dmn)
+c   C = target Ip (tpl from IDS)
+c   If A/B differ, the CDE initial state (dmn) is not on the same
+c   equilibrium as DINA's flux-surface metrics, and a huge boundary
+c   current transient forms in the first CDE step.
+      coef_ip = 10.d0/(4.d0*pi)
+      Ip_A = -coef_ip*c2(n)*(dm0(n)-dm0(n-1))/ha(n)
+      Ip_B = -coef_ip*c2(n)*(dmn(n)-dmn(n-1))/ha(n)
+      print *,' ** Ip mismatch check **'
+      print *,' Ip = (-10.d0/(4.d0*pi) ) * c2(n)*(dm0(n)-dm0(n-1))/ha(n)'
+      print *,'   target tpl              =', tpl
+      print *,'   A: Ip from DINA dm0     =', Ip_A
+      print *,'   B: Ip from IDS   dmn    =', Ip_B
+      print *,'   ratio B/A               =', Ip_B/Ip_A
+      print *, '  relative error, (B-A)/A =', (Ip_B-Ip_A)/Ip_A
+      print *,'   dm0 range               =', dm0(1), dm0(n)
+      print *,'   dm0(n-1)-dm0(n)         =', dm0(n-1)-dm0(n)
+      print *,'   dmn range               =', dmn(1), dmn(n)
+      print *,'   dmn(n-1)-dmn(n)         =', dmn(n-1)-dmn(n)
+      print *,'   c2(n)                   =', c2(n)
+      print *,'   ha(n)                   =', ha(n)
+
       do i=1,n
-!      dm0(i)=dmn(i) ! Before
-	   dmn(i)=dm0(i) ! After
+      dm0(i)=dmn(i) ! Before
+!	   dmn(i)=dm0(i) ! After
       end do
       
       do i=2,n
