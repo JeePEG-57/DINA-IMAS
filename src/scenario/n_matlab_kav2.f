@@ -87,6 +87,16 @@
 	common
      *  /DFM2/PSI(npo),PFI(npo),DM0(npo),DMN(npo)
 	common
+     *  /ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)
+	common
+     *  /mid1/C1(npo),C2(npo),C3(npo)
+	common
+     *  /dfm4/q_dfm(npo),ANU(npo),P(npo),F(npo),PP(npo),PFF(npo)
+	common
+     *  /dfm11/c20(npo),tok1(npo),tok2(npo)
+	common
+     *  /pol6/ppx(npo),pffx(npo)
+	common
      *  /mid2/vi(npo),spo(npo)
      *  /mid3/GRA1(npo),GRA2(npo)
 	common
@@ -1583,8 +1593,14 @@ c
       if(omg_ppx.le.0.5d0)omg_ppx=0.5d0
      
       ! pprime and ffprime
+	call dina_dump_edge_update(n,0,int_2000,a,ai,dm0,psi,c2,
+     *  c20,tok1,pp,pff,ppx,pffx)
       call ppx_pffx()
+	call dina_dump_edge_update(n,1,int_2000,a,ai,dm0,psi,c2,
+     *  c20,tok1,pp,pff,ppx,pffx)
       call ppx_pffx_corr2()
+	  call dina_dump_edge_update(n,2,int_2000,a,ai,dm0,psi,c2,
+     *  c20,tok1,pp,pff,ppx,pffx)
 	   	      
 	end if
 

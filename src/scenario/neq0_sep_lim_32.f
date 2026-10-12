@@ -4140,6 +4140,8 @@ c
      *  /eq8/jbound,xbound(ntet),ybound(ntet),alfa0
      *  /eq15/pll,zsep,rsep,zsepup,rsepup,zsepdw,rsepdw
      *  /eq23/xleft,xright
+      common /eq11/psval(npo),psval0(npo)
+      common /ge2/ntay,tay,tt
 	common
      *  /halo4/expfg,avalb,w_h,del_r,al0
      *  /halo6/thalo,thalo0
@@ -4162,6 +4164,8 @@ c*vic
 
 	character *20 apr
 	dimension f(nwnh)
+	dimension fbin_sum(npo),fbin_min(npo),fbin_max(npo)
+	integer fbin_count(npo)
 
 
 	n1=nr-1
@@ -4251,6 +4255,12 @@ c	zmin=amin1(zmin,zmin_p)
 
 	npoint=0
 	nhalo=0
+	do ibin=1,nrad
+	fbin_sum(ibin)=0.d0
+	fbin_min(ibin)=0.d0
+	fbin_max(ibin)=0.d0
+	fbin_count(ibin)=0
+	end do
 
 	TOK=0.
 	tok_g=0.
@@ -4329,6 +4339,18 @@ c	call feet_p(nrad,pffx,fprime,poa,psix)
 
 	TOK=TOK+f00
 	F(kk)=f00
+	ibin=1+int(psix*dfloat(nrad-1))
+	if(ibin.lt.1)ibin=1
+	if(ibin.gt.nrad)ibin=nrad
+	if(fbin_count(ibin).eq.0)then
+	fbin_min(ibin)=f00
+	fbin_max(ibin)=f00
+	else
+	fbin_min(ibin)=amin1(fbin_min(ibin),f00)
+	fbin_max(ibin)=amax1(fbin_max(ibin),f00)
+	end if
+	fbin_sum(ibin)=fbin_sum(ibin)+f00
+	fbin_count(ibin)=fbin_count(ibin)+1
 c*vic Current center coordinates ********
         r_cur=r_cur+f00*x(i)
         z_cur=z_cur+f00*y(j)
@@ -4359,6 +4381,8 @@ c        pause 'from cur_dens'
 c	hpart=1.05
 
 	al1=tpl/(tok+tok_g)
+	call dina_dump_cur_dens(nrad,poa,psval,ppx,pffx,
+     *  fbin_count,fbin_sum,fbin_min,fbin_max,tok,tok_g,al1)
 C
 	if(kpr.eq.1)print *,'tpl al1 ',tpl,al1
 	if(kpr.eq.1)print *,' tok tok_g tok_s ',tok,tok_g,tok_s
@@ -4376,6 +4400,49 @@ C
 
 	return
 	end
+
+      subroutine dina_dump_cur_dens(nrad,poa,psval,ppx,pffx,
+     * fbin_count,fbin_sum,fbin_min,fbin_max,tok,tok_g,al1)
+	  include 'double.inc'
+	  common /ge2/ntay,tay,tt
+	  integer nrad,fbin_count(*),curdens_call
+	  real*8 jmean
+	  dimension poa(*),psval(*),ppx(*),pffx(*)
+	  dimension fbin_sum(*),fbin_min(*),fbin_max(*)
+	  logical first_call
+	  save first_call,curdens_call
+	  data first_call /.true./
+	  data curdens_call /0/
+
+	  curdens_call=curdens_call+1
+	  if(first_call)then
+		 open(unit=104,file='cur_dens_source_profiles.dat',
+     *        status='replace',form='formatted')
+		 write(104,'(A)')
+     *        'tt ntay call bin rho_pol poa psival ppx pffx jmean '
+     *        //'jmin jmax tok tok_g al1 ncell'
+		 first_call=.false.
+	  else
+		 open(unit=104,file='cur_dens_source_profiles.dat',
+     *        status='old',position='append',form='formatted')
+	  endif
+
+	  do i=1,nrad
+		 rho_pol=0.d0
+		 if(nrad.gt.1)rho_pol=dfloat(i-1)/dfloat(nrad-1)
+		 jmean=0.d0
+		 if(fbin_count(i).gt.0)then
+		 jmean=fbin_sum(i)/dfloat(fbin_count(i))
+		 endif
+		 write(104,101) tt,ntay,curdens_call,i,rho_pol,poa(i),
+     *        psval(i),ppx(i),pffx(i),jmean,fbin_min(i),fbin_max(i),
+     *        tok,tok_g,al1,fbin_count(i)
+	  end do
+
+  101 format(1x,1pe15.7,1x,i6,1x,i8,1x,i5,11(1x,1pe15.7),1x,i8)
+	  close(104)
+	  return
+	  end
 
 
 	subroutine cur_dens_old(nrad,al1,f)

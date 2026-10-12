@@ -2066,7 +2066,7 @@ c *** to do PTOKE
 	apr='ppz'
 c	if(kpr.eq.1)print 71,apr,(ppz(i),i=1,nrad)
 	apr='pffz'
-	if(kpr.eq.1)print 71,apr,(pffz(i),i=nrad-5,nrad)
+	if(kpr.eq.1)print 71,apr,(pffz(i),i=1,nrad)
 
 	apr='dm0'
 c	if(kpr.eq.1)print 71,apr,(dm0(i),i=1,nrad)
@@ -2074,10 +2074,10 @@ c	if(kpr.eq.1)print 71,apr,(dm0(i),i=1,nrad)
 c	if(kpr.eq.1)print 71,apr,(poa(i),i=1,nrad)
 
 	apr='aiz'
-	if(kpr.eq.1)print 71,apr,(aiz(i),i=nrad-5,nrad)
+	if(kpr.eq.1)print 71,apr,(aiz(i),i=1,nrad)
 
 	apr='a'
-	if(kpr.eq.1)print 71,apr,(a(i),i=nrad-5,nrad)
+	if(kpr.eq.1)print 71,apr,(a(i),i=1,nrad)
 
 	do i=2,n-1
 
@@ -2091,9 +2091,9 @@ c	if(kpr.eq.1)print 71,apr,(poa(i),i=1,nrad)
 	end do
 
 	apr='ppx'
-	if(kpr.eq.1)print 71,apr,(ppx(i),i=nrad-5,nrad)
+	if(kpr.eq.1)print 71,apr,(ppx(i),i=1,nrad)
 	apr='pffx'
-	if(kpr.eq.1)print 71,apr,(pffx(i),i=nrad-5,nrad)
+	if(kpr.eq.1)print 71,apr,(pffx(i),i=1,nrad)
 
 71	format(20x,a6/,(6(1pe10.3)))
 
