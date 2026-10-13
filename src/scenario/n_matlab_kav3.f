@@ -341,8 +341,8 @@ c   current transient forms in the first CDE step.
       print *,'   ha(n)                   =', ha(n)
 
       do i=1,n
-      dm0(i)=dmn(i) ! Before
-!	   dmn(i)=dm0(i) ! After
+!      dm0(i)=dmn(i) ! Before
+	   dmn(i)=dm0(i) ! After
       end do
       
       do i=2,n

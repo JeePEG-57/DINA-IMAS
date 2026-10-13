@@ -2025,6 +2025,7 @@ c
      *  /ge2/NTAY,TAY,TT
      *	/ge3/AI(npo),A0(npo),HA2(npo),a(npo),ha(npo)
      *  /ge5/kpr
+	common /c_add1/omg_ppx
 	dimension ppz(npo),pffz(npo),poa(npo),aiz(npo)
 
 	character *20 apr
@@ -2056,11 +2057,11 @@ c *** to do PTOKE
 
  	teta=1.d0
         call inter_h0(pp,aiz,n,teta,val)
-	pp(n+1)=0.d0
+	pp(n+1)=2.d0*pp(n)  - pp(n-1)  
 
  	teta=1.d0
         call inter_h0(pff,aiz,n,teta,val)
-	pff(n+1)=0.d0
+	pff(n+1)=2.d0*pff(n) - pff(n-1)
 	aiz(n+1)=1.d0
 
 	apr='ppz'
@@ -2102,6 +2103,13 @@ c	if(kpr.eq.1)print 71,apr,(poa(i),i=1,nrad)
 
 	ppx(n)=0.d0
 	pffx(n)=0.d0
+
+	if (ppxd(1).ne.0.d0) then
+	do i=1,n
+		ppx(i)  = omg_ppx*ppx(i)  + (1.d0 - omg_ppx)*ppxd(i)
+		pffx(i) = omg_ppx*pffx(i) + (1.d0 - omg_ppx)*pffxd(i)
+	end do
+	endif
 
 	do i=1,n
 	ppxd(i)=ppx(i)
@@ -2153,8 +2161,16 @@ c+++++++++++++++++++++++++++++++++
 	end do
 
 	pp(1)=pp(2)
-
+	
 	apr='--pp'
+	if(kpr.eq.1)print 71,apr,(pp(i),i=1,n)
+	
+	! Extrapolate from bulk to core to remove non-physical oscillation
+!	call extrap_core(pp, a, n, 4)
+	! Enforce pp=0 at edge
+	pp(n)=0.d0
+
+	apr='--pp++'
 	if(kpr.eq.1)print 71,apr,(pp(i),i=1,n)
 
 	apr='p'
@@ -2168,6 +2184,11 @@ c+++++++++++++++++++++++++++++++++
 	apr='tq0'
 	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
 
+	apr='ha'
+	if(kpr.eq.1)print 71,apr,(ha(i),i=1,n)
+
+	apr='psi'
+	if(kpr.eq.1)print 71,apr,(psi(i),i=1,n)
 
 c	pause 'pp_calc'
 
@@ -4136,6 +4157,60 @@ c
 	return
 	end
 
+	subroutine extrap_axis(f, a, n, i_anc)
+c----------------------------------------------------------------------
+c  Axis-flat (df/da = 0 at axis) extrapolation of a flux-surface
+c  quantity, overwriting its near-axis cells with a parabola in a.
+c
+c  Given f(1..n) tabulated on the radial coordinate a(1..n) with
+c  a(1)=0 at the magnetic axis and a(n)=1 at the LCFS, replace
+c  f(1..i_anc-1) with
+c
+c      f(a) = A + B * a**2
+c
+c  where A, B are determined by matching f at the two anchor points
+c  (i_anc, i_anc+1).  By construction,
+c
+c      df/da  =  2*B*a  ->  0  as a -> 0,
+c
+c  so the extrapolated profile has zero slope at the axis, consistent
+c  with axis-symmetry of flux-surface-averaged quantities.
+c
+c  Equivalently: this is linear in a**2 (= rho_tor_norm**2).
+c
+c  Call pattern:
+c      call extrap_axis(f, a, n, i_anc)
+c
+c  where i_anc >= 2 is the first index to KEEP (e.g. 5).  Indices
+c  1..i_anc-1 are overwritten.  If i_anc is out of range, or the two
+c  anchors have (near-)identical a**2, the subroutine returns without
+c  changes (defensive: fall back to whatever the caller already has).
+c----------------------------------------------------------------------
+	include 'double.inc'
+	dimension f(n), a(n)
+
+	! Sanity: need two anchor cells inside the array, and at least
+	! one cell to overwrite.
+	if (i_anc .lt. 2) return
+	if (i_anc + 1 .gt. n) return
+
+	a2_a  = a(i_anc)     * a(i_anc)
+	a2_b  = a(i_anc + 1) * a(i_anc + 1)
+	denom = a2_b - a2_a
+
+	if (abs(denom) .lt. 1.d-30) return   ! degenerate: anchors coincide
+
+	bcoef = ( f(i_anc + 1) - f(i_anc) ) / denom
+	acoef =   f(i_anc)                   - bcoef * a2_a
+
+	do i = 1, i_anc - 1
+	    f(i) = acoef + bcoef * a(i) * a(i)
+	end do
+
+	return
+	end
+
+
 	subroutine polar_data_tor()
 	include 'double.inc'
 	include 'parf0'
@@ -4614,6 +4689,26 @@ c	 implicit real *8 (a-h,o-z)
 
 71	FORMAT(5X,A10/,(2x,6(1PE11.3)))
 
+c----------------------------------------------------------------------
+c  Legacy 2-segment linear edge smoother.
+c
+c  Builds ppx_av, pffx_av = mean of raw ppx, pffx over i=n_pol+1..n.
+c  Then replaces i=n_pol..ip_max with a linear ramp from the raw
+c  value at i=n_pol down to {ppx_av, pffx_av}, and i=ip_max..n with
+c  a linear ramp from that mean down to 0 at i=n.  With c_pol=0.8
+c  and typical VNS edge shapes the two slopes come out nearly equal,
+c  so the net taper is effectively ONE straight line from the anchor
+c  at i=n_pol to 0 at i=n -- a CONSTANT-slope taper.
+c
+c  That constant slope is what makes this work: GS reads pp' and ff'
+c  as current source, so a constant-slope taper deposits a FLAT
+c  j_tor band across the taper width, not a localized ring.  A
+c  smoothstep (slope peaked at t=0.5) was tried instead and died
+c  3x sooner because it concentrated the j_tor at the taper center.
+c
+c  Do not "smooth" this further without preserving the constant-
+c  slope property across the whole taper region.
+c----------------------------------------------------------------------
 
 	c_pol=0.8
 	n_pol=c_pol*n
@@ -4658,10 +4753,12 @@ c	 implicit real *8 (a-h,o-z)
 	do i=ip_max,n
 	ppx(i)=ppx(ip_max)*(1.d0-dfloat(i-ip_max)/dfloat(n-ip_max))
 	end do
+	ppx(n)=0.d0
 
 	do i=if_max,n
 	pffx(i)=pffx(if_max)*(1.d0-dfloat(i-if_max)/dfloat(n-if_max))
 	end do
+	pffx(n)=0.d0
 
 	apr='--ppx'
 	if(kpr.eq.1)print 71,apr,(ppx(i),i=1,n)
@@ -4670,7 +4767,6 @@ c	 implicit real *8 (a-h,o-z)
 
 	return
 	end
-
 
 
 
@@ -4935,4 +5031,93 @@ c	 implicit real *8 (a-h,o-z)
 
         return
         end
+
+		
+	subroutine dina_dump_edge_update(n,stage,iteration,a,ai,dm0,
+     *  psi,c2,c20,tok1,pp,pff,ppx,pffx)
+	include 'double.inc'
+	common
+     *  /ge2/NTAY,TAY,TT
+
+	integer n,stage,iteration
+	dimension a(*),ai(*),dm0(*),psi(*),c2(*),c20(*),tok1(*)
+	dimension pp(*),pff(*),ppx(*),pffx(*)
+
+	logical first_call
+	save first_call
+	data first_call /.true./
+
+	if (first_call) then
+		open(unit=102,file='edge_update_profiles.dat',
+     *  status='replace',form='formatted')
+		write(102,'(A)')
+     *  'tt ntay iteration stage i a ai dm0 psi c2 c20 tok1 pp '//
+     *  'pff ppx pffx'
+		first_call = .false.
+	else
+		open(unit=102,file='edge_update_profiles.dat',status='old',
+     *  position='append',form='formatted')
+	endif
+
+	do i=1,n
+		write(102,101) tt,ntay,iteration,stage,i,a(i),ai(i),
+     *  dm0(i),psi(i),c2(i),c20(i),tok1(i),pp(i),pff(i),
+     *  ppx(i),pffx(i)
+	end do
+
+  101   format(1x,1pe15.7,1x,3(i6,1x),i5,11(1x,1pe15.7))
+
+	close(102)
+	return
+	end
+
+
+	subroutine extrap_core(f, x, n, i_anc)
+c----------------------------------------------------------------------
+c  Linear backward extrapolation of a flux-surface quantity f(1..n)
+c  tabulated on an abscissa x(1..n), overwriting its near-axis cells
+c  with a straight line in x.
+c
+c  Given two anchor points (x(i_anc), f(i_anc)) and
+c  (x(i_anc+1), f(i_anc+1)), build
+c
+c      f(x) = slope * ( x - x(i_anc) ) + f(i_anc)
+c
+c  with
+c
+c      slope = ( f(i_anc+1) - f(i_anc) ) / ( x(i_anc+1) - x(i_anc) )
+c
+c  and overwrite indices 1..i_anc-1 with that line evaluated at x(i).
+c  Indices i_anc..n are left untouched.
+c
+c  Intended to kill unphysical near-axis oscillations in profiles that
+c  come out of a one-sided finite-difference derivative (e.g. pp(i)
+c  from pp_calc) while preserving the outer trend.
+c
+c  Call pattern:
+c      call extrap_core(f, x, n, i_anc)
+c
+c  where i_anc >= 2 is the first index to KEEP (e.g. 4). The routine
+c  returns without changes if i_anc is out of range or if the two
+c  anchors coincide in x (defensive: never introduce a NaN).
+c----------------------------------------------------------------------
+	include 'double.inc'
+	dimension f(n), x(n)
+
+c  Need at least one cell to overwrite and both anchors inside the
+c  array.
+	if (i_anc .lt. 2) return
+	if (i_anc + 1 .gt. n) return
+
+	dx = x(i_anc + 1) - x(i_anc)
+	if (abs(dx) .lt. 1.d-30) return
+
+	slope = ( f(i_anc + 1) - f(i_anc) ) / dx
+
+	do i = 1, i_anc - 1
+	   f(i) = f(i_anc) + slope * ( x(i) - x(i_anc) )
+	end do
+
+	return
+	end
 

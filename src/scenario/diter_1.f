@@ -435,6 +435,22 @@ c	if(kpr.eq.1)print *,' -- n pi',n,pi
 	end do
 c       tok1(2)=dkof*c20(2)/(0.5*s(2)*ha(2))
 	tok1(1)=tok1(2)
+      apr = 'tok1 after DINA interp'
+      if(kpr.eq.1)print 71,APR,(TOK1(I),I=1,N)
+      ! Centered finite differences for interior; one-sided at the LCFS.
+      ! tok1(i) = (dc20/dai) / s(i) = local Jφ.
+      k_fd_edge = 10     
+      do i=n - k_fd_edge + 1, n - 1
+!     do i=2, n - 1
+      tok1(i) = dkof * (c20(i+1) - c20(i-1)) / ((ai(i+1) - ai(i-1)) * s(i))
+      end do
+      tok1(n) = dkof * (c20(n) - c20(n-1)) / ((ai(n) - ai(n-1)) * s(n))
+!     tok1(1) = tok1(2)
+      apr = 'tok1 after FD at edge, before core interp'
+      if(kpr.eq.1)print 71,APR,(TOK1(I),I=1,N)
+            call extrap_axis(tok1, ai, n, 5)
+      apr = 'tok1 after core interp'
+      if(kpr.eq.1)print 71,APR,(TOK1(I),I=1,N)
 !     --- Diagnostic dump of TOKK internals: tok1 build from
 !     c20 (=-c2*psi) via quadratic interp coefficients aak/bbk/cck.
         call dina_dump_tokk(n,ai,a,psi,c2,c20,aak,bbk,cck,s,tok1)
@@ -450,16 +466,13 @@ c       pt02=dkof*c20(n)
 cc      do i=n_p+1,n
 cc      tok1(i)=(c20(i)-c20(i-1))*2./(ha(i)*s(i)+ha(i-1)*s(i-1))
 cc      end do
-c
 c	if(kpr.eq.1)print *,' before -- n pi',n,pi
 	DO 33 I=2,N
 	PFF(I)=-2.*s(i)/(c3(i)*2.*pi*rs0)*
      *  (TOK1(I)/dkof+PP(I)*VI(I)/(RS0*S(I)))
 c        TOK2(I)=-dkof*( PP(I)*VI(I)/(RS0*S(I)) +
 c     *  0.5*PFF(I)*RS0*2.*PI*c3(i)/S(I))
-      if (i.ge.n-5) print *, 'edge pff:', i, s(i), c3(i), tok1(i), 
-     *    pp(i), vi(i), PFF(I)
-
+            pff(n)=0.d0
    33   CONTINUE
 c	if(kpr.eq.1)print *,' after  -- n pi',n,pi
 c
