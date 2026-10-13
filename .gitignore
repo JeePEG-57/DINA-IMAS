@@ -45,3 +45,5 @@ __pycache__/
 *cputime*
 */temp
 *.directory
+
+imas/iwrap/tcv_controller/codegen_dina/*
