@@ -47,3 +47,5 @@ __pycache__/
 *.directory
 
 imas/iwrap/tcv_controller/codegen_dina/*
+
+*.ipynb
