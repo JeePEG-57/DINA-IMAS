@@ -16,7 +16,6 @@ F90DEF=-D'GIT_URL="$(GIT_URL)"'
 F90DEF+=-D'GIT_COMMIT_ID="$(GIT_COMMIT_ID)"'
 F90DEF+=-D'GIT_VERSION="$(GIT_VERSION)"'
 
-
 F90FLAGS=-fPIC -w
 # COMPILER-SPECIFIC FLAGS
 ifeq ($(FC), ifort)
@@ -29,12 +28,12 @@ else
   $(error Unsupported Fortran compiler)
 endif
 
-
-DEBUG = -g -O0 -fno-inline
+DEBUG = -g -O0 -fbacktrace 
 ifeq ($(TARGET), DEBUG)
   F90FLAGS += $(DEBUG)
+else ifeq ($(TARGET), RELEASE)
+  F90FLAGS += -O2 -g -march=native -funroll-loops -fno-inline -fbacktrace
 endif
-
 
 F90FLAGS+=$(F90DEF)
 
