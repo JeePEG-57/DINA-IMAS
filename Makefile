@@ -20,9 +20,15 @@ interface: dina controllers
 	make -C imas/iwrap/kmc_contr_4
 	make -C imas/iwrap/wf_iter
 	make -C imas/iwrap/wf_vde
+<<<<<<< HEAD
 	make -C imas/iwrap/tcv_controller
 	make -C imas/iwrap/wf_tcv
 	make -C imas/iwrap/wf_vns
+=======
+	make -C imas/iwrap/wf_tcv
+	make -C imas/iwrap/wf_vns
+	make -C imas/iwrap/tcv_controller
+>>>>>>> 88b2240 (Update Makefile for TCV and VNS tokamak)
 
 iwrap: interface
 	make -C imas/iwrap/dina_green actor
