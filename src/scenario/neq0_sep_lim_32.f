@@ -7021,7 +7021,7 @@ c
       
       if(i_en.eq.1)then
             
-	n_k=10
+	
 	kk=0
 	xu(1)=xu1(1)
 	yu(1)=yu1(1)
