@@ -13,7 +13,7 @@ FCFLAGS=-fPIC -w
 ifeq ($(FC), ifort)
   FCFLAGS+=-extend-source -nod-lines -save -init=zero -real-size 64
 else ifeq ($(FC), gfortran)
-  FCFLAGS+=-ffixed-line-length-none -fd-lines-as-comments -fno-automatic -freal-4-real-8
+  FCFLAGS+=-ffixed-line-length-none -fd-lines-as-comments -fno-automatic -freal-4-real-8 -mcmodel=medium
 else
   $(error Unsupported Fortran compiler)
 endif
@@ -58,7 +58,7 @@ all: test.exe dina_99.a
 
 test.exe: test.o dina_99.a
 	@echo "   * $^ -> $@"
-	$(FC) -Wl,--no-relax -o $@ $^
+	$(FC) -mcmodel=medium -Wl,--no-relax -o $@ $^
 
 dina_99.a: $(DINAOBJ)
 	$(RM) -r $@
