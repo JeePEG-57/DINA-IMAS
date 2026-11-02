@@ -2057,6 +2057,8 @@ c+++++++++++++++++++++++++++++++++
 	end do
 
 	pp(1)=pp(2)
+	
+	call extrap_core(pp, a, n, 4)
 
 	apr='--pp'
 	if(kpr.eq.1)print 71,apr,(pp(i),i=1,n)
@@ -2072,6 +2074,10 @@ c+++++++++++++++++++++++++++++++++
 	apr='tq0'
 	if(kpr.eq.1)print 71,apr,(tq0(i),i=1,n)
 
+	apr='ha'
+	if(kpr.eq.1)print 71,apr,(ha(i),i=1,n)
+	apr='psi'
+	if(kpr.eq.1)print 71,apr,(psi(i),i=1,n)
 
 c	pause 'pp_calc'
 
@@ -4770,3 +4776,51 @@ c	 implicit real *8 (a-h,o-z)
 	end
 
 
+	subroutine extrap_core(f, x, n, i_anc)
+c----------------------------------------------------------------------
+c  Linear backward extrapolation of a flux-surface quantity f(1..n)
+c  tabulated on an abscissa x(1..n), overwriting its near-axis cells
+c  with a straight line in x.
+c
+c  Given two anchor points (x(i_anc), f(i_anc)) and
+c  (x(i_anc+1), f(i_anc+1)), build
+c
+c      f(x) = slope * ( x - x(i_anc) ) + f(i_anc)
+c
+c  with
+c
+c      slope = ( f(i_anc+1) - f(i_anc) ) / ( x(i_anc+1) - x(i_anc) )
+c
+c  and overwrite indices 1..i_anc-1 with that line evaluated at x(i).
+c  Indices i_anc..n are left untouched.
+c
+c  Intended to kill unphysical near-axis oscillations in profiles that
+c  come out of a one-sided finite-difference derivative (e.g. pp(i)
+c  from pp_calc) while preserving the outer trend.
+c
+c  Call pattern:
+c      call extrap_core(f, x, n, i_anc)
+c
+c  where i_anc >= 2 is the first index to KEEP (e.g. 4). The routine
+c  returns without changes if i_anc is out of range or if the two
+c  anchors coincide in x (defensive: never introduce a NaN).
+c----------------------------------------------------------------------
+	include 'double.inc'
+	dimension f(n), x(n)
+
+c  Need at least one cell to overwrite and both anchors inside the
+c  array.
+	if (i_anc .lt. 2) return
+	if (i_anc + 1 .gt. n) return
+
+	dx = x(i_anc + 1) - x(i_anc)
+	if (abs(dx) .lt. 1.d-30) return
+
+	slope = ( f(i_anc + 1) - f(i_anc) ) / dx
+
+	do i = 1, i_anc - 1
+	   f(i) = f(i_anc) + slope * ( x(i) - x(i_anc) )
+	end do
+
+	return
+	end
