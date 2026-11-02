@@ -71,8 +71,14 @@ c
       dimension sigma_jetto(*),sigma_dina(*),sigk_jetto(npo)
       dimension sigk_jetto1(npo),aj0_help(npo),b_corr(npo)
       
-        dimension dm_help(npo),df_help(npo),cur_tor(npo)
-
+      dimension dm_help(npo),df_help(npo),cur_tor(npo)
+c     For CDE variables prints START
+      integer trace_call
+      save trace_call
+      data trace_call /0/
+      real co_flux,co_ptor,mesh_velocity,pe_left,pe_right
+      real time_diag,advection_time_ratio
+c     For CDE variables prints END 
 
 	character *30 apr                                                      
 	dimension a_print(200)
@@ -102,7 +108,20 @@ c********
       end if
             
       
-	do i=1,n
+        trace_call=trace_call+1
+      if(trace_call.eq.1)then
+      open(unit=99,file='cde_equilibrium_scalars.dat',status='replace')
+      write(99,'(A)') '# call ntay tt tay volume surface rs0'
+      write(99,'(A)') '# TK TKP TKF betj bett betpc uli dlint rmag zmag rsep zsep'
+      close(99)
+      endif
+      open(unit=99,file='cde_equilibrium_scalars.dat',status='unknown',
+     *position='append')
+      write(99,'(2I8,1P,17E18.9)') trace_call,ntay,tt,tay,volume,
+     *surface,rs0,tk,tkp,tkf,betj,bett,betpc,uli,dlint,
+     *rmag,zmag,rsep,zsep
+      close(99)
+      do i=1,n
 	dm_help(i)=dmn(i)
 	end do
 
@@ -356,6 +375,30 @@ c###     **2.*pi*vi(i)*bt/sigk(i)
       VG(I)=1./pfi(i)*fz(I)
     1 CONTINUE
 c
+      if(trace_call.eq.1.and.ntay.eq.0)then
+      open(unit=97,file='cde_flux_trace.dat',status='replace')
+      write(97,'(A)')
+     *'# columns: call phase ntay i tt A ai ha vi c2 c3 DM0 DMN psi p pp pff f pfi dfmax dfmax0 dfma c20 tok1 coFlux coPtor'
+      close(97)
+      endif
+      open(unit=97,file='cde_flux_trace.dat',status='unknown',
+     *position='append')
+      do i=1,n
+      co_flux=0.
+      co_ptor=0.
+      if(abs(pfi(i)*ha(i)).gt.1.e-30)then
+      co_flux=abs(dfmax(i)-dfmax0(i))/abs(pfi(i)*ha(i))
+      co_ptor=abs(dfma(i)*tay)/abs(pfi(i)*ha(i))
+      endif
+      write(97,'(4I8,1P,22E18.9)') trace_call,0,ntay,i,tt,
+     *a(i),ai(i),ha(i),vi(i),c2(i),c3(i),dm0(i),dmn(i),psi(i),
+     *p(i),pp(i),pff(i),f(i),pfi(i),dfmax(i),dfmax0(i),
+     *dfma(i),c20(i),tok1(i),co_flux,co_ptor
+      end do
+      close(97)
+      npos_a=0
+      npos_c=0
+      ratio_max=0.
       DO I=3,N2
       A(I)=-UG(I)/(2.*ha2(i))*beta*(dh1(i)+dh2(i))
       b(I)=(ug(i+1)-UG(I))/(2.*ha2(i))*beta*
@@ -368,8 +411,18 @@ c
 	c(i)=c(i)+hg(i+1)/ha(i+1)*vg(i+1)*dh1(i)*dfma(i)
 	b(i)=b(i)+hg(i)/ha(i)*vg(i)*dh2(i)*dfma(i)-hg(i)/
      *ha(i+1)*vg(i+1)*dh1(i)*dfma(i)
+c For prints --      
+      if(a(i).gt.0.)npos_a=npos_a+1
+      if(c(i).gt.0.)npos_c=npos_c+1
+      diff_i=abs(ALFA*(fz(I)*GG(I)*dh2(i)+fz(I+1)*GG(I+1)*dh1(i))/TAY)
+      if(diff_i.gt.0.)then
+            ratio_i=max(abs(a(i)),abs(c(i)))/diff_i
+            ratio_max=max(ratio_max,ratio_i)
+      endif
+c For prints end -- 
 c
 	end do
+      if(kpr.eq.1)print *,'cde_op',ntay,ptor,npos_a,npos_c,ratio_max
       A(2)=0.
 	i=2
       b(I)=ug(i+1)/(2.*ha2(i))*beta*(dh1(i)+dh2(i))
@@ -383,6 +436,32 @@ c
       DO 9 I=3,N
       AGK(I)=GK(I)/HA(I)
     9 CONTINUE
+      if(trace_call.eq.1.and.ntay.eq.0)then
+      open(unit=98,file='cde_numerics_trace.dat',status='replace')
+      write(98,'(A)') '# call ntay i A B C mesh_speed AGK_i AGK_next TETA'
+      write(98,'(A)') '# Pe_left Pe_right Co_flux Co_ptor adv_time_ratio'
+      close(98)
+      endif
+      open(unit=98,file='cde_numerics_trace.dat',status='unknown',
+     *position='append')
+      do i=3,n2
+      mesh_velocity=abs(dfma(i)/max(abs(pfi(i)),1.e-30))
+      pe_left=abs(a(i)/max(abs(AGK(i)*TETA(i)),1.e-30))
+      pe_right=abs(c(i)/max(abs(AGK(i)*TETA(i+1)),1.e-30))
+      time_diag=abs(ALFA*(fz(i)*GG(i)*dh2(i)+fz(i+1)*GG(i+1)*
+     *dh1(i))/TAY)
+      advection_time_ratio=max(abs(a(i)),abs(c(i)))/max(time_diag,1.e-30)
+      co_flux=0.
+      co_ptor=0.
+      if(abs(pfi(i)*ha(i)).gt.1.e-30)then
+      co_flux=abs(dfmax(i)-dfmax0(i))/abs(pfi(i)*ha(i))
+      co_ptor=abs(dfma(i)*tay)/abs(pfi(i)*ha(i))
+      endif
+      write(98,'(3I8,1P,12E18.9)') trace_call,ntay,i,a(i),b(i),c(i),
+     *mesh_velocity,AGK(i),AGK(i+1),TETA(i),pe_left,pe_right,
+     *co_flux,co_ptor,advection_time_ratio
+      end do
+      close(98)
 	do i=2,n2
       FDM(I)=ALFA*(fz(I)*GG(I)*dh2(i)+fz(I+1)*
      *GG(I+1)*dh1(i))/TAY*dmn(I)+
@@ -401,17 +480,38 @@ c       if(kpr.eq.1)print *,'l3 udm zdm',l3,udm,zdm
       WDM0(I)=WDM(I)
     5 CONTINUE
 c
-	do i=3,n-1
+      residual_max=0.
+      residual_scale=0.
+      do i=3,n-1
 	f_r=a(i)*dm0(i-1)+b(i)*dm0(i)+c(i)*dm0(i+1)+
      *	(wdm0(i+1)-wdm0(i))/ha2(i)
+      residual_max=max(residual_max,abs(f_r-fdm(i)))
+      residual_scale=max(residual_scale,abs(fdm(i)))
 c	if(kpr.eq.1)print *,' i f_r fdm(i)',i,f_r,fdm(i)
 	end do
+      if(kpr.eq.1)print *,'cde_res ntay abs rel',ntay,
+     *residual_max,residual_max/max(residual_scale,1.e-30)
 c
 
       DO 88 I=3,N
         psi(i)=WDM0(I)/GK(I)
 	dm(i)=(dm0(i)-dm0(i-1))/ha(i)
    88 Q(I)=-PFI(I)/PSI(I)
+      open(unit=97,file='cde_flux_trace.dat',status='unknown',
+     *position='append')
+      do i=1,n
+      co_flux=0.
+      co_ptor=0.
+      if(abs(pfi(i)*ha(i)).gt.1.e-30)then
+      co_flux=abs(dfmax(i)-dfmax0(i))/abs(pfi(i)*ha(i))
+      co_ptor=abs(dfma(i)*tay)/abs(pfi(i)*ha(i))
+      endif
+      write(97,'(4I8,1P,22E18.9)') trace_call,1,ntay,i,tt,
+     *a(i),ai(i),ha(i),vi(i),c2(i),c3(i),dm0(i),dmn(i),psi(i),
+     *p(i),pp(i),pff(i),f(i),pfi(i),dfmax(i),dfmax0(i),
+     *dfma(i),c20(i),tok1(i),co_flux,co_ptor
+      end do
+      close(97)
 	do i=2,n-1
 	aje(i)=+ALFA*(fz(I)*GG(I)*dh2(i)+fz(I+1)*
      *GG(I+1)*dh1(i))/TAY*( dm0(i)-dmn(I) )
