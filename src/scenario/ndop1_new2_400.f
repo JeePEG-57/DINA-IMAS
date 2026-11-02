@@ -376,9 +376,11 @@ c
 	L3=3
         if(kpr.eq.1)print *,'  udm zdm l3',udm,zdm,l3
 
+	udd_ex0=udd_ex
 	udd_ex=-(fdd-fdd0)/(tay*100.)
 
         udd=udd_ex
+!		udd=0.5d0*(udd_ex +udd_ex0)
 
 c###
 
@@ -415,8 +417,15 @@ c	udd=udd-udd_tor
 	if(ntay.gt.next)then
         if(kpr.eq.1)print *,' pll pll0 udd ',pll,pll0,udd
         if(kpr.eq.1)print *,'  tpl tpl0',tpl,tpl0
+		print *, ' before calling difmf_1'
+		print *,' next ntay ',next,ntay
+		print *, ' pll, f(n) ', pll, f(n)
+		
 	UDM=4.*PI/( 10.*PLL*f(n) )
-	ZDM=UDM*(-DMN(n)+pll0*tpl0+udd*tay*100. )
+	print *, 'UDM = 4.*PI/( 10.*PLL*f(n) )  ', UDM
+	ZDM=UDM*(-DMN(n)  +  pll0*tpl0  +  udd*tay*100. )
+	print *, 'DMN(n), pll0, tpl0, udd, tay', DMN(n), pll0, tpl0, udd, tay
+	print *, 'ZDM=UDM*(-DMN(n)+pll0*tpl0+udd*tay*100. )', ZDM
         if(kpr.eq.1)print *,'  udm zdm l3',udm,zdm,l3
 	end if
 
@@ -441,6 +450,10 @@ c------------------
 	udd_dif=-(dm0(n)-dmn(n))/(tay*100.)
 	udd_ps=-2.*pi*(psval(n)-psval0(n))/(tay*100.)
 	if(kpr.eq.1)print *,' udd_dif udd_ps',udd_dif,udd_ps
+	bc_rhs=pll0*tpl0+(dm0(n)-dmn(n))+100.*tay*udd
+	if(kpr.eq.1)print *,' bc_cde pll_ip rhs res ',pll*tpl_tor,bc_rhs,
+     *  pll*tpl_tor-bc_rhs
+	if(kpr.eq.1)print *,' bc_cde dm0n dmnn ',dm0(n),dmn(n)
 c-------------
 	q_b=q(n)
 
