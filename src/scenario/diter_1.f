@@ -391,6 +391,7 @@ c       implicit real*8 (a-h,o-z)
       COMMON
      *  /mid1/C1(npo),C2(npo),C3(npo)
      *  /mid2/VI(npo),s(npo)
+     *  /mid3/GRA1(npo),GRA2(npo)
      *  /mid4/xpp(npo),xpff(npo),scur(npo)
 	common
      *  /ge1/PI
@@ -450,6 +451,22 @@ c
 	if(kpr.eq.1)print 71,APR,(TOK1(I),I=1,N)
 	if(kpr.eq.1)print * ,'I through TOK1=',
      *  tok,'kA','  PT02=',pt02,'kA'
+      APR=' c2'
+	if(kpr.eq.1)print 71,APR,(c2(I),I=1,N)
+      APR=' psi'
+	if(kpr.eq.1)print 71,APR,(psi(I),I=1,N)
+      APR=' c1'
+	if(kpr.eq.1)print 71,APR,(c1(I),I=1,N)
+      APR=' c3'
+	if(kpr.eq.1)print 71,APR,(c3(I),I=1,N)
+      APR=' vi'
+	if(kpr.eq.1)print 71,APR,(vi(I),I=1,N)
+      APR=' s'
+	if(kpr.eq.1)print 71,APR,(s(I),I=1,N)
+      APR=' gra1'
+	if(kpr.eq.1)print 71,APR,(gra1(I),I=1,N)
+      APR=' gra2'
+	if(kpr.eq.1)print 71,APR,(gra2(I),I=1,N)
 c
 	QDG0=9./(1.2*16.)*1.E2
 	QDG0=QDG0*1.E6
