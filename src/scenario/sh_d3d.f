@@ -2095,7 +2095,7 @@ c	pause 'from shape_emo'
 
       character*70 apr
 	character *30 apr1
-	dimension a_print(200)
+	dimension a_print(ntime)
 
 
       tt1=tt
