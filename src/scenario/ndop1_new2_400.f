@@ -415,18 +415,19 @@ c	udd=udd-udd_tor
         if(kpr.eq.1)print *,' next ntay ',next,ntay
 
 	if(ntay.gt.next)then
+c	if(ntay.gt.next.and.1.eq.0)then
         if(kpr.eq.1)print *,' pll pll0 udd ',pll,pll0,udd
         if(kpr.eq.1)print *,'  tpl tpl0',tpl,tpl0
 		print *, ' before calling difmf_1'
 		print *,' next ntay ',next,ntay
 		print *, ' pll, f(n) ', pll, f(n)
 		
-	UDM=4.*PI/( 10.*PLL*f(n) )
-	print *, 'UDM = 4.*PI/( 10.*PLL*f(n) )  ', UDM
-	ZDM=UDM*(-DMN(n)  +  pll0*tpl0  +  udd*tay*100. )
-	print *, 'DMN(n), pll0, tpl0, udd, tay', DMN(n), pll0, tpl0, udd, tay
-	print *, 'ZDM=UDM*(-DMN(n)+pll0*tpl0+udd*tay*100. )', ZDM
-        if(kpr.eq.1)print *,'  udm zdm l3',udm,zdm,l3
+		UDM=4.*PI/( 10.*PLL*f(n) )
+		print *, 'UDM = 4.*PI/( 10.*PLL*f(n) )  ', UDM
+		ZDM=UDM*(-DMN(n)  +  pll0*tpl0  +  udd*tay*100. )
+		print *, 'DMN(n), pll0, tpl0, udd, tay', DMN(n), pll0, tpl0, udd, tay
+		print *, 'ZDM=UDM*(-DMN(n)+pll0*tpl0+udd*tay*100. )', ZDM
+			if(kpr.eq.1)print *,'  udm zdm l3',udm,zdm,l3
 	end if
 
 !	CALL DIFMF_1(n)
